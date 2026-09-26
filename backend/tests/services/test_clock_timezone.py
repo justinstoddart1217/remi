@@ -4,15 +4,15 @@ from datetime import UTC, date, datetime
 
 from sqlalchemy.orm import Session, sessionmaker
 
-from app.core.clock import SystemClock, resolve_zone
-from app.core.db import Database
-from app.core.uow import UnitOfWorkFactory
-from app.repositories.registry import SETTINGS
-from app.schemas.settings import SettingsPatch
-from app.schemas.setup import SetupIn
-from app.services import settings as settings_service
-from app.services import setup as setup_service
-from app.services.settings import SettingsTimezone, timezone_changed
+from remi.core.clock import SystemClock, resolve_zone
+from remi.core.db import Database
+from remi.core.uow import UnitOfWorkFactory
+from remi.repositories.registry import SETTINGS
+from remi.schemas.settings import SettingsPatch
+from remi.schemas.setup import SetupIn
+from remi.services import settings as settings_service
+from remi.services import setup as setup_service
+from remi.services.settings import SettingsTimezone, timezone_changed
 
 
 def test_settings_timezone_reads_and_refreshes(

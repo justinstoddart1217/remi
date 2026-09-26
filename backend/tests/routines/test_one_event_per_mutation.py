@@ -6,7 +6,7 @@ from typing import Any
 import pytest
 from fastapi.testclient import TestClient
 
-from app.repositories.models.events import PLAN_NEUTRAL_EVENTS
+from remi.repositories.models.events import PLAN_NEUTRAL_EVENTS
 from tests.routines.support import events_since, revision
 
 TODAY = "2026-10-05"

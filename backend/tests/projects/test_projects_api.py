@@ -8,7 +8,7 @@ from typing import Any
 
 import pytest
 
-from app.services.projects import MIN_HOURS
+from remi.services.projects import MIN_HOURS
 from tests.projects.helpers import Api
 
 TODAY = "2026-10-05"

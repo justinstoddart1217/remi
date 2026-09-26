@@ -3,15 +3,15 @@ from datetime import date
 
 import pytest
 
-from app.services.engine.allocation import (
+from remi.services.engine.allocation import (
     RunState,
     focus_tasks,
     month_snapshot,
     next_milestone,
     next_run_after,
 )
-from app.services.engine.loads import DayLoad, build_loads
-from app.services.engine.model import Milestone, Project, RoutineDef, Task
+from remi.services.engine.loads import DayLoad, build_loads
+from remi.services.engine.model import Milestone, Project, RoutineDef, Task
 from tests.engine import seed as S
 
 d = S.d

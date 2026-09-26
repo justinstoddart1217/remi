@@ -5,13 +5,13 @@ from datetime import date
 import pytest
 from sqlalchemy import select
 
-from app.core.clock import FixedClock
-from app.core.errors import NotFound, OutOfRange, SetupRequired
-from app.core.uow import UnitOfWorkFactory
-from app.repositories import models as orm
-from app.repositories.registry import HOLIDAYS
-from app.services import views
-from app.services.dev_fixtures import SeedIds
+from remi.core.clock import FixedClock
+from remi.core.errors import NotFound, OutOfRange, SetupRequired
+from remi.core.uow import UnitOfWorkFactory
+from remi.repositories import models as orm
+from remi.repositories.registry import HOLIDAYS
+from remi.services import views
+from remi.services.dev_fixtures import SeedIds
 
 
 def _event_types(uow_factory: UnitOfWorkFactory) -> list[str]:

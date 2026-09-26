@@ -7,9 +7,9 @@ from types import SimpleNamespace
 import pytest
 from pydantic import SecretStr
 
-from app.core.errors import ValidationFailed
-from app.services.ai import keys
-from app.services.ai.keys import (
+from remi.core.errors import ValidationFailed
+from remi.services.ai import keys
+from remi.services.ai.keys import (
     KeychainUnavailable,
     KeyringStore,
     MemoryKeyStore,

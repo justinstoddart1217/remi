@@ -3,9 +3,9 @@ from datetime import date
 
 import pytest
 
-from app.services.engine.derive import DerivedProject, derive_project
-from app.services.engine.flags import attention, checkin_prompt, upcoming_overloads
-from app.services.engine.loads import DayLoad, build_loads
+from remi.services.engine.derive import DerivedProject, derive_project
+from remi.services.engine.flags import attention, checkin_prompt, upcoming_overloads
+from remi.services.engine.loads import DayLoad, build_loads
 from tests.engine import seed as S
 
 d = S.d

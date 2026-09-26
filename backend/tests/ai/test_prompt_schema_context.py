@@ -7,7 +7,7 @@ from typing import Any, cast
 
 import pytest
 
-from app.services.ai.context import (
+from remi.services.ai.context import (
     CheckinContextInput,
     ContextMilestone,
     ContextNote,
@@ -18,9 +18,9 @@ from app.services.ai.context import (
     note_line,
     today_label,
 )
-from app.services.ai.prompt import system_prompt
-from app.services.ai.schema import CHANGE_MEANINGS, PROPOSAL_SCHEMA
-from app.services.engine.validate import KNOWN_TYPES
+from remi.services.ai.prompt import system_prompt
+from remi.services.ai.schema import CHANGE_MEANINGS, PROPOSAL_SCHEMA
+from remi.services.engine.validate import KNOWN_TYPES
 from tests.ai.conftest import context_input
 from tests.engine import seed as S
 

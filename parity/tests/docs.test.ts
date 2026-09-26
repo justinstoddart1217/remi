@@ -67,9 +67,9 @@ test('README "Repository layout" lists every entry at the root', () => {
 /** The REMI_* names a file mentions. */
 const remiVars = (text: string) => new Set(text.match(/\bREMI_[A-Z][A-Z0-9_]*\b/g) ?? []);
 
-/** RemiConfig's fields (backend/app/core/config.py), as their REMI_<FIELD> variables. */
+/** RemiConfig's fields (backend/remi/core/config.py), as their REMI_<FIELD> variables. */
 function configVars(): string[] {
-  const src = read('backend/app/core/config.py');
+  const src = read('backend/remi/core/config.py');
   const body = src.slice(src.indexOf('class RemiConfig'));
   const end = body.search(/\n(?:class|def) /);
   return [...(end < 0 ? body : body.slice(0, end)).matchAll(/^ {4}([a-z][a-z0-9_]*): /gm)].map((m) => `REMI_${m[1]!.toUpperCase()}`);
@@ -112,7 +112,7 @@ test('make dev runs on its own data folder, not the real remi.db', () => {
 });
 
 // ------------------------------------------------------------------ request docs
-const SOURCE_DIRS = ['frontend/src', 'frontend/scripts', 'backend/app', 'backend/tests', 'backend/scripts', 'backend/alembic', 'parity', 'contracts'];
+const SOURCE_DIRS = ['frontend/src', 'frontend/scripts', 'backend/remi', 'backend/tests', 'backend/scripts', 'backend/alembic', 'parity', 'contracts'];
 const SKIP = new Set(['node_modules', 'report', 'baselines', 'test-results', 'playwright-report', '.remi-run', '__pycache__', 'dist']);
 const SOURCE_EXT = /\.(ts|tsx|mts|mjs|js|css|py|json|html)$/;
 

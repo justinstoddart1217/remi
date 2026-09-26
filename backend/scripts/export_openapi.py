@@ -9,9 +9,9 @@ import json
 import sys
 from pathlib import Path
 
-from app.core.config import RemiConfig
-from app.core.paths import repo_root
-from app.main import create_app
+from remi.core.config import RemiConfig
+from remi.core.paths import repo_root
+from remi.main import create_app
 
 
 def main(argv: list[str]) -> int:

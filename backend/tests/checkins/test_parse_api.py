@@ -15,12 +15,12 @@ from uuid import uuid4
 import pytest
 from fastapi.testclient import TestClient
 
-from app.core.clock import FixedClock
-from app.core.config import Env
-from app.core.uow import ref
-from app.repositories import models as orm
-from app.services.ai import registry
-from app.services.ai.fake_provider import (
+from remi.core.clock import FixedClock
+from remi.core.config import Env
+from remi.core.uow import ref
+from remi.repositories import models as orm
+from remi.services.ai import registry
+from remi.services.ai.fake_provider import (
     ENV_VAR,
     FakeProvider,
     FakeProviderRefused,

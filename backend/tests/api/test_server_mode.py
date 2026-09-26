@@ -10,10 +10,10 @@ from pathlib import Path
 import pytest
 from fastapi.testclient import TestClient
 
-from app.api import middleware
-from app.api.middleware import allowed_hosts, allowed_origins
-from app.core.clock import FixedClock
-from app.core.config import RemiConfig
+from remi.api import middleware
+from remi.api.middleware import allowed_hosts, allowed_origins
+from remi.core.clock import FixedClock
+from remi.core.config import RemiConfig
 from tests.api.conftest import build_app
 
 MUTATION = "/api/projects"

@@ -3,10 +3,10 @@
 from dataclasses import replace
 from datetime import date
 
-from app.core.clock import FixedClock
-from app.core.uow import UnitOfWorkFactory, ref
-from app.repositories.registry import PROJECTS, ROTATION, ROUTINES, SETTINGS
-from app.services.adapters import (
+from remi.core.clock import FixedClock
+from remi.core.uow import UnitOfWorkFactory, ref
+from remi.repositories.registry import PROJECTS, ROTATION, ROUTINES, SETTINGS
+from remi.services.adapters import (
     engine_ctx,
     plan_of,
     project_of,
@@ -14,9 +14,9 @@ from app.services.adapters import (
     routine_of,
     save_plan,
 )
-from app.services.calendar import YearSpan, calendar_for
-from app.services.dev_fixtures import SeedIds
-from app.services.engine.forecast import finish_for, plan_from, work_left
+from remi.services.calendar import YearSpan, calendar_for
+from remi.services.dev_fixtures import SeedIds
+from remi.services.engine.forecast import finish_for, plan_from, work_left
 from tests.engine import seed as engine_seed
 
 

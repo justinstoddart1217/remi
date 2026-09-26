@@ -9,12 +9,12 @@ import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from app.core.clock import FixedClock
-from app.core.config import RemiConfig
-from app.core.db import open_database
-from app.core.uow import UnitOfWorkFactory
-from app.main import create_app
-from app.services.ai import keys
+from remi.core.clock import FixedClock
+from remi.core.config import RemiConfig
+from remi.core.db import open_database
+from remi.core.uow import UnitOfWorkFactory
+from remi.main import create_app
+from remi.services.ai import keys
 from tests.fixtures import design_seed
 
 Json = dict[str, Any]

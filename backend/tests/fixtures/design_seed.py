@@ -1,7 +1,7 @@
 """The design seed: the prototype's sample plan as a test fixture (ADR-0006).
 
 The data comes from ``parity/golden/prototype_seed.json`` and is loaded by
-``app.services.dev_fixtures`` (the same loader ``POST /dev/fixtures`` uses), so tests and the
+``remi.services.dev_fixtures`` (the same loader ``POST /dev/fixtures`` uses), so tests and the
 parity harness see exactly the same database. Use it opt-in, never autouse::
 
     ids = design_seed.load(uow_factory, clock, data_dir)
@@ -19,9 +19,9 @@ from typing import Any, Final, cast
 
 from fastapi.testclient import TestClient
 
-from app.core.clock import Clock
-from app.core.uow import UnitOfWorkFactory, ref
-from app.services.dev_fixtures import SeedIds, load_design, load_seed, seed_path
+from remi.core.clock import Clock
+from remi.core.uow import UnitOfWorkFactory, ref
+from remi.services.dev_fixtures import SeedIds, load_design, load_seed, seed_path
 
 DESIGN_TODAY: Final = date(2026, 10, 5)
 DESIGN_NOW: Final = datetime(2026, 10, 5, 8, 0, tzinfo=UTC)

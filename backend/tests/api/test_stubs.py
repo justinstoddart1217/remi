@@ -13,7 +13,7 @@ from fastapi import APIRouter
 from fastapi.routing import APIRoute
 from fastapi.testclient import TestClient
 
-from app.api import endpoints
+from remi.api import endpoints
 from tests.api.routes_table import (
     BODIES,
     CHART_FILE,
@@ -26,7 +26,7 @@ from tests.api.routes_table import (
 
 
 def _endpoint_routes() -> dict[tuple[str, str], APIRoute]:
-    """Every route declared by an ``app.api.endpoints`` module, keyed by (method, path)."""
+    """Every route declared by an ``remi.api.endpoints`` module, keyed by (method, path)."""
     found: dict[tuple[str, str], APIRoute] = {}
     for info in pkgutil.iter_modules(endpoints.__path__):
         module = importlib.import_module(f"{endpoints.__name__}.{info.name}")

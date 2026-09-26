@@ -12,11 +12,11 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from sqlalchemy import Engine
 
-from app import main
-from app.core import migrations
-from app.core.config import RemiConfig
-from app.core.db import Database, make_engine
-from app.core.migrations import (
+from remi import main
+from remi.core import migrations
+from remi.core.config import RemiConfig
+from remi.core.db import Database, make_engine
+from remi.core.migrations import (
     DatabaseTooNew,
     DatabaseUnreadable,
     backup_database,
@@ -28,8 +28,8 @@ from app.core.migrations import (
     prune_backups,
     upgrade_to_head,
 )
-from app.core.paths import ensure_private_dir
-from app.core.uow import UnitOfWorkFactory
+from remi.core.paths import ensure_private_dir
+from remi.core.uow import UnitOfWorkFactory
 
 NEWER = "9999"
 """A revision newer than any this code ships (the tests pretend one exists)."""

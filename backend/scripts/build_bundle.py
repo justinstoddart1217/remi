@@ -15,7 +15,7 @@ The bundle is self-contained, so the server needs nothing installed (docs/deploy
       server/               remi-server.ps1 and its .bat shortcuts
 
 ``backend/`` and ``frontend/dist/`` keep their places relative to each other, so
-``app.core.paths`` finds the SPA and the migrations exactly as in a checkout. Everything is
+``remi.core.paths`` finds the SPA and the migrations exactly as in a checkout. Everything is
 precompiled (unchecked-hash .pyc, since the bundle never changes), because the Windows
 account that runs Remi cannot write ``__pycache__`` beside the code.
 """
@@ -32,8 +32,8 @@ import zipfile
 from pathlib import Path
 from py_compile import PycInvalidationMode
 
-from app import __version__
-from app.core.paths import backend_root, repo_root
+from remi import __version__
+from remi.core.paths import backend_root, repo_root
 
 PYTHON_REQUEST = "cpython-3.12-windows-x86_64-none"
 WINDOWS_PLATFORM = "x86_64-pc-windows-msvc"

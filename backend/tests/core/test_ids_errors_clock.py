@@ -3,8 +3,8 @@ from uuid import UUID
 
 import pytest
 
-from app.core import ids
-from app.core.clock import (
+from remi.core import ids
+from remi.core.clock import (
     DEFAULT_TIMEZONE,
     FixedClock,
     OffsetClock,
@@ -13,7 +13,7 @@ from app.core.clock import (
     clock_overridden,
     resolve_zone,
 )
-from app.core.errors import (
+from remi.core.errors import (
     Conflict,
     DomainError,
     NotFound,
@@ -22,7 +22,7 @@ from app.core.errors import (
     ValidationFailed,
     VersionConflict,
 )
-from app.repositories.models import Note
+from remi.repositories.models import Note
 
 # ------------------------------------------------------------------ ids
 

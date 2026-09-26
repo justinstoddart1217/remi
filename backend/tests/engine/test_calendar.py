@@ -2,7 +2,7 @@ from datetime import date
 
 import pytest
 
-from app.services.engine.calendar import BusinessCalendar, OutOfCalendar
+from remi.services.engine.calendar import BusinessCalendar, OutOfCalendar
 from tests.engine import seed as S
 
 d = S.d

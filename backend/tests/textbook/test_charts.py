@@ -10,10 +10,10 @@ from typing import Any
 import pytest
 from starlette.formparsers import MultiPartParser
 
-from app.api.endpoints.textbook import MULTIPART_OVERHEAD
-from app.api.middleware import CHART_CSP
-from app.repositories import models as orm
-from app.services import chart_store
+from remi.api.endpoints.textbook import MULTIPART_OVERHEAD
+from remi.api.middleware import CHART_CSP
+from remi.repositories import models as orm
+from remi.services import chart_store
 from tests.textbook.conftest import CHART_MAX_BYTES, Book
 
 CHART = b"<!doctype html><title>Yield</title><svg viewBox='0 0 10 10'></svg>"

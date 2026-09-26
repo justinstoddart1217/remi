@@ -1,6 +1,6 @@
 // A fake AI provider for the check-in drawer states, standing in for the prototype's stubbed
 // window.claude (drivers/common.ts installClaudeStub). It speaks the two Ollama endpoints the
-// backend's Ollama provider uses (backend/app/services/ai/ollama_provider.py), on 127.0.0.1 and an
+// backend's Ollama provider uses (backend/remi/services/ai/ollama_provider.py), on 127.0.0.1 and an
 // OS-assigned port, so no backend change is needed and nothing leaves the machine:
 //
 //   GET  /api/tags   lists FAKE_MODEL (GET /api/ai/status probes it)

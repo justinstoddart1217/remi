@@ -65,5 +65,5 @@ echo.
 echo Starting Remi on %URL%
 echo Keep this window open while you use Remi. Close it (or press Ctrl+C) to stop.
 cd /d "%ROOT%backend"
-uv run python -m app.main --port %PORT% %*
+uv run python -m remi.main --port %PORT% %*
 if errorlevel 1 pause

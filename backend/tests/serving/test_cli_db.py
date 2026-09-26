@@ -5,8 +5,8 @@ from pathlib import Path
 
 import pytest
 
-from app import main
-from app.core.migrations import head_revision
+from remi import main
+from remi.core.migrations import head_revision
 
 
 @pytest.fixture(autouse=True)

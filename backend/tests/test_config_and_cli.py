@@ -5,11 +5,11 @@ import pytest
 import uvicorn
 from pydantic import ValidationError
 
-from app import main
-from app.core import config as config_module
-from app.core.clock import FixedClock, OffsetClock, SystemClock, build_clock
-from app.core.config import DEFAULT_PORT, LOOPBACK_HOST, RemiConfig, is_loopback_host
-from app.core.paths import default_data_dir
+from remi import main
+from remi.core import config as config_module
+from remi.core.clock import FixedClock, OffsetClock, SystemClock, build_clock
+from remi.core.config import DEFAULT_PORT, LOOPBACK_HOST, RemiConfig, is_loopback_host
+from remi.core.paths import default_data_dir
 
 
 @pytest.mark.parametrize("host", ["127.0.0.1", "127.0.0.2", "::1", "[::1]", "localhost"])

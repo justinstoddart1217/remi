@@ -13,7 +13,7 @@ from typing import Any
 import pytest
 from fastapi.testclient import TestClient
 
-from app.utils.dates import fmt_s
+from remi.utils.dates import fmt_s
 from tests.fixtures.design_seed import golden
 
 pytestmark = pytest.mark.golden

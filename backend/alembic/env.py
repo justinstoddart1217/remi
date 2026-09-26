@@ -1,6 +1,6 @@
 """Alembic environment for Remi (SQLite, batch mode, type comparison).
 
-``app.core.migrations`` runs this with ``config.attributes["connection"]`` set to an open
+``remi.core.migrations`` runs this with ``config.attributes["connection"]`` set to an open
 connection inside a ``BEGIN IMMEDIATE`` transaction; the ``alembic`` CLI runs it without one,
 in which case the database comes from ``sqlalchemy.url`` or ``RemiConfig().data_dir``.
 Migration connections have ``foreign_keys=OFF`` so batch table rebuilds cannot cascade.
@@ -12,10 +12,10 @@ from typing import Any, Literal
 from alembic import context
 from sqlalchemy import URL, Connection
 
-from app.core.config import RemiConfig
-from app.core.db import WRITE_OPTIONS, make_engine, sqlite_url
-from app.core.paths import db_path, ensure_private_dir
-from app.repositories.models import Base, UTCDateTime
+from remi.core.config import RemiConfig
+from remi.core.db import WRITE_OPTIONS, make_engine, sqlite_url
+from remi.core.paths import db_path, ensure_private_dir
+from remi.repositories.models import Base, UTCDateTime
 
 config = context.config
 if config.config_file_name is not None and config.attributes.get("configure_logger", True):

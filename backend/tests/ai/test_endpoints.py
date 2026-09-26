@@ -10,13 +10,13 @@ import respx
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from app.core.clock import FixedClock
-from app.core.uow import UnitOfWorkFactory
-from app.repositories.models.settings import SETTINGS_ID, Settings
-from app.services.ai import status as status_module
-from app.services.ai.audit import AuditRecord, uow_audit_sink
-from app.services.ai.base import AuditStatus
-from app.services.ai.keys import set_api_key
+from remi.core.clock import FixedClock
+from remi.core.uow import UnitOfWorkFactory
+from remi.repositories.models.settings import SETTINGS_ID, Settings
+from remi.services.ai import status as status_module
+from remi.services.ai.audit import AuditRecord, uow_audit_sink
+from remi.services.ai.base import AuditStatus
+from remi.services.ai.keys import set_api_key
 from tests.ai.conftest import TEST_KEY
 
 OLLAMA = "http://127.0.0.1:11434"

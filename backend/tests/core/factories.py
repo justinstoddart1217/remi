@@ -3,7 +3,7 @@
 from datetime import date
 from typing import Any
 
-from app.repositories.models import Project
+from remi.repositories.models import Project
 
 
 def make_project(name: str = "Returns pipeline", **fields: Any) -> Project:

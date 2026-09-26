@@ -47,7 +47,7 @@ browsers: ## Install Playwright's Chromium for the parity, behaviour and egress 
 REMI_DEV_DATA_DIR ?=
 DEV_DATA_DIR_SH = if [ -n "$(REMI_DEV_DATA_DIR)" ]; then echo "$(REMI_DEV_DATA_DIR)"; else \
 	  cd $(BACKEND) && $(UV) run --quiet python -c \
-	    'from app.core.paths import default_data_dir; print(default_data_dir() / "dev")'; fi
+	    'from remi.core.paths import default_data_dir; print(default_data_dir() / "dev")'; fi
 
 dev-data-dir: ## Print the data folder make dev uses (REMI_DEV_DATA_DIR, default <Remi data>/dev)
 	@$(DEV_DATA_DIR_SH)
@@ -60,20 +60,20 @@ dev: ## Backend on 127.0.0.1:8765 (reload, own data folder) + Vite on 127.0.0.1:
 	echo "Data $$data (make dev's own; REMI_DEV_DATA_DIR moves it)"; \
 	trap 'kill $$(jobs -p) 2>/dev/null || true' EXIT; \
 	(cd $(BACKEND) && REMI_ENV=dev REMI_DATA_DIR="$$data" REMI_WEB_PORT=$(WEB_PORT) \
-	    $(UV) run uvicorn app.main:create_app --factory \
+	    $(UV) run uvicorn remi.main:create_app --factory \
 	    --reload --reload-dir app --host $(HOST) --port $(API_PORT)) & \
 	(cd $(FRONTEND) && REMI_API_PORT=$(API_PORT) REMI_WEB_PORT=$(WEB_PORT) $(NPM) run dev) & \
 	wait
 
 # Backend entry points run as `python -m ...` from backend/ so they never depend on the editable
 # install's .pth file (macOS iCloud marks dot-folders like .venv hidden, and Python skips
-# hidden .pth files). `remi` behaves exactly like `python -m app.main`.
+# hidden .pth files). `remi` behaves exactly like `python -m remi.main`.
 # One process on 127.0.0.1:$(API_PORT): the API under /api and frontend/dist for everything else
 # (hashed /assets cached forever, client routes answered with index.html). Opens the browser;
 # stop with Ctrl-C.
 serve: build ## Build the SPA, then run Remi as one process on 127.0.0.1:8765
 	cd $(BACKEND) && REMI_ENV=prod REMI_FRONTEND_DIST="$(CURDIR)/$(FRONTEND)/dist" \
-	  $(UV) run python -m app.main --host $(HOST) --port $(API_PORT)
+	  $(UV) run python -m remi.main --host $(HOST) --port $(API_PORT)
 
 build: ## Build the frontend into frontend/dist and check it stays local
 	cd $(FRONTEND) && $(NPM) run build

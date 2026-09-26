@@ -15,9 +15,9 @@ from functools import cache
 
 import holidays
 
-from app.services.engine.allocation import RunState
-from app.services.engine.calendar import BusinessCalendar
-from app.services.engine.model import (
+from remi.services.engine.allocation import RunState
+from remi.services.engine.calendar import BusinessCalendar
+from remi.services.engine.model import (
     EngineCtx,
     Horizon,
     Milestone,

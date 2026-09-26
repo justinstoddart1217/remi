@@ -11,9 +11,9 @@ from typing import Any
 
 from fastapi.testclient import TestClient
 
-from app import services
-from app.repositories.models.events import PLAN_NEUTRAL_EVENTS
-from app.services import views
+from remi import services
+from remi.repositories.models.events import PLAN_NEUTRAL_EVENTS
+from remi.services import views
 
 CHART = b"<!doctype html><title>Yield</title><svg viewBox='0 0 10 10'></svg>"
 

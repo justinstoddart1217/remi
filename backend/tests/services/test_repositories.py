@@ -5,11 +5,11 @@ from datetime import UTC, date, datetime, timedelta
 import pytest
 from sqlalchemy.orm import Session, sessionmaker
 
-from app.core.clock import FixedClock
-from app.core.errors import NotFound, VersionConflict
-from app.core.uow import UnitOfWorkFactory, ref
-from app.repositories import models as orm
-from app.repositories.registry import (
+from remi.core.clock import FixedClock
+from remi.core.errors import NotFound, VersionConflict
+from remi.core.uow import UnitOfWorkFactory, ref
+from remi.repositories import models as orm
+from remi.repositories.registry import (
     AI_AUDIT,
     ALIASES,
     CHART_ASSETS,
@@ -23,9 +23,9 @@ from app.repositories.registry import (
     SETTINGS,
     TEXTBOOK,
 )
-from app.repositories.rotation_repo import SegmentSpec, loops_for
-from app.repositories.settings_repo import SettingsRepository
-from app.services.dev_fixtures import SeedIds
+from remi.repositories.rotation_repo import SegmentSpec, loops_for
+from remi.repositories.settings_repo import SettingsRepository
+from remi.services.dev_fixtures import SeedIds
 
 NOW = datetime(2026, 10, 5, 8, 0, tzinfo=UTC)
 

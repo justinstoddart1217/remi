@@ -9,8 +9,8 @@ from sqlalchemy import func, select, text
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.orm import Session, sessionmaker
 
-from app.core.db import begin_write
-from app.repositories.models import (
+from remi.core.db import begin_write
+from remi.repositories.models import (
     Base,
     ChartAsset,
     CharterItem,

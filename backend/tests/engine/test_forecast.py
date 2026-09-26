@@ -2,8 +2,8 @@ from dataclasses import replace
 
 import pytest
 
-from app.services.engine.calendar import OutOfCalendar
-from app.services.engine.forecast import (
+from remi.services.engine.calendar import OutOfCalendar
+from remi.services.engine.forecast import (
     Finish,
     InvalidEdit,
     RateEdit,
@@ -26,7 +26,7 @@ from app.services.engine.forecast import (
     work_between,
     work_left,
 )
-from app.services.engine.model import EngineCtx, ProjectPlan, RoutineDef
+from remi.services.engine.model import EngineCtx, ProjectPlan, RoutineDef
 from tests.engine import seed as S
 
 d = S.d

@@ -11,8 +11,8 @@ from alembic.runtime.migration import MigrationContext
 from alembic.script import ScriptDirectory
 from sqlalchemy import Engine, inspect
 
-from app.core.db import make_engine
-from app.core.migrations import (
+from remi.core.db import make_engine
+from remi.core.migrations import (
     _migrate,  # pyright: ignore[reportPrivateUsage]
     alembic_config,
     current_revision,
@@ -20,7 +20,7 @@ from app.core.migrations import (
     head_revision,
     upgrade_to_head,
 )
-from app.repositories.models import Base
+from remi.repositories.models import Base
 
 
 @pytest.fixture

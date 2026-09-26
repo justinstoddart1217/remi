@@ -64,7 +64,7 @@ runs, and nothing leaves your computer unless you choose an AI provider (see bel
   anthropic --extra keyring`) and paste the key in Settings, or set `REMI_ANTHROPIC_API_KEY`
   before launching; see [AI provider](#ai-provider-check-in).
 
-The launchers run the same thing as `make serve` without the Makefile: `uv run python -m app.main`
+The launchers run the same thing as `make serve` without the Makefile: `uv run python -m remi.main`
 from `backend/` (see the iCloud note below for why not the `remi` script).
 
 ## Getting started
@@ -102,7 +102,7 @@ servers.
 
 ### The `remi` command
 
-`remi` is the backend's CLI (`app.main:cli`). It binds 127.0.0.1 only and opens the browser:
+`remi` is the backend's CLI (`remi.main:cli`). It binds 127.0.0.1 only and opens the browser:
 
 ```sh
 remi                          # http://127.0.0.1:8765, opens the browser
@@ -124,13 +124,13 @@ uv tool install --editable ./backend
 > **iCloud Desktop note.** When the repo sits in an iCloud-synced folder (this one is on the
 > Desktop), macOS flags dot-folders such as `backend/.venv` as hidden, and Python 3.12 skips
 > hidden `.pth` files. The editable install's `remi` script *inside* `backend/.venv` then cannot
-> import `app`. Two ways round it:
+> import `remi`. Two ways round it:
 > - `uv tool install --editable ./backend` puts the tool's venv outside the synced folder, so
 >   its `remi` works;
 > - or run the same entry point as a module from `backend/`, which never needs the `.pth`:
->   `cd backend && uv run python -m app.main [--port N] [--no-browser] [db path|upgrade|backup]`.
+>   `cd backend && uv run python -m remi.main [--port N] [--no-browser] [db path|upgrade|backup]`.
 >
-> The Makefile always uses the module form (`python -m app.main`, `python -m
+> The Makefile always uses the module form (`python -m remi.main`, `python -m
 > scripts.export_openapi`), and pytest adds the source tree to `sys.path`.
 
 ## Hosting on the APEX server
@@ -201,7 +201,7 @@ does not idle-sleep in the middle: a browser test that spans a sleep fails on it
 
 ## Configuration
 
-Process settings come from `REMI_*` environment variables (`backend/app/core/config.py`):
+Process settings come from `REMI_*` environment variables (`backend/remi/core/config.py`):
 
 | Variable | Default | Meaning |
 | --- | --- | --- |
@@ -299,7 +299,7 @@ Two self-tests prove it would catch one. For a belt-and-braces check, turn Wi-Fi
 Remi Dashboard Design Review/   the design reference, kept locally only (removed from the repo in c4c88e6);
                                 make design-verify and goldens-check skip without it
 docs/        PLAN.md, SPEC.md, api.md, design-spec/, decisions/ (ADRs), requests/, parity-report.md
-backend/     uv project: app/{api,core,schemas,services,repositories,utils}, tests/, scripts/
+backend/     uv project: remi/{api,core,schemas,services,repositories,utils}, tests/, scripts/
 frontend/    Vite + React + TS: src/{app,api,shell,screens,components,stores,lib,styles,assets}, scripts/
 parity/      Playwright harness: prototype baselines, goldens, parity, behaviour and egress suites; tests/
 contracts/   openapi.json (generated, committed)

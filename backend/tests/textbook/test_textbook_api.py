@@ -6,8 +6,8 @@ from typing import Any
 
 import pytest
 
-from app.core.paths import repo_root
-from app.services.textbook import NEW_ACCENTS
+from remi.core.paths import repo_root
+from remi.services.textbook import NEW_ACCENTS
 from tests.textbook.conftest import Book
 
 SEED_PAGES = ["fi-rates", "fi-rot", "pc-ret", "gen-how"]

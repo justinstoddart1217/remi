@@ -10,12 +10,12 @@ pytest.importorskip("anthropic")
 
 import httpx2
 
-from app.services.ai.anthropic_provider import (
+from remi.services.ai.anthropic_provider import (
     DEFAULT_ANTHROPIC_MODEL,
     FALLBACK_BETA,
     AnthropicProvider,
 )
-from app.services.ai.base import (
+from remi.services.ai.base import (
     AIAuth,
     AIBadReply,
     AIError,
@@ -26,9 +26,9 @@ from app.services.ai.base import (
     ParseRequest,
     RawProposal,
 )
-from app.services.ai.context import build_context
-from app.services.ai.prompt import system_prompt
-from app.services.ai.schema import PROPOSAL_SCHEMA
+from remi.services.ai.context import build_context
+from remi.services.ai.prompt import system_prompt
+from remi.services.ai.schema import PROPOSAL_SCHEMA
 from tests.ai.conftest import TEST_KEY, ClaudeMock, claude_message, context_input, json_response
 
 PROPOSAL = {

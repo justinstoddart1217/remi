@@ -1,4 +1,4 @@
-"""Production serving: the built SPA next to the API (``app/api/static.py``)."""
+"""Production serving: the built SPA next to the API (``remi/api/static.py``)."""
 
 from collections.abc import Iterator
 from pathlib import Path
@@ -7,11 +7,11 @@ import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from app.api.middleware import APP_CSP
-from app.api.static import IMMUTABLE, SpaFiles, install_static, safe_file, with_base
-from app.core.clock import FixedClock
-from app.core.config import RemiConfig
-from app.main import create_app
+from remi.api.middleware import APP_CSP
+from remi.api.static import IMMUTABLE, SpaFiles, install_static, safe_file, with_base
+from remi.core.clock import FixedClock
+from remi.core.config import RemiConfig
+from remi.main import create_app
 
 BASE_URL = "http://127.0.0.1:8765"
 INDEX_HTML = "<!doctype html><title>Remi</title><div id=root></div>"

@@ -12,10 +12,10 @@ import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from app.api.router import install_api
-from app.core.clock import FixedClock
-from app.core.config import RemiConfig
-from app.main import create_app
+from remi.api.router import install_api
+from remi.core.clock import FixedClock
+from remi.core.config import RemiConfig
+from remi.main import create_app
 
 BASE_URL = "http://127.0.0.1:8765"
 ORIGIN = "http://127.0.0.1:8765"

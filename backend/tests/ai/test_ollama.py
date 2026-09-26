@@ -8,7 +8,7 @@ import httpx
 import pytest
 import respx
 
-from app.services.ai.base import (
+from remi.services.ai.base import (
     AIBadReply,
     AINotConfigured,
     AITimeout,
@@ -16,16 +16,16 @@ from app.services.ai.base import (
     ParseRequest,
     RawProposal,
 )
-from app.services.ai.context import build_context
-from app.services.ai.ollama_provider import (
+from remi.services.ai.context import build_context
+from remi.services.ai.ollama_provider import (
     DEFAULT_OLLAMA_MODEL,
     OllamaProvider,
     is_loopback_url,
     normalise_loopback_url,
     ollama_status,
 )
-from app.services.ai.prompt import system_prompt
-from app.services.ai.schema import PROPOSAL_SCHEMA
+from remi.services.ai.prompt import system_prompt
+from remi.services.ai.schema import PROPOSAL_SCHEMA
 from tests.ai.conftest import context_input
 
 BASE = "http://127.0.0.1:11434"

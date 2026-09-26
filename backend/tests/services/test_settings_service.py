@@ -4,12 +4,12 @@ from datetime import date
 
 import pytest
 
-from app.core.clock import FixedClock
-from app.core.errors import ValidationFailed
-from app.core.uow import UnitOfWorkFactory
-from app.schemas.settings import SettingsPatch
-from app.services import settings as settings_service
-from app.services.dev_fixtures import SeedIds
+from remi.core.clock import FixedClock
+from remi.core.errors import ValidationFailed
+from remi.core.uow import UnitOfWorkFactory
+from remi.schemas.settings import SettingsPatch
+from remi.services import settings as settings_service
+from remi.services.dev_fixtures import SeedIds
 
 
 def test_after_the_move_other_settings_still_change(

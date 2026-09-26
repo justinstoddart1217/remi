@@ -8,9 +8,9 @@ import pytest
 from sqlalchemy import func, insert, select, text, update
 from sqlalchemy.orm import Session, sessionmaker
 
-from app.core import ids
-from app.core.clock import FixedClock
-from app.core.uow import (
+from remi.core import ids
+from remi.core.clock import FixedClock
+from remi.core.uow import (
     MissingEventError,
     ReadOnlyViolation,
     UnitOfWork,
@@ -21,7 +21,7 @@ from app.core.uow import (
     unregister_repository,
     written_table,
 )
-from app.repositories.models import (
+from remi.repositories.models import (
     AiAudit,
     HourOverride,
     Milestone,

@@ -8,8 +8,8 @@ from typing import Any
 import pytest
 from sqlalchemy import select
 
-from app.core.uow import ref
-from app.repositories import models as orm
+from remi.core.uow import ref
+from remi.repositories import models as orm
 from tests.projects.helpers import JSON, Api
 
 TODAY = "2026-10-05"

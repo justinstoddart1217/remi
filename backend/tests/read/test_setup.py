@@ -7,8 +7,8 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from sqlalchemy import func, select
 
-from app.core.uow import UnitOfWorkFactory
-from app.repositories import models as orm
+from remi.core.uow import UnitOfWorkFactory
+from remi.repositories import models as orm
 
 SETUP_BODY: dict[str, Any] = {
     "moveDate": "2027-01-04",

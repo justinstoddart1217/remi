@@ -3,7 +3,7 @@ from datetime import date
 
 import pytest
 
-from app.services.engine.model import (
+from remi.services.engine.model import (
     BauDone,
     Blocker,
     Confidence,
@@ -14,7 +14,7 @@ from app.services.engine.model import (
     TaskAdd,
     TaskDone,
 )
-from app.services.engine.validate import (
+from remi.services.engine.validate import (
     RawProposal,
     ValidatedProposal,
     ValidationState,

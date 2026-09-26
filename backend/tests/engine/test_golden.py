@@ -9,10 +9,10 @@ from datetime import date
 
 import pytest
 
-from app.services.engine import allocation, checkin, derive, flags, forecast, loads, verdict
-from app.services.engine.model import HoursPerDay, ScopeAdd
-from app.services.engine.rotation import current
-from app.services.engine.routines import next_occurrences
+from remi.services.engine import allocation, checkin, derive, flags, forecast, loads, verdict
+from remi.services.engine.model import HoursPerDay, ScopeAdd
+from remi.services.engine.rotation import current
+from remi.services.engine.routines import next_occurrences
 from tests.engine import seed as S
 
 pytestmark = pytest.mark.golden

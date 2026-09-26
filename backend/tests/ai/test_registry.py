@@ -11,14 +11,14 @@ import pytest
 import respx
 from sqlalchemy import func, select
 
-from app.core.uow import UnitOfWorkFactory
-from app.repositories.models.ai import AiAudit
-from app.repositories.models.events import RemiEvent
-from app.repositories.models.settings import SETTINGS_ID, Settings
-from app.schemas.checkin import NoteChange, ProposalOut, ScopeAddChange
-from app.services.ai.anthropic_provider import AnthropicProvider
-from app.services.ai.audit import AuditSink, uow_audit_sink
-from app.services.ai.base import (
+from remi.core.uow import UnitOfWorkFactory
+from remi.repositories.models.ai import AiAudit
+from remi.repositories.models.events import RemiEvent
+from remi.repositories.models.settings import SETTINGS_ID, Settings
+from remi.schemas.checkin import NoteChange, ProposalOut, ScopeAddChange
+from remi.services.ai.anthropic_provider import AnthropicProvider
+from remi.services.ai.audit import AuditSink, uow_audit_sink
+from remi.services.ai.base import (
     AIAuth,
     AINotConfigured,
     AITimeout,
@@ -26,11 +26,11 @@ from app.services.ai.base import (
     ParseRequest,
     RawProposal,
 )
-from app.services.ai.context import CheckinContextInput
-from app.services.ai.keys import set_api_key
-from app.services.ai.none_provider import NoneProvider
-from app.services.ai.ollama_provider import OllamaProvider
-from app.services.ai.registry import (
+from remi.services.ai.context import CheckinContextInput
+from remi.services.ai.keys import set_api_key
+from remi.services.ai.none_provider import NoneProvider
+from remi.services.ai.ollama_provider import OllamaProvider
+from remi.services.ai.registry import (
     AiSettings,
     EngineInputs,
     ParseRegistry,
@@ -40,7 +40,7 @@ from app.services.ai.registry import (
     parse_simple,
     select_provider,
 )
-from app.services.engine.simple_reading import SIMPLE_SUMMARY
+from remi.services.engine.simple_reading import SIMPLE_SUMMARY
 from tests.ai.conftest import (
     TEST_KEY,
     AuditLog,
@@ -652,7 +652,7 @@ def test_parse_never_writes_plan_state(
 def test_the_ai_package_has_no_write_path() -> None:
     from pathlib import Path
 
-    import app.services.ai as package
+    import remi.services.ai as package
 
     root = Path(package.__file__).parent
     for path in root.glob("*.py"):

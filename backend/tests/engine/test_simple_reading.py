@@ -1,7 +1,7 @@
 from dataclasses import replace
 
-from app.services.engine.aliases import build_index
-from app.services.engine.model import (
+from remi.services.engine.aliases import build_index
+from remi.services.engine.model import (
     BauDone,
     Blocker,
     EngineCtx,
@@ -10,8 +10,8 @@ from app.services.engine.model import (
     ScopeAdd,
     TaskDone,
 )
-from app.services.engine.simple_reading import SIMPLE_SUMMARY, parse_simple, split_sentences
-from app.services.engine.validate import ValidatedProposal, validate, validation_state
+from remi.services.engine.simple_reading import SIMPLE_SUMMARY, parse_simple, split_sentences
+from remi.services.engine.validate import ValidatedProposal, validate, validation_state
 from tests.engine import seed as S
 
 PLACEHOLDER = (

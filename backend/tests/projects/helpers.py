@@ -15,12 +15,12 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from sqlalchemy import select
 
-from app.core.clock import FixedClock
-from app.core.config import Env, RemiConfig
-from app.core.db import open_database
-from app.core.uow import UnitOfWorkFactory
-from app.main import create_app
-from app.repositories import models as orm
+from remi.core.clock import FixedClock
+from remi.core.config import Env, RemiConfig
+from remi.core.db import open_database
+from remi.core.uow import UnitOfWorkFactory
+from remi.main import create_app
+from remi.repositories import models as orm
 from tests.fixtures import design_seed
 
 JSON = dict[str, Any]

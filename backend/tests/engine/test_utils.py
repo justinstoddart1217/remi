@@ -2,7 +2,7 @@ from datetime import UTC, date, datetime
 
 import pytest
 
-from app.utils import dates, text
+from remi.utils import dates, text
 
 
 def test_iso_helpers() -> None:

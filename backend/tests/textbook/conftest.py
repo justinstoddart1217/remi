@@ -16,11 +16,11 @@ import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from app.core.config import RemiConfig
-from app.core.db import open_database
-from app.core.uow import UnitOfWorkFactory
-from app.main import create_app
-from app.repositories import models as orm
+from remi.core.config import RemiConfig
+from remi.core.db import open_database
+from remi.core.uow import UnitOfWorkFactory
+from remi.main import create_app
+from remi.repositories import models as orm
 from tests.fixtures import design_seed
 
 CHART_MAX_BYTES = 64 * 1024

@@ -5,8 +5,8 @@ from typing import Any
 import pytest
 from fastapi import FastAPI
 
-from app.core.clock import FixedClock
-from app.core.config import RemiConfig
+from remi.core.clock import FixedClock
+from remi.core.config import RemiConfig
 from tests.api.conftest import build_app
 from tests.api.routes_table import DEV_ROUTES, ROUTES, Route
 
@@ -98,7 +98,7 @@ def test_dev_fixtures_route_is_not_mounted_in_prod(
 
 
 def test_install_api_is_idempotent(app: FastAPI, config: RemiConfig) -> None:
-    from app.api.router import install_api
+    from remi.api.router import install_api
 
     before = len(_operations(app.openapi()))
     middleware = len(app.user_middleware)

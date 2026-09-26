@@ -5,12 +5,12 @@ from pathlib import Path
 
 import pytest
 
-from app.core.clock import FixedClock
-from app.core.uow import UnitOfWorkFactory
-from app.schemas.setup import SetupIn
-from app.services import setup as setup_service
-from app.services.ai import keys
-from app.services.dev_fixtures import SeedIds
+from remi.core.clock import FixedClock
+from remi.core.uow import UnitOfWorkFactory
+from remi.schemas.setup import SetupIn
+from remi.services import setup as setup_service
+from remi.services.ai import keys
+from remi.services.dev_fixtures import SeedIds
 from tests.fixtures import design_seed
 
 

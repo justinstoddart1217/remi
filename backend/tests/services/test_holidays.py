@@ -5,12 +5,12 @@ from datetime import date
 import pytest
 from sqlalchemy import select
 
-from app.core.clock import FixedClock
-from app.core.errors import OutOfRange
-from app.core.uow import UnitOfWorkFactory
-from app.repositories import models as orm
-from app.repositories.registry import HOLIDAYS
-from app.services import holidays
+from remi.core.clock import FixedClock
+from remi.core.errors import OutOfRange
+from remi.core.uow import UnitOfWorkFactory
+from remi.repositories import models as orm
+from remi.repositories.registry import HOLIDAYS
+from remi.services import holidays
 
 
 def test_generate_gb_eng_2026_matches_the_prototype_plus_31_aug() -> None:

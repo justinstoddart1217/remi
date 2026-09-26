@@ -13,9 +13,9 @@ import pytest
 from fastapi.testclient import TestClient
 from pydantic import ValidationError
 
-from app.core.clock import FixedClock, OffsetClock, build_clock
-from app.core.config import RemiConfig
-from app.main import create_app
+from remi.core.clock import FixedClock, OffsetClock, build_clock
+from remi.core.config import RemiConfig
+from remi.main import create_app
 from tests.fixtures import design_seed
 
 BST = timezone(timedelta(hours=1))
@@ -124,7 +124,7 @@ def test_setup_prefills_the_configured_zone(pinned_client: TestClient) -> None:
 def test_setup_follows_the_machine_zone_without_the_pin(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch
 ) -> None:
-    from app.services import setup as setup_service
+    from remi.services import setup as setup_service
 
     monkeypatch.setattr(setup_service, "machine_timezone", lambda: "Africa/Johannesburg")
     app = create_app(RemiConfig(env="test", data_dir=tmp_path / "data", open_browser=False))

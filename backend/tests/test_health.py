@@ -1,6 +1,6 @@
 from fastapi.testclient import TestClient
 
-from app import __version__
+from remi import __version__
 
 
 def test_health_identifies_remi(client: TestClient) -> None:

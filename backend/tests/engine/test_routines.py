@@ -2,8 +2,8 @@ from dataclasses import replace
 
 import pytest
 
-from app.services.engine.model import RoutineDef
-from app.services.engine.routines import (
+from remi.services.engine.model import RoutineDef
+from remi.services.engine.routines import (
     counts_on,
     in_domain_window,
     last_occurrence_before,

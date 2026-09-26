@@ -17,10 +17,10 @@ import pytest
 from hypothesis import HealthCheck, assume, given, reject, settings
 from hypothesis import strategies as st
 
-from app.services.engine.calendar import OutOfCalendar
-from app.services.engine.checkin import apply_changes, preview
-from app.services.engine.derive import derive_project
-from app.services.engine.forecast import (
+from remi.services.engine.calendar import OutOfCalendar
+from remi.services.engine.checkin import apply_changes, preview
+from remi.services.engine.derive import derive_project
+from remi.services.engine.forecast import (
     Edit,
     RateEdit,
     Refit,
@@ -35,8 +35,8 @@ from app.services.engine.forecast import (
     work_between,
     work_left,
 )
-from app.services.engine.loads import build_loads
-from app.services.engine.model import (
+from remi.services.engine.loads import build_loads
+from remi.services.engine.model import (
     BauDone,
     Blocker,
     Change,

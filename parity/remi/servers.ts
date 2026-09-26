@@ -1,6 +1,6 @@
 // Starts and stops the production app for a Remi run (globalSetup / globalTeardown):
 //
-//   backend   cd backend && uv run python -m app.main --no-browser --port API_PORT
+//   backend   cd backend && uv run python -m remi.main --no-browser --port API_PORT
 //             REMI_ENV=test REMI_TODAY=2026-10-05 REMI_NOW=2026-10-05T09:30:00+01:00
 //             REMI_DEFAULT_TIMEZONE=Europe/London REMI_DATA_DIR=<fresh temp dir> REMI_WEB_PORT=WEB_PORT
 //             then POST /api/dev/fixtures {fixture}
@@ -190,7 +190,7 @@ function commandOf(pid: number): string {
  */
 function isOurs(pid: number, port: number | undefined): boolean {
   const cmd = commandOf(pid);
-  if (!/app\.main|vite\.js/.test(cmd)) return false;
+  if (!/remi\.main|vite\.js/.test(cmd)) return false;
   return port === undefined || new RegExp(`--port[ =]${String(port)}\\b`).test(cmd);
 }
 
@@ -232,7 +232,7 @@ function startBackend(dataDir: string, frontendDist: string | null): number {
   return spawnLogged(
     'backend',
     uv,
-    ['run', 'python', '-m', 'app.main', '--no-browser', '--port', String(API_PORT)],
+    ['run', 'python', '-m', 'remi.main', '--no-browser', '--port', String(API_PORT)],
     BACKEND_DIR,
     {
       REMI_ENV: 'test',

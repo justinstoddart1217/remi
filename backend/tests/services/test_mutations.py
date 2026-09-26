@@ -6,21 +6,21 @@ from datetime import date
 import pytest
 from sqlalchemy import select
 
-from app.core.clock import FixedClock
-from app.core.errors import SetupRequired, ValidationFailed
-from app.core.uow import MissingEventError, UnitOfWorkFactory, ref
-from app.repositories import models as orm
-from app.repositories.registry import PROJECTS
-from app.schemas.mutation import ProjectMutationOut
-from app.services.adapters import save_plan
-from app.services.calendar import YearSpan, build_calendar
-from app.services.dev_fixtures import SeedIds
-from app.services.engine.calendar import OutOfCalendar
-from app.services.engine.checkin import preview
-from app.services.engine.forecast import RateEdit, refit
-from app.services.engine.model import ScopeAdd
-from app.services.mutations import MutationScope, movements_between, plan_movements, run_mutation
-from app.services.views import get_plan_state
+from remi.core.clock import FixedClock
+from remi.core.errors import SetupRequired, ValidationFailed
+from remi.core.uow import MissingEventError, UnitOfWorkFactory, ref
+from remi.repositories import models as orm
+from remi.repositories.registry import PROJECTS
+from remi.schemas.mutation import ProjectMutationOut
+from remi.services.adapters import save_plan
+from remi.services.calendar import YearSpan, build_calendar
+from remi.services.dev_fixtures import SeedIds
+from remi.services.engine.calendar import OutOfCalendar
+from remi.services.engine.checkin import preview
+from remi.services.engine.forecast import RateEdit, refit
+from remi.services.engine.model import ScopeAdd
+from remi.services.mutations import MutationScope, movements_between, plan_movements, run_mutation
+from remi.services.views import get_plan_state
 
 
 def _events(uow_factory: UnitOfWorkFactory) -> list[str]:

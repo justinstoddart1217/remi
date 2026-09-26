@@ -1,7 +1,7 @@
 from dataclasses import replace
 
-from app.services.engine.loads import build_loads, day_load, loads_for, plan_window, project_end
-from app.services.engine.model import ProjectPlan, RoutineDef
+from remi.services.engine.loads import build_loads, day_load, loads_for, plan_window, project_end
+from remi.services.engine.model import ProjectPlan, RoutineDef
 from tests.engine import seed as S
 
 d = S.d

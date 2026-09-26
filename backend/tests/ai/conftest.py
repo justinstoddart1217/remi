@@ -9,8 +9,8 @@ from typing import Any
 
 import pytest
 
-from app.services.ai.audit import AuditRecord
-from app.services.ai.context import (
+from remi.services.ai.audit import AuditRecord
+from remi.services.ai.context import (
     CheckinContextInput,
     ContextMilestone,
     ContextNote,
@@ -18,10 +18,10 @@ from app.services.ai.context import (
     ContextRoutine,
     ContextTask,
 )
-from app.services.ai.keys import MemoryKeyStore, use_key_store
-from app.services.ai.registry import EngineInputs
-from app.services.engine.aliases import build_index
-from app.services.engine.routines import counts_on
+from remi.services.ai.keys import MemoryKeyStore, use_key_store
+from remi.services.ai.registry import EngineInputs
+from remi.services.engine.aliases import build_index
+from remi.services.engine.routines import counts_on
 from tests.engine import seed as S
 
 TEST_KEY = "sk-ant-api03-TEST-ONLY-0123456789abcdef"

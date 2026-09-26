@@ -139,7 +139,7 @@ test.beforeAll(async () => {
   test.skip(process.env.REMI_PARITY_SERVED_BY !== 'backend', 'needs the production build that the egress run makes (PARITY_SERVE=build)');
   test.setTimeout(120_000);
   dataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'remi-proxy-'));
-  backend = spawn(process.env.UV ?? 'uv', ['run', 'python', '-m', 'app.main', '--no-browser', '--port', String(BACKEND_PORT)], {
+  backend = spawn(process.env.UV ?? 'uv', ['run', 'python', '-m', 'remi.main', '--no-browser', '--port', String(BACKEND_PORT)], {
     cwd: BACKEND_DIR,
     env: {
       ...inheritedEnv('backend'),

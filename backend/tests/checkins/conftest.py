@@ -5,7 +5,7 @@ from pathlib import Path
 
 import pytest
 
-from app.services.ai import keys
+from remi.services.ai import keys
 from tests.projects.helpers import Api, api_for
 
 

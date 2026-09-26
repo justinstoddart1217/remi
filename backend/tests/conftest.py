@@ -9,12 +9,12 @@ from fastapi.testclient import TestClient
 from sqlalchemy import Engine
 from sqlalchemy.orm import Session, sessionmaker
 
-from app.core.clock import FixedClock
-from app.core.config import RemiConfig
-from app.core.db import checkpoint, make_engine, make_session_factory
-from app.core.migrations import upgrade_to_head
-from app.core.uow import UnitOfWorkFactory
-from app.main import create_app
+from remi.core.clock import FixedClock
+from remi.core.config import RemiConfig
+from remi.core.db import checkpoint, make_engine, make_session_factory
+from remi.core.migrations import upgrade_to_head
+from remi.core.uow import UnitOfWorkFactory
+from remi.main import create_app
 
 # The design's fixed "today" (Mon 5 Oct 2026, 09:00 in London).
 DESIGN_TODAY = date(2026, 10, 5)

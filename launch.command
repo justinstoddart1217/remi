@@ -48,6 +48,6 @@ fi
 say "Starting Remi on ${URL}"
 say "Keep this window open while you use Remi. Close it (or press Ctrl+C) to stop."
 cd "$ROOT/backend"
-# `python -m app.main` rather than the `remi` shim: on the iCloud Desktop, macOS hides the
+# `python -m remi.main` rather than the `remi` shim: on the iCloud Desktop, macOS hides the
 # virtualenv's .pth files, which breaks the shim (see README).
-exec uv run python -m app.main --port "$PORT" "$@"
+exec uv run python -m remi.main --port "$PORT" "$@"

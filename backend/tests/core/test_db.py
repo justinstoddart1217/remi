@@ -7,7 +7,7 @@ import pytest
 from sqlalchemy import Engine, select, text
 from sqlalchemy.orm import Session, sessionmaker
 
-from app.core.db import (
+from remi.core.db import (
     begin_write,
     checkpoint,
     database_path,
@@ -16,7 +16,7 @@ from app.core.db import (
     sqlite_url,
     to_jsonable,
 )
-from app.repositories.models import Note, format_utc, parse_utc
+from remi.repositories.models import Note, format_utc, parse_utc
 
 
 def test_every_connection_gets_the_pragmas(engine: Engine) -> None:
@@ -117,7 +117,7 @@ def test_naive_datetimes_are_refused() -> None:
 
 
 def test_json_columns_serialise_dates(session_factory: sessionmaker[Session]) -> None:
-    from app.repositories.models import Settings
+    from remi.repositories.models import Settings
 
     with session_factory() as session:
         begin_write(session)

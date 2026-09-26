@@ -4,10 +4,10 @@ from datetime import date
 
 import pytest
 
-from app.core.clock import FixedClock
-from app.core.errors import OutOfRange
-from app.core.uow import UnitOfWorkFactory
-from app.services.calendar import (
+from remi.core.clock import FixedClock
+from remi.core.errors import OutOfRange
+from remi.core.uow import UnitOfWorkFactory
+from remi.services.calendar import (
     YearSpan,
     calendar_for,
     check_within_horizon,
@@ -19,7 +19,7 @@ from app.services.calendar import (
     walk_span,
     with_calendar,
 )
-from app.services.engine.calendar import BusinessCalendar, OutOfCalendar
+from remi.services.engine.calendar import BusinessCalendar, OutOfCalendar
 
 TODAY = date(2026, 10, 5)
 
@@ -122,9 +122,9 @@ def test_with_calendar_gives_up_past_the_horizon(
 def test_in_memory_holidays_keep_stored_rows_and_fill_missing_years(
     uow_factory: UnitOfWorkFactory, clock: FixedClock
 ) -> None:
-    from app.core.uow import ref
-    from app.repositories.registry import HOLIDAYS
-    from app.services import holidays
+    from remi.core.uow import ref
+    from remi.repositories.registry import HOLIDAYS
+    from remi.services import holidays
 
     with uow_factory() as uow:
         holidays.ensure_years_in(uow, "GB-ENG", [2026], today=TODAY)

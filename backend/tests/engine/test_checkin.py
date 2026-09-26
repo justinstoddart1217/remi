@@ -1,16 +1,16 @@
 from dataclasses import replace
 
-from app.services.engine.checkin import (
+from remi.services.engine.checkin import (
     apply_changes,
     diff_movements,
     plan_project_changes,
     preview,
     summarise_checkin,
 )
-from app.services.engine.derive import derive_project
-from app.services.engine.forecast import RateEdit, apply_scope, refit
-from app.services.engine.loads import build_loads
-from app.services.engine.model import (
+from remi.services.engine.derive import derive_project
+from remi.services.engine.forecast import RateEdit, apply_scope, refit
+from remi.services.engine.loads import build_loads
+from remi.services.engine.model import (
     BauDone,
     Blocker,
     Change,

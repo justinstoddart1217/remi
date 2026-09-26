@@ -5,8 +5,8 @@ from datetime import date, timedelta
 from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
 
-from app.services.engine.model import EngineCtx, ProjectPlan
-from app.services.engine.verdict import (
+from remi.services.engine.model import EngineCtx, ProjectPlan
+from remi.services.engine.verdict import (
     MoveStrip,
     countdown,
     key_run,

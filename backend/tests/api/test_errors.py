@@ -6,9 +6,9 @@ import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 
-from app.api.errors import ApiError, error_responses, install_error_handlers, not_implemented
-from app.core.errors import DomainError, NotFound, SetupRequired, VersionConflict
-from app.schemas.base import CamelIn
+from remi.api.errors import ApiError, error_responses, install_error_handlers, not_implemented
+from remi.core.errors import DomainError, NotFound, SetupRequired, VersionConflict
+from remi.schemas.base import CamelIn
 from tests.api.conftest import BASE_URL
 
 

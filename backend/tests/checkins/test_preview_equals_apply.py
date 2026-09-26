@@ -13,10 +13,10 @@ import pytest
 from hypothesis import HealthCheck, given, settings
 from hypothesis import strategies as st
 
-from app.core.clock import FixedClock
-from app.core.db import open_database
-from app.core.uow import UnitOfWorkFactory
-from app.services.ai import keys
+from remi.core.clock import FixedClock
+from remi.core.db import open_database
+from remi.core.uow import UnitOfWorkFactory
+from remi.services.ai import keys
 from tests.fixtures import design_seed
 from tests.projects.helpers import JSON, api_for
 

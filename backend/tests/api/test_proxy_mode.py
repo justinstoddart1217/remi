@@ -13,9 +13,9 @@ from pathlib import Path
 import pytest
 from fastapi.testclient import TestClient
 
-from app.api.middleware import allowed_hosts, allowed_origins
-from app.core.clock import FixedClock
-from app.core.config import RemiConfig
+from remi.api.middleware import allowed_hosts, allowed_origins
+from remi.core.clock import FixedClock
+from remi.core.config import RemiConfig
 from tests.api.conftest import build_app
 
 PUBLIC_URL = "https://apex.ny1.ninetyone.com/remi"

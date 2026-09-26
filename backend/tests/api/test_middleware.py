@@ -9,16 +9,16 @@ from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 from fastapi.testclient import TestClient
 
-from app.api.errors import install_error_handlers
-from app.api.middleware import (
+from remi.api.errors import install_error_handlers
+from remi.api.middleware import (
     APP_CSP,
     CHART_CSP,
     allowed_hosts,
     allowed_origins,
     install_security,
 )
-from app.core.clock import FixedClock
-from app.core.config import RemiConfig
+from remi.core.clock import FixedClock
+from remi.core.config import RemiConfig
 from tests.api.conftest import BASE_URL, ORIGIN, build_app
 
 MUTATION = "/api/projects"

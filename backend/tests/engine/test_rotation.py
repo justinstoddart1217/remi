@@ -1,8 +1,8 @@
 import pytest
 
-from app.services.engine.calendar import OutOfCalendar
-from app.services.engine.model import SegmentDef
-from app.services.engine.rotation import current, layout, segment_on
+from remi.services.engine.calendar import OutOfCalendar
+from remi.services.engine.model import SegmentDef
+from remi.services.engine.rotation import current, layout, segment_on
 from tests.engine import seed as S
 
 d = S.d

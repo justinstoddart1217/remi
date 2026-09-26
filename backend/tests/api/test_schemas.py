@@ -7,16 +7,16 @@ from typing import Any
 import pytest
 from pydantic import TypeAdapter, ValidationError
 
-from app.schemas.base import CamelModel
-from app.schemas.calendar import CalendarOut, DayLoadOut
-from app.schemas.checkin import Change, PreviewRequest, ProjectPreviewOut
-from app.schemas.errors import ERROR_CODES, ErrorBody, ErrorOut
-from app.schemas.mutation import Movement
-from app.schemas.project import ReplanIn
-from app.schemas.rotation import RotationSegmentIn, RotationSegmentOut
-from app.schemas.settings import SettingsPatch
-from app.schemas.setup import SetupIn
-from app.schemas.textbook import Block, BlocksPut
+from remi.schemas.base import CamelModel
+from remi.schemas.calendar import CalendarOut, DayLoadOut
+from remi.schemas.checkin import Change, PreviewRequest, ProjectPreviewOut
+from remi.schemas.errors import ERROR_CODES, ErrorBody, ErrorOut
+from remi.schemas.mutation import Movement
+from remi.schemas.project import ReplanIn
+from remi.schemas.rotation import RotationSegmentIn, RotationSegmentOut
+from remi.schemas.settings import SettingsPatch
+from remi.schemas.setup import SetupIn
+from remi.schemas.textbook import Block, BlocksPut
 from tests.api.routes_table import ALL_BLOCKS, ALL_CHANGES
 
 
@@ -231,22 +231,22 @@ def test_error_envelope_always_has_field() -> None:
 def _response_enums() -> list[tuple[str, tuple[object, ...], tuple[object, ...]]]:
     from typing import get_args
 
-    from app.repositories.models import base as m_base
-    from app.repositories.models import calendar as m_calendar
-    from app.repositories.models import events as m_events
-    from app.repositories.models import project as m_project
-    from app.repositories.models import rotation as m_rotation
-    from app.repositories.models import routine as m_routine
-    from app.repositories.models import settings as m_settings
-    from app.repositories.models import textbook as m_textbook
-    from app.schemas import base as s_base
-    from app.schemas import calendar as s_calendar
-    from app.schemas import events as s_events
-    from app.schemas import project as s_project
-    from app.schemas import rotation as s_rotation
-    from app.schemas import routine as s_routine
-    from app.schemas import settings as s_settings
-    from app.schemas import textbook as s_textbook
+    from remi.repositories.models import base as m_base
+    from remi.repositories.models import calendar as m_calendar
+    from remi.repositories.models import events as m_events
+    from remi.repositories.models import project as m_project
+    from remi.repositories.models import rotation as m_rotation
+    from remi.repositories.models import routine as m_routine
+    from remi.repositories.models import settings as m_settings
+    from remi.repositories.models import textbook as m_textbook
+    from remi.schemas import base as s_base
+    from remi.schemas import calendar as s_calendar
+    from remi.schemas import events as s_events
+    from remi.schemas import project as s_project
+    from remi.schemas import rotation as s_rotation
+    from remi.schemas import routine as s_routine
+    from remi.schemas import settings as s_settings
+    from remi.schemas import textbook as s_textbook
 
     return [
         ("Domain", m_base.DOMAINS, get_args(s_base.Domain)),
@@ -279,8 +279,8 @@ def test_response_enums_accept_every_stored_value(
 
 
 def test_snapshot_and_event_rows_with_the_wider_values_serialise() -> None:
-    from app.schemas.events import RemiEventOut
-    from app.schemas.project import ProjectSnapshotOut
+    from remi.schemas.events import RemiEventOut
+    from remi.schemas.project import ProjectSnapshotOut
 
     snapshot = ProjectSnapshotOut.model_validate(
         {

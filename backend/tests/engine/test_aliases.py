@@ -1,6 +1,6 @@
 from dataclasses import replace
 
-from app.services.engine.aliases import (
+from remi.services.engine.aliases import (
     AliasIndex,
     Tag,
     build_index,

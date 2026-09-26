@@ -1,4 +1,4 @@
-"""Dependency providers read ``app.state`` and can be overridden in tests."""
+"""Dependency providers read ``remi.state`` and can be overridden in tests."""
 
 import datetime as dt
 from collections.abc import Iterator
@@ -10,7 +10,7 @@ from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from sqlalchemy import text
 
-from app.api.deps import (
+from remi.api.deps import (
     ClockDep,
     ConfigDep,
     SessionDep,
@@ -18,10 +18,10 @@ from app.api.deps import (
     get_clock,
     get_config,
 )
-from app.api.errors import install_error_handlers
-from app.core.clock import FixedClock
-from app.core.config import RemiConfig
-from app.core.db import open_database
+from remi.api.errors import install_error_handlers
+from remi.core.clock import FixedClock
+from remi.core.config import RemiConfig
+from remi.core.db import open_database
 from tests.api.conftest import BASE_URL
 
 

@@ -3,10 +3,10 @@ from datetime import date
 
 import pytest
 
-from app.services.engine.derive import derive_project, derived_milestones
-from app.services.engine.forecast import apply_scope
-from app.services.engine.loads import DayLoad, build_loads
-from app.services.engine.model import Milestone, Project, ProjectPlan
+from remi.services.engine.derive import derive_project, derived_milestones
+from remi.services.engine.forecast import apply_scope
+from remi.services.engine.loads import DayLoad, build_loads
+from remi.services.engine.model import Milestone, Project, ProjectPlan
 from tests.engine import seed as S
 
 d = S.d

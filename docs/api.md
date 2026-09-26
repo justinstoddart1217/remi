@@ -1,7 +1,7 @@
 # Remi API
 
 The contract the frontend builds against. It is generated from the Pydantic schemas in
-`backend/app/schemas/` into `contracts/openapi.json` and `frontend/src/api/schema.d.ts`
+`backend/remi/schemas/` into `contracts/openapi.json` and `frontend/src/api/schema.d.ts`
 (`make openapi`; `make openapi-check` fails on drift). `backend/tests/api/routes_table.py`
 pins every route, so changing the contract means an ADR, an edit to that table and
 `make openapi`.
