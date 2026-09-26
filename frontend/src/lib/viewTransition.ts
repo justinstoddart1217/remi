@@ -19,6 +19,7 @@ import { flushSync } from 'react-dom';
 
 import { paths, screenFromPath } from '../app/screens';
 import { useUi } from '../stores/ui';
+import { appPath } from './basePath';
 import { isReducedMotion } from './reducedMotion';
 import { deferred } from './timers';
 import type { Deferred } from './timers';
@@ -44,7 +45,7 @@ export function openProject(projectId: string, navigate: Navigate): void {
 
 /** Opens a project's workspace from its Projects card, with the shared-element transition. */
 export function openProjectViaCard(projectId: string, navigate: Navigate): void {
-  const onWorkspace = screenFromPath(window.location.pathname) === 'workspace';
+  const onWorkspace = screenFromPath(appPath(window.location.pathname)) === 'workspace';
   if (isReducedMotion() || !supportsViewTransitions() || onWorkspace) {
     openProject(projectId, navigate);
     return;

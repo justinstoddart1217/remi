@@ -1,6 +1,9 @@
 <!doctype html>
 <html lang="en-GB">
   <head>
+    <!-- Where Remi is served from. The backend replaces it with its own (ADR-0013): "/" here,
+         "/remi/" behind APEX's proxy. The build's asset links are relative to it. -->
+    <base href="/" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <!-- An empty data: icon stops the browser asking the server for /favicon.ico. -->

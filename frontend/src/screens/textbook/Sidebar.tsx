@@ -5,6 +5,7 @@ import type { KeyboardEvent as ReactKeyboardEvent } from 'react';
 import { useDeleteSection, useReorderSections, useTextbookSearch, useUpdateSection } from '../../api';
 import type { SectionOut } from '../../api';
 import { Icon } from '../../components';
+import { appHref } from '../../lib/basePath';
 import { useGoHome } from '../../shell/useGoHome';
 import { useTextbook } from './context';
 import s from './Textbook.module.css';
@@ -377,7 +378,7 @@ export function Sidebar({ currentId, lastId = null, open, onOpenChange, collapse
                         <span className={s.pageTitle} data-ink={r.current || r.ancestor}>
                           <a
                             className={s.pageLinkPlain}
-                            href={`/textbook/${encodeURIComponent(r.id)}`}
+                            href={appHref(`/textbook/${encodeURIComponent(r.id)}`)}
                             aria-current={r.current && currentId !== null ? 'page' : undefined}
                             onClick={(e) => {
                               e.preventDefault();

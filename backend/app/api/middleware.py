@@ -7,7 +7,8 @@
    one of those hosts on Remi's own port (plus the Vite dev port outside prod) and
    ``X-Remi-Client: 1``. A cross-site form or ``fetch`` cannot satisfy both; there is no CORS,
    so no preflight passes. With ``REMI_ALLOWED_HOSTS=*`` the Origin must match the request's
-   own ``Host`` instead.
+   own ``Host`` instead. Behind a reverse proxy (``REMI_PUBLIC_URL``), the public host and
+   origin are accepted too (docs/decisions/0013).
 3. :class:`SecurityHeadersMiddleware` adds the app CSP (``'self'`` only) and a few hardening
    headers to every response that does not set its own CSP (chart HTML sets
    :data:`CHART_CSP`).
@@ -38,12 +39,14 @@ APP_CSP: Final = (
     "connect-src 'self'; "
     "frame-src 'self'; "
     "object-src 'none'; "
-    "base-uri 'none'; "
+    "base-uri 'self'; "
     "form-action 'self'; "
     "frame-ancestors 'none'"
 )
 """The SPA and the API. ``'unsafe-inline'`` styles are needed by KaTeX; nothing loads from
-another origin. ``data:`` fonts cover small KaTeX fonts Vite may inline."""
+another origin. ``data:`` fonts cover small KaTeX fonts Vite may inline. ``base-uri 'self'``
+lets index.html carry the ``<base href>`` the server writes (``/``, or ``/remi/`` behind a
+proxy, docs/decisions/0013); a base on any other origin is still refused."""
 
 CHART_CSP: Final = (
     "sandbox allow-scripts; "
@@ -90,6 +93,8 @@ def allowed_hosts(config: RemiConfig) -> list[str]:
     if config.network:
         hosts.extend(machine_names())
         hosts.extend(_host_literal(host) for host in config.extra_hosts)
+    if config.public_host:
+        hosts.append(_host_literal(config.public_host))
     return list(dict.fromkeys(hosts))
 
 
@@ -98,12 +103,15 @@ def allowed_origins(config: RemiConfig) -> frozenset[str]:
     ports = [config.port]
     if config.env in DEV_ENVS:
         ports.append(config.web_port)
-    return frozenset(
+    origins = {
         f"http://{host}:{port}"
         for host in allowed_hosts(config)
         if host != ANY_HOST
         for port in ports
-    )
+    }
+    if config.public_origin:
+        origins.add(config.public_origin)
+    return frozenset(origins)
 
 
 class MutationGuardMiddleware:
@@ -139,7 +147,8 @@ class MutationGuardMiddleware:
             response = JSONResponse(
                 error_body(
                     "FORBIDDEN_ORIGIN",
-                    "Changes must come from Remi itself (an Origin Remi answers to, on its port).",
+                    "Changes must come from Remi's own pages: an Origin Remi answers to, on its "
+                    "port, or its public address (REMI_PUBLIC_URL) behind a proxy.",
                 ),
                 status_code=403,
             )

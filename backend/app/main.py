@@ -90,6 +90,9 @@ def create_app(config: RemiConfig | None = None, clock: Clock | None = None) -> 
         openapi_url="/api/openapi.json",
         generate_unique_id_function=_operation_id,
         lifespan=_lifespan,
+        # No trailing-slash redirects: their Location is root-absolute, and a proxy that serves
+        # Remi under a path prefix (REMI_PUBLIC_URL) does not rewrite it (docs/decisions/0013).
+        redirect_slashes=False,
     )
     app.state.config = cfg
     # The business timezone comes from settings (read lazily once the database is open).
@@ -98,7 +101,7 @@ def create_app(config: RemiConfig | None = None, clock: Clock | None = None) -> 
         clock if clock is not None else build_clock(cfg.today, tz_getter, now_override=cfg.now)
     )
     install_api(app, cfg)
-    install_static(app, cfg.frontend_dist)
+    install_static(app, cfg.frontend_dist, base_path=cfg.base_path)
     return app
 
 
@@ -261,10 +264,17 @@ def cli(argv: Sequence[str] | None = None) -> None:
     )
     if cfg.network:
         _announce_server_mode(cfg)
-    elif cfg.open_browser and not no_browser:
+    elif cfg.public_url:
+        print(
+            f"Remi {__version__} behind a proxy at {cfg.public_url}/ "
+            f"(it serves {cfg.host}:{cfg.port})."
+        )
+    if not cfg.network and cfg.open_browser and not no_browser:
+        # Behind a proxy the pages only work at the public address (their <base href>).
+        url = f"{cfg.public_url}/" if cfg.public_url else _browser_url(cfg.host, cfg.port)
         threading.Thread(
             target=_open_browser_when_started,
-            args=(server, _browser_url(cfg.host, cfg.port)),
+            args=(server, url),
             name="remi-open-browser",
             daemon=True,
         ).start()

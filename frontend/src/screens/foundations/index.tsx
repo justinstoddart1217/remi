@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import type { ReactNode } from 'react';
+import { Link } from 'react-router';
 
 import {
   BauChip,
@@ -89,9 +90,9 @@ export function FoundationsPage() {
         <p className={s.lede}>
           Tokens, type, spacing, motion and the core components. Colour and type values are stand-ins until the Ninety One values
           arrive; components read tokens only, so the swap touches <span className={s.code}>:root</span> and nothing else. Open{' '}
-          <a href="/app/today" title="The working screens (Remi.dc.html in the prototype)">
+          <Link to="/app/today" title="The working screens (Remi.dc.html in the prototype)">
             Remi.dc.html
-          </a>{' '}
+          </Link>{' '}
           for the working screens.
         </p>
       </header>

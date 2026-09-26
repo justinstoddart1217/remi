@@ -1,3 +1,5 @@
+import { Link } from 'react-router';
+
 import { Eyebrow } from '../../components';
 import s from './Foundations.module.css';
 import { LibrarySection } from './LibrarySection';
@@ -17,7 +19,7 @@ export function LibraryPage() {
         </div>
         <p className={s.lede}>
           The production components with their states, beyond the prototype&rsquo;s Foundations page. Open{' '}
-          <a href="/foundations">Foundations</a> for the tokens and the core specimens.
+          <Link to="/foundations">Foundations</Link> for the tokens and the core specimens.
         </p>
       </header>
       <LibrarySection />

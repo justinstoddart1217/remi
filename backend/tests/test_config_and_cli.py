@@ -114,6 +114,77 @@ def test_machine_names_survive_a_failed_lookup(monkeypatch: pytest.MonkeyPatch) 
     assert config_module.machine_names() == []
 
 
+@pytest.mark.parametrize(
+    ("value", "url", "base", "origin", "host"),
+    [
+        (
+            "https://apex.ny1.ninetyone.com/remi/",
+            "https://apex.ny1.ninetyone.com/remi",
+            "/remi",
+            "https://apex.ny1.ninetyone.com",
+            "apex.ny1.ninetyone.com",
+        ),
+        (
+            " HTTPS://APEX.Example.com:443/remi// ",
+            "https://apex.example.com/remi",
+            "/remi",
+            "https://apex.example.com",
+            "apex.example.com",
+        ),
+        (
+            "http://127.0.0.1:8807/remi",
+            "http://127.0.0.1:8807/remi",
+            "/remi",
+            "http://127.0.0.1:8807",
+            "127.0.0.1",
+        ),
+        (
+            "https://apex.example.com/",
+            "https://apex.example.com",
+            "",
+            "https://apex.example.com",
+            "apex.example.com",
+        ),
+        ("http://apex:80/a/b", "http://apex/a/b", "/a/b", "http://apex", "apex"),
+        ("", "", "", "", ""),
+    ],
+)
+def test_public_url_is_normalised(value: str, url: str, base: str, origin: str, host: str) -> None:
+    cfg = RemiConfig(public_url=value)
+    assert (cfg.public_url, cfg.base_path, cfg.public_origin, cfg.public_host) == (
+        url,
+        base,
+        origin,
+        host,
+    )
+
+
+@pytest.mark.parametrize(
+    "value",
+    [
+        "ftp://apex.example.com/remi",
+        "apex.example.com/remi",
+        "/remi",
+        "https://apex.example.com/remi?x=1",
+        "https://apex.example.com/remi#top",
+        "https:///remi",
+        "https://user:pw@apex.example.com/remi",
+        "https://apex.example.com:99999/remi",
+    ],
+)
+def test_public_url_must_be_an_absolute_http_address(value: str) -> None:
+    with pytest.raises(ValidationError, match="REMI_PUBLIC_URL"):
+        RemiConfig(public_url=value)
+
+
+def test_public_url_needs_no_server_mode(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("REMI_PUBLIC_URL", "https://apex.ny1.ninetyone.com/remi")
+    cfg = RemiConfig()
+    assert cfg.network is False
+    assert cfg.host == LOOPBACK_HOST
+    assert cfg.base_path == "/remi"
+
+
 def test_remi_today_pins_only_the_date() -> None:
     assert isinstance(build_clock(None), SystemClock)
     clock = build_clock(date(2026, 10, 5))

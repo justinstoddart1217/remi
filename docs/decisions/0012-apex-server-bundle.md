@@ -2,6 +2,9 @@
 
 - Status: accepted, 2026-09-26
 - Amends: ADR-0003 (local only), with an opt-in server mode
+- Amended by: [ADR-0013](0013-behind-apex-iis.md). On the APEX server Remi sits behind IIS at
+  `/remi/` on loopback; server mode, the firewall rule and the Jinja tile below are the
+  no-proxy alternative
 
 ## Context
 
@@ -20,7 +23,8 @@ The user chose:
 
 - **A separate program.** Remi runs on the server as its own process, on its own port (8765),
   with its own SQLite database. APEX only gets a tile that links to it
-  (`deploy/apex/remi-tile.html`). Databricks is not involved.
+  (then `deploy/apex/remi-tile.html`; ADR-0013 removed it, since APEX carries its own tile).
+  Databricks is not involved.
 - **Server mode.** `REMI_NETWORK=1` (or `remi --network`) lets Remi bind a non-loopback
   address. The Host allowlist then adds this computer's own names and IPv4 addresses
   (`machine_names()`, lower-cased) and `REMI_ALLOWED_HOSTS`, and mutations need an Origin

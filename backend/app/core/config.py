@@ -10,6 +10,7 @@ from datetime import date
 from ipaddress import ip_address
 from pathlib import Path
 from typing import Final, Literal, Self
+from urllib.parse import urlsplit
 from zoneinfo import ZoneInfo, ZoneInfoNotFoundError
 
 from pydantic import AwareDatetime, Field, field_validator, model_validator
@@ -82,6 +83,42 @@ def machine_names() -> list[str]:
     return list(dict.fromkeys(found))
 
 
+DEFAULT_PORTS: Final = {"http": 80, "https": 443}
+
+
+def normalise_public_url(value: str) -> str:
+    """``REMI_PUBLIC_URL`` checked and written one way: ``scheme://host[:port][/path]``, lower-case
+    scheme and host, no trailing slash. Blank stays blank (Remi is not behind a proxy)."""
+    text = value.strip()
+    if not text:
+        return ""
+    parts = urlsplit(text)
+    scheme = parts.scheme.lower()
+    if scheme not in DEFAULT_PORTS or not parts.hostname:
+        msg = (
+            "REMI_PUBLIC_URL must be an absolute http:// or https:// address with a host, "
+            f"such as https://apex.example.com/remi, not {value!r}"
+        )
+        raise ValueError(msg)
+    if parts.query or parts.fragment or "?" in text or "#" in text:
+        msg = f"REMI_PUBLIC_URL takes no query or fragment: {value!r}"
+        raise ValueError(msg)
+    if parts.username or parts.password:
+        msg = f"REMI_PUBLIC_URL takes no user name or password: {value!r}"
+        raise ValueError(msg)
+    try:
+        port = parts.port
+    except ValueError as error:
+        msg = f"REMI_PUBLIC_URL has an invalid port: {value!r}"
+        raise ValueError(msg) from error
+    host = parts.hostname.lower()
+    shown = f"[{host}]" if ":" in host else host
+    if port is not None and port != DEFAULT_PORTS[scheme]:
+        shown = f"{shown}:{port}"
+    path = parts.path.rstrip("/")
+    return f"{scheme}://{shown}{path}"
+
+
 class RemiConfig(BaseSettings):
     """Startup configuration. Every field can be set as ``REMI_<FIELD>``."""
 
@@ -113,6 +150,36 @@ class RemiConfig(BaseSettings):
     allowed_hosts: str = ""
     """``REMI_ALLOWED_HOSTS`` (server mode only): more names or addresses Remi answers to,
     comma-separated, such as a DNS alias (``apex``). ``*`` answers to any name."""
+    public_url: str = ""
+    """``REMI_PUBLIC_URL``: the address the browser uses when Remi sits behind a reverse proxy
+    that strips a path prefix, e.g. ``https://apex.example.com/remi`` (docs/decisions/0013).
+    Remi then serves its pages under that path (``<base href>``) and accepts that host and
+    origin; its own routes stay at ``/``. Independent of server mode: it is meant for a
+    loopback bind behind the proxy. Blank (the default): Remi is at the root of its own
+    address."""
+
+    @property
+    def base_path(self) -> str:
+        """The public URL's path without a trailing slash: ``/remi``, or ``""`` at the root."""
+        return urlsplit(self.public_url).path if self.public_url else ""
+
+    @property
+    def public_origin(self) -> str:
+        """``scheme://host[:port]`` as a browser sends it in ``Origin`` (``""`` when unset)."""
+        if not self.public_url:
+            return ""
+        parts = urlsplit(self.public_url)
+        return f"{parts.scheme}://{parts.netloc}"
+
+    @property
+    def public_host(self) -> str:
+        """The public URL's host, lower-case (``""`` when unset)."""
+        return (urlsplit(self.public_url).hostname or "") if self.public_url else ""
+
+    @field_validator("public_url")
+    @classmethod
+    def _public_url(cls, value: str) -> str:
+        return normalise_public_url(value)
 
     @property
     def extra_hosts(self) -> list[str]:

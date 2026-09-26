@@ -19,6 +19,7 @@ import {
   useToast,
 } from '../../components';
 import { useArrival } from '../../lib/arrival';
+import { appHref } from '../../lib/basePath';
 import { GOAL_TRANSITION_NAME, openProjectViaCard } from '../../lib/viewTransition';
 import { hoverKey, useHover } from '../../stores/hover';
 import type { HoverKey } from '../../stores/hover';
@@ -156,7 +157,7 @@ function ProjectRow({ row }: { row: ProjectRowModel }) {
     >
       <div className={s.goalCell}>
         <div className={s.nameLine}>
-          <a href={paths.project(row.id)} className={s.link} aria-describedby={goalId} onClick={onLinkClick}>
+          <a href={appHref(paths.project(row.id))} className={s.link} aria-describedby={goalId} onClick={onLinkClick}>
             {row.name}
           </a>
           {row.stale && row.sinceDays != null ? <StaleBadge days={row.sinceDays} /> : null}

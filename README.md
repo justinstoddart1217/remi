@@ -135,9 +135,11 @@ uv tool install --editable ./backend
 
 ## Hosting on the APEX server
 
-Remi can also run on the APEX server, a Windows computer on the Ninety One network, and open
-from a "remi" tile on APEX's landing page. The guide, step by step:
-[`docs/deploy/APEX.md`](docs/deploy/APEX.md) ([ADR-0012](docs/decisions/0012-apex-server-bundle.md)).
+Remi also runs on the APEX server, a Windows computer on the Ninety One network, behind APEX's
+IIS at `https://apex.ny1.ninetyone.com/remi/`, opened from the "remi" tile on APEX's landing
+page. The guide, step by step: [`docs/deploy/APEX.md`](docs/deploy/APEX.md)
+([ADR-0012](docs/decisions/0012-apex-server-bundle.md), amended by
+[ADR-0013](docs/decisions/0013-behind-apex-iis.md)).
 
 - **Develop here, release to GitHub.** `make release VERSION=x.y.z` bumps the version, tags it
   and pushes. [`.github/workflows/release.yml`](.github/workflows/release.yml) then builds
@@ -148,11 +150,19 @@ from a "remi" tile on APEX's landing page. The guide, step by step:
 - **The server only pulls.** `C:\Remi\update-remi.bat` downloads the latest release with a
   read-only GitHub token, backs up the database, switches over and goes back by itself if the
   new version does not start. Nothing on the work side ever pushes.
-- **Server mode** (`REMI_NETWORK=1`): Remi binds `0.0.0.0` and answers to the server's own
-  names and addresses (plus `REMI_ALLOWED_HOSTS`). It runs at startup as a Windows task under
-  the low-privilege LOCAL SERVICE account, with its data in `C:\Remi\data`.
-- **No sign-in.** Anyone on the network who can reach port 8765 can open and change Remi. The
-  Host and Origin checks still stop other websites from using your browser to change it.
+- **Behind the proxy** (`REMI_PUBLIC_URL=https://apex.ny1.ninetyone.com/remi`, installed with
+  `install-remi.bat -PublicUrl ...`): Remi binds `127.0.0.1` only, with no firewall port.
+  - IIS removes the `/remi` prefix before forwarding, so Remi's routes don't change.
+  - The server writes the prefix into the page's `<base href>` at runtime, so the same build
+    serves `/` on the laptop and `/remi/` on the server.
+  - The public host and origin pass the Host and Origin checks.
+  - It runs at startup as a Windows task under the low-privilege LOCAL SERVICE account, with
+    its data in `C:\Remi\data`.
+- **Server mode** (`REMI_NETWORK=1`, installed without `-PublicUrl`) is the no-proxy
+  alternative. Remi binds `0.0.0.0` behind a firewall port and answers to the server's own
+  names and addresses, plus `REMI_ALLOWED_HOSTS`.
+- **No sign-in.** Anyone who can open Remi's address can change it. The Host and Origin checks
+  still stop other websites from using your browser to change it.
 
 ## Make targets
 
@@ -199,6 +209,7 @@ Process settings come from `REMI_*` environment variables (`backend/app/core/con
 | `REMI_HOST` | `127.0.0.1` | Must be a loopback address unless `REMI_NETWORK=1` |
 | `REMI_NETWORK` | `false` | Server mode (the APEX server): any bind address, and Remi answers to this computer's own names and addresses. No sign-in |
 | `REMI_ALLOWED_HOSTS` | empty | Server mode only: more names Remi answers to, comma-separated (a DNS alias, say); `*` for any |
+| `REMI_PUBLIC_URL` | empty | Behind a reverse proxy that strips a path prefix: the address people open, e.g. `https://apex.ny1.ninetyone.com/remi`. The pages get `<base href="/remi/">`, and that host and origin pass the checks. Independent of server mode (ADR-0013) |
 | `REMI_PORT` | `8765` | |
 | `REMI_ENV` | `prod` | `prod`, `dev` or `test` (`test` enables `POST /api/dev/fixtures`) |
 | `REMI_TODAY` | unset | Start the business date on this day; the wall clock keeps running (tests and parity runs) |
@@ -251,10 +262,13 @@ Remi never talks to the network on its own
 - It binds to 127.0.0.1 only. The CLI and config refuse non-loopback hosts, the server accepts
   only loopback `Host` headers, and every mutation needs a loopback `Origin` plus the
   `X-Remi-Client: 1` header. Single user, no accounts, no CORS.
-- The one exception is opt-in: server mode (`REMI_NETWORK=1`, only on the APEX server) lets
-  other computers on the network open Remi, under the same Host and Origin checks for the
-  server's own names. It still makes no outbound calls; only the server's update script talks
-  to GitHub.
+- Two opt-in exceptions, for the APEX server:
+  - **Behind APEX's proxy** (`REMI_PUBLIC_URL`), Remi still binds loopback and accepts the
+    proxy's public host and origin.
+  - **Server mode** (`REMI_NETWORK=1`) lets other computers on the network open it directly,
+    under the same checks for the server's own names.
+
+  Neither makes an outbound call; only the server's update script talks to GitHub.
 - The app's Content-Security-Policy is `'self'` only. Live charts run in `sandbox="allow-scripts"`
   iframes under `default-src 'none'; connect-src 'none'`, so a chart cannot fetch anything.
 - Fonts (Ninety One Visuelt) are self-hosted WOFF2 files; icons are a committed Material Symbols
@@ -282,15 +296,14 @@ Two self-tests prove it would catch one. For a belt-and-braces check, turn Wi-Fi
 ## Repository layout
 
 ```
-Remi Dashboard Design Review/   read-only design reference: the Ninety One redesign, with the original
-                                design kept in its "Remi v1/" subfolder (checked by make design-verify)
-Remi Dashboard Design Review.zip   the same export as downloaded from Claude Design (not used by the app)
+Remi Dashboard Design Review/   the design reference, kept locally only (removed from the repo in c4c88e6);
+                                make design-verify and goldens-check skip without it
 docs/        PLAN.md, SPEC.md, api.md, design-spec/, decisions/ (ADRs), requests/, parity-report.md
 backend/     uv project: app/{api,core,schemas,services,repositories,utils}, tests/, scripts/
 frontend/    Vite + React + TS: src/{app,api,shell,screens,components,stores,lib,styles,assets}, scripts/
 parity/      Playwright harness: prototype baselines, goldens, parity, behaviour and egress suites; tests/
 contracts/   openapi.json (generated, committed)
-deploy/      the APEX server: windows/ (remi-server.ps1 and its .bat shortcuts), apex/ (the tile)
+deploy/      the APEX server: windows/ (remi-server.ps1 and its .bat shortcuts)
 build/       make bundle output (ignored); .github/workflows/release.yml builds releases
 launch.command   double-click launcher (macOS)
 launch.bat       double-click launcher (Windows)

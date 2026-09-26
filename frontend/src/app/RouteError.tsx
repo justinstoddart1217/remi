@@ -1,4 +1,4 @@
-import { isRouteErrorResponse, useRouteError } from 'react-router';
+import { isRouteErrorResponse, Link, useRouteError } from 'react-router';
 
 import { ErrorNotice } from '../components/ErrorBoundary';
 
@@ -11,7 +11,12 @@ export function RouteError() {
       ? error.message
       : 'Unknown error';
   return (
-    <ErrorNotice inset title="Remi couldn’t show this page." action={<a href="/">Back to home</a>}>
+    <ErrorNotice inset title="Remi couldn’t show this page." action={
+        // A full load, under the base path: the error may be a chunk that failed to load.
+        <Link to="/" reloadDocument>
+          Back to home
+        </Link>
+      }>
       {detail}
     </ErrorNotice>
   );

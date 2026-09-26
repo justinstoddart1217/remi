@@ -8,7 +8,10 @@ later code adds) always wins, and only unmatched ``GET``/``HEAD`` requests reach
   A missing asset is a 404, never ``index.html``.
 * A file that exists at the top of ``dist`` (``/favicon.svg``): served, revalidated each time.
 * Anything else (``/``, ``/app/today``, ``/textbook/p1``): ``index.html`` with ``no-cache``,
-  so client-side routes survive a reload.
+  so client-side routes survive a reload. It always starts its ``<head>`` with
+  ``<base href="{base_path}/">`` (``/`` unless Remi sits behind a proxy under ``REMI_PUBLIC_URL``,
+  docs/decisions/0013): the build's asset links are relative, and the frontend takes its router
+  basename and API address from ``document.baseURI``, so one build serves any prefix.
 
 Never the SPA: ``/api/*`` (the JSON 404 envelope), ``/charts/*`` (charts are only served from
 ``/api/charts/{id}`` with their own CSP) and the CDN-backed documentation pages FastAPI would
@@ -18,6 +21,7 @@ segments, backslashes or NUL never map to a file, and every file is checked to r
 says how to build the app; the API keeps working.
 """
 
+import re
 from html import escape
 from pathlib import Path, PurePosixPath
 from typing import Final
@@ -35,6 +39,9 @@ INDEX: Final = "index.html"
 NEVER_SPA: Final = frozenset({"charts", "docs", "redoc"})
 """First path segments the SPA never answers (plain 404 instead)."""
 _READ_METHODS: Final = frozenset({"GET", "HEAD"})
+_BASE_TAG: Final = re.compile(rb"<base\b[^>]*>[ \t]*\r?\n?", re.IGNORECASE)
+_HEAD_OPEN: Final = re.compile(rb"<head\b[^>]*>", re.IGNORECASE)
+_DOCTYPE: Final = re.compile(rb"^\s*<!doctype[^>]*>", re.IGNORECASE)
 
 _NOT_BUILT: Final = """<!doctype html>
 <html lang="en-GB">
@@ -71,6 +78,21 @@ def _route_path(scope: Scope) -> str:
     return path
 
 
+def with_base(html: bytes, base_path: str) -> bytes:
+    """``html`` with ``<base href="{base_path}/">`` as the first thing in its ``<head>``.
+
+    Any ``<base>`` already there (the build ships ``<base href="/">`` so ``vite preview`` works)
+    is replaced: a document uses only its first. Without a ``<head>`` tag the element goes right
+    after the doctype, which is where the parser's implied head begins.
+    """
+    tag = f'<base href="{escape(base_path + "/", quote=True)}">'.encode()
+    body = _BASE_TAG.sub(b"", html)
+    at = _HEAD_OPEN.search(body) or _DOCTYPE.search(body)
+    if at is None:
+        return tag + body
+    return body[: at.end()] + tag + body[at.end() :]
+
+
 def safe_file(root: Path, relative: str) -> Path | None:
     """The file ``relative`` names inside ``root``, or ``None``.
 
@@ -95,9 +117,10 @@ def safe_file(root: Path, relative: str) -> Path | None:
 class SpaFiles:
     """The router's fallback: the built SPA for unmatched ``GET``/``HEAD`` requests."""
 
-    def __init__(self, dist: Path, fallback: ASGIApp) -> None:
+    def __init__(self, dist: Path, fallback: ASGIApp, base_path: str = "") -> None:
         self.dist = dist
         self.fallback = fallback
+        self.base_path = base_path
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
         response = self.response_for(scope)
@@ -128,17 +151,30 @@ class SpaFiles:
         found = safe_file(self.dist, relative) if relative else None
         if found is not None and found != index:
             return FileResponse(found, headers={"Cache-Control": REVALIDATE})
-        return FileResponse(index, media_type="text/html", headers={"Cache-Control": REVALIDATE})
+        return self.index_page(index, head_only=scope["method"] == "HEAD")
+
+    def index_page(self, index: Path, head_only: bool) -> Response:
+        """``index.html`` with this server's ``<base href>`` (see :func:`with_base`)."""
+        try:
+            page = with_base(index.read_bytes(), self.base_path)
+        except OSError:
+            return self.not_built()
+        headers = {"Cache-Control": REVALIDATE, "Content-Length": str(len(page))}
+        return Response(
+            b"" if head_only else page, media_type="text/html; charset=utf-8", headers=headers
+        )
 
     def not_built(self) -> Response:
         body = _NOT_BUILT.format(index=escape(str(self.dist / INDEX)))
         return HTMLResponse(body, status_code=503, headers={"Cache-Control": "no-store"})
 
 
-def install_static(app: FastAPI, dist: Path) -> None:
-    """Serve ``dist`` as the SPA for every request no route answers. Idempotent."""
+def install_static(app: FastAPI, dist: Path, base_path: str = "") -> None:
+    """Serve ``dist`` as the SPA for every request no route answers, its pages based at
+    ``base_path`` (``""``: the root; ``/remi`` behind a proxy). Idempotent."""
     current = app.router.default
     if isinstance(current, SpaFiles):
         current.dist = dist
+        current.base_path = base_path
         return
-    app.router.default = SpaFiles(dist, current)
+    app.router.default = SpaFiles(dist, current, base_path)

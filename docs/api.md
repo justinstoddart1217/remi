@@ -515,6 +515,6 @@ The Workspace verdict sentence is `derived.sentence.case` (`no_plan`, `after_mov
 | `AI_RATE_LIMITED` | 503 | The provider is rate limiting |
 | `AI_TIMEOUT` | 504 | The provider did not answer in time |
 | `PARSE_CANCELLED` | 409 | The parse was cancelled (`DELETE /checkins/parse/{parseId}`) |
-| `FORBIDDEN_ORIGIN` | 403 | Mutating call without a loopback `Origin` |
+| `FORBIDDEN_ORIGIN` | 403 | Mutating call without an `Origin` Remi answers to (loopback on its port, or `REMI_PUBLIC_URL`'s origin behind a proxy) |
 | `CLIENT_HEADER_REQUIRED` | 403 | Mutating call without `X-Remi-Client: 1` |
 | `INTERNAL_ERROR` | 500 | Unexpected server error; details are only in the server log |

@@ -14,6 +14,8 @@
 
 import createClient from 'openapi-fetch';
 
+import { basePath } from '../lib/basePath';
+
 import type { components, paths } from './schema';
 
 /** The generated `paths` without their `/api` prefix (the client's `baseUrl`). */
@@ -24,7 +26,8 @@ export type ApiPaths = {
 /** Component schemas: `Schemas['PlanOut']`. */
 export type Schemas = components['schemas'];
 
-export const API_BASE_URL = '/api';
+/** `/api` under the page's base path: `/api` on the laptop, `/remi/api` behind the proxy. */
+export const API_BASE_URL = `${basePath()}/api`;
 
 export const CLIENT_HEADER = 'X-Remi-Client';
 

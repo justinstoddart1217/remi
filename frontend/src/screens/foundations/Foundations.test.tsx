@@ -1,4 +1,5 @@
 import { render, screen } from '@testing-library/react';
+import { MemoryRouter } from 'react-router';
 import { describe, expect, it } from 'vitest';
 
 import FoundationsPage from './index';
@@ -6,7 +7,7 @@ import LibraryPage from './LibraryPage';
 
 describe('Foundations page', () => {
   it('renders the prototype page: five sections, no library', () => {
-    render(<FoundationsPage />);
+    render(<FoundationsPage />, { wrapper: MemoryRouter });
     expect(screen.getByRole('heading', { level: 1, name: 'A notebook that recalculates itself' })).toBeInTheDocument();
     const sections = screen.getAllByRole('heading', { level: 2 }).map((h) => h.textContent);
     expect(sections).toEqual(['Colour', 'Type', 'Space, radius and grid', 'Motion', 'Components']);
@@ -20,7 +21,7 @@ describe('Foundations page', () => {
 
 describe('Library page', () => {
   it('renders every library specimen on its own page', () => {
-    render(<LibraryPage />);
+    render(<LibraryPage />, { wrapper: MemoryRouter });
     expect(screen.getByRole('heading', { level: 2, name: 'Library' })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: 'Foundations' })).toHaveAttribute('href', '/foundations');
   });

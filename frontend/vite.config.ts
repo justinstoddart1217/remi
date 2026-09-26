@@ -29,7 +29,11 @@ function vendorChunk(id: string): string | undefined {
   return undefined;
 }
 
-export default defineConfig({
+export default defineConfig(({ command }) => ({
+  // Built asset links are relative (./assets/...), so they follow the page's <base href>, which
+  // the backend writes at runtime: "/" on the laptop, "/remi/" behind APEX's proxy (ADR-0013).
+  // One build serves both. The dev server keeps "/".
+  base: command === 'build' ? './' : '/',
   plugins: [react(), stayLocal()],
   server: {
     host: '127.0.0.1',
@@ -60,4 +64,4 @@ export default defineConfig({
     include: ['src/**/*.test.{ts,tsx}', 'scripts/**/*.test.ts'],
     restoreMocks: true,
   },
-});
+}));

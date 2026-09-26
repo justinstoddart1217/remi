@@ -4,6 +4,7 @@ import type { RouteObject } from 'react-router';
 
 import HomeScreen from '../screens/home';
 import { AppShell } from '../shell/AppShell';
+import { basePath } from '../lib/basePath';
 import { BootFallback } from './BootFallback';
 import { RootLayout } from './RootLayout';
 import { RouteError } from './RouteError';
@@ -76,6 +77,12 @@ export const routes: RouteObject[] = [
   },
 ];
 
+/**
+ * The browser router, under the page's base path: `/` on the laptop, `/remi/` behind the proxy.
+ * The trailing slash keeps Home at `/remi/`, the address APEX's tile and the proxy use (a
+ * basename of `/remi` would write Home as `/remi`, which the proxy then has to redirect).
+ */
 export function createAppRouter() {
-  return createBrowserRouter(routes);
+  const base = basePath();
+  return createBrowserRouter(routes, { basename: base ? `${base}/` : '/' });
 }

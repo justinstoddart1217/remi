@@ -189,6 +189,8 @@ def test_app_csp_is_self_only() -> None:
     assert directives["connect-src"] == ["'self'"]
     assert directives["frame-ancestors"] == ["'none'"]
     assert directives["object-src"] == ["'none'"]
+    # The page's <base href> (ADR-0013) may only point at Remi's own origin.
+    assert directives["base-uri"] == ["'self'"]
     assert not re.search(r"https?:|\*|'unsafe-eval'", APP_CSP)
     # Inline scripts are never allowed; inline styles are (KaTeX).
     assert "'unsafe-inline'" not in directives["script-src"]

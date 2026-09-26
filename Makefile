@@ -123,11 +123,14 @@ icons: ## Rebuild the Material Symbols subset (build-time download; see frontend
 	cd $(FRONTEND) && $(NPM) run subset-icons
 
 # ------------------------------------------------------------------ design reference
-design-verify: ## Fail if the read-only design folder changed since it was recorded
-	@find "$(DESIGN_DIR)" -type f ! -name .DS_Store -print0 | LC_ALL=C sort -z \
-	  | xargs -0 shasum -a 256 | diff -u $(DESIGN_MANIFEST) - \
-	  || { echo "'$(DESIGN_DIR)' differs from $(DESIGN_MANIFEST): the design folder is read-only"; exit 1; }
-	@echo "Design folder unchanged ($$(wc -l < $(DESIGN_MANIFEST) | tr -d ' ') files)"
+# The design folder is a local reference and may be absent (it left the repo in c4c88e6); the
+# gates that read it then say so and pass. The committed parity baselines and goldens stand in.
+design-verify: ## Fail if the read-only design folder changed since it was recorded (skipped if absent)
+	@if [ ! -d "$(DESIGN_DIR)" ]; then echo "'$(DESIGN_DIR)' is not here: design-verify skipped"; else \
+	  find "$(DESIGN_DIR)" -type f ! -name .DS_Store -print0 | LC_ALL=C sort -z \
+	    | xargs -0 shasum -a 256 | diff -u $(DESIGN_MANIFEST) - \
+	    || { echo "'$(DESIGN_DIR)' differs from $(DESIGN_MANIFEST): the design folder is read-only"; exit 1; }; \
+	  echo "Design folder unchanged ($$(wc -l < $(DESIGN_MANIFEST) | tr -d ' ') files)"; fi
 
 design-manifest: ## Record the design manifest (only if absent; the folder is read-only)
 	@test ! -e $(DESIGN_MANIFEST) || { echo "$(DESIGN_MANIFEST) exists; the design folder must not change"; exit 1; }
@@ -138,8 +141,9 @@ design-manifest: ## Record the design manifest (only if absent; the folder is re
 goldens: ## Extract golden values from the prototype into parity/golden (Node, offline, no deps)
 	cd parity && node golden/extract.mjs
 
-goldens-check: ## Fail if parity/golden is stale against the prototype
-	cd parity && node golden/extract.mjs --check
+goldens-check: ## Fail if parity/golden is stale against the prototype (skipped if the design folder is absent)
+	@if [ ! -d "$(DESIGN_DIR)" ]; then echo "'$(DESIGN_DIR)' is not here: goldens-check skipped"; else \
+	  cd parity && node golden/extract.mjs --check; fi
 
 parity-baseline: ## Capture prototype baselines (PNG + text/boxes JSON) and cross-check the goldens
 	@test -d parity/node_modules || (cd parity && $(NPM) ci --no-audit --no-fund)

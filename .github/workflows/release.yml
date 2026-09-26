@@ -1,9 +1,10 @@
 # The Windows server bundle for the APEX server (docs/deploy/APEX.md).
 #
 # A version tag (`make release VERSION=1.2.3` on the Mac pushes v1.2.3) builds
-# remi-<version>-windows.zip, installs it on this Windows runner exactly as on the APEX server
-# (C:\Remi, the startup task, server mode), checks it answers and survives an update, then
-# publishes it as a GitHub Release, which the server's update-remi.bat downloads.
+# remi-<version>-windows.zip, installs it on this Windows runner as on the APEX server
+# (C:\Remi, the startup task): first in server mode (ADR-0012), then reinstalled behind a proxy
+# with -PublicUrl, as APEX runs it (ADR-0013). It checks each answers and survives an update,
+# then publishes it as a GitHub Release, which the server's update-remi.bat downloads.
 #
 # Run it by hand (Actions > Release > Run workflow) to build and test without publishing; the
 # zip is then attached to the run as an artifact.
@@ -113,6 +114,38 @@ jobs:
           if ($settings.moveDate -ne '2027-01-04') { throw 'the data did not survive the update' }
           if (-not (Get-ChildItem C:\Remi\data\backups -File)) { throw 'the update made no backup' }
 
+      - name: Reinstall behind APEX's proxy (install-remi.bat -PublicUrl) and check it
+        shell: pwsh
+        run: |
+          $public = 'https://apex.example.test'
+          Remove-Item C:\Remi\server.env
+          $bundle = Get-ChildItem -LiteralPath (Join-Path $env:RUNNER_TEMP 'bundle') -Directory | Select-Object -First 1
+          Push-Location $bundle.FullName
+          cmd /c "install-remi.bat -PublicUrl $public/remi/ < NUL"
+          $status = $LASTEXITCODE
+          Pop-Location
+          if ($status -ne 0) { throw "install-remi.bat -PublicUrl failed ($status)" }
+          $envText = Get-Content C:\Remi\server.env -Raw
+          if ($envText -notmatch "(?m)^REMI_PUBLIC_URL=$([regex]::Escape($public))/remi\r?$") { throw "server.env has no REMI_PUBLIC_URL:`n$envText" }
+          if ($envText -match '(?m)^REMI_NETWORK=') { throw 'server.env still turns on server mode' }
+          if (Get-NetFirewallRule -Group Remi -ErrorAction SilentlyContinue) { throw 'a Remi firewall rule is still there' }
+          $listening = @(Get-NetTCPConnection -LocalPort 8765 -State Listen | Select-Object -ExpandProperty LocalAddress -Unique)
+          if (($listening -join ',') -ne '127.0.0.1') { throw "Remi listens on $($listening -join ', '), not 127.0.0.1 only" }
+          $page = Invoke-WebRequest http://127.0.0.1:8765/app/today
+          if ($page.Content -notmatch '<base href="/remi/">') { throw 'index.html does not carry <base href="/remi/">' }
+          $hostStatus = curl.exe -s -o NUL -w '%{http_code}' -H 'Host: apex.example.test' http://127.0.0.1:8765/api/health
+          if ($hostStatus -ne '200') { throw "the public Host got $hostStatus, not 200" }
+          $own = @{ Origin = $public; 'X-Remi-Client' = '1' }
+          Invoke-RestMethod -Method Patch http://127.0.0.1:8765/api/settings -Headers $own -ContentType 'application/json' -Body '{}' | Out-Null
+          $foreign = 0
+          try {
+            Invoke-RestMethod -Method Patch http://127.0.0.1:8765/api/settings -Headers @{ Origin = 'https://evil.example'; 'X-Remi-Client' = '1' } -ContentType 'application/json' -Body '{}' | Out-Null
+          } catch { $foreign = [int] $_.Exception.Response.StatusCode }
+          if ($foreign -ne 403) { throw "a foreign Origin got $foreign, not 403" }
+          $settings = Invoke-RestMethod http://127.0.0.1:8765/api/settings
+          if ($settings.moveDate -ne '2027-01-04') { throw 'the data did not survive the reinstall' }
+          cmd /c "C:\Remi\status-remi.bat < NUL"
+
       - name: Show the logs
         if: always()
         shell: pwsh
@@ -141,7 +174,7 @@ jobs:
             --title "Remi $version" \
             --notes "Windows server bundle for the APEX server. On the server, run C:\\Remi\\update-remi.bat (first time: unzip and run install-remi.bat). See docs/deploy/APEX.md."
 
-      - name: Update through GitHub, as update-remi.bat does on the server
+      - name: Update through GitHub behind the proxy, as update-remi.bat does on the server
         if: env.PUBLISH == 'true'
         shell: pwsh
         env:
@@ -149,6 +182,8 @@ jobs:
         run: |
           powershell -NoProfile -ExecutionPolicy Bypass -File C:\Remi\remi-server.ps1 update -Repo $env:GITHUB_REPOSITORY -Force
           if ($LASTEXITCODE -ne 0) { throw "update from GitHub failed ($LASTEXITCODE)" }
+          $page = Invoke-WebRequest http://127.0.0.1:8765/
+          if ($page.Content -notmatch '<base href="/remi/">') { throw 'the update lost the proxy setting' }
 
       - name: Uninstall
         shell: pwsh

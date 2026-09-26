@@ -12,7 +12,7 @@ The bundle is self-contained, so the server needs nothing installed (docs/deploy
       site-packages/        the backend's locked runtime dependencies, Windows wheels
       backend/              app/, alembic/, alembic.ini, pyproject.toml
       frontend/dist/        the built SPA (stay-local checked)
-      server/               remi-server.ps1, the .bat shortcuts, the APEX tile snippet
+      server/               remi-server.ps1 and its .bat shortcuts
 
 ``backend/`` and ``frontend/dist/`` keep their places relative to each other, so
 ``app.core.paths`` finds the SPA and the migrations exactly as in a checkout. Everything is
@@ -213,7 +213,6 @@ def add_server_files(stage: Path) -> None:
             add_windows_text(src, target / src.name)
         else:
             shutil.copy2(src, target / src.name)
-    shutil.copy2(deploy / "apex" / "remi-tile.html", server / "remi-tile.html")
 
 
 def compile_python(stage: Path) -> None:

@@ -3,8 +3,11 @@
   Remi on the APEX server: install, update, start, stop and check it.
 
 .DESCRIPTION
-  Remi runs on this Windows computer as a background task that starts with Windows, and other
-  computers on the network open it in the browser at http://<this computer>:8765/.
+  Remi runs on this Windows computer as a background task that starts with Windows. Two shapes:
+    behind APEX's proxy (install -PublicUrl https://apex.example.com/remi): Remi listens on
+      127.0.0.1 only and IIS forwards https://.../remi/ to it; no firewall port (ADR-0013);
+    server mode (install without -PublicUrl): other computers open http://<this computer>:8765/
+      through a firewall port (ADR-0012).
   The .bat files beside this script are double-click shortcuts for the commands below.
   The full guide is docs/deploy/APEX.md in the Remi repository.
 
@@ -16,7 +19,8 @@
     logs\                 remi.log (the server's log), service.log (starts and stops)
 
   Commands:
-    install    first install from an unzipped bundle (run as administrator)
+    install    first install from an unzipped bundle (run as administrator);
+               -PublicUrl <address> installs behind APEX's proxy
     update     download the latest release from GitHub and switch to it (-Zip <file> to
                install a zip you downloaded yourself; -Force to reinstall the same version)
     rollback   go back to the version before the last update
@@ -35,6 +39,7 @@ param(
   [int] $Port = 8765,
   [string] $Zip = '',
   [string] $Repo = 'justinstoddart1217/remi',
+  [string] $PublicUrl = '',
   [switch] $Force
 )
 
@@ -116,6 +121,17 @@ function Get-UpdateRepo {
     return $values['REMI_UPDATE_REPO']
   }
   return $Repo
+}
+
+function Get-PublicUrl {
+  $values = Read-ServerEnv
+  if ($values.Contains('REMI_PUBLIC_URL') -and $values['REMI_PUBLIC_URL']) { return $values['REMI_PUBLIC_URL'].TrimEnd('/') }
+  return ''
+}
+
+function Test-NetworkMode {
+  $values = Read-ServerEnv
+  return ($values.Contains('REMI_NETWORK') -and @('1', 'true', 'yes', 'on') -contains $values['REMI_NETWORK'].ToLower())
 }
 
 function Get-DataDir {
@@ -288,7 +304,16 @@ function Invoke-StartAndCheck([string] $Version) {
 
 function Show-Running {
   $serverPort = Get-ServerPort
+  $publicUrl = Get-PublicUrl
   Say ''
+  if ($publicUrl -and -not (Test-NetworkMode)) {
+    Say "Remi $(Get-CurrentVersion) is running behind the proxy. Open it from your laptop at:"
+    Say "  $publicUrl/"
+    Say "(It listens on 127.0.0.1:$serverPort only; IIS forwards $publicUrl/ to it.)"
+    Say ''
+    Say "There is no sign-in: anyone who can open $publicUrl/ can use Remi."
+    return
+  }
   Say "Remi $(Get-CurrentVersion) is running. Open it from your laptop at:"
   foreach ($url in Get-MachineUrls $serverPort) { Say "  $url" }
   Say ''
@@ -382,7 +407,25 @@ function Switch-To([string] $Version) {
   Fail "Remi $Version did not start. See $LogDir\remi.log."
 }
 
-function Write-DefaultEnv([int] $ServerPort) {
+function Write-DefaultEnv([int] $ServerPort, [string] $Url) {
+  if ($Url) {
+    $text = @"
+# Remi on this server, behind APEX's proxy. After changing anything here, run restart-remi.bat.
+#
+# IIS serves Remi at REMI_PUBLIC_URL and forwards it to 127.0.0.1:REMI_PORT with the path
+# prefix removed (ADR-0013). Remi listens on this computer only; no firewall port is open.
+# There is no sign-in: anyone who can open the public address can use Remi.
+REMI_HOST=127.0.0.1
+REMI_PORT=$ServerPort
+REMI_PUBLIC_URL=$Url
+# Remi's database, charts and backups. Updates never touch this folder.
+REMI_DATA_DIR=$DataDir
+# Where update-remi.bat downloads releases from (owner/repository on GitHub).
+REMI_UPDATE_REPO=$Repo
+"@
+    Write-Ascii $EnvFile ($text -replace "`r?`n", "`r`n")
+    return
+  }
   $text = @"
 # Remi on this server. After changing anything here, run restart-remi.bat.
 #
@@ -425,6 +468,18 @@ function Register-RemiTask {
     -Description 'Remi: the planning dashboard, opened from APEX. Starts with Windows. See C:\Remi\server.env.' -Force | Out-Null
 }
 
+function Remove-Firewall {
+  Get-NetFirewallRule -Group $FirewallGroup -ErrorAction SilentlyContinue | Remove-NetFirewallRule
+}
+
+function ConvertTo-PublicUrl([string] $Value) {
+  $url = $Value.Trim().TrimEnd('/')
+  if ($url -notmatch '^https?://[^/?#\s@]+(/[^?#\s]*)?$') {
+    Fail "-PublicUrl must be the address people open, such as https://apex.example.com/remi (no query), not '$Value'."
+  }
+  return $url
+}
+
 function Register-Firewall([int] $ServerPort) {
   Get-NetFirewallRule -Group $FirewallGroup -ErrorAction SilentlyContinue | Remove-NetFirewallRule
   New-NetFirewallRule -DisplayName "Remi (TCP $ServerPort)" -Group $FirewallGroup -Direction Inbound -Action Allow `
@@ -441,22 +496,38 @@ function Invoke-Install {
     if (-not (Test-Path -LiteralPath $folder)) { New-Item -ItemType Directory -Path $folder | Out-Null }
   }
   Grant-Access
+  $url = if ($PublicUrl) { ConvertTo-PublicUrl $PublicUrl } else { '' }
   if (-not (Test-Path -LiteralPath $EnvFile)) {
-    Write-DefaultEnv $Port
-  } elseif ($PortGiven) {
-    Say "Keeping the existing $EnvFile (change REMI_PORT there to move Remi to port $Port)."
+    Write-DefaultEnv $Port $url
+  } else {
+    Say "Keeping the existing $EnvFile (install never rewrites it)."
+    if ($PortGiven) { Say "  To move Remi to port $Port, change REMI_PORT there." }
+    if ($url -and (Get-PublicUrl) -ne $url) {
+      Say '  To move Remi behind the proxy, edit it by hand (docs/deploy/APEX.md, "Moving behind the proxy"):'
+      Say "    REMI_HOST=127.0.0.1, REMI_PORT=8765, REMI_PUBLIC_URL=$url;"
+      Say '    delete REMI_NETWORK and REMI_ALLOWED_HOSTS; then run install-remi.bat again.'
+    }
   }
   $serverPort = Get-ServerPort
   $null = Copy-Release $bundle $version
   Copy-ManagementFiles (Join-Path $ReleasesDir $version)
-  Say 'Opening the firewall for Remi ...'
-  Register-Firewall $serverPort
+  if (Test-NetworkMode) {
+    Say 'Opening the firewall for Remi (server mode) ...'
+    Register-Firewall $serverPort
+  } else {
+    Say 'No firewall port: Remi listens on 127.0.0.1 only.'
+    Remove-Firewall
+  }
   Say 'Registering the startup task ...'
   Register-RemiTask
   $null = Switch-To $version
   Show-Running
   Say ''
-  Say "APEX tile: paste the snippet in $InstallDir\remi-tile.html into APEX's landing page."
+  if (Get-PublicUrl) {
+    Say "APEX's landing page carries the remi tile (a link to /remi/); IIS forwards it here (APEX docs/remi/IIS_RULE.md)."
+  } else {
+    Say "Link to http://$($env:COMPUTERNAME.ToLower()):$serverPort/ from APEX's landing page."
+  }
   Say "Update later with $InstallDir\update-remi.bat."
 }
 
@@ -674,9 +745,11 @@ function Invoke-Status {
   Say "Installed:  Remi $(Get-CurrentVersion) in $InstallDir"
   if (Get-PreviousVersion) { Say "Previous:   $(Get-PreviousVersion) (rollback-remi.bat goes back to it)" }
   Say "Task:       $(if ($task) { $task.State } else { 'missing (run install-remi.bat again)' })"
+  $publicUrl = Get-PublicUrl
   if ($health) {
     Say "Answering:  yes, version $($health.version) on port $serverPort"
-    foreach ($url in Get-MachineUrls $serverPort) { Say "Open:       $url" }
+    if ($publicUrl) { Say "Open:       $publicUrl/  (behind the proxy)" }
+    if (Test-NetworkMode) { foreach ($url in Get-MachineUrls $serverPort) { Say "Open:       $url" } }
   } else {
     Say "Answering:  no (nothing on port $serverPort)"
     Show-LogTail
