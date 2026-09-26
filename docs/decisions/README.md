@@ -17,3 +17,4 @@ only through an ADR plus `make openapi`.
 | [0009](0009-day-counts-exclude-today-and-move-day.md) | Day counts exclude today and the move day |
 | [0010](0010-new-ui-for-data-the-design-cannot-create.md) | New UI (wizard, Settings, inline lists) in the Foundations language |
 | [0011](0011-ninety-one-redesign.md) | The Ninety One redesign: brand tokens, Visuelt fonts, top bar, re-approved new UI |
+| [0012](0012-apex-server-bundle.md) | Hosting on the APEX server: opt-in server mode, a self-contained Windows bundle, pull-only updates |

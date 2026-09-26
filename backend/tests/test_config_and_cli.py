@@ -6,6 +6,7 @@ import uvicorn
 from pydantic import ValidationError
 
 from app import main
+from app.core import config as config_module
 from app.core.clock import FixedClock, OffsetClock, SystemClock, build_clock
 from app.core.config import DEFAULT_PORT, LOOPBACK_HOST, RemiConfig, is_loopback_host
 from app.core.paths import default_data_dir
@@ -60,6 +61,59 @@ def test_config_refuses_non_loopback_host(monkeypatch: pytest.MonkeyPatch) -> No
         RemiConfig()
 
 
+def test_server_mode_may_bind_any_address(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("REMI_NETWORK", "1")
+    monkeypatch.setenv("REMI_HOST", "0.0.0.0")  # noqa: S104
+    monkeypatch.setenv("REMI_ALLOWED_HOSTS", " Apex , 10.0.0.5,, ")
+
+    cfg = RemiConfig()
+
+    assert cfg.network is True
+    assert cfg.host == "0.0.0.0"  # noqa: S104
+    assert cfg.extra_hosts == ["apex", "10.0.0.5"]
+
+
+def test_allowed_hosts_need_server_mode(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("REMI_ALLOWED_HOSTS", "apex")
+    with pytest.raises(ValidationError, match="server mode only"):
+        RemiConfig()
+
+
+@pytest.mark.parametrize("value", ["http://apex", "apex:8765", "apex/remi", "a b"])
+def test_allowed_hosts_are_names_only(value: str) -> None:
+    with pytest.raises(ValidationError, match="names or addresses only"):
+        RemiConfig(network=True, allowed_hosts=value)
+
+
+def _fake_machine(
+    monkeypatch: pytest.MonkeyPatch, hostname: str, domain: str, addresses: list[str]
+) -> None:
+    """This computer, as the socket module reports it (no DNS in tests)."""
+
+    def getfqdn(name: str = "") -> str:
+        return f"{name}{domain}"
+
+    def gethostbyname_ex(name: str) -> tuple[str, list[str], list[str]]:
+        return (name, [], addresses)
+
+    monkeypatch.setattr(config_module.socket, "gethostname", lambda: hostname)
+    monkeypatch.setattr(config_module.socket, "getfqdn", getfqdn)
+    monkeypatch.setattr(config_module.socket, "gethostbyname_ex", gethostbyname_ex)
+
+
+def test_machine_names_are_lowercase_and_skip_loopback(monkeypatch: pytest.MonkeyPatch) -> None:
+    _fake_machine(monkeypatch, "APEXSERVER", ".Corp.Example", ["127.0.1.1", "10.1.2.3"])
+    assert config_module.machine_names() == ["apexserver", "apexserver.corp.example", "10.1.2.3"]
+
+
+def test_machine_names_survive_a_failed_lookup(monkeypatch: pytest.MonkeyPatch) -> None:
+    def fail(*_: object) -> str:
+        raise OSError("no DNS")
+
+    monkeypatch.setattr(config_module.socket, "gethostname", fail)
+    assert config_module.machine_names() == []
+
+
 def test_remi_today_pins_only_the_date() -> None:
     assert isinstance(build_clock(None), SystemClock)
     clock = build_clock(date(2026, 10, 5))
@@ -98,6 +152,30 @@ def test_cli_serves_on_loopback_without_browser(
 
     assert served == [(LOOPBACK_HOST, DEFAULT_PORT)]
     assert opened == []
+
+
+def test_cli_network_mode_binds_all_addresses_and_opens_no_browser(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path, capsys: pytest.CaptureFixture[str]
+) -> None:
+    monkeypatch.delenv("REMI_PORT", raising=False)
+    _fake_machine(monkeypatch, "APEXSERVER", "", [])
+    served: list[tuple[str, int]] = []
+    opened: list[str] = []
+
+    def fake_run(self: uvicorn.Server, sockets: object = None) -> None:
+        served.append((self.config.host, self.config.port))
+
+    monkeypatch.setattr(uvicorn.Server, "run", fake_run)
+    monkeypatch.setattr(main.webbrowser, "open", opened.append)
+
+    main.cli(["--network", "--host", "0.0.0.0", "--data-dir", str(tmp_path)])  # noqa: S104
+
+    assert served == [("0.0.0.0", DEFAULT_PORT)]  # noqa: S104
+    assert opened == []
+    out = capsys.readouterr().out
+    assert "server mode" in out
+    assert "http://apexserver:8765/" in out
+    assert "no sign-in" in out
 
 
 def test_browser_url_brackets_ipv6() -> None:

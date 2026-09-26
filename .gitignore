@@ -32,3 +32,6 @@ parity/baselines/prototype-v1/
 
 # The zipped design export duplicates the "Remi Dashboard Design Review/" folder
 Remi Dashboard Design Review.zip
+
+# Server bundles (make bundle)
+build/

@@ -1,7 +1,8 @@
 # Remi
 
 Remi is a personal workflow dashboard that runs only on your own computer (a Mac; Windows has a
-launcher too). It plans BAU and project work across Private Credit and Fixed Income, about three
+launcher too), or on the APEX server for your work laptop (see
+[Hosting on the APEX server](#hosting-on-the-apex-server)). It plans BAU and project work across Private Credit and Fixed Income, about three
 months ahead and one business day at a time, to keep the move from PC to FI on schedule:
 routines pinned to business-day rules, a Fixed Income country rotation, goal-first projects
 forecast from work left and hours a day, check-ins, daily notes and a textbook. When something
@@ -110,6 +111,7 @@ remi --data-dir /tmp/remi     # another data folder (default ~/Library/Applicati
 remi db path                  # where remi.db lives
 remi db upgrade               # back up, then migrate to the latest schema (also done at startup)
 remi db backup                # copy remi.db into backups/
+remi --network --host 0.0.0.0 # server mode: other computers may open it (no sign-in; see below)
 ```
 
 It serves the built app from `frontend/dist` (run `make build` first, or point `REMI_FRONTEND_DIST`
@@ -130,6 +132,27 @@ uv tool install --editable ./backend
 >
 > The Makefile always uses the module form (`python -m app.main`, `python -m
 > scripts.export_openapi`), and pytest adds the source tree to `sys.path`.
+
+## Hosting on the APEX server
+
+Remi can also run on the APEX server, a Windows computer on the Ninety One network, and open
+from a "remi" tile on APEX's landing page. The guide, step by step:
+[`docs/deploy/APEX.md`](docs/deploy/APEX.md) ([ADR-0012](docs/decisions/0012-apex-server-bundle.md)).
+
+- **Develop here, release to GitHub.** `make release VERSION=x.y.z` bumps the version, tags it
+  and pushes. [`.github/workflows/release.yml`](.github/workflows/release.yml) then builds
+  `remi-<version>-windows.zip`, installs and tests it on a Windows runner, and publishes it as a
+  GitHub Release. `make bundle` builds the same zip locally, to look inside.
+- **The bundle is self-contained:** its own Python 3.12, the locked dependencies, the backend and
+  the built dashboard. The server needs nothing installed.
+- **The server only pulls.** `C:\Remi\update-remi.bat` downloads the latest release with a
+  read-only GitHub token, backs up the database, switches over and goes back by itself if the
+  new version does not start. Nothing on the work side ever pushes.
+- **Server mode** (`REMI_NETWORK=1`): Remi binds `0.0.0.0` and answers to the server's own
+  names and addresses (plus `REMI_ALLOWED_HOSTS`). It runs at startup as a Windows task under
+  the low-privilege LOCAL SERVICE account, with its data in `C:\Remi\data`.
+- **No sign-in.** Anyone on the network who can reach port 8765 can open and change Remi. The
+  Host and Origin checks still stop other websites from using your browser to change it.
 
 ## Make targets
 
@@ -154,6 +177,8 @@ uv tool install --editable ./backend
 | `behaviour` | The Playwright behaviour flows against Remi (`FLOW=<regex>`) |
 | `egress` | The stay-local crawl of a fresh production build |
 | `icons` | Rebuild the Material Symbols subset (downloads at build time only) |
+| `bundle` | Build the Windows server bundle into `build/release/` (releases build it on GitHub) |
+| `release` | `VERSION=x.y.z`: bump the version, commit, tag and push; GitHub builds and publishes the bundle |
 | `check` | `lint typecheck test openapi-check design-verify build goldens-check parity behaviour egress` |
 
 `make help` lists them all. `make check` must be green, offline, before anything is merged. The
@@ -171,7 +196,9 @@ Process settings come from `REMI_*` environment variables (`backend/app/core/con
 | Variable | Default | Meaning |
 | --- | --- | --- |
 | `REMI_DATA_DIR` | `~/Library/Application Support/Remi` (Windows: `%LOCALAPPDATA%\Remi`) | `remi.db`, `charts/`, `backups/`. Not used by `make dev`, which has `REMI_DEV_DATA_DIR` |
-| `REMI_HOST` | `127.0.0.1` | Must be a loopback address; anything else is refused |
+| `REMI_HOST` | `127.0.0.1` | Must be a loopback address unless `REMI_NETWORK=1` |
+| `REMI_NETWORK` | `false` | Server mode (the APEX server): any bind address, and Remi answers to this computer's own names and addresses. No sign-in |
+| `REMI_ALLOWED_HOSTS` | empty | Server mode only: more names Remi answers to, comma-separated (a DNS alias, say); `*` for any |
 | `REMI_PORT` | `8765` | |
 | `REMI_ENV` | `prod` | `prod`, `dev` or `test` (`test` enables `POST /api/dev/fixtures`) |
 | `REMI_TODAY` | unset | Start the business date on this day; the wall clock keeps running (tests and parity runs) |
@@ -191,6 +218,8 @@ Used only by the tooling, not by Remi itself:
 | `REMI_REBUILD` | `launch.bat` | `1` rebuilds the app before starting |
 | `REMI_API_PORT` / `REMI_WEB_PORT` | Vite (`make dev`) | Where Vite proxies `/api`, and its own port |
 | `REMI_PARITY_API_PORT` / `REMI_PARITY_WEB_PORT` | `make parity`, `behaviour`, `egress` | The harness's own ports (8804 / 5304) |
+| `REMI_UPDATE_REPO` | the APEX server's `update-remi.bat` (`C:\Remi\server.env`) | The GitHub repository releases come from |
+| `REMI_GITHUB_TOKEN` | the same | A read-only token for it, instead of the one saved on the server |
 
 Everything else (move date, working hours, holidays, rotation, appearance) is set in the app's
 first-run wizard and Settings page and stored in the database.
@@ -222,10 +251,14 @@ Remi never talks to the network on its own
 - It binds to 127.0.0.1 only. The CLI and config refuse non-loopback hosts, the server accepts
   only loopback `Host` headers, and every mutation needs a loopback `Origin` plus the
   `X-Remi-Client: 1` header. Single user, no accounts, no CORS.
+- The one exception is opt-in: server mode (`REMI_NETWORK=1`, only on the APEX server) lets
+  other computers on the network open Remi, under the same Host and Origin checks for the
+  server's own names. It still makes no outbound calls; only the server's update script talks
+  to GitHub.
 - The app's Content-Security-Policy is `'self'` only. Live charts run in `sandbox="allow-scripts"`
   iframes under `default-src 'none'; connect-src 'none'`, so a chart cannot fetch anything.
-- Fonts (Albert Sans, Libre Caslon Text, JetBrains Mono) are bundled from `@fontsource`; icons are
-  a committed Material Symbols subset; KaTeX is bundled. Nothing loads from a CDN, and FastAPI's
+- Fonts (Ninety One Visuelt) are self-hosted WOFF2 files; icons are a committed Material Symbols
+  subset; KaTeX is bundled. Nothing loads from a CDN, and FastAPI's
   CDN-backed Swagger UI and ReDoc are disabled.
 - The only outbound call Remi can make is to the AI provider you choose. The default, `none`,
   makes none; `ollama` is refused unless its URL is loopback; `anthropic` calls the Anthropic
@@ -257,6 +290,8 @@ backend/     uv project: app/{api,core,schemas,services,repositories,utils}, tes
 frontend/    Vite + React + TS: src/{app,api,shell,screens,components,stores,lib,styles,assets}, scripts/
 parity/      Playwright harness: prototype baselines, goldens, parity, behaviour and egress suites; tests/
 contracts/   openapi.json (generated, committed)
+deploy/      the APEX server: windows/ (remi-server.ps1 and its .bat shortcuts), apex/ (the tile)
+build/       make bundle output (ignored); .github/workflows/release.yml builds releases
 launch.command   double-click launcher (macOS)
 launch.bat       double-click launcher (Windows)
 Makefile

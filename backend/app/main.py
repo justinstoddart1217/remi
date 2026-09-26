@@ -5,6 +5,9 @@ the built SPA (``frontend/dist``) for everything else. ``cli`` is the installed 
 point: it serves on loopback only and opens the browser. ``remi db path|upgrade|backup``
 manages the database without starting the server.
 
+``remi --network`` (or ``REMI_NETWORK=1``) is server mode, for the APEX server: Remi may bind
+a non-loopback address and answers to this computer's own names (docs/decisions/0012).
+
 A ``remi.db`` that cannot be used as it is (written by a newer Remi, or not a readable
 database) stops ``remi`` and ``remi db upgrade|backup`` with a plain message and exit status 1,
 not a traceback: ``cli`` prepares the database before it starts the server.
@@ -28,10 +31,11 @@ from fastapi.routing import APIRoute
 from pydantic import ValidationError
 
 from app import __version__
+from app.api.middleware import allowed_hosts
 from app.api.router import install_api
 from app.api.static import install_static
 from app.core.clock import Clock, build_clock
-from app.core.config import RemiConfig, is_loopback_host
+from app.core.config import RemiConfig
 from app.core.db import make_engine
 from app.core.migrations import (
     DatabaseProblem,
@@ -112,6 +116,16 @@ def _open_browser_when_started(server: uvicorn.Server, url: str) -> None:
     webbrowser.open(url)
 
 
+def _announce_server_mode(cfg: RemiConfig) -> None:
+    """Server mode never opens a browser (it runs as a background service); it says where
+    other computers can reach it instead."""
+    names = [host for host in allowed_hosts(cfg) if host != "*"]
+    print(f"Remi {__version__} in server mode. Open it from another computer at:")
+    for name in names:
+        print(f"  {_browser_url(name.strip('[]'), cfg.port)}")
+    print("There is no sign-in: anyone who can reach this port can use Remi.")
+
+
 def _parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         prog="remi",
@@ -120,11 +134,17 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--host",
         default=None,
-        help="loopback address to bind (default 127.0.0.1); anything else is refused",
+        help="address to bind (default 127.0.0.1); only loopback unless --network",
     )
     parser.add_argument("--port", type=int, default=None, help="port (default 8765)")
     parser.add_argument("--data-dir", type=Path, default=None, help="override the data dir")
     parser.add_argument("--no-browser", action="store_true", help="do not open the browser")
+    parser.add_argument(
+        "--network",
+        action="store_true",
+        help="server mode: let other computers open Remi (bind with --host 0.0.0.0); "
+        "there is no sign-in",
+    )
     commands = parser.add_subparsers(dest="command", metavar="command")
     db = commands.add_parser("db", help="manage the database (path, upgrade, backup)")
     db.add_argument(
@@ -211,12 +231,12 @@ def cli(argv: Sequence[str] | None = None) -> None:
     port: int | None = args.port
     data_dir: Path | None = args.data_dir
     no_browser: bool = args.no_browser
+    network: bool = args.network
     command: str | None = args.command
 
-    if host is not None and not is_loopback_host(host):
-        parser.error(f"refusing to bind to non-loopback host {host!r}: Remi is local-only")
-
     overrides: dict[str, Any] = {}
+    if network:
+        overrides["network"] = True
     if host is not None:
         overrides["host"] = host
     if port is not None:
@@ -239,7 +259,9 @@ def cli(argv: Sequence[str] | None = None) -> None:
             log_level="info",
         )
     )
-    if cfg.open_browser and not no_browser:
+    if cfg.network:
+        _announce_server_mode(cfg)
+    elif cfg.open_browser and not no_browser:
         threading.Thread(
             target=_open_browser_when_started,
             args=(server, _browser_url(cfg.host, cfg.port)),

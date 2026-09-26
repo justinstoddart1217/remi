@@ -1,10 +1,13 @@
 """Local attack surface guards. Remi has no auth, so these are what keep other sites out.
 
 1. ``TrustedHostMiddleware`` accepts only loopback ``Host`` headers, which defeats DNS
-   rebinding (a hostile page resolving its own name to 127.0.0.1).
-2. :class:`MutationGuardMiddleware`: every mutating ``/api`` request needs a loopback
-   ``Origin`` on Remi's own port (plus the Vite dev port outside prod) and ``X-Remi-Client: 1``.
-   A cross-site form or ``fetch`` cannot satisfy both; there is no CORS, so no preflight passes.
+   rebinding (a hostile page resolving its own name to 127.0.0.1). In server mode
+   (``REMI_NETWORK=1``) it also accepts this computer's own names and ``REMI_ALLOWED_HOSTS``.
+2. :class:`MutationGuardMiddleware`: every mutating ``/api`` request needs an ``Origin`` that is
+   one of those hosts on Remi's own port (plus the Vite dev port outside prod) and
+   ``X-Remi-Client: 1``. A cross-site form or ``fetch`` cannot satisfy both; there is no CORS,
+   so no preflight passes. With ``REMI_ALLOWED_HOSTS=*`` the Origin must match the request's
+   own ``Host`` instead.
 3. :class:`SecurityHeadersMiddleware` adds the app CSP (``'self'`` only) and a few hardening
    headers to every response that does not set its own CSP (chart HTML sets
    :data:`CHART_CSP`).
@@ -14,6 +17,7 @@
 """
 
 from collections.abc import Collection, Iterable
+from ipaddress import ip_address
 from typing import Final
 
 from fastapi import FastAPI
@@ -23,7 +27,7 @@ from starlette.responses import JSONResponse
 from starlette.types import ASGIApp, Message, Receive, Scope, Send
 
 from app.api.errors import error_body, internal_error_response, is_api_path
-from app.core.config import RemiConfig
+from app.core.config import RemiConfig, machine_names
 
 APP_CSP: Final = (
     "default-src 'self'; "
@@ -61,6 +65,7 @@ CLIENT_HEADER_VALUE: Final = "1"
 SAFE_METHODS: Final = frozenset({"GET", "HEAD", "OPTIONS"})
 DEV_ENVS: Final = frozenset({"dev", "test"})
 LOOPBACK_NAMES: Final = ("127.0.0.1", "localhost", "[::1]")
+ANY_HOST: Final = "*"
 
 
 def _host_literal(host: str) -> str:
@@ -69,9 +74,22 @@ def _host_literal(host: str) -> str:
     return f"[{bare}]" if ":" in bare else bare
 
 
+def _is_unspecified(host: str) -> bool:
+    """``0.0.0.0`` and ``::``: bind to every address, never a name a browser sends."""
+    try:
+        return ip_address(host.strip("[]")).is_unspecified
+    except ValueError:
+        return False
+
+
 def allowed_hosts(config: RemiConfig) -> list[str]:
-    """Host header values (without port) Remi answers to."""
-    hosts = [*LOOPBACK_NAMES, _host_literal(config.host)]
+    """Host header values (without port) Remi answers to. ``*`` (server mode only) is any."""
+    hosts = [*LOOPBACK_NAMES]
+    if not _is_unspecified(config.host):
+        hosts.append(_host_literal(config.host).lower())
+    if config.network:
+        hosts.extend(machine_names())
+        hosts.extend(_host_literal(host) for host in config.extra_hosts)
     return list(dict.fromkeys(hosts))
 
 
@@ -80,15 +98,33 @@ def allowed_origins(config: RemiConfig) -> frozenset[str]:
     ports = [config.port]
     if config.env in DEV_ENVS:
         ports.append(config.web_port)
-    return frozenset(f"http://{host}:{port}" for host in allowed_hosts(config) for port in ports)
+    return frozenset(
+        f"http://{host}:{port}"
+        for host in allowed_hosts(config)
+        if host != ANY_HOST
+        for port in ports
+    )
 
 
 class MutationGuardMiddleware:
-    """Rejects mutating ``/api`` requests without a loopback Origin and ``X-Remi-Client: 1``."""
+    """Rejects mutating ``/api`` requests without an allowed Origin and ``X-Remi-Client: 1``.
 
-    def __init__(self, app: ASGIApp, origins: Iterable[str]) -> None:
+    ``same_origin`` (``REMI_ALLOWED_HOSTS=*``) also accepts an Origin equal to
+    ``http://<the request's Host>``: the page Remi served is making the change.
+    """
+
+    def __init__(self, app: ASGIApp, origins: Iterable[str], same_origin: bool = False) -> None:
         self.app = app
         self.origins: Collection[str] = frozenset(origins)
+        self.same_origin = same_origin
+
+    def _origin_allowed(self, origin: str | None, headers: Headers) -> bool:
+        if origin is None:
+            return False
+        if origin in self.origins:
+            return True
+        host = headers.get("host")
+        return self.same_origin and host is not None and origin == f"http://{host.lower()}"
 
     async def __call__(self, scope: Scope, receive: Receive, send: Send) -> None:
         if (
@@ -99,12 +135,11 @@ class MutationGuardMiddleware:
             await self.app(scope, receive, send)
             return
         headers = Headers(scope=scope)
-        origin = headers.get("origin")
-        if origin is None or origin not in self.origins:
+        if not self._origin_allowed(headers.get("origin"), headers):
             response = JSONResponse(
                 error_body(
                     "FORBIDDEN_ORIGIN",
-                    "Changes must come from Remi itself (a loopback Origin on Remi's port).",
+                    "Changes must come from Remi itself (an Origin Remi answers to, on its port).",
                 ),
                 status_code=403,
             )
@@ -184,9 +219,12 @@ def install_security(app: FastAPI, config: RemiConfig) -> None:
     """Add the guards. Starlette runs the last-added middleware first, so the order of a
     request is: security headers (outermost, so even rejections and 500s carry them) ->
     unexpected-error envelope -> Host check -> mutation guard -> the app."""
-    app.add_middleware(MutationGuardMiddleware, origins=allowed_origins(config))
+    hosts = allowed_hosts(config)
     app.add_middleware(
-        TrustedHostMiddleware, allowed_hosts=allowed_hosts(config), www_redirect=False
+        MutationGuardMiddleware,
+        origins=allowed_origins(config),
+        same_origin=ANY_HOST in hosts,
     )
+    app.add_middleware(TrustedHostMiddleware, allowed_hosts=hosts, www_redirect=False)
     app.add_middleware(UnexpectedErrorMiddleware)
     app.add_middleware(SecurityHeadersMiddleware, csp=APP_CSP)

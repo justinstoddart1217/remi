@@ -3,6 +3,7 @@
 - Status: Accepted
 - Date: 2026-09-24
 - Plan: binding decision 3
+- Amended by: [ADR-0012](0012-apex-server-bundle.md), an opt-in server mode for the APEX server
 
 ## Context
 Remi holds personal planning notes. The prototype pulls React, Babel, fonts, icons and KaTeX
