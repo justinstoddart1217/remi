@@ -23,6 +23,7 @@ import { isReducedMotion, useReducedMotion } from '../../lib/reducedMotion';
 import { FRAME_1920 } from '../../lib/stage';
 import { afterTwoFrames } from '../../lib/timers';
 import { Stage } from '../../shell/Stage';
+import { ApexLink } from '../../shell/ApexLink';
 import { BrandBars, BrandFlow, LogoMark } from './Brand';
 import { ControlPanelPreview } from './ControlPanelPreview';
 import s from './Home.module.css';
@@ -185,6 +186,7 @@ export function HomeScreen() {
       </div>
 
       <header className={s.header} style={fade}>
+        <ApexLink />
         <span className={s.brand}>
           <LogoMark height={44} />
           <span className={s.wordmark}>

@@ -1,0 +1,21 @@
+/* "‹ APEX": a quiet text link in the headers' own small-caps style (the top bar's homeSub).
+   Both the top bar and Home's header sit on the dark-teal band. */
+.link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: center;
+  font-size: 11px;
+  letter-spacing: 0.16em;
+  line-height: 1;
+  text-transform: uppercase;
+  text-decoration: none;
+  white-space: nowrap;
+  color: rgba(255, 255, 255, 0.6);
+  transition: color var(--dur-fast) var(--ease-out);
+}
+
+.link:hover,
+.link:focus-visible {
+  color: #fff;
+}

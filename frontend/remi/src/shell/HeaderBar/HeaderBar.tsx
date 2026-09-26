@@ -5,6 +5,7 @@ import { useGo } from '../../app/navigation';
 import { paths } from '../../app/screens';
 import { Icon } from '../../components/Icon';
 import { useOverlays } from '../../stores/overlays';
+import { ApexLink } from '../ApexLink';
 import { useUi } from '../../stores/ui';
 import { useActiveScreen } from '../useActiveScreen';
 import { useGoHome } from '../useGoHome';
@@ -50,6 +51,7 @@ export function HeaderBar() {
 
   return (
     <header className={s.header} aria-busy={model.status === 'loading' ? true : undefined}>
+      <ApexLink className={s.apex} />
       <button type="button" className={s.home} title="Back to home" onClick={goHome}>
         <span className={s.markBox}>
           <LogoMark />

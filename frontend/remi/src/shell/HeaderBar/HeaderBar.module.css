@@ -14,6 +14,12 @@
   container: remi-top-bar / inline-size;
 }
 
+/* ---------------------------------------------------------------- back to APEX (mounted only) */
+
+.apex {
+  margin-right: 20px;
+}
+
 /* ---------------------------------------------------------------- home: mark and wordmark */
 
 .home {
