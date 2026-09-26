@@ -44,7 +44,7 @@ What a launcher does:
 1. If Remi is already running on its port, it just opens it in your browser.
 2. Otherwise it checks that uv and Node.js are installed (and says how to get them if not).
 3. The first time (and on macOS whenever the code has changed) it builds the app into
-   `frontend/dist`, installing the frontend's npm packages first if they are missing. That takes
+   `frontend/remi/dist`, installing the frontend's npm packages first if they are missing. That takes
    about a minute. uv sets up Python 3.12 and the backend's packages on first use.
 4. It starts Remi on http://127.0.0.1:8765 and opens it in your browser. A fresh install opens
    the first-run wizard.
@@ -77,7 +77,7 @@ make browsers   # once: Playwright's Chromium, for make parity / behaviour / egr
 ### Day to day: one process
 
 ```sh
-make serve      # builds frontend/dist, then runs Remi on http://127.0.0.1:8765 and opens it
+make serve      # builds frontend/remi/dist, then runs Remi on http://127.0.0.1:8765 and opens it
 ```
 
 `make serve` runs the backend with `REMI_ENV=prod` and serves the API under `/api` and the built
@@ -114,7 +114,7 @@ remi db backup                # copy remi.db into backups/
 remi --network --host 0.0.0.0 # server mode: other computers may open it (no sign-in; see below)
 ```
 
-It serves the built app from `frontend/dist` (run `make build` first, or point `REMI_FRONTEND_DIST`
+It serves the built app from `frontend/remi/dist` (run `make build` first, or point `REMI_FRONTEND_DIST`
 at a build). To put `remi` on your PATH:
 
 ```sh
@@ -173,11 +173,11 @@ page. The guide, step by step: [`docs/deploy/APEX.md`](docs/deploy/APEX.md)
 | `dev` | Backend with reload on 127.0.0.1:8765 plus Vite on 127.0.0.1:5173, on its own data folder |
 | `dev-data-dir` | Print that folder (`REMI_DEV_DATA_DIR`, default `<Remi data>/dev`) |
 | `serve` | Build the frontend, then run Remi as one process on 127.0.0.1:8765 |
-| `build` | `tsc -b && vite build` into `frontend/dist`, then check it has no external URLs |
+| `build` | `tsc -b && vite build` into `frontend/remi/dist`, then check it has no external URLs |
 | `lint` | `ruff check`, `ruff format --check`, `eslint` |
 | `typecheck` | `pyright` (strict), `tsc -b` for the frontend and `tsc` for the parity harness |
 | `test-backend` / `test-frontend` / `test-harness` / `test` | pytest / vitest / `node --test` on `parity/tests` (the Remi-only states and their approvals, and these docs against the files they describe) / all three |
-| `openapi` | FastAPI → `contracts/openapi.json` → `frontend/src/api/schema.d.ts` |
+| `openapi` | FastAPI → `contracts/remi-openapi.json` → `frontend/remi/src/api/schema.d.ts` |
 | `openapi-check` | Fail if the committed contract or TS schema is stale |
 | `design-verify` | Fail if the design folder differs from `docs/design-spec/design-manifest.sha256` |
 | `goldens` / `goldens-check` | Extract the prototype's golden values into `parity/golden/` / fail if they are stale |
@@ -216,7 +216,7 @@ Process settings come from `REMI_*` environment variables (`backend/remi/core/co
 | `REMI_NOW` | unset | Dev and test only: stand the clock still at this instant, e.g. `2026-10-05T09:30:00+01:00` (it must fall on `REMI_TODAY`) |
 | `REMI_DEFAULT_TIMEZONE` | unset | Dev and test only: the zone the first-run wizard pre-fills instead of the Mac's own |
 | `REMI_WEB_PORT` | `5173` | Dev and test only: the Vite port whose origin may send mutations |
-| `REMI_FRONTEND_DIST` | `frontend/dist` | Built SPA to serve |
+| `REMI_FRONTEND_DIST` | `frontend/remi/dist` | Built SPA to serve |
 | `REMI_CHART_MAX_BYTES` | `4194304` | Textbook chart upload limit |
 | `REMI_OPEN_BROWSER` | `true` | Whether `remi` opens the browser |
 | `REMI_ANTHROPIC_API_KEY` | unset | The Anthropic key, if you use that provider and do not keep it in the Keychain |
@@ -282,7 +282,7 @@ How to verify it:
 
 ```sh
 make egress      # Playwright crawl of a fresh production build, served by the backend
-make dist-urls   # frontend/dist holds no http(s) URL except XML namespaces (also part of make build)
+make dist-urls   # frontend/remi/dist holds no http(s) URL except XML namespaces (also part of make build)
 make test-backend  # pytest under pytest-socket: sockets only to 127.0.0.1
 ```
 
@@ -298,11 +298,12 @@ Two self-tests prove it would catch one. For a belt-and-braces check, turn Wi-Fi
 ```
 Remi Dashboard Design Review/   the design reference, kept locally only (removed from the repo in c4c88e6);
                                 make design-verify and goldens-check skip without it
-docs/        PLAN.md, SPEC.md, api.md, design-spec/, decisions/ (ADRs), requests/, parity-report.md
-backend/     uv project: remi/{api,core,schemas,services,repositories,utils}, tests/, scripts/
-frontend/    Vite + React + TS: src/{app,api,shell,screens,components,stores,lib,styles,assets}, scripts/
+docs/        PLAN.md, SPEC.md, api.md, design-spec/, decisions/ (ADRs), requests/, apex/ (the APEX import)
+backend/     uv project (this repo's dev env) around the package remi/: {api,core,schemas,services,
+             repositories,utils}, alembic/, fixtures/, scripts/, tests/ (laid out as it sits in APEX)
+frontend/    remi/: the Vite + React + TS project, src/{app,api,shell,screens,components,...}, scripts/
 parity/      Playwright harness: prototype baselines, goldens, parity, behaviour and egress suites; tests/
-contracts/   openapi.json (generated, committed)
+contracts/   remi-openapi.json (generated, committed)
 deploy/      the APEX server: windows/ (remi-server.ps1 and its .bat shortcuts)
 build/       make bundle output (ignored); .github/workflows/release.yml builds releases
 launch.command   double-click launcher (macOS)

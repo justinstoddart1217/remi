@@ -36,11 +36,11 @@ command -v uv >/dev/null 2>&1 || fail "uv is not installed. Install it with: bre
 command -v npm >/dev/null 2>&1 || fail "Node.js is not installed. Install it with: brew install node"
 
 # Build the dashboard if it is missing or older than its sources.
-DIST="$ROOT/frontend/dist/index.html"
-if [ ! -f "$DIST" ] || [ -n "$(find "$ROOT/frontend/src" "$ROOT/frontend/index.html" \
-    "$ROOT/frontend/package.json" -newer "$DIST" -print -quit 2>/dev/null)" ]; then
+DIST="$ROOT/frontend/remi/dist/index.html"
+if [ ! -f "$DIST" ] || [ -n "$(find "$ROOT/frontend/remi/src" "$ROOT/frontend/remi/index.html" \
+    "$ROOT/frontend/remi/package.json" -newer "$DIST" -print -quit 2>/dev/null)" ]; then
   say "Building the dashboard (first run, or the code changed). This takes a minute."
-  cd "$ROOT/frontend"
+  cd "$ROOT/frontend/remi"
   [ -d node_modules ] || npm ci --no-audit --no-fund || fail "Installing frontend packages failed."
   npm run build || fail "Building the dashboard failed. See the messages above."
 fi

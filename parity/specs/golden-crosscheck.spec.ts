@@ -12,7 +12,7 @@ import { SIMPLE_READER_CORPUS } from '../golden/corpus.mjs';
 import { goldenFromModel, MODEL_GOLDEN_FILES } from '../golden/model-golden.mjs';
 import { installVendorRoutes, PARITY_DIR } from '../vendor-routes.ts';
 
-const GOLDEN_DIR = path.join(PARITY_DIR, 'golden');
+const GOLDEN_DIR = path.join(PARITY_DIR, '..', 'backend', 'remi', 'tests', 'golden');
 const readGolden = (file: string): unknown => JSON.parse(fs.readFileSync(path.join(GOLDEN_DIR, file), 'utf8'));
 
 test.describe('golden cross-check (browser vs Node)', () => {

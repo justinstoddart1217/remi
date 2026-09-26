@@ -203,7 +203,7 @@ export const DIVERGENCES: Divergence[] = [
     remi: 'Saved locally',
     wholeLine: true,
     source: 'arch-frontend-screens §4 (Textbook save status); Remi Textbook.dc.html:657',
-    why: 'The prototype kept pages in localStorage; Remi saves them in the local server\'s database, so "in this browser" would be false. The spec\'s resting status is "Saved locally" (frontend/src/screens/textbook/usePageSaver.ts).',
+    why: 'The prototype kept pages in localStorage; Remi saves them in the local server\'s database, so "in this browser" would be false. The spec\'s resting status is "Saved locally" (frontend/remi/src/screens/textbook/usePageSaver.ts).',
   },
   // ---------------------------------------------------------------- not shown by any state
   {

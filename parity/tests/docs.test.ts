@@ -112,7 +112,7 @@ test('make dev runs on its own data folder, not the real remi.db', () => {
 });
 
 // ------------------------------------------------------------------ request docs
-const SOURCE_DIRS = ['frontend/src', 'frontend/scripts', 'backend/remi', 'backend/tests', 'backend/scripts', 'backend/alembic', 'parity', 'contracts'];
+const SOURCE_DIRS = ['frontend/remi/src', 'frontend/remi/scripts', 'backend/remi', 'parity', 'contracts'];
 const SKIP = new Set(['node_modules', 'report', 'baselines', 'test-results', 'playwright-report', '.remi-run', '__pycache__', 'dist']);
 const SOURCE_EXT = /\.(ts|tsx|mts|mjs|js|css|py|json|html)$/;
 

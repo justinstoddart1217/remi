@@ -7,7 +7,7 @@
 //   unpkg react@18.3.1 / react-dom@18.3.1 UMD, @babel/standalone@7.29.0
 //        -> parity/node_modules, byte-identical to unpkg, so support.js's SRI checks pass
 //   fonts.googleapis.com/css2?...  -> CSS built from the @fontsource packages (text faces) or the
-//        committed Material Symbols subset (frontend/src/assets/fonts/material-symbols-remi.woff2)
+//        committed Material Symbols subset (frontend/remi/src/assets/fonts/material-symbols-remi.woff2)
 //   fonts.gstatic.com/__remi_local__/... -> those woff2 files
 //   cdn.jsdelivr.net/npm/katex@0.16.11/... -> parity/node_modules/katex/...
 //
@@ -24,7 +24,7 @@ export const PARITY_DIR = path.dirname(fileURLToPath(import.meta.url));
 export const REPO_DIR = path.resolve(PARITY_DIR, '..');
 export const DESIGN_DIR = path.join(REPO_DIR, 'Remi Dashboard Design Review');
 const NODE_MODULES = path.join(PARITY_DIR, 'node_modules');
-export const MATERIAL_SYMBOLS_WOFF2 = path.join(REPO_DIR, 'frontend/src/assets/fonts/material-symbols-remi.woff2');
+export const MATERIAL_SYMBOLS_WOFF2 = path.join(REPO_DIR, 'frontend/remi/src/assets/fonts/material-symbols-remi.woff2');
 
 const LOCAL_FONT_BASE = 'https://fonts.gstatic.com/__remi_local__/';
 const ICON_FONT_URL = LOCAL_FONT_BASE + 'material-symbols-remi.woff2';

@@ -54,23 +54,23 @@ default-groups = ["dev"]
 [tool.ruff]
 target-version = "py312"
 line-length = 100
-extend-exclude = ["alembic/versions"]
+extend-exclude = ["remi/alembic/versions"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "B", "UP", "SIM", "RUF", "S", "PTH", "DTZ"]
 
 [tool.ruff.lint.per-file-ignores]
 # pytest uses bare asserts by design.
-"tests/**" = ["S101"]
+"remi/tests/**" = ["S101"]
 
 [tool.ruff.lint.isort]
 known-first-party = ["remi"]
-# backend/alembic/ (migration scripts) would otherwise make `alembic` look first-party.
+# remi/alembic/ (migration scripts) would otherwise make `alembic` look first-party.
 known-third-party = ["alembic"]
 
 # ---------------------------------------------------------------- pyright
 [tool.pyright]
-include = ["remi", "tests", "scripts"]
+include = ["remi"]
 typeCheckingMode = "strict"
 pythonVersion = "3.12"
 venvPath = "."
@@ -78,7 +78,7 @@ venv = ".venv"
 
 # ---------------------------------------------------------------- pytest
 [tool.pytest.ini_options]
-testpaths = ["tests"]
+testpaths = ["remi/tests"]
 # Import `app` from the source tree, independent of the editable install's .pth file.
 pythonpath = ["."]
 # Stay local: tests may only open sockets to loopback (pytest-socket).

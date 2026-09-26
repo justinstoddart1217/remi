@@ -37,11 +37,11 @@ if errorlevel 1 (
 
 rem Build the dashboard on first run, or when REMI_REBUILD=1.
 set "NEEDBUILD="
-if not exist "%ROOT%frontend\dist\index.html" set "NEEDBUILD=1"
+if not exist "%ROOT%frontend\remi\dist\index.html" set "NEEDBUILD=1"
 if "%REMI_REBUILD%"=="1" set "NEEDBUILD=1"
 if defined NEEDBUILD (
   echo Building the dashboard. This takes a minute.
-  pushd "%ROOT%frontend"
+  pushd "%ROOT%frontend\remi"
   if not exist node_modules (
     call npm ci --no-audit --no-fund
     if errorlevel 1 (

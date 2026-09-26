@@ -23,7 +23,9 @@ import { goldenFromModel, MODEL_GOLDEN_FILES, PREVIEW_HOURS } from './model-gold
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
 const DESIGN_DIR = path.resolve(HERE, '../../Remi Dashboard Design Review');
-const OUT_DIR = HERE;
+// The golden JSON lives with the backend tests that use it; the sample seed ships in the package.
+const OUT_DIR = path.resolve(HERE, '../../backend/remi/tests/golden');
+const SEED_FILE = path.resolve(HERE, '../../backend/remi/fixtures/prototype_seed.json');
 const CHECK = process.argv.includes('--check');
 
 export const FIXED_NOW_ISO = '2026-10-05T09:30:00+01:00';
@@ -495,7 +497,7 @@ const stale = [];
 let written = 0;
 for (const [file, value] of Object.entries(outputs)) {
   const text = JSON.stringify(value, null, 2) + '\n';
-  const target = path.join(OUT_DIR, file);
+  const target = file === 'prototype_seed.json' ? SEED_FILE : path.join(OUT_DIR, file);
   const current = fs.existsSync(target) ? fs.readFileSync(target, 'utf8') : null;
   if (current === text) continue;
   if (CHECK) stale.push(file);

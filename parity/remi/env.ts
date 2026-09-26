@@ -16,7 +16,7 @@ import { fileURLToPath } from 'node:url';
 export const PARITY_DIR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const REPO_DIR = path.resolve(PARITY_DIR, '..');
 export const BACKEND_DIR = path.join(REPO_DIR, 'backend');
-export const FRONTEND_DIR = path.join(REPO_DIR, 'frontend');
+export const FRONTEND_DIR = path.join(REPO_DIR, 'frontend', 'remi');
 export const HOST = '127.0.0.1';
 export const API_PORT = Number(process.env.REMI_PARITY_API_PORT ?? 8804);
 export const WEB_PORT = Number(process.env.REMI_PARITY_WEB_PORT ?? 5304);

@@ -33,28 +33,26 @@ def backups_dir(data_dir: Path) -> Path:
     return data_dir / "backups"
 
 
-def backend_root() -> Path:
-    """The ``backend/`` directory of the source checkout."""
-    return Path(__file__).resolve().parents[2]
+def package_dir() -> Path:
+    """The ``remi`` package itself (``backend/remi``), wherever the repository sits."""
+    return Path(__file__).resolve().parents[1]
 
 
 def alembic_dir() -> Path:
-    """Alembic's script location (``backend/alembic``)."""
-    return backend_root() / "alembic"
-
-
-def alembic_ini() -> Path:
-    return backend_root() / "alembic.ini"
+    """Alembic's script location, inside the package (``backend/remi/alembic``). Its config is
+    built in memory (``core.migrations.alembic_config``); there is no ``alembic.ini``."""
+    return package_dir() / "alembic"
 
 
 def repo_root() -> Path:
-    """The repository root (``remi/``) when running from a source checkout."""
+    """The repository root: this one, or APEX's after the import. Both keep the package at
+    ``backend/remi`` (docs/apex/INTEGRATION_REQUIREMENTS.md, section 4)."""
     return Path(__file__).resolve().parents[3]
 
 
 def default_frontend_dist() -> Path:
-    """The built SPA served by ``make serve`` (``frontend/dist``)."""
-    return repo_root() / "frontend" / "dist"
+    """The built SPA (``frontend/remi/dist``). APEX sets ``REMI_FRONTEND_DIST`` explicitly."""
+    return repo_root() / "frontend" / "remi" / "dist"
 
 
 def ensure_private_dir(path: Path) -> Path:

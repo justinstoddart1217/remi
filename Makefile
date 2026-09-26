@@ -6,8 +6,8 @@ SHELL := /bin/bash
 .DEFAULT_GOAL := help
 
 BACKEND         := backend
-FRONTEND        := frontend
-CONTRACT        := contracts/openapi.json
+FRONTEND        := frontend/remi
+CONTRACT        := contracts/remi-openapi.json
 TS_SCHEMA       := $(FRONTEND)/src/api/schema.d.ts
 DESIGN_DIR      := Remi Dashboard Design Review
 DESIGN_MANIFEST := docs/design-spec/design-manifest.sha256
@@ -61,25 +61,25 @@ dev: ## Backend on 127.0.0.1:8765 (reload, own data folder) + Vite on 127.0.0.1:
 	trap 'kill $$(jobs -p) 2>/dev/null || true' EXIT; \
 	(cd $(BACKEND) && REMI_ENV=dev REMI_DATA_DIR="$$data" REMI_WEB_PORT=$(WEB_PORT) \
 	    $(UV) run uvicorn remi.main:create_app --factory \
-	    --reload --reload-dir app --host $(HOST) --port $(API_PORT)) & \
+	    --reload --reload-dir remi --host $(HOST) --port $(API_PORT)) & \
 	(cd $(FRONTEND) && REMI_API_PORT=$(API_PORT) REMI_WEB_PORT=$(WEB_PORT) $(NPM) run dev) & \
 	wait
 
 # Backend entry points run as `python -m ...` from backend/ so they never depend on the editable
 # install's .pth file (macOS iCloud marks dot-folders like .venv hidden, and Python skips
 # hidden .pth files). `remi` behaves exactly like `python -m remi.main`.
-# One process on 127.0.0.1:$(API_PORT): the API under /api and frontend/dist for everything else
+# One process on 127.0.0.1:$(API_PORT): the API under /api and frontend/remi/dist for everything else
 # (hashed /assets cached forever, client routes answered with index.html). Opens the browser;
 # stop with Ctrl-C.
 serve: build ## Build the SPA, then run Remi as one process on 127.0.0.1:8765
 	cd $(BACKEND) && REMI_ENV=prod REMI_FRONTEND_DIST="$(CURDIR)/$(FRONTEND)/dist" \
 	  $(UV) run python -m remi.main --host $(HOST) --port $(API_PORT)
 
-build: ## Build the frontend into frontend/dist and check it stays local
+build: ## Build the frontend into frontend/remi/dist and check it stays local
 	cd $(FRONTEND) && $(NPM) run build
 	@$(MAKE) --no-print-directory dist-urls
 
-dist-urls: ## Fail if frontend/dist references any http(s) URL except XML namespaces
+dist-urls: ## Fail if frontend/remi/dist references any http(s) URL except XML namespaces
 	cd $(FRONTEND) && node scripts/check-dist-urls.mjs dist
 
 # ------------------------------------------------------------------ quality
@@ -107,19 +107,19 @@ test-harness: ## node --test: the parity harness's own checks, README and reques
 test: test-backend test-frontend test-harness ## All unit tests
 
 # ------------------------------------------------------------------ contract
-openapi: ## FastAPI OpenAPI -> contracts/openapi.json -> frontend/src/api/schema.d.ts
-	cd $(BACKEND) && $(UV) run python -m scripts.export_openapi ../$(CONTRACT)
+openapi: ## FastAPI OpenAPI -> contracts/remi-openapi.json -> frontend/remi/src/api/schema.d.ts
+	cd $(BACKEND) && $(UV) run python -m remi.scripts.export_openapi ../$(CONTRACT)
 	cd $(FRONTEND) && $(NPM) run gen:api
 
 openapi-check: ## Fail if the committed contract or TS schema drifts from the backend
 	@tmp=$$(mktemp -d); trap 'rm -rf "$$tmp"' EXIT; \
-	(cd $(BACKEND) && $(UV) run python -m scripts.export_openapi "$$tmp/openapi.json") || exit 1; \
+	(cd $(BACKEND) && $(UV) run python -m remi.scripts.export_openapi "$$tmp/openapi.json") || exit 1; \
 	(cd $(FRONTEND) && npx --no-install openapi-typescript "$$tmp/openapi.json" -o "$$tmp/schema.d.ts" >/dev/null) || exit 1; \
 	diff -u $(CONTRACT) "$$tmp/openapi.json" || { echo "$(CONTRACT) is stale: run make openapi"; exit 1; }; \
 	diff -u $(TS_SCHEMA) "$$tmp/schema.d.ts" || { echo "$(TS_SCHEMA) is stale: run make openapi"; exit 1; }; \
 	echo "OpenAPI contract and TS schema are up to date"
 
-icons: ## Rebuild the Material Symbols subset (build-time download; see frontend/scripts)
+icons: ## Rebuild the Material Symbols subset (build-time download; see frontend/remi/scripts)
 	cd $(FRONTEND) && $(NPM) run subset-icons
 
 # ------------------------------------------------------------------ design reference

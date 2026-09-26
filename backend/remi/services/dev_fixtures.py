@@ -2,7 +2,7 @@
 
 Refused unless ``REMI_ENV`` is ``dev`` or ``test`` (the route is not even mounted otherwise).
 Remi starts empty (ADR-0006); the design's sample data exists only here, loaded from the
-parity harness's ``parity/golden/prototype_seed.json`` (the prototype's ``BASE_*`` constants).
+package's ``fixtures/prototype_seed.json`` (the prototype's ``BASE_*`` constants).
 
 ``design`` resets every state table and then, in the same unit of work (one
 ``dev.fixture_loaded`` event), runs first-run setup (Europe/London, England and Wales holidays,
@@ -29,7 +29,7 @@ from sqlalchemy import delete
 from remi.core.clock import Clock
 from remi.core.config import RemiConfig
 from remi.core.errors import DomainError, NotFound
-from remi.core.paths import repo_root
+from remi.core.paths import package_dir
 from remi.core.uow import UnitOfWork, UnitOfWorkFactory, ref
 from remi.repositories import models as orm
 from remi.repositories.registry import ROTATION, SETTINGS
@@ -43,7 +43,8 @@ from remi.services.settings import timezone_changed
 from remi.services.setup import apply_setup
 
 FIXTURE_ENVS: Final = frozenset({"dev", "test"})
-SEED_RELPATH: Final = Path("parity") / "golden" / "prototype_seed.json"
+SEED_FILE: Final = Path("fixtures") / "prototype_seed.json"
+"""The prototype's sample data, shipped inside the package (dev and test only)."""
 LONDON: Final = ZoneInfo("Europe/London")
 
 DESIGN_MOVE: Final = dt.date(2027, 1, 4)
@@ -129,7 +130,7 @@ def require_fixture_env(config: RemiConfig) -> None:
 
 
 def seed_path() -> Path:
-    return repo_root() / SEED_RELPATH
+    return package_dir() / SEED_FILE
 
 
 @cache
@@ -144,7 +145,7 @@ def load_seed(path: Path | None = None) -> Mapping[str, Any]:
     if not target.is_file():
         raise DomainError(
             "FIXTURE_MISSING",
-            "The design fixture needs parity/golden/prototype_seed.json (a source checkout).",
+            "The design fixture needs remi/fixtures/prototype_seed.json.",
             status=409,
         )
     return _load_seed(str(target))
