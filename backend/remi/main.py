@@ -22,10 +22,9 @@ import webbrowser
 from collections.abc import AsyncGenerator, Sequence
 from contextlib import asynccontextmanager
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import sqlalchemy.exc
-import uvicorn
 from fastapi import FastAPI
 from fastapi.routing import APIRoute
 from pydantic import ValidationError
@@ -47,6 +46,11 @@ from remi.core.migrations import (
 from remi.core.paths import backups_dir, db_path
 from remi.core.uow import UnitOfWorkFactory
 from remi.services.settings import SettingsTimezone
+
+if TYPE_CHECKING:
+    # uvicorn is only for serving Remi on its own; importing the app or remi.mount (APEX) never
+    # needs it (docs/apex/INTEGRATION_REQUIREMENTS.md R-15).
+    import uvicorn
 
 BROWSER_WAIT_SECONDS = 30.0
 
@@ -110,7 +114,7 @@ def _browser_url(host: str, port: int) -> str:
     return f"http://{shown}:{port}/"
 
 
-def _open_browser_when_started(server: uvicorn.Server, url: str) -> None:
+def _open_browser_when_started(server: "uvicorn.Server", url: str) -> None:
     deadline = time.monotonic() + BROWSER_WAIT_SECONDS
     while not server.started:
         if server.should_exit or time.monotonic() > deadline:
@@ -252,6 +256,8 @@ def cli(argv: Sequence[str] | None = None) -> None:
         raise SystemExit(db_command(str(args.action), cfg))
 
     check_database(cfg)
+    import uvicorn  # only when serving Remi on its own (R-15)
+
     server = uvicorn.Server(
         uvicorn.Config(
             create_app(cfg),

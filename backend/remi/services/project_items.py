@@ -21,7 +21,7 @@ None of these move a forecast, so ``movements`` is empty.
 
 import datetime as dt
 from collections.abc import Callable, Sequence
-from typing import Final
+from typing import Final, TypeAlias, TypeVar
 
 from remi.core import ids
 from remi.core.clock import Clock
@@ -58,11 +58,14 @@ from remi.schemas.project import (
 from remi.services.mutations import Mutation, MutationScope, run_mutation
 from remi.services.projects import check_day, clean
 
+T = TypeVar("T")
+
+
 NEW_NOW_NAME: Final = "Added from an update"
 """A Now milestone created because a check-in added a task to a project with none."""
 
 
-type _Ordered = orm.CharterItem | orm.Milestone | orm.Task | orm.ReadinessItem
+_Ordered: TypeAlias = orm.CharterItem | orm.Milestone | orm.Task | orm.ReadinessItem
 
 
 def _reorder(rows: Sequence[_Ordered], order: OrderPut) -> None:
@@ -96,7 +99,7 @@ def _repo(m: MutationScope) -> ProjectRepository:
     return m.uow.repo(PROJECTS)
 
 
-def _mutate[T](
+def _mutate(
     uow_factory: UnitOfWorkFactory, clock: Clock, fn: Callable[[MutationScope], T]
 ) -> Mutation[T]:
     return run_mutation(uow_factory, clock, fn, "checkin")

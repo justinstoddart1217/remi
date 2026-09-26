@@ -98,7 +98,7 @@ describe('Settings', () => {
 
   it("shows a failed key save under the key field, and 'Not saved' in the header", async () => {
     const reason =
-      'The macOS Keychain is not available to Remi. Install the keyring extra (uv sync --extra keyring) or set REMI_ANTHROPIC_API_KEY.';
+      'Remi cannot store a key here. Set REMI_ANTHROPIC_API_KEY on the server (inside APEX, APEX\'s PM_ASSISTANT_API_KEY is used), then restart.';
     mock.api.state.settings = fixtureSettings({ aiProvider: 'anthropic', aiKeyConfigured: false });
     server.use(http.put('*/api/settings/ai-key', () => errorResponse(409, 'CONFLICT', reason)));
     renderSettings();

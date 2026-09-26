@@ -66,13 +66,13 @@ MAX_RELATIVE_PATH = 200
 
 def run(cmd: list[str], cwd: Path | None = None) -> None:
     print("+", " ".join(cmd), flush=True)
-    subprocess.run(cmd, cwd=cwd, check=True)  # noqa: S603 - fixed commands, no shell
+    subprocess.run(cmd, cwd=cwd, check=True)
 
 
 def git_commit() -> str:
     try:
         out = subprocess.run(
-            ["git", "rev-parse", "--short", "HEAD"],  # noqa: S607
+            ["git", "rev-parse", "--short", "HEAD"],
             cwd=repo_root(),
             check=True,
             capture_output=True,
@@ -88,7 +88,9 @@ def copy_tree(src: Path, dst: Path) -> None:
 
     def ignore(directory: str, names: list[str]) -> set[str]:
         return {
-            name for name in names if name in SKIP_NAMES or (Path(directory) / name).is_symlink()
+            name
+            for name in names
+            if name in SKIP_NAMES or (Path(directory) / name).is_symlink()
         }
 
     shutil.copytree(src, dst, ignore=ignore)
@@ -114,7 +116,9 @@ def windows_python(python_dir: Path | None, work: Path) -> Path:
             sys.exit(f"uv did not install a Windows python.exe under {install_dir}")
         python_dir = found[-1]
     if not (python_dir / "python.exe").is_file():
-        sys.exit(f"{python_dir} has no python.exe: --python-dir must be a Windows CPython folder")
+        sys.exit(
+            f"{python_dir} has no python.exe: --python-dir must be a Windows CPython folder"
+        )
     return python_dir
 
 
@@ -184,7 +188,9 @@ def add_frontend(dest: Path, build: bool) -> None:
         run([npm, "run", "build"], cwd=frontend)
     dist = frontend / "dist"
     if not (dist / "index.html").is_file():
-        sys.exit(f"{dist} has no index.html: build the frontend first (or drop --no-build)")
+        sys.exit(
+            f"{dist} has no index.html: build the frontend first (or drop --no-build)"
+        )
     node = shutil.which("node") or "node"
     run([node, "scripts/check-dist-urls.mjs", "dist"], cwd=frontend)
     copy_tree(dist, dest)
@@ -237,17 +243,23 @@ def check_paths(stage: Path) -> None:
     paths = (str(p.relative_to(stage.parent)) for p in stage.rglob("*"))
     longest = max(paths, key=len)
     if len(longest) > MAX_RELATIVE_PATH:
-        sys.exit(f"path too long for Windows once installed ({len(longest)}): {longest}")
+        sys.exit(
+            f"path too long for Windows once installed ({len(longest)}): {longest}"
+        )
 
 
 def write_zip(stage: Path, out: Path) -> Path:
     archive = out / f"{stage.name}.zip"
-    with zipfile.ZipFile(archive, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9) as zf:
+    with zipfile.ZipFile(
+        archive, "w", compression=zipfile.ZIP_DEFLATED, compresslevel=9
+    ) as zf:
         for path in sorted(stage.rglob("*")):
             if path.is_file():
                 zf.write(path, path.relative_to(stage.parent).as_posix())
     digest = hashlib.sha256(archive.read_bytes()).hexdigest()
-    (out / f"{archive.name}.sha256").write_text(f"{digest}  {archive.name}\n", encoding="ascii")
+    (out / f"{archive.name}.sha256").write_text(
+        f"{digest}  {archive.name}\n", encoding="ascii"
+    )
     return archive
 
 
@@ -263,7 +275,9 @@ def build(out: Path, python_dir: Path | None, build_frontend: bool) -> Path:
         add_site_packages(stage / "site-packages", work)
         add_backend(stage / "backend")
         add_server_files(stage)
-        (stage / "VERSION").write_text(f"{__version__}\n{git_commit()}\n", encoding="ascii")
+        (stage / "VERSION").write_text(
+            f"{__version__}\n{git_commit()}\n", encoding="ascii"
+        )
         compile_python(stage)
         check_paths(stage)
         for old in out.glob("remi-*-windows.zip*"):
@@ -275,15 +289,25 @@ def build(out: Path, python_dir: Path | None, build_frontend: bool) -> Path:
 
 
 def main(argv: list[str]) -> int:
-    parser = argparse.ArgumentParser(prog="build_bundle", description="Build the server bundle.")
-    parser.add_argument(
-        "--out", type=Path, default=repo_root() / "build" / "release", help="output folder"
+    parser = argparse.ArgumentParser(
+        prog="build_bundle", description="Build the server bundle."
     )
     parser.add_argument(
-        "--python-dir", type=Path, default=None, help="a Windows CPython 3.12 folder to ship"
+        "--out",
+        type=Path,
+        default=repo_root() / "build" / "release",
+        help="output folder",
     )
     parser.add_argument(
-        "--no-build", action="store_true", help="use the existing frontend/dist as it is"
+        "--python-dir",
+        type=Path,
+        default=None,
+        help="a Windows CPython 3.12 folder to ship",
+    )
+    parser.add_argument(
+        "--no-build",
+        action="store_true",
+        help="use the existing frontend/dist as it is",
     )
     args = parser.parse_args(argv[1:])
     os.environ.setdefault("UV_PYTHON_DOWNLOADS", "automatic")

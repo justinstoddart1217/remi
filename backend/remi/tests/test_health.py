@@ -1,3 +1,7 @@
+import tomllib
+from pathlib import Path
+
+import pytest
 from fastapi.testclient import TestClient
 
 from remi import __version__
@@ -22,3 +26,13 @@ def test_cdn_backed_doc_pages_are_disabled(client: TestClient) -> None:
     assert client.get("/docs").status_code == 404
     assert client.get("/redoc").status_code == 404
     assert client.get("/api/docs").status_code == 404
+
+
+def test_the_version_literal_matches_pyproject() -> None:
+    """``remi.__version__`` is a literal (R-13); in this repository it must equal pyproject's.
+    Inside APEX there is no pyproject beside the package, and the check has nothing to do."""
+    pyproject = Path(__file__).resolve().parents[2] / "pyproject.toml"
+    if not pyproject.is_file():
+        pytest.skip("no backend/pyproject.toml beside the package (inside APEX)")
+    project = tomllib.loads(pyproject.read_text(encoding="utf-8"))["project"]
+    assert project["version"] == __version__

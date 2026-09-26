@@ -1,26 +1,31 @@
 [project]
 name = "remi"
-version = "0.3.0"
-description = "Remi: a local-only planning companion (FastAPI backend)."
-requires-python = ">=3.12"
+version = "0.4.0"
+description = "Remi: a planning companion (FastAPI backend), mounted inside APEX at /remi/."
+# APEX's interpreter is 3.11 (docs/apex/INTEGRATION_REQUIREMENTS.md R-10).
+requires-python = ">=3.11"
 license = { text = "Proprietary" }
+# Pinned to exactly what APEX installs in its `server` extra (R-20); docs/apex/IMPORT.md.
 dependencies = [
-    "fastapi>=0.115",
-    "uvicorn[standard]>=0.32",
-    "sqlalchemy>=2.0.36,<2.1",
-    "alembic>=1.14",
-    "pydantic>=2.10",
-    "pydantic-settings>=2.6",
-    "holidays>=0.60",
-    "platformdirs>=4.3",
-    "python-multipart>=0.0.18",
-    "httpx>=0.28",
-    "tzdata>=2024.2",
+    "fastapi==0.141.1",
+    "sqlalchemy==2.0.54",
+    "alembic==1.20.0",
+    "pydantic==2.13.5",
+    "pydantic-settings==2.15.0",
+    "holidays==0.105",
+    "platformdirs==4.11.12",
+    "python-multipart==0.0.32",
+    "httpx==0.28.1",
+    "tzdata>=2026.3",
+    # The ASGI->WSGI adapter that mounts Remi in APEX's waitress process (remi/mount.py).
+    "a2wsgi==1.10.10",
 ]
 
 [project.optional-dependencies]
-anthropic = ["anthropic>=1.8,<2"]
-keyring = ["keyring>=25"]
+# APEX upgrades its shared SDK to 1.8.0 for this provider (R-21).
+anthropic = ["anthropic==1.8.0"]
+# Remi on its own (the laptop launchers, make serve / dev): APEX serves Remi through waitress.
+serve = ["uvicorn[standard]==0.53.0"]
 
 [project.scripts]
 remi = "remi.main:cli"
@@ -37,7 +42,12 @@ dev = [
     # starlette.testclient prefers httpx2 and warns on plain httpx.
     "httpx2>=2.13",
     # The Anthropic provider tests and pyright need the SDK (see docs/requests/AI-providers.md).
-    "anthropic>=1.8,<2",
+    "anthropic==1.8.0",
+    # Remi on its own, for the launchers and the parity harness.
+    "uvicorn[standard]==0.53.0",
+    # A stand-in for APEX (remi/tests/mount): Flask on waitress, the versions APEX runs.
+    "flask==3.1.3",
+    "waitress==3.0.2",
 ]
 
 [build-system]
@@ -50,44 +60,17 @@ packages = ["remi"]
 [tool.uv]
 default-groups = ["dev"]
 
-# ---------------------------------------------------------------- ruff
-[tool.ruff]
-target-version = "py312"
-line-length = 100
-extend-exclude = ["remi/alembic/versions"]
-
-[tool.ruff.lint]
-select = ["E", "F", "I", "B", "UP", "SIM", "RUF", "S", "PTH", "DTZ"]
-
-[tool.ruff.lint.per-file-ignores]
-# pytest uses bare asserts by design.
-"remi/tests/**" = ["S101"]
-
-[tool.ruff.lint.isort]
-known-first-party = ["remi"]
-# remi/alembic/ (migration scripts) would otherwise make `alembic` look first-party.
-known-third-party = ["alembic"]
-
-# ---------------------------------------------------------------- pyright
-[tool.pyright]
-include = ["remi"]
-typeCheckingMode = "strict"
-pythonVersion = "3.12"
-venvPath = "."
-venv = ".venv"
+# Ruff and pyright settings live with the package (remi/ruff.toml, remi/pyrightconfig.json),
+# so they travel into APEX with it (R-62).
 
 # ---------------------------------------------------------------- pytest
 [tool.pytest.ini_options]
 testpaths = ["remi/tests"]
-# Import `app` from the source tree, independent of the editable install's .pth file.
+# Import `remi` from the source tree, independent of the editable install's .pth file.
 pythonpath = ["."]
-# Stay local: tests may only open sockets to loopback (pytest-socket).
-addopts = "-ra --strict-markers --allow-hosts=127.0.0.1,::1"
-markers = [
-    "golden: compares against values extracted from the design prototype",
-    "slow: long-running tests",
-]
-filterwarnings = ["error"]
+# Markers, warnings-as-errors and the loopback-only socket rule are set by
+# remi/tests/conftest.py for Remi's tests alone, so they hold under APEX's pytest config too.
+addopts = "-ra --strict-markers"
 
 [tool.coverage.run]
 source = ["remi"]

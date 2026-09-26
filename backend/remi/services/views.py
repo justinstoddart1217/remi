@@ -23,7 +23,7 @@ import datetime as dt
 import threading
 from collections.abc import Callable, Iterable, Mapping, Sequence
 from dataclasses import dataclass, field
-from typing import Any, Final, cast
+from typing import Any, Final, TypeVar, cast
 from weakref import WeakKeyDictionary
 from zoneinfo import ZoneInfo
 
@@ -155,6 +155,9 @@ from remi.services.engine.verdict import move_strip, verdict
 from remi.services.settings_keys_bridge import api_key_configured
 from remi.utils.dates import add_months, fmt_dm, js_weekday, monday_of, month_end
 from remi.utils.text import hr1
+
+T = TypeVar("T")
+
 
 RECENT_NOTE_BDS: Final = 5
 """Business days of notes Tell Remi may send (``counts.recentNotes``)."""
@@ -376,7 +379,7 @@ def _limit(span: YearSpan, today: dt.date) -> int:
     return max(horizon_year(today), span.last)
 
 
-def with_plan_state[T](
+def with_plan_state(
     uow_factory: UnitOfWorkFactory,
     clock: Clock,
     fn: Callable[[PlanState], T],

@@ -14,7 +14,7 @@ before setup (and save nothing). Each write is one event; notes never move a for
 import datetime as dt
 from collections.abc import Callable, Iterable, Sequence
 from dataclasses import dataclass
-from typing import Final
+from typing import Final, TypeVar
 
 from remi.core.clock import Clock, resolve_zone
 from remi.core.errors import NotFound, ValidationFailed
@@ -49,6 +49,9 @@ from remi.services.engine.model import Domain, Project, ProjectPlan
 from remi.services.mutations import MutationScope, run_mutation
 from remi.services.views import check_range, settings_info, with_plan_state
 from remi.utils.dates import fmt_s, js_weekday, monday_of
+
+T = TypeVar("T")
+
 
 RAIL_DAYS: Final = 27
 """The rail lists business days from today back this many calendar days (``TODAY - 27``)."""
@@ -145,7 +148,7 @@ def tag_preview(uow_factory: UnitOfWorkFactory, text: str) -> TagPreviewOut:
         return TagPreviewOut(tags=tagger(uow).tags(text))
 
 
-def _with_cal[T](
+def _with_cal(
     uow_factory: UnitOfWorkFactory,
     clock: Clock,
     days: Iterable[dt.date],

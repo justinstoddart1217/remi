@@ -35,7 +35,7 @@ from collections.abc import Callable, Iterable, Mapping
 from contextvars import ContextVar, Token
 from dataclasses import dataclass
 from types import TracebackType
-from typing import Any, Final, Literal, Self, TypedDict, cast, overload
+from typing import Any, Final, Generic, Literal, Self, TypedDict, TypeVar, cast, overload
 
 from sqlalchemy import Connection, event
 from sqlalchemy import inspect as sa_inspect
@@ -48,6 +48,9 @@ from remi.repositories.models.base import CreatedAt, Timestamps, UUIDPk
 from remi.repositories.models.events import EVENT_SCHEMA_VERSION, Actor, RemiEvent
 
 logger = logging.getLogger(__name__)
+
+R = TypeVar("R")
+
 
 UNAUDITED_TABLES: Final = frozenset({"remi_events", "ai_audit"})
 """Writes to these tables are logs, not plan state: no event is required and no diff kept."""
@@ -94,7 +97,7 @@ class UnitOfWorkError(RuntimeError):
 # ------------------------------------------------------------------ repository registry
 
 
-class RepoKey[R]:
+class RepoKey(Generic[R]):
     """A typed handle on a registered repository factory."""
 
     __slots__ = ("factory", "name")
@@ -110,7 +113,7 @@ class RepoKey[R]:
 _REGISTRY: dict[str, RepoKey[Any]] = {}
 
 
-def register_repository[R](
+def register_repository(
     name: str, factory: Callable[[Session], R], *, replace: bool = False
 ) -> RepoKey[R]:
     """Register ``factory(session)`` under ``name`` and return its typed key.
@@ -462,7 +465,7 @@ class UnitOfWork:
     # -------------------------------------------------------------- repositories
 
     @overload
-    def repo[R](self, key: RepoKey[R]) -> R: ...
+    def repo(self, key: RepoKey[R]) -> R: ...
     @overload
     def repo(self, key: str) -> Any: ...
     def repo(self, key: RepoKey[Any] | str) -> Any:

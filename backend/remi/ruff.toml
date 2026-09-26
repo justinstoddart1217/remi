@@ -1,0 +1,16 @@
+# Ruff for the remi package, here and in APEX (docs/apex/INTEGRATION_REQUIREMENTS.md R-62).
+target-version = "py311"
+line-length = 100
+extend-exclude = ["alembic/versions"]
+
+[lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "RUF", "S", "PTH", "DTZ"]
+
+[lint.per-file-ignores]
+# pytest uses bare asserts by design.
+"tests/**" = ["S101"]
+
+[lint.isort]
+known-first-party = ["remi"]
+# remi/alembic/ (migration scripts) would otherwise make `alembic` look first-party.
+known-third-party = ["alembic"]

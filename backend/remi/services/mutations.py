@@ -43,7 +43,7 @@ the unit of work (use ``uow.after_rollback`` for files). ``forecast.InvalidEdit`
 import datetime as dt
 from collections.abc import Callable, Mapping
 from dataclasses import dataclass, field
-from typing import Final
+from typing import Final, Generic, TypeVar
 
 from pydantic import BaseModel
 
@@ -71,6 +71,10 @@ from remi.services.engine.checkin import diff_movements
 from remi.services.engine.forecast import InvalidEdit, carry_work_left
 from remi.services.engine.model import ProjectPlan
 from remi.services.views import PlanState, get_plan_state, setup_complete
+
+T = TypeVar("T")
+M = TypeVar("M", bound=MutationOut)
+
 
 DEFAULT_CAUSE: Final[MovementCause] = "checkin"
 
@@ -109,7 +113,7 @@ class MutationScope:
 
 
 @dataclass(frozen=True, slots=True)
-class Mutation[T]:
+class Mutation(Generic[T]):
     """The outcome of ``run_mutation``: ``fn``'s value, the new plan and the movements."""
 
     value: T
@@ -127,7 +131,7 @@ class Mutation[T]:
         """``MutationOut`` without an entity (deletes, bulk changes)."""
         return MutationOut(plan=self.require_plan(), movements=self.movements)
 
-    def with_entity[M: MutationOut](self, cls: type[M], entity: BaseModel | None) -> M:
+    def with_entity(self, cls: type[M], entity: BaseModel | None) -> M:
         """A typed ``*MutationOut`` (e.g. ``ProjectMutationOut``) carrying ``entity``."""
         return cls.model_validate(
             {"plan": self.require_plan(), "movements": self.movements, "entity": entity}
@@ -267,7 +271,7 @@ def plan_movements(
     ]
 
 
-def run_mutation[T](
+def run_mutation(
     uow_factory: UnitOfWorkFactory,
     clock: Clock,
     fn: Callable[[MutationScope], T],

@@ -36,7 +36,7 @@ tagged scope, rate or target, else checkin.
 import datetime as dt
 from collections.abc import Callable, Sequence
 from dataclasses import dataclass, field
-from typing import Any, Final, assert_never
+from typing import Any, Final, TypeVar, assert_never
 from uuid import UUID
 from zoneinfo import ZoneInfo
 
@@ -96,6 +96,9 @@ from remi.services.projects import add_feed, check_day, check_hours, check_plan_
 from remi.services.views import PlanState
 from remi.utils.dates import fmt_dm
 from remi.utils.text import fmt_num, shift_label
+
+T = TypeVar("T")
+
 
 DOMAIN_NAMES: Final = {"pc": "Private Credit", "fi": "Fixed Income"}
 RECENT_NOTE_BDS: Final = 5
@@ -491,7 +494,7 @@ def apply_changes(m: MutationScope, changes: Sequence[Change], meta: ApplyMeta) 
 
 
 # ---------------------------------------------------------------------------- preview
-def dry_run[T](uow_factory: UnitOfWorkFactory, clock: Clock, fn: Callable[[MutationScope], T]) -> T:
+def dry_run(uow_factory: UnitOfWorkFactory, clock: Clock, fn: Callable[[MutationScope], T]) -> T:
     """Run ``fn`` against the current plan in a unit of work that always rolls back (no
     event). The calendar widens on ``OutOfCalendar`` like a mutation's."""
     today = clock.today()

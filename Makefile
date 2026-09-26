@@ -88,7 +88,7 @@ lint: ## ruff (lint + format check) and eslint
 	cd $(FRONTEND) && $(NPM) run lint
 
 typecheck: ## pyright (strict), tsc -b (frontend) and tsc (parity harness)
-	cd $(BACKEND) && $(UV) run pyright
+	cd $(BACKEND) && $(UV) run pyright -p remi
 	cd $(FRONTEND) && $(NPM) run typecheck
 	@test -d parity/node_modules || (cd parity && $(NPM) ci --no-audit --no-fund)
 	cd parity && $(NPM) run typecheck

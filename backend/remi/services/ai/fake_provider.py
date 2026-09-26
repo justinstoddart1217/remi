@@ -33,7 +33,7 @@ import os
 import re
 from collections.abc import Callable, Mapping
 from pathlib import Path
-from typing import Final, cast
+from typing import Final, TypeVar, cast
 
 from remi.core.config import Env
 from remi.schemas.settings import AiProvider
@@ -50,6 +50,9 @@ from remi.services.ai.base import (
     ParseRequest,
     RawProposal,
 )
+
+S = TypeVar("S")
+
 
 ENV_VAR: Final = "REMI_AI_FAKE"
 FAKE_MODEL: Final = "fake"
@@ -164,7 +167,7 @@ class FakeProvider:
         )
 
 
-def with_fake[S](
+def with_fake(
     env: Env,
     fallback: Callable[[S], ParseProvider],
     environ: Mapping[str, str] | None = None,

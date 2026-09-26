@@ -20,7 +20,7 @@ inside it).
 import datetime as dt
 from collections.abc import Callable, Iterable, Mapping
 from dataclasses import dataclass
-from typing import Final
+from typing import Final, TypeVar
 
 from remi.core.clock import Clock
 from remi.core.errors import OutOfRange, ValidationFailed
@@ -29,6 +29,9 @@ from remi.repositories.models import HolidayRegion
 from remi.repositories.registry import HOLIDAYS
 from remi.services import holidays
 from remi.services.engine.calendar import BusinessCalendar, OutOfCalendar
+
+T = TypeVar("T")
+
 
 HORIZON_YEARS: Final = 10
 """How far past today's year the calendar may be extended automatically."""
@@ -191,7 +194,7 @@ def calendar_for(
     return build_calendar(load_holidays(uow_factory, clock, region, span, persist=persist), span)
 
 
-def with_calendar[T](
+def with_calendar(
     uow_factory: UnitOfWorkFactory,
     clock: Clock,
     region: HolidayRegion,

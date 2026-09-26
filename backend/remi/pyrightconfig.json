@@ -1,0 +1,14 @@
+{
+  "include": [
+    "."
+  ],
+  "exclude": [
+    "**/__pycache__",
+    "alembic/versions"
+  ],
+  "extraPaths": [
+    ".."
+  ],
+  "typeCheckingMode": "strict",
+  "pythonVersion": "3.11"
+}

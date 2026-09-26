@@ -20,6 +20,32 @@ from remi.main import create_app
 DESIGN_TODAY = date(2026, 10, 5)
 DESIGN_NOW = datetime(2026, 10, 5, 8, 0, tzinfo=UTC)
 
+# Remi's test rules, set here rather than in a pytest config file so they hold wherever the suite
+# runs: this repository, or APEX's pytest config after the import (docs/apex/INTEGRATION_
+# REQUIREMENTS.md R-60). They apply to Remi's tests only, never to APEX's own.
+TESTS_DIR = Path(__file__).resolve().parent
+MARKERS = (
+    "golden: compares against values extracted from the design prototype",
+    "slow: long-running tests",
+)
+LOOPBACK = ("127.0.0.1", "::1")
+
+
+def pytest_configure(config: pytest.Config) -> None:
+    for marker in MARKERS:
+        config.addinivalue_line("markers", marker)
+
+
+def pytest_collection_modifyitems(config: pytest.Config, items: list[pytest.Item]) -> None:
+    """Every warning in a Remi test is an error, and a Remi test may open sockets to loopback
+    only (pytest-socket's ``allow_hosts`` marker): Remi stays local."""
+    for item in items:
+        if not item.path.is_relative_to(TESTS_DIR):
+            continue
+        item.add_marker(pytest.mark.filterwarnings("error"), append=False)
+        if item.get_closest_marker("allow_hosts") is None:
+            item.add_marker(pytest.mark.allow_hosts(list(LOOPBACK)))
+
 
 @pytest.fixture
 def config(tmp_path: Path) -> RemiConfig:

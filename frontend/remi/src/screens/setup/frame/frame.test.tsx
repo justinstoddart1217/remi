@@ -172,7 +172,7 @@ describe('TimezoneField', () => {
 
 describe('save feedback', () => {
   const keychain =
-    'The macOS Keychain is not available to Remi. Install the keyring extra (uv sync --extra keyring) or set REMI_ANTHROPIC_API_KEY.';
+    'Remi cannot store a key here. Set REMI_ANTHROPIC_API_KEY on the server (inside APEX, APEX\'s PM_ASSISTANT_API_KEY is used), then restart.';
 
   it("puts a field's failure under the field and only 'Not saved' in the header", () => {
     const state: SaveFeedback = { phase: 'error', message: keychain, visible: true, field: 'key', detail: null };

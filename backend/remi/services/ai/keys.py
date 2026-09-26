@@ -9,9 +9,11 @@ Lookup order: the Keychain (what the user saved in Settings), then ``REMI_ANTHRO
 then ``ANTHROPIC_API_KEY``. Environment keys are read only: ``clear_api_key`` removes the
 Keychain entry and cannot unset them.
 
-The Keychain is reached through the optional ``keyring`` package (``uv sync --extra
-keyring``). Without it, saving a key is refused with 409 ``KEYCHAIN_UNAVAILABLE`` and only the
-environment is read. Under pytest (``PYTEST_CURRENT_TEST``) the real Keychain is never
+The Keychain is reached through the ``keyring`` package when it happens to be installed; Remi
+no longer depends on it (inside APEX it must not be installed, docs/apex/INTEGRATION_
+REQUIREMENTS.md R-22). Without it, saving a key is refused with 409 ``KEYCHAIN_UNAVAILABLE``
+and only the environment is read: ``REMI_ANTHROPIC_API_KEY``, which ``remi.mount`` fills from
+APEX's ``PM_ASSISTANT_API_KEY``. Under pytest (``PYTEST_CURRENT_TEST``) the real Keychain is never
 touched: an in-memory store stands in unless a test installs its own with ``use_key_store``.
 """
 
@@ -41,8 +43,8 @@ MAX_KEY_LENGTH: Final = 400
 class KeychainUnavailable(Conflict):
     default_code = "KEYCHAIN_UNAVAILABLE"
     default_message = (
-        "The macOS Keychain is not available to Remi. Install the keyring extra "
-        "(uv sync --extra keyring) or set REMI_ANTHROPIC_API_KEY."
+        "Remi cannot store a key here. Set REMI_ANTHROPIC_API_KEY on the server (inside APEX, "
+        "APEX's PM_ASSISTANT_API_KEY is used), then restart."
     )
 
 
