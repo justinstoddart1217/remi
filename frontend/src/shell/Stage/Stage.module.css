@@ -1,0 +1,19 @@
+/* Remi.dc.html: the fixed letterbox and the absolutely positioned, scaled canvas. */
+.letterbox {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  background: color-mix(in oklch, var(--ink) 6%, var(--paper));
+}
+
+/* 'Fit window' below its minimum size (a small or zoomed-in window): scroll, never scale. */
+.letterbox[data-stage-mode='fit'] {
+  overflow: auto;
+}
+
+.stage {
+  position: absolute;
+  transform-origin: 0 0;
+  background: var(--paper);
+  overflow: hidden;
+}

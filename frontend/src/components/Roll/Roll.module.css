@@ -1,0 +1,59 @@
+/* Roll.dc.html, verbatim geometry. Font, size and colour are inherited from the parent. */
+.roll {
+  position: relative;
+  display: inline-block;
+  line-height: 1.25;
+  vertical-align: baseline;
+  text-align: left;
+}
+
+/* The full-text sizer sets width and baseline. It is the value's text for assistive tech and
+   copy, so it is painted transparent (Roll.dc.html hides it with visibility, which also takes
+   it out of the accessibility tree). The per-column sizers inside the strip do the same. */
+.sizer {
+  color: transparent;
+  text-shadow: none;
+  white-space: pre;
+}
+
+.sizer::selection {
+  color: transparent;
+}
+
+@media (forced-colors: active) {
+  .sizer {
+    forced-color-adjust: none;
+    color: transparent;
+  }
+}
+
+.strip {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 1.25em;
+  display: flex;
+  user-select: none;
+}
+
+.window {
+  position: relative;
+  display: block;
+  height: 1.25em;
+  overflow: hidden;
+}
+
+.reel {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  flex-direction: column;
+  transition: transform var(--dur-slow) var(--spring-soft);
+}
+
+.cell {
+  display: block;
+  height: 1.25em;
+  white-space: pre;
+}

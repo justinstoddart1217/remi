@@ -1,0 +1,285 @@
+/* Projects.dc.html, verbatim geometry. */
+.root {
+  box-sizing: border-box;
+  min-height: 100%;
+  padding: 36px 48px 48px;
+}
+
+/* ------------------------------------------------------------------ header */
+.head {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity 140ms var(--ease-out),
+    transform 140ms var(--ease-out);
+}
+.root[data-arrived] .head {
+  opacity: 1;
+  transform: none;
+}
+
+.title {
+  margin: 8px 0 0;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: normal;
+}
+.title:focus {
+  outline: none;
+}
+
+.helper {
+  font-size: 13px;
+  color: var(--ink-muted);
+}
+
+/* ------------------------------------------------------------------ columns */
+.cols,
+.row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 200px 130px 120px 150px 24px;
+  column-gap: 28px;
+}
+
+.cols {
+  margin-top: 32px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--hairline);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--brand-dark);
+}
+
+/* ------------------------------------------------------------------ groups */
+.group {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  padding: 26px 0 8px;
+  opacity: 0;
+  transition: opacity 140ms var(--ease-out) var(--delay, 0ms);
+}
+.root[data-arrived] .group {
+  opacity: 1;
+}
+
+.groupDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  align-self: center;
+}
+
+.groupLabel {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.groupNote {
+  font-size: 13px;
+  color: var(--ink-muted);
+}
+
+.spacer {
+  flex: 1;
+}
+
+.newProject {
+  color: var(--ink-muted);
+}
+.newProject:disabled {
+  cursor: progress;
+}
+
+.groupEmpty {
+  padding: 22px 0;
+  border-bottom: 1px solid var(--hairline);
+}
+
+/* ------------------------------------------------------------------ rows */
+.row {
+  position: relative;
+  align-items: center;
+  padding: 22px 16px;
+  margin: 0 -16px;
+  border-radius: var(--radius-m);
+  border-bottom: 1px solid var(--hairline);
+  cursor: pointer;
+  background: transparent;
+  transform: translateY(6px);
+  transition:
+    background var(--dur-fast) var(--ease-out),
+    opacity var(--dur-fast) var(--ease-out),
+    transform 140ms var(--ease-out) var(--delay, 0ms);
+}
+.root[data-arrived] .row {
+  transform: none;
+}
+.row[data-hovered='true'] {
+  background: var(--paper-raised);
+}
+/* The linked highlight: --linked-dim, one value on every screen (the prototype's Projects used 0.55). */
+.row[data-dimmed='true'] {
+  opacity: var(--linked-dim);
+}
+
+.goalCell {
+  min-width: 0;
+}
+
+.nameLine {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/*
+ * The project name is the row's link; its ::after covers the whole row (a stretched link), so
+ * the row is one real <a> for keyboards and assistive tech while "Check in now" stays a
+ * separate button above it.
+ */
+.link {
+  font-size: 13px;
+  font-weight: 600;
+  color: inherit;
+  text-decoration: none;
+  outline: none;
+}
+.link:hover {
+  color: inherit;
+}
+.link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius-m);
+}
+.link:focus-visible::after {
+  outline: 1.5px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.goal {
+  margin-top: 8px;
+  font-family: var(--font-display);
+  font-size: 26px;
+  line-height: 1.28;
+  letter-spacing: -0.005em;
+  color: var(--ink);
+  max-width: 34em;
+  text-wrap: pretty;
+}
+.goal[data-muted='true'] {
+  color: var(--ink-muted);
+}
+
+.forecastCell {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.forecastLine {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  font-weight: 500;
+}
+.rollBox {
+  display: inline-flex;
+}
+.targetLine {
+  font-size: 13px;
+  color: var(--ink-muted);
+}
+
+.growthCell {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.growth {
+  font-family: var(--font-numeric);
+  font-size: 13px;
+  color: var(--ink-muted);
+}
+.growth[data-risk='true'] {
+  color: var(--risk-text);
+}
+.growthBar {
+  display: flex;
+  height: 4px;
+  gap: 1px;
+  width: 100%;
+}
+.growthBase {
+  background: var(--hairline);
+  border-radius: 1px;
+}
+.growthAdded {
+  background: var(--risk);
+  border-radius: 1px;
+  transition: width var(--dur-slow) var(--spring-soft);
+}
+
+.confCell {
+  display: flex;
+  align-items: center;
+}
+
+.sinceCell {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.since {
+  font-size: 14px;
+  color: var(--ink);
+}
+.since[data-stale='true'] {
+  color: var(--risk-text);
+}
+.checkIn {
+  position: relative;
+  z-index: 1;
+  align-self: flex-start;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: var(--hairline);
+  text-underline-offset: 3px;
+}
+.checkIn:focus-visible {
+  outline: 1.5px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.arrow {
+  font-size: 20px;
+  color: var(--ink-muted);
+  transform: translateX(0);
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+.row[data-hovered='true'] .arrow {
+  transform: translateX(4px);
+}
+
+/* ------------------------------------------------------------------ status */
+.status {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 26px 0;
+}

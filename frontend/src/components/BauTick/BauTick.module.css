@@ -1,0 +1,15 @@
+/* Remi Foundations.dc.html:220; Timeline.dc.html:105; Routines.dc.html:65. */
+.tick {
+  flex: none;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  overflow: hidden;
+  white-space: nowrap;
+  color: var(--paper);
+  font-size: 11px;
+  font-weight: 500;
+}
+.handed {
+  color: var(--ink-muted);
+}

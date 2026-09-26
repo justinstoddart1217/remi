@@ -1,0 +1,28 @@
+/* Timeline.dc.html:178; Calendar.dc.html:72. */
+.panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  padding: 28px 32px;
+  background: var(--paper);
+  border-left: 1px solid var(--hairline);
+  box-shadow: -24px 0 48px -36px color-mix(in oklch, var(--ink) 35%, transparent);
+  transform: translateX(104%);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    transform var(--dur-slow) var(--spring-soft),
+    opacity var(--dur-base) var(--ease-out);
+}
+.panel[data-open='true'] {
+  transform: translateX(0);
+  opacity: 1;
+  pointer-events: auto;
+}
+.scroll {
+  overflow: auto;
+}

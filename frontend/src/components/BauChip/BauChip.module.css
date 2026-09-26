@@ -1,0 +1,49 @@
+/* Remi Foundations.dc.html:221; Today.dc.html:157. */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  height: 20px;
+  padding: 0 7px;
+  box-sizing: border-box;
+  border-radius: var(--radius-s);
+  color: var(--ink);
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+.chip[data-dim] {
+  opacity: var(--linked-dim, 0.28);
+}
+.pc {
+  background: var(--pc-accent-soft);
+  --c: var(--pc-accent);
+}
+.fi {
+  background: var(--fi-accent-soft);
+  --c: var(--fi-accent);
+}
+.plain {
+  background: transparent;
+}
+
+.tick {
+  flex: none;
+  width: 3px;
+  height: 10px;
+  border-radius: 1px;
+  background: var(--c);
+}
+
+.compact {
+  align-self: flex-start;
+  max-width: 100%;
+  padding: 0 6px;
+  overflow: hidden;
+}
+.text {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

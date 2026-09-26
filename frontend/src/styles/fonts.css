@@ -1,0 +1,64 @@
+/*
+ * Self-hosted fonts. Nothing is fetched from a CDN at runtime (ADR-0003).
+ *
+ * The Ninety One redesign (2026-09-25) uses the Ninety One Visuelt family, supplied with the
+ * design export ("Remi Dashboard Design Review/fonts/*.ttf") and converted to WOFF2 in
+ * src/assets/fonts/ninetyone/. Families and weight ranges match the design's own @font-face
+ * rules exactly, so tokens.css stays verbatim:
+ *   'N1Visuelt'  UI       Light 300 · Regular 400 · Medium 500-700
+ *   'N1Display'  display  Display Light 300-400 · Display Regular 500-700
+ * Numbers use the platform monospace ('SF Mono' on macOS), as the design does: no webfont.
+ *   'Material Symbols Outlined'   src/assets/fonts/material-symbols-remi.woff2
+ *        (33-icon subset at wght 300, GRAD 0, opsz 20-24, FILL 0-1; see scripts/subset-icons.sh)
+ *
+ * The Visuelt files are Ninety One's proprietary brand fonts: fine for this local, personal
+ * app, but do not publish them (e.g. in a public repository).
+ */
+
+@font-face {
+  font-family: 'N1Visuelt';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 300;
+  src: url('../assets/fonts/ninetyone/NinetyOneVisuelt-Light.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'N1Visuelt';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url('../assets/fonts/ninetyone/NinetyOneVisuelt-Regular.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'N1Visuelt';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 500 700;
+  src: url('../assets/fonts/ninetyone/NinetyOneVisuelt-Medium.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'N1Display';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 300 400;
+  src: url('../assets/fonts/ninetyone/NinetyOneVisueltDisplay-Light.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'N1Display';
+  font-style: normal;
+  font-display: swap;
+  font-weight: 500 700;
+  src: url('../assets/fonts/ninetyone/NinetyOneVisueltDisplay-Regular.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Material Symbols Outlined';
+  font-style: normal;
+  font-display: block;
+  font-weight: 300;
+  src: url('../assets/fonts/material-symbols-remi.woff2') format('woff2');
+}

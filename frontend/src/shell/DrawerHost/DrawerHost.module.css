@@ -1,0 +1,51 @@
+/* Remi.dc.html lines 135-140 and renderVals' `dr`. */
+.layer {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none;
+}
+
+.layer[data-open] {
+  pointer-events: auto;
+}
+
+.scrim {
+  position: absolute;
+  inset: 0;
+  background: color-mix(in oklch, var(--ink) 18%, transparent);
+  opacity: 0;
+  transition: opacity var(--dur-base) var(--ease-out);
+}
+
+.layer[data-open] .scrim {
+  opacity: 1;
+}
+
+.panel {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 1160px;
+  max-width: calc(100% - 160px);
+  background: var(--paper);
+  border-left: 1px solid var(--hairline);
+  box-shadow: -24px 0 48px -32px color-mix(in oklch, var(--ink) 30%, transparent);
+  transform: translateX(104%);
+  opacity: 0;
+  transition:
+    transform var(--dur-slow) var(--spring-soft),
+    opacity var(--dur-base) var(--ease-out);
+}
+
+.layer[data-open] .panel {
+  transform: translateX(0);
+  opacity: 1;
+}
+
+/* The prototype's CheckIn host wrapper: position absolute, inset 0. */
+.content {
+  position: absolute;
+  inset: 0;
+}

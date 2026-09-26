@@ -1,0 +1,49 @@
+/* Timeline.dc.html:168-175; Remi Foundations.dc.html:274-278. */
+.tip {
+  padding: 12px 14px;
+  background: var(--paper-raised);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-m);
+  box-shadow: 0 12px 28px -18px color-mix(in oklch, var(--ink) 40%, transparent);
+}
+
+.floating {
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 10;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+.floating[data-visible='true'] {
+  opacity: 1;
+}
+
+.head {
+  display: flex;
+  justify-content: space-between;
+}
+.floating .head {
+  align-items: baseline;
+  gap: 12px;
+}
+.title {
+  font-size: 14px;
+  font-weight: 600;
+}
+.chip {
+  font-family: var(--font-numeric);
+  font-size: 11px;
+  color: var(--ink-muted);
+}
+
+.line {
+  margin-top: 4px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--ink-muted);
+}
+.static .line + .line {
+  margin-top: 2px;
+}

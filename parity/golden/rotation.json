@@ -1,0 +1,123 @@
+[
+  {
+    "i": 0,
+    "country": "Germany",
+    "code": "DE",
+    "len": 6,
+    "pass": "Build",
+    "s": "2027-01-04",
+    "e": "2027-01-11",
+    "sS": "Mon 4 Jan",
+    "eS": "Mon 11 Jan"
+  },
+  {
+    "i": 1,
+    "country": "France",
+    "code": "FR",
+    "len": 5,
+    "pass": "Build",
+    "s": "2027-01-12",
+    "e": "2027-01-18",
+    "sS": "Tue 12 Jan",
+    "eS": "Mon 18 Jan"
+  },
+  {
+    "i": 2,
+    "country": "Italy",
+    "code": "IT",
+    "len": 6,
+    "pass": "Build",
+    "s": "2027-01-19",
+    "e": "2027-01-26",
+    "sS": "Tue 19 Jan",
+    "eS": "Tue 26 Jan"
+  },
+  {
+    "i": 3,
+    "country": "Spain",
+    "code": "ES",
+    "len": 5,
+    "pass": "Build",
+    "s": "2027-01-27",
+    "e": "2027-02-02",
+    "sS": "Wed 27 Jan",
+    "eS": "Tue 2 Feb"
+  },
+  {
+    "i": 4,
+    "country": "Netherlands",
+    "code": "NL",
+    "len": 4,
+    "pass": "Build",
+    "s": "2027-02-03",
+    "e": "2027-02-08",
+    "sS": "Wed 3 Feb",
+    "eS": "Mon 8 Feb"
+  },
+  {
+    "i": 5,
+    "country": "Belgium",
+    "code": "BE",
+    "len": 4,
+    "pass": "Build",
+    "s": "2027-02-09",
+    "e": "2027-02-12",
+    "sS": "Tue 9 Feb",
+    "eS": "Fri 12 Feb"
+  },
+  {
+    "i": 6,
+    "country": "Austria",
+    "code": "AT",
+    "len": 4,
+    "pass": "Build",
+    "s": "2027-02-15",
+    "e": "2027-02-18",
+    "sS": "Mon 15 Feb",
+    "eS": "Thu 18 Feb"
+  },
+  {
+    "i": 7,
+    "country": "Portugal",
+    "code": "PT",
+    "len": 4,
+    "pass": "Build",
+    "s": "2027-02-19",
+    "e": "2027-02-24",
+    "sS": "Fri 19 Feb",
+    "eS": "Wed 24 Feb"
+  },
+  {
+    "i": 8,
+    "country": "Ireland",
+    "code": "IE",
+    "len": 4,
+    "pass": "Build",
+    "s": "2027-02-25",
+    "e": "2027-03-02",
+    "sS": "Thu 25 Feb",
+    "eS": "Tue 2 Mar"
+  },
+  {
+    "i": 9,
+    "country": "Finland",
+    "code": "FI",
+    "len": 4,
+    "pass": "Build",
+    "s": "2027-03-03",
+    "e": "2027-03-08",
+    "sS": "Wed 3 Mar",
+    "eS": "Mon 8 Mar"
+  },
+  {
+    "i": 10,
+    "country": "Germany",
+    "code": "DE",
+    "len": 3,
+    "pass": "Refresh",
+    "s": "2027-03-09",
+    "e": "2027-03-11",
+    "sS": "Tue 9 Mar",
+    "eS": "Thu 11 Mar"
+  }
+]

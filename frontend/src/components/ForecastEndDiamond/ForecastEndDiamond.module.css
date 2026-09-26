@@ -1,0 +1,25 @@
+/* Remi Foundations.dc.html:148-149, :218; Timeline.dc.html:144, :149. */
+.diamond {
+  flex: none;
+  display: block;
+  box-sizing: border-box;
+  transform: rotate(45deg);
+}
+
+.bar {
+  width: 14px;
+  height: 14px;
+  border: 2px solid;
+}
+
+.plain {
+  width: 13px;
+  height: 13px;
+}
+
+.ghost {
+  width: 18px;
+  height: 18px;
+  border: 1.5px dashed;
+  background: color-mix(in oklch, var(--paper) 60%, transparent);
+}

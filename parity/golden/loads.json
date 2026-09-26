@@ -1,0 +1,4824 @@
+[
+  {
+    "iso": "2026-08-31",
+    "bdm": 1,
+    "items": [],
+    "bau": 0,
+    "proj": 0,
+    "total": 0,
+    "free": 8,
+    "over": false
+  },
+  {
+    "iso": "2026-09-01",
+    "bdm": 1,
+    "items": [],
+    "bau": 0,
+    "proj": 0,
+    "total": 0,
+    "free": 8,
+    "over": false
+  },
+  {
+    "iso": "2026-09-02",
+    "bdm": 2,
+    "items": [],
+    "bau": 0,
+    "proj": 0,
+    "total": 0,
+    "free": 8,
+    "over": false
+  },
+  {
+    "iso": "2026-09-03",
+    "bdm": 3,
+    "items": [
+      {
+        "id": "r-ret",
+        "pid": "ret",
+        "kind": "bau",
+        "domain": "pc",
+        "h": 6,
+        "name": "Returns"
+      }
+    ],
+    "bau": 6,
+    "proj": 0,
+    "total": 6,
+    "free": 2,
+    "over": false
+  },
+  {
+    "iso": "2026-09-04",
+    "bdm": 4,
+    "items": [],
+    "bau": 0,
+    "proj": 0,
+    "total": 0,
+    "free": 8,
+    "over": false
+  },
+  {
+    "iso": "2026-09-07",
+    "bdm": 5,
+    "items": [],
+    "bau": 0,
+    "proj": 0,
+    "total": 0,
+    "free": 8,
+    "over": false
+  },
+  {
+    "iso": "2026-09-08",
+    "bdm": 6,
+    "items": [],
+    "bau": 0,
+    "proj": 0,
+    "total": 0,
+    "free": 8,
+    "over": false
+  },
+  {
+    "iso": "2026-09-09",
+    "bdm": 7,
+    "items": [],
+    "bau": 0,
+    "proj": 0,
+    "total": 0,
+    "free": 8,
+    "over": false
+  },
+  {
+    "iso": "2026-09-10",
+    "bdm": 8,
+    "items": [
+      {
+        "id": "r-man",
+        "pid": "manco",
+        "kind": "bau",
+        "domain": "pc",
+        "h": 4,
+        "name": "ManCo pack"
+      }
+    ],
+    "bau": 4,
+    "proj": 0,
+    "total": 4,
+    "free": 4,
+    "over": false
+  },
+  {
+    "iso": "2026-09-11",
+    "bdm": 9,
+    "items": [],
+    "bau": 0,
+    "proj": 0,
+    "total": 0,
+    "free": 8,
+    "over": false
+  },
+  {
+    "iso": "2026-09-14",
+    "bdm": 10,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      }
+    ],
+    "bau": 0,
+    "proj": 3.5,
+    "total": 3.5,
+    "free": 4.5,
+    "over": false
+  },
+  {
+    "iso": "2026-09-15",
+    "bdm": 11,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      }
+    ],
+    "bau": 0,
+    "proj": 3.5,
+    "total": 3.5,
+    "free": 4.5,
+    "over": false
+  },
+  {
+    "iso": "2026-09-16",
+    "bdm": 12,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      }
+    ],
+    "bau": 0,
+    "proj": 3.5,
+    "total": 3.5,
+    "free": 4.5,
+    "over": false
+  },
+  {
+    "iso": "2026-09-17",
+    "bdm": 13,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      }
+    ],
+    "bau": 0,
+    "proj": 3.5,
+    "total": 3.5,
+    "free": 4.5,
+    "over": false
+  },
+  {
+    "iso": "2026-09-18",
+    "bdm": 14,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      }
+    ],
+    "bau": 0,
+    "proj": 3.5,
+    "total": 3.5,
+    "free": 4.5,
+    "over": false
+  },
+  {
+    "iso": "2026-09-21",
+    "bdm": 15,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      }
+    ],
+    "bau": 0,
+    "proj": 6,
+    "total": 6,
+    "free": 2,
+    "over": false
+  },
+  {
+    "iso": "2026-09-22",
+    "bdm": 16,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      }
+    ],
+    "bau": 0,
+    "proj": 6,
+    "total": 6,
+    "free": 2,
+    "over": false
+  },
+  {
+    "iso": "2026-09-23",
+    "bdm": 17,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      }
+    ],
+    "bau": 0,
+    "proj": 6,
+    "total": 6,
+    "free": 2,
+    "over": false
+  },
+  {
+    "iso": "2026-09-24",
+    "bdm": 18,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      }
+    ],
+    "bau": 0,
+    "proj": 6,
+    "total": 6,
+    "free": 2,
+    "over": false
+  },
+  {
+    "iso": "2026-09-25",
+    "bdm": 19,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      }
+    ],
+    "bau": 0,
+    "proj": 6,
+    "total": 6,
+    "free": 2,
+    "over": false
+  },
+  {
+    "iso": "2026-09-28",
+    "bdm": 20,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      }
+    ],
+    "bau": 0,
+    "proj": 7,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2026-09-29",
+    "bdm": 21,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      }
+    ],
+    "bau": 0,
+    "proj": 7,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2026-09-30",
+    "bdm": 22,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      }
+    ],
+    "bau": 0,
+    "proj": 7,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2026-10-01",
+    "bdm": 1,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      }
+    ],
+    "bau": 0,
+    "proj": 7,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2026-10-02",
+    "bdm": 2,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      }
+    ],
+    "bau": 0,
+    "proj": 7,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2026-10-05",
+    "bdm": 3,
+    "items": [
+      {
+        "id": "r-ret",
+        "pid": "ret",
+        "kind": "bau",
+        "domain": "pc",
+        "h": 6,
+        "name": "Returns"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 2,
+        "name": "ManCo automation"
+      }
+    ],
+    "bau": 6,
+    "proj": 2,
+    "total": 8,
+    "free": 0,
+    "over": false
+  },
+  {
+    "iso": "2026-10-06",
+    "bdm": 4,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      }
+    ],
+    "bau": 0,
+    "proj": 7,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2026-10-07",
+    "bdm": 5,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      }
+    ],
+    "bau": 0,
+    "proj": 7,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2026-10-08",
+    "bdm": 6,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      }
+    ],
+    "bau": 0,
+    "proj": 7,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2026-10-09",
+    "bdm": 7,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      }
+    ],
+    "bau": 0,
+    "proj": 7,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2026-10-12",
+    "bdm": 8,
+    "items": [
+      {
+        "id": "r-man",
+        "pid": "manco",
+        "kind": "bau",
+        "domain": "pc",
+        "h": 4,
+        "name": "ManCo pack"
+      },
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 2,
+        "name": "Returns pipeline"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 0.5,
+        "name": "Handover playbook"
+      }
+    ],
+    "bau": 4,
+    "proj": 4,
+    "total": 8,
+    "free": 0,
+    "over": false
+  },
+  {
+    "iso": "2026-10-13",
+    "bdm": 9,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      }
+    ],
+    "bau": 0,
+    "proj": 7,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2026-10-14",
+    "bdm": 10,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      }
+    ],
+    "bau": 0,
+    "proj": 7,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2026-10-15",
+    "bdm": 11,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      }
+    ],
+    "bau": 0,
+    "proj": 7,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2026-10-16",
+    "bdm": 12,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      }
+    ],
+    "bau": 0,
+    "proj": 7,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2026-10-19",
+    "bdm": 13,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      }
+    ],
+    "bau": 0,
+    "proj": 7,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2026-10-20",
+    "bdm": 14,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      }
+    ],
+    "bau": 0,
+    "proj": 7,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2026-10-21",
+    "bdm": 15,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      }
+    ],
+    "bau": 0,
+    "proj": 7,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2026-10-22",
+    "bdm": 16,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      }
+    ],
+    "bau": 0,
+    "proj": 7,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2026-10-23",
+    "bdm": 17,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      }
+    ],
+    "bau": 0,
+    "proj": 7,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2026-10-26",
+    "bdm": 18,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      }
+    ],
+    "bau": 0,
+    "proj": 7,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2026-10-27",
+    "bdm": 19,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      }
+    ],
+    "bau": 0,
+    "proj": 7,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2026-10-28",
+    "bdm": 20,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      }
+    ],
+    "bau": 0,
+    "proj": 7,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2026-10-29",
+    "bdm": 21,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      }
+    ],
+    "bau": 0,
+    "proj": 7,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2026-10-30",
+    "bdm": 22,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      }
+    ],
+    "bau": 0,
+    "proj": 7,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2026-11-02",
+    "bdm": 1,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      }
+    ],
+    "bau": 0,
+    "proj": 7,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2026-11-03",
+    "bdm": 2,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      }
+    ],
+    "bau": 0,
+    "proj": 7,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2026-11-04",
+    "bdm": 3,
+    "items": [
+      {
+        "id": "r-ret",
+        "pid": "ret",
+        "kind": "bau",
+        "domain": "pc",
+        "h": 6,
+        "name": "Returns"
+      },
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      }
+    ],
+    "bau": 6,
+    "proj": 3.5,
+    "total": 9.5,
+    "free": 0,
+    "over": true
+  },
+  {
+    "iso": "2026-11-05",
+    "bdm": 4,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      }
+    ],
+    "bau": 0,
+    "proj": 7,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2026-11-06",
+    "bdm": 5,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      }
+    ],
+    "bau": 0,
+    "proj": 7,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2026-11-09",
+    "bdm": 6,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      }
+    ],
+    "bau": 0,
+    "proj": 7,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2026-11-10",
+    "bdm": 7,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      }
+    ],
+    "bau": 0,
+    "proj": 7,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2026-11-11",
+    "bdm": 8,
+    "items": [
+      {
+        "id": "r-man",
+        "pid": "manco",
+        "kind": "bau",
+        "domain": "pc",
+        "h": 4,
+        "name": "ManCo pack"
+      },
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 2,
+        "name": "Returns pipeline"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 0.5,
+        "name": "Handover playbook"
+      }
+    ],
+    "bau": 4,
+    "proj": 4,
+    "total": 8,
+    "free": 0,
+    "over": false
+  },
+  {
+    "iso": "2026-11-12",
+    "bdm": 9,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      }
+    ],
+    "bau": 0,
+    "proj": 7,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2026-11-13",
+    "bdm": 10,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      }
+    ],
+    "bau": 0,
+    "proj": 7,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2026-11-16",
+    "bdm": 11,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      }
+    ],
+    "bau": 0,
+    "proj": 7,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2026-11-17",
+    "bdm": 12,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      }
+    ],
+    "bau": 0,
+    "proj": 7,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2026-11-18",
+    "bdm": 13,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      }
+    ],
+    "bau": 0,
+    "proj": 7,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2026-11-19",
+    "bdm": 14,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      }
+    ],
+    "bau": 0,
+    "proj": 7,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2026-11-20",
+    "bdm": 15,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      }
+    ],
+    "bau": 0,
+    "proj": 7,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2026-11-23",
+    "bdm": 16,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      }
+    ],
+    "bau": 0,
+    "proj": 7,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2026-11-24",
+    "bdm": 17,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      }
+    ],
+    "bau": 0,
+    "proj": 7,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2026-11-25",
+    "bdm": 18,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      }
+    ],
+    "bau": 0,
+    "proj": 7,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2026-11-26",
+    "bdm": 19,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      }
+    ],
+    "bau": 0,
+    "proj": 7,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2026-11-27",
+    "bdm": 20,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      }
+    ],
+    "bau": 0,
+    "proj": 7,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2026-11-30",
+    "bdm": 21,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      }
+    ],
+    "bau": 0,
+    "proj": 7,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2026-12-01",
+    "bdm": 1,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      }
+    ],
+    "bau": 0,
+    "proj": 7,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2026-12-02",
+    "bdm": 2,
+    "items": [
+      {
+        "id": "ret",
+        "pid": "ret",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 3.5,
+        "name": "Returns pipeline"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      }
+    ],
+    "bau": 0,
+    "proj": 7,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2026-12-03",
+    "bdm": 3,
+    "items": [
+      {
+        "id": "r-ret",
+        "pid": "ret",
+        "kind": "bau",
+        "domain": "pc",
+        "h": 6,
+        "name": "Returns"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 2,
+        "name": "ManCo automation"
+      }
+    ],
+    "bau": 6,
+    "proj": 2,
+    "total": 8,
+    "free": 0,
+    "over": false
+  },
+  {
+    "iso": "2026-12-04",
+    "bdm": 4,
+    "items": [
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 2,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 0,
+    "proj": 5.5,
+    "total": 5.5,
+    "free": 2.5,
+    "over": false
+  },
+  {
+    "iso": "2026-12-07",
+    "bdm": 5,
+    "items": [
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 2,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 0,
+    "proj": 5.5,
+    "total": 5.5,
+    "free": 2.5,
+    "over": false
+  },
+  {
+    "iso": "2026-12-08",
+    "bdm": 6,
+    "items": [
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 2,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 0,
+    "proj": 5.5,
+    "total": 5.5,
+    "free": 2.5,
+    "over": false
+  },
+  {
+    "iso": "2026-12-09",
+    "bdm": 7,
+    "items": [
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 2,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 0,
+    "proj": 5.5,
+    "total": 5.5,
+    "free": 2.5,
+    "over": false
+  },
+  {
+    "iso": "2026-12-10",
+    "bdm": 8,
+    "items": [
+      {
+        "id": "r-man",
+        "pid": "manco",
+        "kind": "bau",
+        "domain": "pc",
+        "h": 4,
+        "name": "ManCo pack"
+      },
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 0.5,
+        "name": "Handover playbook"
+      }
+    ],
+    "bau": 4,
+    "proj": 2,
+    "total": 6,
+    "free": 2,
+    "over": false
+  },
+  {
+    "iso": "2026-12-11",
+    "bdm": 9,
+    "items": [
+      {
+        "id": "manco",
+        "pid": "manco",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1.5,
+        "name": "ManCo automation"
+      },
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 2,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 0,
+    "proj": 5.5,
+    "total": 5.5,
+    "free": 2.5,
+    "over": false
+  },
+  {
+    "iso": "2026-12-14",
+    "bdm": 10,
+    "items": [
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 2,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 0,
+    "proj": 4,
+    "total": 4,
+    "free": 4,
+    "over": false
+  },
+  {
+    "iso": "2026-12-15",
+    "bdm": 11,
+    "items": [
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 2,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 0,
+    "proj": 4,
+    "total": 4,
+    "free": 4,
+    "over": false
+  },
+  {
+    "iso": "2026-12-16",
+    "bdm": 12,
+    "items": [
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 2,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 0,
+    "proj": 4,
+    "total": 4,
+    "free": 4,
+    "over": false
+  },
+  {
+    "iso": "2026-12-17",
+    "bdm": 13,
+    "items": [
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 2,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 0,
+    "proj": 4,
+    "total": 4,
+    "free": 4,
+    "over": false
+  },
+  {
+    "iso": "2026-12-18",
+    "bdm": 14,
+    "items": [
+      {
+        "id": "play",
+        "pid": "play",
+        "kind": "proj",
+        "domain": "pc",
+        "h": 1,
+        "name": "Handover playbook"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 2,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 0,
+    "proj": 4,
+    "total": 4,
+    "free": 4,
+    "over": false
+  },
+  {
+    "iso": "2026-12-21",
+    "bdm": 15,
+    "items": [
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 2,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 0,
+    "proj": 3,
+    "total": 3,
+    "free": 5,
+    "over": false
+  },
+  {
+    "iso": "2026-12-22",
+    "bdm": 16,
+    "items": [
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 2,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 0,
+    "proj": 3,
+    "total": 3,
+    "free": 5,
+    "over": false
+  },
+  {
+    "iso": "2026-12-23",
+    "bdm": 17,
+    "items": [
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 2,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 0,
+    "proj": 3,
+    "total": 3,
+    "free": 5,
+    "over": false
+  },
+  {
+    "iso": "2026-12-24",
+    "bdm": 18,
+    "items": [
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 2,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 0,
+    "proj": 3,
+    "total": 3,
+    "free": 5,
+    "over": false
+  },
+  {
+    "iso": "2026-12-29",
+    "bdm": 19,
+    "items": [
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 2,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 0,
+    "proj": 3,
+    "total": 3,
+    "free": 5,
+    "over": false
+  },
+  {
+    "iso": "2026-12-30",
+    "bdm": 20,
+    "items": [
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 2,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 0,
+    "proj": 3,
+    "total": 3,
+    "free": 5,
+    "over": false
+  },
+  {
+    "iso": "2026-12-31",
+    "bdm": 21,
+    "items": [
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 2,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 0,
+    "proj": 3,
+    "total": 3,
+    "free": 5,
+    "over": false
+  },
+  {
+    "iso": "2027-01-04",
+    "bdm": 1,
+    "items": [
+      {
+        "id": "rot",
+        "pid": "rot",
+        "kind": "bau",
+        "domain": "fi",
+        "h": 4,
+        "name": "Germany · Build"
+      },
+      {
+        "id": "fion",
+        "pid": "fion",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 1,
+        "name": "FI onboarding"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 4,
+    "proj": 4,
+    "total": 8,
+    "free": 0,
+    "over": false
+  },
+  {
+    "iso": "2027-01-05",
+    "bdm": 2,
+    "items": [
+      {
+        "id": "rot",
+        "pid": "rot",
+        "kind": "bau",
+        "domain": "fi",
+        "h": 4,
+        "name": "Germany · Build"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 4,
+    "proj": 3,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2027-01-06",
+    "bdm": 3,
+    "items": [
+      {
+        "id": "rot",
+        "pid": "rot",
+        "kind": "bau",
+        "domain": "fi",
+        "h": 4,
+        "name": "Germany · Build"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 4,
+    "proj": 3,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2027-01-07",
+    "bdm": 4,
+    "items": [
+      {
+        "id": "rot",
+        "pid": "rot",
+        "kind": "bau",
+        "domain": "fi",
+        "h": 4,
+        "name": "Germany · Build"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 4,
+    "proj": 3,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2027-01-08",
+    "bdm": 5,
+    "items": [
+      {
+        "id": "rot",
+        "pid": "rot",
+        "kind": "bau",
+        "domain": "fi",
+        "h": 4,
+        "name": "Germany · Build"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 4,
+    "proj": 3,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2027-01-11",
+    "bdm": 6,
+    "items": [
+      {
+        "id": "rot",
+        "pid": "rot",
+        "kind": "bau",
+        "domain": "fi",
+        "h": 4,
+        "name": "Germany · Build"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 4,
+    "proj": 3,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2027-01-12",
+    "bdm": 7,
+    "items": [
+      {
+        "id": "rot",
+        "pid": "rot",
+        "kind": "bau",
+        "domain": "fi",
+        "h": 4,
+        "name": "France · Build"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 4,
+    "proj": 3,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2027-01-13",
+    "bdm": 8,
+    "items": [
+      {
+        "id": "rot",
+        "pid": "rot",
+        "kind": "bau",
+        "domain": "fi",
+        "h": 4,
+        "name": "France · Build"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 4,
+    "proj": 3,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2027-01-14",
+    "bdm": 9,
+    "items": [
+      {
+        "id": "rot",
+        "pid": "rot",
+        "kind": "bau",
+        "domain": "fi",
+        "h": 4,
+        "name": "France · Build"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 4,
+    "proj": 3,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2027-01-15",
+    "bdm": 10,
+    "items": [
+      {
+        "id": "rot",
+        "pid": "rot",
+        "kind": "bau",
+        "domain": "fi",
+        "h": 4,
+        "name": "France · Build"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 4,
+    "proj": 3,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2027-01-18",
+    "bdm": 11,
+    "items": [
+      {
+        "id": "rot",
+        "pid": "rot",
+        "kind": "bau",
+        "domain": "fi",
+        "h": 4,
+        "name": "France · Build"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 4,
+    "proj": 3,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2027-01-19",
+    "bdm": 12,
+    "items": [
+      {
+        "id": "rot",
+        "pid": "rot",
+        "kind": "bau",
+        "domain": "fi",
+        "h": 4,
+        "name": "Italy · Build"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 4,
+    "proj": 3,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2027-01-20",
+    "bdm": 13,
+    "items": [
+      {
+        "id": "rot",
+        "pid": "rot",
+        "kind": "bau",
+        "domain": "fi",
+        "h": 4,
+        "name": "Italy · Build"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 4,
+    "proj": 3,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2027-01-21",
+    "bdm": 14,
+    "items": [
+      {
+        "id": "rot",
+        "pid": "rot",
+        "kind": "bau",
+        "domain": "fi",
+        "h": 4,
+        "name": "Italy · Build"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 4,
+    "proj": 3,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2027-01-22",
+    "bdm": 15,
+    "items": [
+      {
+        "id": "rot",
+        "pid": "rot",
+        "kind": "bau",
+        "domain": "fi",
+        "h": 4,
+        "name": "Italy · Build"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 4,
+    "proj": 3,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2027-01-25",
+    "bdm": 16,
+    "items": [
+      {
+        "id": "rot",
+        "pid": "rot",
+        "kind": "bau",
+        "domain": "fi",
+        "h": 4,
+        "name": "Italy · Build"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 4,
+    "proj": 3,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2027-01-26",
+    "bdm": 17,
+    "items": [
+      {
+        "id": "rot",
+        "pid": "rot",
+        "kind": "bau",
+        "domain": "fi",
+        "h": 4,
+        "name": "Italy · Build"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 4,
+    "proj": 3,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2027-01-27",
+    "bdm": 18,
+    "items": [
+      {
+        "id": "rot",
+        "pid": "rot",
+        "kind": "bau",
+        "domain": "fi",
+        "h": 4,
+        "name": "Spain · Build"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 4,
+    "proj": 3,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2027-01-28",
+    "bdm": 19,
+    "items": [
+      {
+        "id": "rot",
+        "pid": "rot",
+        "kind": "bau",
+        "domain": "fi",
+        "h": 4,
+        "name": "Spain · Build"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 4,
+    "proj": 3,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2027-01-29",
+    "bdm": 20,
+    "items": [
+      {
+        "id": "rot",
+        "pid": "rot",
+        "kind": "bau",
+        "domain": "fi",
+        "h": 4,
+        "name": "Spain · Build"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 4,
+    "proj": 3,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2027-02-01",
+    "bdm": 1,
+    "items": [
+      {
+        "id": "rot",
+        "pid": "rot",
+        "kind": "bau",
+        "domain": "fi",
+        "h": 4,
+        "name": "Spain · Build"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 4,
+    "proj": 3,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2027-02-02",
+    "bdm": 2,
+    "items": [
+      {
+        "id": "rot",
+        "pid": "rot",
+        "kind": "bau",
+        "domain": "fi",
+        "h": 4,
+        "name": "Spain · Build"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 4,
+    "proj": 3,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2027-02-03",
+    "bdm": 3,
+    "items": [
+      {
+        "id": "rot",
+        "pid": "rot",
+        "kind": "bau",
+        "domain": "fi",
+        "h": 4,
+        "name": "Netherlands · Build"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 4,
+    "proj": 3,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2027-02-04",
+    "bdm": 4,
+    "items": [
+      {
+        "id": "rot",
+        "pid": "rot",
+        "kind": "bau",
+        "domain": "fi",
+        "h": 4,
+        "name": "Netherlands · Build"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 4,
+    "proj": 3,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2027-02-05",
+    "bdm": 5,
+    "items": [
+      {
+        "id": "rot",
+        "pid": "rot",
+        "kind": "bau",
+        "domain": "fi",
+        "h": 4,
+        "name": "Netherlands · Build"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 4,
+    "proj": 3,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2027-02-08",
+    "bdm": 6,
+    "items": [
+      {
+        "id": "rot",
+        "pid": "rot",
+        "kind": "bau",
+        "domain": "fi",
+        "h": 4,
+        "name": "Netherlands · Build"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 4,
+    "proj": 3,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2027-02-09",
+    "bdm": 7,
+    "items": [
+      {
+        "id": "rot",
+        "pid": "rot",
+        "kind": "bau",
+        "domain": "fi",
+        "h": 4,
+        "name": "Belgium · Build"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 4,
+    "proj": 3,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2027-02-10",
+    "bdm": 8,
+    "items": [
+      {
+        "id": "rot",
+        "pid": "rot",
+        "kind": "bau",
+        "domain": "fi",
+        "h": 4,
+        "name": "Belgium · Build"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 4,
+    "proj": 3,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2027-02-11",
+    "bdm": 9,
+    "items": [
+      {
+        "id": "rot",
+        "pid": "rot",
+        "kind": "bau",
+        "domain": "fi",
+        "h": 4,
+        "name": "Belgium · Build"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 4,
+    "proj": 3,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2027-02-12",
+    "bdm": 10,
+    "items": [
+      {
+        "id": "rot",
+        "pid": "rot",
+        "kind": "bau",
+        "domain": "fi",
+        "h": 4,
+        "name": "Belgium · Build"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 4,
+    "proj": 3,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2027-02-15",
+    "bdm": 11,
+    "items": [
+      {
+        "id": "rot",
+        "pid": "rot",
+        "kind": "bau",
+        "domain": "fi",
+        "h": 4,
+        "name": "Austria · Build"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 4,
+    "proj": 3,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2027-02-16",
+    "bdm": 12,
+    "items": [
+      {
+        "id": "rot",
+        "pid": "rot",
+        "kind": "bau",
+        "domain": "fi",
+        "h": 4,
+        "name": "Austria · Build"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 4,
+    "proj": 3,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2027-02-17",
+    "bdm": 13,
+    "items": [
+      {
+        "id": "rot",
+        "pid": "rot",
+        "kind": "bau",
+        "domain": "fi",
+        "h": 4,
+        "name": "Austria · Build"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 4,
+    "proj": 3,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2027-02-18",
+    "bdm": 14,
+    "items": [
+      {
+        "id": "rot",
+        "pid": "rot",
+        "kind": "bau",
+        "domain": "fi",
+        "h": 4,
+        "name": "Austria · Build"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 4,
+    "proj": 3,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2027-02-19",
+    "bdm": 15,
+    "items": [
+      {
+        "id": "rot",
+        "pid": "rot",
+        "kind": "bau",
+        "domain": "fi",
+        "h": 4,
+        "name": "Portugal · Build"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 4,
+    "proj": 3,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2027-02-22",
+    "bdm": 16,
+    "items": [
+      {
+        "id": "rot",
+        "pid": "rot",
+        "kind": "bau",
+        "domain": "fi",
+        "h": 4,
+        "name": "Portugal · Build"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 4,
+    "proj": 3,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2027-02-23",
+    "bdm": 17,
+    "items": [
+      {
+        "id": "rot",
+        "pid": "rot",
+        "kind": "bau",
+        "domain": "fi",
+        "h": 4,
+        "name": "Portugal · Build"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 4,
+    "proj": 3,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2027-02-24",
+    "bdm": 18,
+    "items": [
+      {
+        "id": "rot",
+        "pid": "rot",
+        "kind": "bau",
+        "domain": "fi",
+        "h": 4,
+        "name": "Portugal · Build"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 4,
+    "proj": 3,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2027-02-25",
+    "bdm": 19,
+    "items": [
+      {
+        "id": "rot",
+        "pid": "rot",
+        "kind": "bau",
+        "domain": "fi",
+        "h": 4,
+        "name": "Ireland · Build"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 4,
+    "proj": 3,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2027-02-26",
+    "bdm": 20,
+    "items": [
+      {
+        "id": "rot",
+        "pid": "rot",
+        "kind": "bau",
+        "domain": "fi",
+        "h": 4,
+        "name": "Ireland · Build"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 4,
+    "proj": 3,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2027-03-01",
+    "bdm": 1,
+    "items": [
+      {
+        "id": "rot",
+        "pid": "rot",
+        "kind": "bau",
+        "domain": "fi",
+        "h": 4,
+        "name": "Ireland · Build"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 4,
+    "proj": 3,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2027-03-02",
+    "bdm": 2,
+    "items": [
+      {
+        "id": "rot",
+        "pid": "rot",
+        "kind": "bau",
+        "domain": "fi",
+        "h": 4,
+        "name": "Ireland · Build"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 4,
+    "proj": 3,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2027-03-03",
+    "bdm": 3,
+    "items": [
+      {
+        "id": "rot",
+        "pid": "rot",
+        "kind": "bau",
+        "domain": "fi",
+        "h": 4,
+        "name": "Finland · Build"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 4,
+    "proj": 3,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2027-03-04",
+    "bdm": 4,
+    "items": [
+      {
+        "id": "rot",
+        "pid": "rot",
+        "kind": "bau",
+        "domain": "fi",
+        "h": 4,
+        "name": "Finland · Build"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 4,
+    "proj": 3,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2027-03-05",
+    "bdm": 5,
+    "items": [
+      {
+        "id": "rot",
+        "pid": "rot",
+        "kind": "bau",
+        "domain": "fi",
+        "h": 4,
+        "name": "Finland · Build"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 4,
+    "proj": 3,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2027-03-08",
+    "bdm": 6,
+    "items": [
+      {
+        "id": "rot",
+        "pid": "rot",
+        "kind": "bau",
+        "domain": "fi",
+        "h": 4,
+        "name": "Finland · Build"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 4,
+    "proj": 3,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2027-03-09",
+    "bdm": 7,
+    "items": [
+      {
+        "id": "rot",
+        "pid": "rot",
+        "kind": "bau",
+        "domain": "fi",
+        "h": 4,
+        "name": "Germany · Refresh"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 4,
+    "proj": 3,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2027-03-10",
+    "bdm": 8,
+    "items": [
+      {
+        "id": "rot",
+        "pid": "rot",
+        "kind": "bau",
+        "domain": "fi",
+        "h": 4,
+        "name": "Germany · Refresh"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 4,
+    "proj": 3,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2027-03-11",
+    "bdm": 9,
+    "items": [
+      {
+        "id": "rot",
+        "pid": "rot",
+        "kind": "bau",
+        "domain": "fi",
+        "h": 4,
+        "name": "Germany · Refresh"
+      },
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 4,
+    "proj": 3,
+    "total": 7,
+    "free": 1,
+    "over": false
+  },
+  {
+    "iso": "2027-03-12",
+    "bdm": 10,
+    "items": [
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 0,
+    "proj": 3,
+    "total": 3,
+    "free": 5,
+    "over": false
+  },
+  {
+    "iso": "2027-03-15",
+    "bdm": 11,
+    "items": [
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 0,
+    "proj": 3,
+    "total": 3,
+    "free": 5,
+    "over": false
+  },
+  {
+    "iso": "2027-03-16",
+    "bdm": 12,
+    "items": [
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 0,
+    "proj": 3,
+    "total": 3,
+    "free": 5,
+    "over": false
+  },
+  {
+    "iso": "2027-03-17",
+    "bdm": 13,
+    "items": [
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 0,
+    "proj": 3,
+    "total": 3,
+    "free": 5,
+    "over": false
+  },
+  {
+    "iso": "2027-03-18",
+    "bdm": 14,
+    "items": [
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 0,
+    "proj": 3,
+    "total": 3,
+    "free": 5,
+    "over": false
+  },
+  {
+    "iso": "2027-03-19",
+    "bdm": 15,
+    "items": [
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 0,
+    "proj": 3,
+    "total": 3,
+    "free": 5,
+    "over": false
+  },
+  {
+    "iso": "2027-03-22",
+    "bdm": 16,
+    "items": [
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 0,
+    "proj": 3,
+    "total": 3,
+    "free": 5,
+    "over": false
+  },
+  {
+    "iso": "2027-03-23",
+    "bdm": 17,
+    "items": [
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 0,
+    "proj": 3,
+    "total": 3,
+    "free": 5,
+    "over": false
+  },
+  {
+    "iso": "2027-03-24",
+    "bdm": 18,
+    "items": [
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 0,
+    "proj": 3,
+    "total": 3,
+    "free": 5,
+    "over": false
+  },
+  {
+    "iso": "2027-03-25",
+    "bdm": 19,
+    "items": [
+      {
+        "id": "alpha",
+        "pid": "alpha",
+        "kind": "proj",
+        "domain": "fi",
+        "h": 3,
+        "name": "Alpha engine"
+      }
+    ],
+    "bau": 0,
+    "proj": 3,
+    "total": 3,
+    "free": 5,
+    "over": false
+  },
+  {
+    "iso": "2027-03-30",
+    "bdm": 20,
+    "items": [],
+    "bau": 0,
+    "proj": 0,
+    "total": 0,
+    "free": 8,
+    "over": false
+  },
+  {
+    "iso": "2027-03-31",
+    "bdm": 21,
+    "items": [],
+    "bau": 0,
+    "proj": 0,
+    "total": 0,
+    "free": 8,
+    "over": false
+  },
+  {
+    "iso": "2027-04-01",
+    "bdm": 1,
+    "items": [],
+    "bau": 0,
+    "proj": 0,
+    "total": 0,
+    "free": 8,
+    "over": false
+  },
+  {
+    "iso": "2027-04-02",
+    "bdm": 2,
+    "items": [],
+    "bau": 0,
+    "proj": 0,
+    "total": 0,
+    "free": 8,
+    "over": false
+  },
+  {
+    "iso": "2027-04-05",
+    "bdm": 3,
+    "items": [],
+    "bau": 0,
+    "proj": 0,
+    "total": 0,
+    "free": 8,
+    "over": false
+  },
+  {
+    "iso": "2027-04-06",
+    "bdm": 4,
+    "items": [],
+    "bau": 0,
+    "proj": 0,
+    "total": 0,
+    "free": 8,
+    "over": false
+  },
+  {
+    "iso": "2027-04-07",
+    "bdm": 5,
+    "items": [],
+    "bau": 0,
+    "proj": 0,
+    "total": 0,
+    "free": 8,
+    "over": false
+  },
+  {
+    "iso": "2027-04-08",
+    "bdm": 6,
+    "items": [],
+    "bau": 0,
+    "proj": 0,
+    "total": 0,
+    "free": 8,
+    "over": false
+  },
+  {
+    "iso": "2027-04-09",
+    "bdm": 7,
+    "items": [],
+    "bau": 0,
+    "proj": 0,
+    "total": 0,
+    "free": 8,
+    "over": false
+  },
+  {
+    "iso": "2027-04-12",
+    "bdm": 8,
+    "items": [],
+    "bau": 0,
+    "proj": 0,
+    "total": 0,
+    "free": 8,
+    "over": false
+  },
+  {
+    "iso": "2027-04-13",
+    "bdm": 9,
+    "items": [],
+    "bau": 0,
+    "proj": 0,
+    "total": 0,
+    "free": 8,
+    "over": false
+  },
+  {
+    "iso": "2027-04-14",
+    "bdm": 10,
+    "items": [],
+    "bau": 0,
+    "proj": 0,
+    "total": 0,
+    "free": 8,
+    "over": false
+  },
+  {
+    "iso": "2027-04-15",
+    "bdm": 11,
+    "items": [],
+    "bau": 0,
+    "proj": 0,
+    "total": 0,
+    "free": 8,
+    "over": false
+  },
+  {
+    "iso": "2027-04-16",
+    "bdm": 12,
+    "items": [],
+    "bau": 0,
+    "proj": 0,
+    "total": 0,
+    "free": 8,
+    "over": false
+  },
+  {
+    "iso": "2027-04-19",
+    "bdm": 13,
+    "items": [],
+    "bau": 0,
+    "proj": 0,
+    "total": 0,
+    "free": 8,
+    "over": false
+  },
+  {
+    "iso": "2027-04-20",
+    "bdm": 14,
+    "items": [],
+    "bau": 0,
+    "proj": 0,
+    "total": 0,
+    "free": 8,
+    "over": false
+  },
+  {
+    "iso": "2027-04-21",
+    "bdm": 15,
+    "items": [],
+    "bau": 0,
+    "proj": 0,
+    "total": 0,
+    "free": 8,
+    "over": false
+  },
+  {
+    "iso": "2027-04-22",
+    "bdm": 16,
+    "items": [],
+    "bau": 0,
+    "proj": 0,
+    "total": 0,
+    "free": 8,
+    "over": false
+  },
+  {
+    "iso": "2027-04-23",
+    "bdm": 17,
+    "items": [],
+    "bau": 0,
+    "proj": 0,
+    "total": 0,
+    "free": 8,
+    "over": false
+  },
+  {
+    "iso": "2027-04-26",
+    "bdm": 18,
+    "items": [],
+    "bau": 0,
+    "proj": 0,
+    "total": 0,
+    "free": 8,
+    "over": false
+  },
+  {
+    "iso": "2027-04-27",
+    "bdm": 19,
+    "items": [],
+    "bau": 0,
+    "proj": 0,
+    "total": 0,
+    "free": 8,
+    "over": false
+  },
+  {
+    "iso": "2027-04-28",
+    "bdm": 20,
+    "items": [],
+    "bau": 0,
+    "proj": 0,
+    "total": 0,
+    "free": 8,
+    "over": false
+  },
+  {
+    "iso": "2027-04-29",
+    "bdm": 21,
+    "items": [],
+    "bau": 0,
+    "proj": 0,
+    "total": 0,
+    "free": 8,
+    "over": false
+  },
+  {
+    "iso": "2027-04-30",
+    "bdm": 22,
+    "items": [],
+    "bau": 0,
+    "proj": 0,
+    "total": 0,
+    "free": 8,
+    "over": false
+  }
+]

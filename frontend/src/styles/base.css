@@ -1,0 +1,11 @@
+/*
+ * Global element rules: Remi.dc.html lines 44-48, verbatim, plus the placeholder rule that
+ * the prototype's applyTweaks() injects at runtime (its date-picker indicator rule is dead
+ * and dropped).
+ */
+html,body{margin:0;height:100%;background:var(--paper);color:var(--ink);font-family:var(--font-ui);font-feature-settings:"kern";-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+button,input,textarea{font:inherit;color:inherit;}
+a{color:var(--ink);text-decoration-color:var(--hairline);text-underline-offset:3px;}
+a:hover{color:var(--pc-accent);}
+::selection{background:color-mix(in oklch, var(--pc-accent) 22%, transparent);}
+textarea::placeholder,input::placeholder{color:color-mix(in oklch, var(--ink-faint) 70%, var(--paper));opacity:1;}

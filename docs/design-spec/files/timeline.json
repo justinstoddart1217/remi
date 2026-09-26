@@ -1,0 +1,353 @@
+{
+ "key": "timeline",
+ "file": "/Users/justinstoddart/Desktop/Ninety One/remi/Remi Dashboard Design Review/Timeline.dc.html",
+ "purpose": "This is the Timeline screen: a Gantt chart with one column per business day. It has two zooms: \"3 months\" (the fixed window Mon 28 Sep 2026 to Fri 15 Jan 2027, 77 business days) and \"2 weeks\" (a 10-business-day window you can pan). Weekends and UK bank holidays shrink to thin slivers. Across the top is a stacked capacity strip showing hours per day against 8h. Below it are four lanes: PC BAU routine ticks, PC project bars, the FI eurozone sovereign rotation segments and FI project bars. Vertical lines mark today and the FI move date. Hovering shows a cursor-following tooltip and dims everything unrelated (linked highlighting through the shared model.hover). Clicking a project row slides in a 460px detail panel with \"Open workspace\" and \"Tell Remi\" actions. The screen is the prototype's main example of the \"plan moves\" motion: bars glide on a spring, a ghost of the previous plan shows, dates roll like an odometer and a +N BD chip appears.",
+ "layout": "CONTEXT: The Remi.dc.html shell renders a fixed 1920x1080 or 2560x1440 canvas, scaled to fit the viewport with transform:scale (a \"Fit window\" option also exists). The app grid is `88px nav | minmax(0,1fr)`. The right column is `72px header | 1fr main`. Timeline sits in `<section data-screen-label=\"Timeline\" style=\"position:absolute; inset:0; overflow:hidden\">`, which fades in and out with the other screens.\n\nROOT WRAPPER (wrapRef): position:relative; box-sizing:border-box; height:100%; padding:28px 48px 24px; display:flex; flex-direction:column; min-width:0; overflow:hidden.\n- Content width: at 1920 it is 1920-88-96 = 1736px; at 2560 it is 2560-88-96 = 2376px.\n- The chart column is content width minus the 280px label column, so W = 1456px at 1920 and 2096px at 2560. W is measured with a ResizeObserver on areaRef (clientWidth) and defaults to 1400 until measured.\n\n1) TOP BAR ROW: display:flex; align-items:flex-end; gap:40px; padding-bottom:22px. Children in order:\n   a) Title block (min-width:0):\n      - Eyebrow \"Timeline\": 11px, 600, letter-spacing 0.08em, uppercase, var(--ink-muted).\n      - Then a row (display:flex; align-items:baseline; gap:14px; margin-top:8px) holding the title (20px, 600, letter-spacing -0.01em; \"Three months\" or \"Two weeks\") and the subtitle (var(--font-numeric) 12px ink-muted).\n   b) Spacer (flex:1).\n   c) Legend: flex; align-items:center; gap:20px; 12px; ink-muted. Each item is flex, align-items center, gap 7px, with a swatch (see components).\n   d) Pan controls group: flex; gap 8px. opacity is 1 in 2w and 0 in 3m; pointer-events auto or none; transition opacity var(--dur-base) var(--ease-out).\n   e) Zoom segmented control.\n\n2) CHART REGION: position:relative; flex:1; min-height:0; display:flex; flex-direction:column. Children in DOM order:\n   a) BANDS LAYER: absolute; top:0; bottom:0; left:280px; right:0; overflow:hidden; pointer-events:none; no z-index, so it sits behind. One vertical band per non-working gap slot. Bands run the full height of the chart region, through the header, capacity strip, lanes and footnote.\n   b) DATE HEADER: display:grid; grid-template-columns:280px minmax(0,1fr); height:80px; flex:none; border-bottom:1px solid var(--hairline).\n      - Left cell: flex column; justify-content:flex-end; gap:6px; padding-bottom:6px; 11px ink-muted; the text \"Day\" above \"Business day\".\n      - Right cell (areaRef): position:relative; overflow:hidden. It holds four absolutely positioned tiers:\n        - Months: top 0, height 20px.\n        - Week labels: top 24px.\n        - Day pills: top 42px, height 18px.\n        - Business-day numbers: top 62px.\n   c) CAPACITY ROW: grid 280px | minmax(0,1fr); height:76px; flex:none; border-bottom 1px hairline.\n      - Left cell: padding-top 14px. Eyebrow \"Capacity\" (11px, 600, 0.08em, uppercase, ink-muted), then \"Hours per day against 8h.<br>Notched = BAU, solid = project.\" (12px ink-muted, margin-top 6px, line-height 1.4).\n      - Right cell: position:relative; overflow:hidden. It contains:\n        - The capacity reference line: absolute; left 0; right 0; bottom 51px; border-top 1px dashed var(--hairline). With 10px bottom padding plus 8h × 5px = 40px, this line marks 8h.\n        - One column per business day.\n        - The \"FI move · Mon 4 Jan\" tag.\n   d) LANES SCROLLER: flex:1; min-height:0; overflow-y:auto; overflow-x:hidden; flex column. Four lane groups in this order: \"Private Credit · BAU\", \"Private Credit · Projects\", \"Fixed Income · BAU\", \"Fixed Income · Projects\". A trailing flex:1 spacer follows. Every row is display:grid with grid-template-columns 280px minmax(0,1fr) and flex:none. Heights:\n      - Group header row: 40px (align-items:end; border-bottom 1px hairline).\n      - BAU routine row: 38px.\n      - Rotation row: 48px.\n      - Project row: 64px.\n      With the sample data the total is 4×40 + 2×38 + 3×64 + 48 + 2×64 = 604px, so nothing scrolls at 1080 (about 690px is available) or at 1440.\n   e) FOOTNOTE: flex:none; 12px; ink-muted; padding-top:12px.\n   f) OVERLAY LINES LAYER: absolute; top 0; bottom 0; left 280px; right 0; overflow hidden; pointer-events none; z-index 3.\n      - Today line: top 62px (starts at the BD-number tier) to bottom 28px; 1px; var(--ink).\n      - Move line: top 80px (starts below the date header) to bottom 28px; width 1.5px; var(--fi-accent).\n\n3) TOOLTIP (tipRef): absolute at left 0, top 0, z-index 10, inside the wrapper. It is positioned with a JS-written transform.\n\n4) SIDE PANEL: absolute; top 0; right 0; bottom 0; width 460px; z-index 12. It lives inside the Timeline wrapper, so it covers only the Timeline area below the app header. There is no scrim.\n\nX-AXIS GEOMETRY:\n- 3m at 1920: 77 business-day columns of (1456 - 15×5)/77 = 17.935px each, plus 15 gap slivers of 5px.\n- 3m at 2560: (2096 - 75)/77 = 26.25px per column.\n- 2w: 10 columns plus 2 gaps of 18px. At 1920 each column is (1456 - 36)/10 = 142px; at 2560 it is 206px. Windows that contain holidays have fewer columns, and those columns are wider.\n- Worked positions (3m, 1920): today (Mon 5 Oct) centre is x ≈ 103.6px. The move line (Mon 4 Jan) is at x ≈ 67×17.935 + 14×5 ≈ 1271.6px.\n\nRESPONSIVE: Everything recomputes from the measured W. Vertical sizes are fixed px, and extra height at 1440 becomes empty space below the lanes because of the flex:1 spacer inside the scroller.",
+ "components": [
+  {
+   "name": "TimelineHeader (title block)",
+   "description": "Eyebrow 'Timeline' (11px, 600, letter-spacing 0.08em, uppercase, color var(--ink-muted)). Below it, with margin-top 8px, a baseline-aligned row with gap 14px. Title: 20px, 600, letter-spacing -0.01em; 'Three months' (3m) or 'Two weeks' (2w). Subtitle: font var(--font-numeric), 12px, ink-muted, built as winLabel + ' · ' + count + ' business days'. In 3m that reads '28 Sep 2026 – 15 Jan 2027 · 77 business days' (the date text is hard-coded; the count is bdSlots.length). In 2w it reads F.dm(winA) + ' – ' + F.dm(winA + 11) + ' · 10 business days', e.g. '5 Oct – 16 Oct · 10 business days' (the 10 is hard-coded).",
+   "states": [
+    "3m",
+    "2w"
+   ]
+  },
+  {
+   "name": "Legend",
+   "description": "Flex row: align-items center, gap 20px, 12px, ink-muted. Each item is flex with align-items center and gap 7px: a swatch followed by a label. Swatches:\n- BAU: 4×14px, radius 1px, bg var(--pc-accent).\n- Project: 22×8px, radius 2px, bg var(--pc-accent).\n- Past target: 22×8px, radius 2px, bg var(--risk).\n- Previous plan: 22×6px, box-sizing border-box, 1px dashed var(--ink-faint), radius 2px.\n- Milestone: 8×8px, rotate(45deg), 1.5px solid var(--ink-muted), bg var(--paper).\n- Target: a 7×14px relative box with a 1px vertical line (left 3px, full height, var(--ink)) and a 7×1px top bar (var(--ink)). The legend draws a 'T'; in the chart the vertical sits at left 0, so the chart draws a 'Γ'.\n- Overload: 8×14px, radius 1px, bg var(--overload).",
+   "states": [
+    "static"
+   ]
+  },
+  {
+   "name": "PanControls",
+   "description": "Flex row, gap 8px, holding three buttons:\n- Prev: 32×32, display grid, place-items center, 1px solid var(--hairline), radius var(--radius-m) (6px), bg var(--paper-raised), Material Symbols Outlined 'chevron_left' at 18px.\n- 'This week': height 32px, padding 0 12px, same border/bg/radius, 13px text.\n- Next: same as Prev with 'chevron_right'.\nThe group has opacity 1 and pointer-events auto in 2w, and opacity 0 and pointer-events none in 3m, with transition opacity var(--dur-base) var(--ease-out). There are no hover styles.",
+   "states": [
+    "visible (2w)",
+    "hidden (3m)"
+   ]
+  },
+  {
+   "name": "ZoomSegmentedControl",
+   "description": "Container: position relative, flex, padding 3px, 1px solid var(--hairline), radius var(--radius-m), bg var(--paper-raised).\n- Sliding pill: absolute, top 3px, bottom 3px, width 96px, bg var(--ink), radius 4px. left is 3px in 2w and 99px in 3m, with transition left var(--dur-base) var(--spring-soft).\n- Two buttons, '2 weeks' (left) and '3 months' (right): position relative, 96×28px, border 0, transparent bg, cursor pointer, 13px, 500. Colour is var(--paper) when active and var(--ink-muted) otherwise, with transition color var(--dur-fast) var(--ease-out).\nDefault zoom is 3m.",
+   "states": [
+    "2w active",
+    "3m active"
+   ]
+  },
+  {
+   "name": "NonWorkingBands",
+   "description": "One absolutely positioned full-height div per 'gap' slot (a run of consecutive non-business days). left = slot x - off; width = s (5px in 3m, 18px in 2w). Background:\n- If the gap contains a bank holiday: color-mix(in oklch, var(--ink) 9%, var(--paper)).\n- Otherwise (plain weekend): color-mix(in oklch, var(--ink) 4.5%, var(--paper)).\nTransition: left and width var(--dur-slow) var(--spring-soft). Christmas 2026 is one merged gap, Fri 25 to Mon 28 Dec (Christmas, weekend, Boxing Day substitute). New Year is Fri 1 to Sun 3 Jan.",
+   "states": [
+    "weekend",
+    "holiday gap"
+   ]
+  },
+  {
+   "name": "DateHeader (months / weeks / days / BD)",
+   "description": "All tiers are absolutely positioned in areaRef, and each transitions left/width with var(--dur-slow) var(--spring-soft).\n- Months (top 0, height 20px): box-sizing border-box, padding-left 6px, border-left 1px solid {bl}, 13px, 600, nowrap, overflow hidden. Opacity is 1 if the clamped width > 70px, else 0, with transition opacity var(--dur-base) var(--ease-out). Label is the full month name, plus ' YYYY' for January and for the first month in the list, e.g. 'September 2026' (hidden in 3m because it is only about 54px wide), 'October', 'January 2027'. The label clamps to x ≥ 0, so a partly scrolled month keeps its label pinned at the left edge. The border-left becomes transparent when the month starts before x = 0.\n- Weeks (top 24px): padding-left 6px, font-numeric 10px, ink-muted, nowrap, text 'W' + ISO week, e.g. 'W41'. Placed at the first business day of each ISO week.\n- Days (top 42px, height 18px, width = column width, flex centred): an inner inline-flex pill with height 18px, padding 0 3px, radius var(--radius-s) (3px), font-numeric 11px, nowrap. Label is '5' in 3m and 'Mon 5' in 2w. Today gets bg var(--ink) and color var(--paper); other days get a transparent bg and var(--ink) text.\n- BD numbers (top 62px, width = column width, text-align center): font-numeric 9px, nowrap. Text is String(bdm) in 3m ('3') and 'BD' + bdm in 2w ('BD3'). Colour is var(--ink) when bdm === 1 (first business day of the month) and var(--ink-muted) otherwise.",
+   "states": [
+    "3m",
+    "2w",
+    "today highlighted"
+   ]
+  },
+  {
+   "name": "CapacityStrip",
+   "description": "One column per business day: absolute, top 0, bottom 0, left x, width = column width; display flex; flex-direction column-reverse; align-items center; padding-bottom 10px; border-box; transition left/width var(--dur-slow) var(--spring-soft).\n\nInner bar stack: width bw = max(3, min(colW - 5, 30)), about 12.9px in 3m at 1920, 21.25px at 2560 and 30px in 2w. It is flex column-reverse with gap 1px and radius 1px. animation is 'remi-pulse 600ms var(--ease-out) 1 450ms' when the day is overloaded and arrived is true and motion is not reduced; otherwise 'none'. transition width var(--dur-slow) var(--spring-soft).\n\nSegments are ordered bottom to top as returned by dayLoad: BAU first (routines before the move, the rotation after it), then projects in project order.\n- Height = hours × 5px (0 before arrival).\n- BAU segment ('notched'): bg repeating-linear-gradient(to top, C 0 4px, transparent 4px 5px), where C is var(--overload) if the day is over, else the domain accent. No outline.\n- Project segment: bg color-mix(in oklch, var(--overload) 22%, var(--paper)) if the day is over, else the domain soft colour (var(--pc-accent-soft) or var(--fi-accent-soft)). Outline is box-shadow inset 0 0 0 1px (var(--overload) if over, else the domain accent).\n- Every segment has radius 1px and opacity hov(item.id), which is 0.28 when another id is hovered.\n- Segment transition: height var(--dur-slow) var(--spring-soft) with delay {c.delay}, and opacity var(--dur-fast) var(--ease-out).\n\nThe 8h dashed reference line sits at bottom 51px. The available 66px clips at about 13h.\n\nMove tag: absolute; left = Lx(MOVE) + 6; top 4px; 11px, 600, var(--fi-accent), bg var(--paper), padding 0 6px, nowrap; text 'FI move · Mon 4 Jan' (hard-coded); transition left var(--dur-slow) var(--spring-soft).",
+   "states": [
+    "normal",
+    "overloaded (red + one-shot pulse)",
+    "dimmed segment (hover elsewhere)",
+    "pre-arrival (0 height)"
+   ]
+  },
+  {
+   "name": "LaneGroupHeader",
+   "description": "Grid 280px | 1fr; height 40px; align-items end; border-bottom 1px var(--hairline). Label: padding-bottom 8px, 11px, 600, letter-spacing 0.08em, uppercase, colour = group accent (var(--pc-accent) for Private Credit, var(--fi-accent) for Fixed Income). The right cell is empty. Labels: 'Private Credit · BAU', 'Private Credit · Projects', 'Fixed Income · BAU', 'Fixed Income · Projects'.",
+   "states": [
+    "pc",
+    "fi"
+   ]
+  },
+  {
+   "name": "BauRoutineRow",
+   "description": "Row: grid 280px | 1fr; height 38px; opacity hov(r.id) with transition opacity var(--dur-fast) var(--ease-out).\n\nLeft cell: flex, align-items center, justify-content space-between, gap 8px, padding-right 24px, min-width 0.\n- Label: 14px, ellipsis. For id 'r-ret' it is overridden to 'Fund & security returns'; otherwise r.name, or 'Untitled routine' if empty.\n- Sub: font-numeric 11px, ink-muted, nowrap, text ruleShort + ' · ' + h + 'h', e.g. 'BD3 · 6h' or 'BD8 · 4h'. ruleShort is 'Daily', 'Weekly · Tue' or 'BD' + bd.\n\nRight cell: position relative, overflow hidden. One tick per business day in [T0, T1] on which the routine occurs:\n- Geometry: absolute, top 10px, height 18px, border-box, radius 2px, left = Cx(n) - tw/2, width tw. tw is 4px in 3m and max(4, colW - 10) in 2w.\n- Handed-over tick (after = n >= MOVE or r.stage >= 3): transparent bg, inset 1px var(--pc-accent) outline, var(--ink-muted) text.\n- Normal tick: bg var(--pc-accent), no outline, var(--paper) text.\n- Text (2w only; empty in 3m): 11px, 500, flex centre, padding-left 8px, overflow hidden, nowrap. It reads 'Handed over' for after-move ticks and r.short + ' · ' + r.h + 'h' otherwise, e.g. 'Returns · 6h'.\n- Transition: left/width var(--dur-slow) var(--spring-soft).",
+   "states": [
+    "normal",
+    "dimmed (0.28)",
+    "hovered (sets global hover)",
+    "tick before move (filled)",
+    "tick after move / handed over (outlined)"
+   ]
+  },
+  {
+   "name": "RotationRow (FI BAU)",
+   "description": "Row: grid 280px | 1fr; height 48px; opacity hov('rot') with transition var(--dur-fast) var(--ease-out).\n\nLeft cell: space-between, gap 8px, padding-right 24px. Label 'Eurozone sovereign rotation' (14px); sub '4h/day' (font-numeric 11px, ink-muted; hard-coded).\n\nRight cell (relative, overflow hidden):\n- Note: absolute, top 16px, right = max(-400, W - Lx(MOVE) + 14), so its right edge sits 14px left of the move line. 12px ink-muted nowrap. Text 'Starts Mon 4 Jan with Germany, first Build pass →'. Transition right var(--dur-slow) var(--spring-soft).\n- Segments, one per ROT entry: absolute, top 11px, height 24px. left = Lx(s) + 1; width = arrived ? max(0, Rx(e) - Lx(s) - 2) : 0, which leaves a 1px inset gap each side. border-box, 1px {solid | dashed} var(--fi-accent) (Build solid, Refresh dashed), radius 2px. bg var(--fi-accent-soft) for Build and transparent for Refresh. Text var(--ink) 11px 600, flex centre, padding-left 6px, overflow hidden, nowrap. Text is shown only if the segment is wider than 26px: country code in 3m ('DE'), country + ' · ' + pass in 2w ('Germany · Build'). Native title attribute: country · pass · sS – eS. Transition: left var(--dur-slow) var(--spring-soft), and width var(--dur-slow) var(--spring-soft) with the stagger delay.",
+   "states": [
+    "normal",
+    "dimmed",
+    "hovered",
+    "Build segment (solid+soft fill)",
+    "Refresh segment (dashed, no fill)"
+   ]
+  },
+  {
+   "name": "ProjectRow",
+   "description": "Row: grid 280px | 1fr; height 64px; cursor pointer. opacity hov(p.id). Background is color-mix(in oklch, var(--ink) 3%, transparent) when this row is the hovered id, else transparent. Transition: opacity and background var(--dur-fast) var(--ease-out).\n\nLeft cell: flex column, justify centre, gap 5px, padding-right 24px, min-width 0.\n- Name: 14px, 500, ellipsis.\n- Meta row: flex, gap 8px, 13px, ink-muted. It holds:\n  - An inline-flex <Roll value=fS> odometer. fS is 'Not yet' for Define-status projects, else forecastS, e.g. 'Wed 2 Dec'.\n  - A chip: inline-flex, height 20px, padding 0 6px, radius var(--radius-s), font-numeric 11px, 500, nowrap. Text is 'Target ' + targetS for Define projects, else deltaLabel ('+3 BD', 'On target', '−2 BD'). At risk: bg color-mix(in oklch, var(--risk) 22%, var(--paper)), colour color-mix(in oklch, var(--risk) 40%, var(--ink)), transparent outline. Otherwise: transparent bg, var(--ink-muted) text, inset 1px var(--hairline) outline.\n\nRight cell (relative, overflow hidden) layers, in DOM order:\n1. Ghost of the previous plan: top 41px, height 7px, left Lx(startN), width Rx(prevN) - Lx(startN), border-box, 1.5px dashed accent, radius 2px. Opacity is 1 while flash is on, 0.55 when a prevN exists, and 0 with no prevN. Transition: left/width var(--dur-slow) var(--spring-soft), opacity 400ms var(--ease-out).\n2. Forecast bar: top 26px, height 10px, radius 2px, left Lx(startN), width arrived ? max(0, baseEnd - left) : 0. baseEnd is Rx(target) when at risk, else Rx(forecast or target). Normal bg is the accent. Define status uses bg repeating-linear-gradient(135deg, soft 0 4px, transparent 4px 8px) with an inset 1px accent outline. Transition: left var(--dur-slow) var(--spring-soft), and width var(--dur-slow) var(--spring-soft) with the row delay.\n3. Past-target overrun: top 26px, height 10px, left Rx(target), width (arrived && risk) ? max(0, Rx(forecast) - Rx(target)) : 0, radius 0 2px 2px 0, bg var(--risk). Same transitions and delay as the bar.\n4. Milestone diamonds: absolute, top 26px, left Cx(date) - 5, 10×10, z-index 1, border-box, transform rotate(45deg) scale(arrived ? 1 : 0). bg is the accent if date < TODAY (passed), else var(--paper). Border 1.5px solid accent. Transition: left var(--dur-slow) var(--spring-soft), transform var(--dur-base) var(--ease-out) with the row delay.\n5. Forecast end diamond: top 24px, left Rx(endN) - 7, 14×14, rotate(45deg) scale(arrived ? 1 : 0). bg var(--risk) if at risk, else the accent. border 2px solid var(--paper) (knock-out ring). Opacity 0 for Define. Transition: left var(--dur-slow) var(--spring-soft), transform var(--dur-base) var(--ease-out).\n6. Target marker ('Γ' flag): top 14px, height 32px, width 7px, left Rx(targetN). A 1px vertical var(--ink) line at left 0, full height, plus a 7×1px top bar. Opacity 0 if Define or target > T1. Transition: left var(--dur-slow) var(--spring-soft).\n7. Ghost end diamond (flash only): top 22px, left Cx(prevN) - 9, 18×18, rotate 45deg, 1.5px dashed accent, bg color-mix(in oklch, var(--paper) 60%, transparent). Opacity is 1 while flash is on, else 0. The transition is 'opacity 0ms' while flashing, so it appears instantly, and 'opacity 400ms var(--ease-out)' afterwards, so it fades out; left also transitions with var(--dur-slow) var(--spring-soft).\n8. Ghost label: top 48px, left Cx(prevN) - 20, font-numeric 10px, ink-muted, nowrap, text 'was ' + prevDM (e.g. 'was 27 Nov'). Same opacity and transition as the ghost end diamond.\n9. Moved chip: top 6px, left Rx(forecast) + 10, inline-flex, height 18px, padding 0 6px, radius var(--radius-s). bg color-mix(in oklch, var(--risk) 22%, var(--paper)), colour color-mix(in oklch, var(--risk) 40%, var(--ink)), font-numeric 11px 600. Opacity 1 while p.moved is set, else 0. transform scale(moved || reduced ? 1 : 0.9) with transform-origin left center. Transition: left var(--dur-slow) var(--spring-soft), opacity 180ms var(--ease-out), transform 180ms var(--ease-out). The label comes from the instance cache lastMoved[p.id], e.g. '+3 BD', so the text survives the fade-out.\n10. Off-range label: absolute, top 24px, right 10px, 11px ink-muted, bg var(--paper), padding 0 4px. Opacity 1 when endN > T1, with text 'Target ' + targetS + ' →' (e.g. 'Target Late Mar 2027 →'). No transition.",
+   "states": [
+    "on target",
+    "at risk (bar to target + orange overrun + orange end diamond + tinted chip)",
+    "define (hatched bar, no end diamond, no target marker, 'Not yet', chip 'Target …')",
+    "previous plan exists (ghost at 0.55)",
+    "flash (ghost 1, ghost diamond + 'was' label visible, ~1100ms)",
+    "moved (+N BD chip visible for 5200ms)",
+    "off-range (end beyond 15 Jan)",
+    "hovered (3% ink bg, others dimmed 0.28)",
+    "pre-arrival (width 0, diamonds scale 0)"
+   ]
+  },
+  {
+   "name": "TodayAndMoveLines",
+   "description": "Overlay layer: z-index 3, pointer-events none, left 280px, overflow hidden.\n- Today: 1px var(--ink); left Cx(TODAY); top 62px, bottom 28px.\n- FI move: 1.5px var(--fi-accent); left Lx(MOVE), the left edge of Mon 4 Jan; top 80px, bottom 28px.\nBoth transition left var(--dur-slow) var(--spring-soft).",
+   "states": [
+    "static"
+   ]
+  },
+  {
+   "name": "Footnote",
+   "description": "flex:none; 12px; var(--ink-muted); padding-top 12px. Text: 'Weekends and UK bank holidays are collapsed to slivers. Hover a row to trace it through the capacity strip; click for details.'",
+   "states": [
+    "static"
+   ]
+  },
+  {
+   "name": "HoverTooltip",
+   "description": "Absolute at left 0, top 0, z-index 10, pointer-events none, width 300px, padding 12px 14px. bg var(--paper-raised), 1px solid var(--hairline), radius var(--radius-m). box-shadow 0 12px 28px -18px color-mix(in oklch, var(--ink) 40%, transparent). Opacity 1 or 0 with transition opacity var(--dur-fast) var(--ease-out). Position is set imperatively through style.transform = translate(x,y) on mousemove, with no transition.\n- Header row: flex, baseline, space-between, gap 12px. Title 14px 600. Chip in font-numeric 11px, coloured chipFg.\n- Lines: each 13px, line-height 1.45, ink-muted, margin-top 4px.\nWhen hidden, the content is cleared (title '', lines []), so the text vanishes while the fade-out runs.",
+   "states": [
+    "hidden (o 0)",
+    "day tip",
+    "routine tip",
+    "rotation tip",
+    "project tip",
+    "milestone tip"
+   ]
+  },
+  {
+   "name": "ProjectSidePanel",
+   "description": "Container: absolute; top 0; right 0; bottom 0; width 460px; z-index 12; bg var(--paper); border-left 1px var(--hairline); box-shadow -24px 0 48px -36px color-mix(in oklch, var(--ink) 35%, transparent). transform translateX(0) when open and translateX(104%) when closed; opacity 1 or 0. Transition: transform var(--dur-slow) var(--spring-soft), opacity var(--dur-base) var(--ease-out). Flex column, border-box, padding 28px 32px.\n\nContent is rendered only when a project is set:\n1. Top row (flex, centre, gap 10px):\n   - Domain chip: inline-flex, gap 6px, height 22px, padding 0 8px, radius var(--radius-s), bg p.soft, 11px, 600, letter-spacing 0.04em, var(--ink). It holds a 6px round accent dot and domainName ('Private Credit' or 'Fixed Income').\n   - flex:1 spacer.\n   - Close button: 32×32, border 0, transparent, ink-muted, Material icon 'close' at 20px.\n2. Name: 14px, 600, margin-top 22px.\n3. Goal: <p>, margin 8px 0 0, var(--font-display) (Libre Caslon Text), 24px, line-height 1.3, letter-spacing -0.005em, text-wrap pretty.\n4. Facts grid: grid-template-columns auto 1fr, column-gap 24px, row-gap 10px, margin-top 26px, padding-top 18px, border-top 1px hairline, 14px. Labels are ink-muted.\n   - Forecast: forecastS, weight 500.\n   - Target: targetS.\n   - Against target: deltaLabel, font-numeric 13px.\n   - Confidence: 'N of 5', or 'Not set'.\n   - Last check-in: sinceLabel ('Today', 'Yesterday', 'N days ago', 'Not yet').\n5. 'Milestones' eyebrow: 11px, 600, 0.08em, uppercase, ink-muted, margin-top 28px.\n6. Milestone rows: flex, centre, gap 12px, height 38px, border-bottom 1px hairline, 14px. Each has an 8×8 rotated diamond (1.5px solid accent; bg accent if passed, else paper), the name (flex:1) and a date (font-numeric 12px ink-muted, F.s format). If there is a forecast, a final row follows with endName and forecastS, drawn as an unfilled diamond.\n7. Empty state when milestones.length === 0: 'No milestones yet. They arrive once the charter is finished and the plan is drafted.' (14px, ink-muted, margin-top 10px, line-height 1.5).\n8. flex:1 spacer.\n9. Button row (flex, gap 10px):\n   - 'Open workspace': flex 1, height 40px, border 0, radius var(--radius-m), bg var(--ink), colour var(--paper), 14px, 600.\n   - 'Tell Remi': flex 1, height 40px, 1px hairline border, bg var(--paper-raised), 14px, 500.",
+   "states": [
+    "closed (off-canvas, content unmounted)",
+    "open with project",
+    "open, no milestones (empty copy)"
+   ]
+  },
+  {
+   "name": "Roll (child, Roll.dc.html)",
+   "description": "Odometer text used for the forecast date in project rows (hint-size 72×16px).\n- Structure: a hidden copy of the full text sets the width. An absolutely positioned overlay holds one column per character group. Each column is a vertical strip of candidate cells, each 1.25em high, and the strip is translated with translateY(-index × 1.25em). Transition: transform var(--dur-slow) var(--spring-soft).\n- Dates matching /^(?:(Mon|Tue|…|Sun) )?(\\d{1,2}) (Jan|…|Dec)$/ roll by weekday, tens digit, units digit and month wheels.\n- Numbers matching /^([+−-]?)(\\d{1,3})(?:\\.(\\d))?(\\D*)$/ roll by sign, three padded digits, decimal point, decimal digit and a static suffix.\n- Any other string, such as 'Not yet', is static.",
+   "states": [
+    "date",
+    "number",
+    "static text"
+   ]
+  }
+ ],
+ "dataConsumed": [
+  "props.model: the shared object built by Remi.dc.html buildModel(). Timeline returns {} if it is missing.",
+  "model.CAL.days[n]: day record keyed by day number (days since the Unix epoch, UTC). Shape: { n, iso:'YYYY-MM-DD', w: weekday 0=Sun..6=Sat, m: month 0-11, d: day of month, y: year, bd: boolean business day, bdm: business-day-of-month index (1-based; null on non-business days), hol: holiday name or null }. It covers only CAL0 = 2026-08-31 to CAL1 = 2027-04-30.",
+  "model.CAL.bds: ascending array of business-day numbers. CAL.idx[n] gives the index in bds.",
+  "model.CAL.nextBD(n): n if it is a business day, otherwise the next business day.",
+  "model.CAL.addBD(n, k): the business day k business days after nextBD(n), clamped to the array bounds.",
+  "model.CAL.bdDiff(a, b) = idx[nextBD(b)] - idx[nextBD(a)].",
+  "model.F formatters: F.dn('YYYY-MM-DD') gives a day number. F.s(n) gives 'Wed 2 Dec'. F.dm(n) gives '2 Dec'. F.l(n) gives 'Wednesday 2 December'. F.wd(n) gives 'Mon'.",
+  "model.TODAY: day number for 2026-10-05, a Monday and BD3 (hard-coded in the shell).",
+  "model.MOVE: day number for 2027-01-04, the FI move date.",
+  "model.pmap: projects keyed by id. Used for the side panel.",
+  "model.loads[n]: dayLoad result for each business day, shaped { n, items: [{ id, pid, kind: 'bau'|'proj', domain: 'pc'|'fi', h: hours, name }], bau, proj, total, free, over: total > 8 }.",
+  "model.hover (string id or null) and model.setHover(id): the global linked-highlight id. Ids are a project id, a routine id or 'rot'.",
+  "model.P: derived projects. Each has id, domain, name, short, goal, accent ('var(--pc-accent)' or 'var(--fi-accent)'), soft (the -soft variant), domainName, startN, targetN, forecastN (null when the project is still in Define), prevN (previous forecast, or null), status ('define' | 'risk' | 'on'), delta, deltaLabel, forecastS, targetS (p.targetLabel or F.s), prevS, prevDM, confidence (1-5 or null), sinceLabel, endName, milestones (derived and sorted, [{ name, date: 'YYYY-MM-DD' }]), flash (bool), moved ({ delta, label: '+N BD', at } or null).",
+  "model.routines: the shell routines, each with id, name, short, h, rule (e.g. '3rd business day, monthly'), ruleShort ('BD3'), stage (0-3), stageName (from STAGES ['Manual','Automating','Shadowed','Handed over']), statusNote, kind ('monthly'|'weekly'|'daily'), bd, wd.",
+  "model.occursOn(r, n): true when the routine occurs on business day n. Daily routines occur every business day; weekly ones when d.w === r.wd; monthly ones when d.bdm === r.bd.",
+  "model.ROT: rotation segments [{ i, country, code, len, pass: 'Build'|'Refresh', s: start day number, e: end day number, sS, eS }]. Timeline uses ROT[9].eS for the tooltip.",
+  "model.reduced: true only when the shell's motion prop is 'Reduced'. It does not reflect the OS prefers-reduced-motion setting.",
+  "model.openProject(id): switches the shell to the workspace screen for that project.",
+  "model.openCheckIn(pid): opens the Tell Remi (check-in) drawer for that project.",
+  "Derived locally: slots, X map, w, s, off, total, Lx/Rx/Cx, months, weeks, days, bands, capDays, groups, winA/winB, winLabel."
+ ],
+ "interactions": [
+  "Click '2 weeks': setState({ zoom: '2w' }). wk is kept. Every x and width recomputes, and the CSS spring transitions animate the zoom morph. The pill slides to left 3px, the pan controls fade in, the title becomes 'Two weeks', day labels become 'Mon 5' / 'BD3', BAU ticks widen and gain text, and rotation segments show 'Country · Pass'.",
+  "Click '3 months': setState({ zoom: '3m', wk: 0 }). This resets panning.",
+  "Pan prev (chevron_left): wk = max(-1, wk - 1). Pan next (chevron_right): wk = min(13, wk + 1). 'This week': wk = 0. The window moves by 7 calendar days per step, and all elements slide with the spring. The buttons only work in 2w, because pointer-events are none in 3m.",
+  "Mouse enters a capacity day column: shows the tooltip with key 'd'+n. Title: F.s(n) + ' · BD' + bdm, e.g. 'Wed 4 Nov · BD3'. Chip: 'Overload' in var(--overload), or '<total>h of 8h' in ink-muted. Lines: one per item, name + (' (BAU)' for BAU items) + ' · ' + h + 'h', or 'Nothing planned.' when empty. It does NOT set the global hover. Mouse move repositions the tip; mouse leave clears it.",
+  "Mouse enters a BAU routine row: setHover(r.id) dims all other rows and capacity segments to 0.28, and shows the tip. Title: r.name. Chip: 'BAU'. Lines: [r.rule + ', ' + r.h + 'h · ' + stageName, statusNote] with empties removed. Mouse leave calls setHover(null) and clears the tip.",
+  "Mouse enters the rotation row: setHover('rot') and shows the tip. Title: 'Eurozone sovereign rotation'. Chip: 'BAU'. Lines: 'Germany → France → Italy → Spain → Netherlands → Belgium → Austria → Portugal → Ireland → Finland, then back to Germany to refresh.' and 'First loop complete ' + ROT[9].eS + '.'. Hovering a rotation segment also shows the native title tooltip, e.g. 'Germany · Build · Mon 4 Jan – Mon 11 Jan'.",
+  "Mouse enters a project row: setHover(p.id). The row gets a 3% ink background and everything else dims. Tip title: p.name. Chip: 'no plan' for Define, else deltaLabel; its colour is color-mix(in oklch, var(--risk) 45%, var(--ink)) when at risk, else ink-muted. Lines, with empties removed: (1) 'Forecast <forecastS> · target <targetS>', or 'No forecast until the plan exists · target <targetS>' for Define; (2) 'Previous plan ended <prevS>' when a previous plan exists; (3) 'Confidence <n or —>/5 · checked in <sinceLabel lowercased>', or 'No plan yet' for Define; (4) one '◆ <milestone> · <F.s date>' per milestone; (5) '◆ <endName> · <forecastS>' when a forecast exists.",
+  "Mouse enters a milestone diamond: shows the tip with key p.id + ':' + name. Title: the milestone name. Chip: 'Milestone'. Lines: [F.l(n) + ' · BD' + bdm-of-next-BD, p.name, 'Passed' if before today, else bdDiff(TODAY, n) + ' business days away']. Mouse leave switches the tip back to a SIMPLIFIED project tip (chip deltaLabel, a single line 'Forecast X · target Y'), not the full one. The code calls e.stopPropagation(), which has no effect on mouseenter in React.",
+  "Mouse move over any hover target calls moveTip. It converts client coordinates into the wrapper's unscaled coordinates, using k = offsetWidth / boundingRect.width to undo the app-level scale transform. It places the tip at the cursor + 16px and flips it left by 332px if x + 310 > wrapper width, and up by 150px if y + 140 > wrapper height. It writes t.style.transform directly, without re-rendering React. setTip only calls setState when the tip key changes.",
+  "Click a project row: clearTip() and setState({ panel: p.id }). The side panel slides in from the right. Clicking another row swaps the content instantly.",
+  "Side panel close button (icon 'close'): panel = null, and the panel slides out. There is no Escape handling (the shell's Escape only closes the palette or drawer), no click-outside close and no scrim.",
+  "Side panel 'Open workspace': sets panel to null, then calls m.openProject(pp.id) without the viaCard flag, so there is no view transition; the shell simply switches screens.",
+  "Side panel 'Tell Remi': calls m.openCheckIn(pp.id), which opens the shell's check-in drawer (z above). The panel stays open underneath.",
+  "The lanes area scrolls vertically (overflow-y auto) when it overflows. The date header and capacity strip stay fixed above it.",
+  "Resize: the ResizeObserver on the header's chart cell updates W when it changes by more than 1px, and everything re-lays out with the spring transitions."
+ ],
+ "motion": [
+  "Tokens from the shell: --dur-fast 140ms, --dur-base 240ms, --dur-slow 440ms; --ease-out cubic-bezier(0.23, 1, 0.32, 1); --spring-soft linear(0, 0.049 5%, 0.156 10%, 0.283 15%, 0.408 20%, 0.522 25%, 0.62 30%, 0.702 35%, 0.769 40%, 0.864 50%, 0.922 60%, 0.956 70%, 0.976 80%, 0.987 90%, 1). The spring curve has no overshoot.",
+  "Reduced motion: when :root[data-motion=\"reduced\"] is set or @media (prefers-reduced-motion: reduce) matches, --spring-soft becomes steps(1, jump-start). All spatial transitions then jump instantly, and only the opacity/colour ease-out fades remain (cross-fades only). In JS, model.reduced also disables the overload pulse and forces the moved-chip scale to 1.",
+  "Zoom morph and pan slide: every positioned element transitions left/width (the rotation note transitions right) over var(--dur-slow) var(--spring-soft). That covers bands, months, weeks, days, BD numbers, capacity columns and bar widths, BAU ticks, rotation segments, project bars, overruns, ghosts, milestones, end diamonds, target markers, moved chips, the today line, the move line and the move tag. Changing zoom or wk rescales or offsets all x values, so the whole chart glides without a jump cut. Month labels also cross-fade (opacity var(--dur-base) var(--ease-out)) when their clamped width crosses 70px.",
+  "Arrival (on mount): after a double requestAnimationFrame, arrived = true. Project bars and overruns grow from width 0 (var(--dur-slow) spring) with a per-row delay of i×30+60ms: PC rows 60, 90, 120ms; FI rows use i+3, so 150 and 180ms. Rotation segments grow with delay 200 + i×20ms. Capacity segments grow from height 0 with delay round(i×2.5)ms per business-day column (0 to about 190ms across 77 columns). Milestone diamonds scale 0 to 1 (transform var(--dur-base) var(--ease-out), with the row delay). End diamonds scale 0 to 1 with no delay. After 900ms settled = true, and all stagger delays become 0ms so later changes respond immediately.",
+  "Overload pulse: on overloaded days, once arrived, the capacity bar stack runs 'remi-pulse 600ms var(--ease-out) 1 450ms' (one iteration, 450ms delay). Keyframes: 0% box-shadow 0 0 0 0 color-mix(in oklch, var(--overload) 50%, transparent); 100% box-shadow 0 0 0 7px color-mix(in oklch, var(--overload) 0%, transparent). It never loops.",
+  "Hover dimming: row opacity (1 to 0.28) transitions over var(--dur-fast) var(--ease-out), and the project row background also uses var(--dur-fast) var(--ease-out). Capacity segment opacity transitions over var(--dur-fast) var(--ease-out).",
+  "Tooltip: opacity transition var(--dur-fast) var(--ease-out). Its position follows the cursor with no transition.",
+  "'Plan moves' signature, triggered by a check-in that adds scope in the shell:\n(1) forecastN changes, and the bar width, overrun, end diamond and moved-chip left glide over var(--dur-slow) var(--spring-soft).\n(2) p.flash = true for 1100ms. The ghost previous-plan bar goes from 0.55 to 1 opacity. The dashed 18px ghost diamond at the old end and the 'was <date>' label appear instantly (opacity 0ms), then fade over 400ms var(--ease-out) when flash ends. The ghost bar itself returns to 0.55 over 400ms.\n(3) The Roll odometer in the row label rolls the forecast date digits, weekday and month (transform var(--dur-slow) var(--spring-soft)).\n(4) p.moved is set for 5200ms. The '+N BD' chip fades in (opacity 180ms var(--ease-out)) and scales from 0.9 to 1 (transform 180ms var(--ease-out), origin left center); when moved clears it fades out again, keeping its label through the lastMoved cache.",
+  "Pan controls: opacity fade var(--dur-base) var(--ease-out) between 2w and 3m.",
+  "Zoom pill: left transition var(--dur-base) var(--spring-soft). Button text colour transitions over var(--dur-fast) var(--ease-out).",
+  "Side panel: transform translateX(104%) to 0 over var(--dur-slow) var(--spring-soft), plus opacity 0 to 1 over var(--dur-base) var(--ease-out). On close the content unmounts immediately, so the panel slides out empty.",
+  "Screen switch (shell): the Timeline section fades in with opacity var(--dur-base) var(--ease-out) and a 60ms delay, and fades out over var(--dur-fast).",
+  "Caveat: all screens mount at app load, hidden with visibility:hidden. The arrival stagger therefore plays at app load even when Timeline is not visible, and does not replay on navigation. This matches the brief's 'not repeated on every page change'. In production it should run on the first view of the day."
+ ],
+ "algorithms": [
+  "WINDOW CONSTANTS: T0 = dn('2026-09-28') (Mon), T1 = dn('2027-01-15') (Fri). Gap sliver width s = 5px in 3m and 18px in 2w.",
+  "SLOTS: iterate n from T0 to T1. A business day becomes {t:'bd', n, a:n, b:n}. A run of consecutive non-business days (weekends plus holidays) collapses into one {t:'gap', a:first, b:last}, stopping at T1. For the sample data this gives 77 bd slots and 15 gap slots; Christmas Fri 25 to Mon 28 Dec 2026 is one gap and New Year Fri 1 to Sun 3 Jan is another.",
+  "VISIBLE WINDOW: in 3m, winA = T0 and winB = T1. In 2w, winA = TODAY - (CAL.days[TODAY].w - 1) + wk×7 (the Monday of today's week plus wk weeks) and winB = winA + 13 (the Sunday of the second week). vis = slots with a >= winA and b <= winB, i.e. fully contained. nbd = number of bd slots in vis; ng = number of gap slots in vis.",
+  "COLUMN WIDTH: w = max(4, (W - ng×s) / max(1, nbd)). This fills the chart width exactly with the visible slots. All slots, not just visible ones, get cumulative x: x = running sum; width = w for bd slots and s for gap slots. X[n] maps a business day to its slot. total = sum of all widths. The offset off is vis[0].x in 2w and 0 in 3m. Every rendered x subtracts off, so items outside the window fall off-canvas and are clipped by overflow:hidden.",
+  "Lx(n) (left edge): if n < T0, return -off - 40. If n > T1, return total - off + 40. Otherwise return X[CAL.nextBD(n)].x - off, falling back to total - off + 40. A weekend date therefore snaps to the next business day's left edge.",
+  "Rx(n) (right edge): if n < T0, return -off - 40. If n > T1, return total - off + 80. Otherwise return X[nextBD(n)].x + X[nextBD(n)].w - off, falling back to total - off + 80.",
+  "Cx(n) = (Lx(n) + Rx(n)) / 2, the centre of the column.",
+  "HOVER DIM: hov(id) = (hover && hover !== id) ? 0.28 : 1.",
+  "MONTHS: iterate all slots (including gaps). key = y×12 + m, taken from CAL.days[slot.a], so a gap belongs to the month of its first day. Start a new month when the key changes, with x0 = slot.x - off and x1 = slot.x + slot.w - off; otherwise extend x1. Label = MOL[m] + (' ' + y if m === 0 or it is the first month). Clamp: x = max(0, x0); w = max(0, min(W, x1) - x). Opacity = w > 70 ? 1 : 0. Border colour = x0 >= 0 ? var(--hairline) : transparent.",
+  "WEEKS: ISO-8601 week number of each bd slot, computed in UTC: shift to the Thursday of the week, then compare with the Thursday of the week containing Jan 4: 1 + round((thu - jan4thu) / 604800000). Push {x: slot.x - off, label: 'W' + wn} whenever the week number changes.",
+  "DAYS: one entry per bd slot. Label: String(d.d) in 3m, F.wd(n) + ' ' + d.d in 2w. BD label: String(bdm) in 3m, 'BD' + bdm in 2w. Today is inverted (ink bg, paper text). BD1 uses ink text; other BD numbers use ink-muted.",
+  "BANDS: one per gap slot. Background is 9% ink if any day in the gap has a hol, else 4.5% ink.",
+  "CAPACITY (per bd slot i): l = loads[n]. Segment height = h × 5px, so 8h = 40px (the dashed line at bottom 51px, above the 10px padding). Bar width = max(3, min(colW - 5, 30)). Stagger delay = settled ? 0 : round(i × 2.5)ms. Pulse only when l.over && arrived && !reduced.",
+  "DAYLOAD (shell, drives loads): capacity is 8. For business day n:\n(a) If n < MOVE: for each routine with stage < 3 that occurs on the day, add a BAU item {id: r.id, kind: 'bau', domain: 'pc', h: r.h, name: r.short || r.name || 'Untitled routine'}. Otherwise: find the ROT segment containing n and add {id: 'rot', kind: 'bau', domain: 'fi', h: 4, name: country + ' · ' + pass}.\n(b) For each project with startN <= n <= (forecastN ?? targetN): h = p.ov[iso] if it exists; else if n >= MOVE, p.rateAfter; else if bdm === 3, p.bd3; else if bdm === 8, p.bd8; else p.rate. Add {id: p.id, kind: 'proj', domain, h, name: p.short} when h > 0.\n(c) total = bau + proj; free = max(0, 8 - total); over = total > 8.",
+  "BAU TICKS: for each business day n in CAL.bds with T0 <= n <= T1 and occursOn(r, n): after = n >= MOVE || r.stage >= 3. Tick width tw = 4 in 3m, max(4, Rx(n) - Lx(n) - 10) in 2w. x = Cx(n) - tw/2.",
+  "ROTATION SCHEDULE (shell): ROT_DEF = [Germany DE 6 Build, France FR 5 Build, Italy IT 6 Build, Spain ES 5 Build, Netherlands NL 4 Build, Belgium BE 4 Build, Austria AT 4 Build, Portugal PT 4 Build, Ireland IE 4 Build, Finland FI 4 Build, Germany DE 3 Refresh]. Start s = MOVE. For each entry: e = addBD(s, len - 1), then s = addBD(e, 1) for the next. Timeline geometry: x = Lx(s) + 1; w = Rx(e) - Lx(s) - 2. Text is shown only if Rx(e) - Lx(s) > 26px. Note position: right = max(-400, W - Lx(MOVE) + 14).",
+  "PROJECT STATUS (shell): delta = bdDiff(targetN, forecastN). status = 'define' if forecastN is null, 'risk' if delta > 0, else 'on'. deltaLabel: 'No forecast' | '+N BD' | '−N BD' (Unicode minus) | 'On target'. sinceLabel: 'Not yet' | 'Today' | 'Yesterday' | 'N days ago' (calendar days between TODAY and the check-in).",
+  "PROJECT GEOMETRY:\n- a = Lx(startN); endN = forecastN ?? targetN; fEnd = Rx(endN); tEnd = Rx(targetN).\n- Bar: width = (risk ? tEnd : fEnd) - a.\n- Overrun: from tEnd with width fEnd - tEnd, only when at risk.\n- Ghost bar: from a to Rx(prevN), when prevN exists.\n- Ghost end diamond: centred at Cx(prevN) (x - 9). 'was' label at Cx(prevN) - 20.\n- Milestone diamonds: at Cx(date) - 5. End diamond: at Rx(endN) - 7, i.e. centred on the right edge of the forecast day.\n- Target marker: at Rx(targetN), hidden if Define or targetN > T1.\n- Moved chip: at fEnd + 10.\n- Off-range label: when endN > T1.\n- Stagger delay: i×30 + 60ms, where FI projects use i + 3.",
+  "MILESTONE DERIVATION (shell derivedMs): map milestone name to {name, date} from p.now[] and p.next[] entries that have m and due. Add p.milestones entries whose name is not already present and whose date is not already used. Sort ascending by date. A milestone counts as passed when its date < TODAY.",
+  "BUSINESS DAYS AWAY (milestone tip) = CAL.bdDiff(TODAY, n). The BD label = CAL.days[CAL.nextBD(n)].bdm.",
+  "SUBTITLE: 3m shows the hard-coded '28 Sep 2026 – 15 Jan 2027' plus bdSlots.length (77). 2w shows F.dm(winA) + ' – ' + F.dm(winA + 11) (Monday to Friday of the second week) plus a hard-coded '10'.",
+  "PAN BOUNDS: wk is clamped to [-1, 13]. With TODAY = Mon 5 Oct, wk = -1 gives the window starting 28 Sep (= T0) and wk = 13 gives the window starting 4 Jan, ending at T1 = 15 Jan.",
+  "TOOLTIP POSITION: k = wrap.offsetWidth / wrap.getBoundingClientRect().width. x = (clientX - rect.left) × k + 16; y = (clientY - rect.top) × k + 16. If x + 310 > offsetWidth, x -= 332. If y + 140 > offsetHeight, y -= 150.",
+  "PANEL MILESTONES: derived milestones, each {name, s: F.s(date), bg: passed ? accent : paper}, plus {name: endName, s: forecastS, bg: paper} if forecastN is set. Confidence text: confidence ? confidence + ' of 5' : 'Not set'.",
+  "HOLIDAYS (shell): HOL = { '2026-12-25': 'Christmas Day', '2026-12-28': 'Boxing Day (substitute)', '2027-01-01': \"New Year's Day\", '2027-03-26': 'Good Friday', '2027-03-29': 'Easter Monday' }. A business day is Mon to Fri and not a holiday. bdm counts business days within the calendar month."
+ ],
+ "backendImplications": [
+  "Calendar service (core/utils): generate day records for any range, with business-day flags, bdm (business-day-of-month), holiday names and ISO week. Support a configurable holiday calendar (UK vs South Africa is an open question) and nextBD, addBD and bdDiff. Expose them through something like GET /calendar?from&to, or embed them in the timeline payload. The frontend still needs synchronous access for its layout maths, so ship the day list to the client.",
+  "Timeline endpoint (api/timeline): GET /timeline?from=&to= (default: the Monday of the current week minus 1 week, through roughly 3.5 months, or through the move date + 10 BD). It returns days[] (n/iso, bd, bdm, hol, isoWeek), loads per business day (items[], bau, proj, total, over), routines with their occurrence dates in range, rotation segments, projects with derived fields, today and the move date. Replace the hard-coded T0/T1 and '28 Sep 2026 – 15 Jan 2027' with server-provided or computed bounds.",
+  "Capacity/load computation (services/capacity_service): port dayLoad. Routines count before the move and only while stage < 3. The rotation contributes 4h/day after the move. Project hours per day follow the priority ov[iso] override > rateAfter (after the move) > bd3 (on BD3) > bd8 (on BD8) > rate. Over = total > capacity, where capacity is a user setting (8h default; an open question) rather than a constant.",
+  "Routine occurrence engine (services/routine_service): monthly on the Nth business day, weekly on a weekday, or daily. Stages: Manual, Automating, Shadowed, Handed over. Ticks are drawn 'handed over' when stage >= 3 or the date is on or after the move.",
+  "Rotation schedule (services/rotation_service): an ordered country list with length in business days and pass (Build/Refresh), laid out back to back from the move date by business days. It needs its own entity (country, code, len, pass, order) plus hours/day (4h, hard-coded in both the copy and dayLoad).",
+  "Project derivations (services/project_service or schemas): startN/targetN/forecastN/prevN, delta in business days, status define/risk/on, deltaLabel, sinceLabel, the derived milestone list (merged from plan now/next milestones and explicit milestones, de-duplicated by name and date, sorted), targetLabel override (e.g. 'Late Mar 2027'), endName, confidence and last check-in. The previous forecast (prev) must be stored whenever a check-in moves the forecast.",
+  "Plan-moved event: the check-in or update endpoint must return the previous and new forecast and the delta in business days, so the client can run the transient flash (1100ms) and moved (5200ms) animation states. Those states stay client-side and should not be persisted, although the prev forecast is persisted.",
+  "Entities needed: Project (id, domain pc|fi, name, short, goal, start, target, targetLabel?, forecast?, prev?, confidence?, lastCheckin, rate, bd3, bd8, rateAfter, ov{date: hours}, endName, milestones[], plan now/next), Routine (id, domain, name, short, kind, bd, wd, h, stage, statusNote, rule), RotationSegment, Holiday, Settings (move date, capacity hours, holiday region).",
+  "Validation: dates must fall within the supported calendar range. The prototype crashes on CAL.days lookups outside 2026-08-31 to 2027-04-30, e.g. in F.l or F.s for out-of-range milestones. Hours must be >= 0. Rotation lengths must be >= 1.",
+  "Hover and zoom state are purely client-side. The global hover id should live in a client store such as Zustand or context, so linked highlighting works across screens."
+ ],
+ "risksAndQuirks": [
+  "Hard-coded window: T0 '2026-09-28' and T1 '2027-01-15', and the 3m subtitle text '28 Sep 2026 – 15 Jan 2027'. All must be computed from today and the move date in production.",
+  "The 2w subtitle always says '10 business days', even for windows containing holidays: wk=11 (21 Dec – 3 Jan) has only 7. The pan bounds wk ∈ [-1, 13] are tuned to TODAY = 5 Oct 2026 and the fixed window.",
+  "Hard-coded copy tied to the sample data: 'FI move · Mon 4 Jan' tag, 'Starts Mon 4 Jan with Germany, first Build pass →', '4h/day', the rotation order sentence in the tooltip, 'Hours per day against 8h.', and 'UK bank holidays' in the footnote.",
+  "The label for routine 'r-ret' is special-cased to 'Fund & security returns', a shortened name. Production should use a routine 'label' or short field instead.",
+  "The FI project stagger index uses i + 3, which assumes exactly three PC projects.",
+  "The lastMoved instance cache (this.lastMoved[p.id]) is never cleared. It exists only so the moved chip keeps its text while fading out.",
+  "The milestone mouseleave restores a simplified project tooltip (one line), not the full one built on row enter. The milestone mouseenter's e.stopPropagation() does nothing, because React mouseenter does not bubble.",
+  "Hovering a capacity day column does not set the global hover, so linked highlighting only works in the lane-to-capacity direction.",
+  "The side panel content unmounts as soon as the panel closes, so it slides out empty. Production should keep the last project rendered during the exit animation. There is also no Escape key, no click-outside close, no focus trap and no scrim.",
+  "Accessibility: rows and capacity columns are divs with mouse handlers only. There is no keyboard focus or activation, no ARIA, and the tooltips are hover-only. The rotation segments rely on the native title attribute.",
+  "model.reduced reflects only the design prop 'motion: Reduced', not the OS prefers-reduced-motion setting. The CSS var fallback covers the springs, but the JS pulse still runs under the OS setting.",
+  "The tooltip DOM content clears as soon as tip becomes null, so the fade-out shows an empty box. Production should keep the last content during the fade.",
+  "The arrival animation is triggered on component mount, which happens at app load while the screen is hidden. The first time the user opens Timeline, bars are usually already settled.",
+  "Everything, including all 77+ day labels and rotation segments, is rendered even when off-window in 2w and simply clipped. That is fine at this scale, but production could virtualise.",
+  "Rx for dates after T1 returns total - off + 80 and Lx returns total - off + 40. Bars that run past the window extend off-canvas, and the 'Target … →' label, with its paper background, covers their right end at right:10px.",
+  "The ghost previous-plan bar stays visible at 0.55 opacity for as long as p.prev exists (e.g. Returns pipeline: prev 27 Nov). Only the ghost end diamond and 'was <date>' label are transient (the 1100ms flash). The brief says the ghost 'lingers for about a second, then fades', so decide whether the persistent dashed ghost is intended. It appears in the legend as 'Previous plan', so it probably is.",
+  "When a project is at risk, the main bar stops at the target and an orange (var(--risk)) overrun continues to the forecast. The end diamond turns risk-coloured. Overload uses a separate red token (var(--overload)).",
+  "Legend label mismatch: the legend says 'Notched = BAU, solid = project', but project capacity segments are a soft fill with a 1px outline, not solid.",
+  "The capacity scale is fixed at 5px per hour regardless of zoom. Days over about 13.2h get clipped by the 76px row (66px usable).",
+  "The Target legend glyph is a centred 'T' (vertical at left 3px), while the chart glyph is a 'Γ' (vertical at left 0).",
+  "W defaults to 1400 until the ResizeObserver fires, so the first frame can be laid out at the wrong width.",
+  "Dates are represented as integer day numbers (UTC days since the epoch). CAL lookups only cover 2026-08-31 to 2027-04-30, and anything outside that range will throw.",
+  "Nothing is persisted locally by this component. The zoom and pan state reset on reload."
+ ],
+ "copyText": [
+  "Timeline",
+  "Three months",
+  "Two weeks",
+  "28 Sep 2026 – 15 Jan 2027 · 77 business days",
+  "<d Mon> – <d Mon> · 10 business days",
+  "BAU",
+  "Project",
+  "Past target",
+  "Previous plan",
+  "Milestone",
+  "Target",
+  "Overload",
+  "This week",
+  "2 weeks",
+  "3 months",
+  "Day",
+  "Business day",
+  "Capacity",
+  "Hours per day against 8h.",
+  "Notched = BAU, solid = project.",
+  "FI move · Mon 4 Jan",
+  "Private Credit · BAU",
+  "Private Credit · Projects",
+  "Fixed Income · BAU",
+  "Fixed Income · Projects",
+  "Fund & security returns",
+  "Untitled routine",
+  "BD3 · 6h",
+  "Handed over",
+  "Returns · 6h",
+  "Eurozone sovereign rotation",
+  "4h/day",
+  "Starts Mon 4 Jan with Germany, first Build pass →",
+  "Germany → France → Italy → Spain → Netherlands → Belgium → Austria → Portugal → Ireland → Finland, then back to Germany to refresh.",
+  "First loop complete <Fri 29 Jan-style date>.",
+  "Not yet",
+  "Target <targetS>",
+  "+3 BD / On target / −N BD / No forecast",
+  "was <27 Nov>",
+  "Target <targetS> →",
+  "Weekends and UK bank holidays are collapsed to slivers. Hover a row to trace it through the capacity strip; click for details.",
+  "Tooltip day: '<Wed 4 Nov> · BD3', chip '<N>h of 8h' or 'Overload', lines '<name> (BAU) · <h>h', 'Nothing planned.'",
+  "Tooltip project: 'Forecast <X> · target <Y>', 'No forecast until the plan exists · target <Y>', 'Previous plan ended <X>', 'Confidence <n|—>/5 · checked in <since>', 'No plan yet', '◆ <milestone> · <date>', chip 'no plan'",
+  "Tooltip milestone: chip 'Milestone', '<Wednesday 16 October> · BD<n>', 'Passed' or '<n> business days away'",
+  "Panel labels: Forecast, Target, Against target, Confidence, Last check-in, Milestones",
+  "<n> of 5",
+  "Not set",
+  "No milestones yet. They arrive once the charter is finished and the plan is drafted.",
+  "Open workspace",
+  "Tell Remi"
+ ],
+ "localState": [
+  "zoom: '3m' | '2w' (default '3m'). Drives the gap width s (5 or 18), the window, labels, tick widths and text, rotation text, the pill position, pan visibility and the title.",
+  "wk: integer week offset for 2w panning, clamped to [-1, 13] (default 0). Reset to 0 when switching to 3m.",
+  "tip: { key, title, chip, chipFg, lines[] } or null. Drives tooltip content and opacity. The key prevents redundant setState.",
+  "panel: project id or null. Drives the side-panel slide and content (looked up via model.pmap).",
+  "W: measured chart width in px (default 1400), from a ResizeObserver on areaRef.",
+  "arrived: false until two rAFs after mount. It gates bar widths, segment heights, diamond scales and the overload pulse, producing the grow-in entrance.",
+  "settled: false until 900ms after mount. While false, the stagger delays apply; afterwards all delays are 0ms.",
+  "Refs: wrapRef (tooltip coordinate space), areaRef (width measurement), tipRef (imperative tooltip transform).",
+  "lastMoved: instance map pid → last moved label ('+N BD'), so the moved chip keeps its text while fading out.",
+  "Global (shell) state used here: model.hover via setHover, the linked-highlight id shared across screens."
+ ],
+ "sampleData": "Timeline has no hard-coded seed of its own beyond T0/T1 and the copy strings. It reads the shell seed.\n\nDates and rules:\n- TODAY = Mon 5 Oct 2026 (BD3). MOVE = Mon 4 Jan 2027. CAPACITY = 8h.\n- HOL: 2026-12-25, 2026-12-28, 2027-01-01, 2027-03-26, 2027-03-29.\n- Routines: r-ret 'Fund & security-level returns' (short 'Returns', monthly BD3, 6h, stage 1 Automating, pid ret); r-man 'Managing Committee pack' (short 'ManCo pack', monthly BD8, 4h, stage 1).\n\nProjects:\n- ret 'Returns pipeline automation' (pc): start 2026-09-14, target 2026-11-27, forecast 2026-12-02, prev 2026-11-27, which makes it risk '+3 BD'. conf 3, check-in 2026-10-03, rate 3.5, bd8 2, ov {2026-11-04: 3.5}. Milestones: 'Fund-level engine reconciles' 10-16, 'Parallel run on November BD3' 11-04, 'Security-level attribution' 11-20, plus derived 'Security-level data feed connected' 10-15 and 'Runbook drafted' 11-27 from now/next. endName 'Handover-ready'.\n- manco 'ManCo pack automation' (pc): 2026-09-21 to 2026-12-11, on target, rate 1.5, bd3 2, bd8 1.5.\n- play 'PC handover playbook' (pc): 2026-09-28 to 2026-12-18, rate 1, bd8 0.5.\n- fion 'FI onboarding & data access' (fi): 2026-09-21 to 2027-01-04, rate 1, rateAfter 1, endName 'Day one'.\n- alpha 'Alpha engine v0' (fi): start 2026-12-03, target 2027-03-25 with targetLabel 'Late Mar 2027', no forecast, so status define (hatched bar, off-range label). No milestones. rate 2, rateAfter 3.\n\nRotation: from Mon 4 Jan: DE Build 6, FR 5, IT 6, ES 5, NL 4, BE 4, AT 4, PT 4, IE 4, FI 4, then DE Refresh 3 (all in business days).\n\nResulting 3m view: 77 business days, 15 gap slivers. The Christmas gap spans 25–28 Dec.",
+ "actionsInvoked": [
+  "model.setHover(id | null): sets the global hover id to a project id, routine id or 'rot'. It dims non-matching rows and capacity segments here and drives linked highlighting in other screens.",
+  "model.openProject(pp.id): the shell switches the screen to 'workspace' with ws = id. Called without viaCard, so there is no view transition. The Timeline panel is closed first.",
+  "model.openCheckIn(pp.id): the shell opens the check-in ('Tell Remi') drawer for the project (drawer.open = true, session + 1). The Timeline panel stays open."
+ ],
+ "externalCalls": [
+  "Material Symbols Outlined icon font (loaded in the Remi.dc.html helmet from fonts.googleapis.com, with icon_names limited to a subset that includes chevron_left, chevron_right and close). Used for pan chevrons and the panel close button.",
+  "Fonts from the shell: Albert Sans (UI), JetBrains Mono (--font-numeric), Libre Caslon Text (--font-display, used for the panel goal), all from Google Fonts.",
+  "Browser APIs: ResizeObserver (chart width), requestAnimationFrame (arrival), setTimeout 900ms (settled), getBoundingClientRect/offsetWidth (tooltip scale correction).",
+  "No AI calls or fetches in this file."
+ ],
+ "persistence": [
+  "None in Timeline.dc.html. Zoom, wk, panel and tip are ephemeral component state.",
+  "Upstream: the shell persists projects and routines (among other things) to localStorage key 'remi.v1', debounced by 250ms. The flash and moved animation flags are not persisted."
+ ]
+}

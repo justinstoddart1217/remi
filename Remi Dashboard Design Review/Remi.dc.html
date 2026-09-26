@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Remi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..24,300,0..1,0&amp;icon_names=add,arrow_forward,calendar_month,check,chevron_left,chevron_right,close,close_fullscreen,edit_note,left_panel_close,left_panel_open,north_east,notes,open_in_full,repeat,right_panel_close,right_panel_open,search,stacks,today,unfold_more,view_timeline&amp;display=block">
+<style>
+@font-face{font-family:'N1Visuelt';src:url('fonts/NinetyOneVisuelt-Light.ttf') format('truetype');font-weight:300;}
+@font-face{font-family:'N1Visuelt';src:url('fonts/NinetyOneVisuelt-Regular.ttf') format('truetype');font-weight:400;}
+@font-face{font-family:'N1Visuelt';src:url('fonts/NinetyOneVisuelt-Medium.ttf') format('truetype');font-weight:500 700;}
+@font-face{font-family:'N1Display';src:url('fonts/NinetyOneVisueltDisplay-Light.ttf') format('truetype');font-weight:300 400;}
+@font-face{font-family:'N1Display';src:url('fonts/NinetyOneVisueltDisplay-Regular.ttf') format('truetype');font-weight:500 700;}
+[style*="font-style: italic"]{font-style:normal !important;}
+@keyframes bar-up{from{transform:scaleY(0);}to{transform:scaleY(1);}}
+@keyframes n1-flow{from{background-position:0 0;}to{background-position:48px 0;}}
+@keyframes n1-drift-a{0%,100%{transform:translateY(0);}50%{transform:translateY(-16px);}}
+@keyframes n1-drift-b{0%,100%{transform:translateY(0);}50%{transform:translateY(13px);}}
+@keyframes n1-draw{from{transform:scaleX(0);}to{transform:scaleX(1);}}
+@keyframes n1-ping{0%{transform:scale(1);opacity:.85;}100%{transform:scale(3.2);opacity:0;}}
+:root{
+  --paper: #FAF9F5;
+  --paper-raised: #FFFFFF;
+  --ink: #222222;
+  --ink-muted: #595959;
+  --ink-faint: #9A978C;
+  --hairline: #E4E2D6;
+  --pc-accent: #009D80;
+  --pc-accent-soft: color-mix(in oklch, var(--pc-accent) 13%, var(--paper));
+  --fi-accent: #2F6B9A;
+  --fi-accent-soft: color-mix(in oklch, var(--fi-accent) 13%, var(--paper));
+  --risk: #C98A12;
+  --overload: #D83949;
+  --done: #B9B6AA;
+  --focus: #009D80;
+  --font-ui: 'N1Visuelt', 'Segoe UI', Arial, sans-serif;
+  --font-display: 'N1Display', 'N1Visuelt', 'Segoe UI', sans-serif;
+  --font-numeric: 'SF Mono', ui-monospace, Menlo, Consolas, monospace;
+  --radius-s: 0px; --radius-m: 0px;
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 24px; --space-6: 32px; --space-7: 48px; --space-8: 64px;
+  --dur-fast: 140ms; --dur-base: 240ms; --dur-slow: 440ms;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --spring-soft: linear(0, 0.049 5%, 0.156 10%, 0.283 15%, 0.408 20%, 0.522 25%, 0.62 30%, 0.702 35%, 0.769 40%, 0.864 50%, 0.922 60%, 0.956 70%, 0.976 80%, 0.987 90%, 1);
+
+  --brand-deep: #134848; --brand-deeper: #0D3232; --brand-dark: #026E62; --brand-mint: #7FE0C8; --brand-mint-2: #34C1A3; --good: #16895A; --rule-soft: #F1F1F1;
+}
+:root[data-motion="reduced"]{ --spring-soft: steps(1, jump-start); }
+@media (prefers-reduced-motion: reduce){ :root{ --spring-soft: steps(1, jump-start); } }
+html,body{margin:0;height:100%;background:var(--paper);color:var(--ink);font-family:var(--font-ui);font-feature-settings:"kern";-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
+button,input,textarea{font:inherit;color:inherit;}
+a{color:var(--ink);text-decoration-color:var(--hairline);text-underline-offset:3px;}
+a:hover{color:var(--pc-accent);}
+::selection{background:color-mix(in oklch, var(--pc-accent) 22%, transparent);}
+@keyframes remi-pulse{0%{box-shadow:0 0 0 0 color-mix(in oklch, var(--overload) 50%, transparent);}100%{box-shadow:0 0 0 7px color-mix(in oklch, var(--overload) 0%, transparent);}}
+@keyframes remi-settle{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+@keyframes remi-tick{0%{transform:scale(0.6);}60%{transform:scale(1.08);}100%{transform:scale(1);}}
+::view-transition-group(remi-goal){animation-duration:420ms;animation-timing-function:cubic-bezier(0.23,1,0.32,1);}
+::view-transition-old(remi-goal),::view-transition-new(remi-goal){height:100%;width:auto;object-fit:none;object-position:left top;}
+::view-transition-old(root),::view-transition-new(root){animation-duration:220ms;}
+:root[data-motion="reduced"]::view-transition-group(*){animation-duration:0s;}
+</style>
+</helmet>
+<div style="position:fixed; inset:0; overflow:hidden; background:color-mix(in oklch, var(--ink) 6%, var(--paper));">
+  <div data-screen-label="Remi app" style="position:absolute; left:{{ st.x }}px; top:{{ st.y }}px; width:{{ st.w }}px; height:{{ st.h }}px; transform:scale({{ st.s }}); transform-origin:0 0; background:var(--paper); display:grid; grid-template-columns:minmax(0,1fr); overflow:hidden;">
+
+    <div style="display:grid; grid-template-rows:66px minmax(0,1fr); min-width:0; min-height:0;">
+      <header style="position:relative; display:flex; align-items:stretch; padding:0 28px 0 20px; background:var(--brand-deep); color:#fff;">
+        <button onClick="{{ goHome }}" title="Back to home" style="display:flex; align-items:center; gap:16px; border:0; background:transparent; padding:0 6px 0 0; color:#fff; cursor:pointer;" style-hover="opacity:0.85">
+          <span style="width:30px; display:flex; justify-content:center;"><svg viewBox="0 0 35.05 56.69" height="38" aria-hidden="true" style="display:block;"><rect fill="#009D80" x="0" y="0" width="10.308" height="28.346" style="transform-box:fill-box; transform-origin:bottom; animation:bar-up 700ms cubic-bezier(.23,1,.32,1) 120ms both;"></rect><rect fill="#009D80" x="12.369" y="0" width="10.308" height="28.346" style="transform-box:fill-box; transform-origin:bottom; animation:bar-up 700ms cubic-bezier(.23,1,.32,1) 210ms both;"></rect><rect fill="#026E62" x="12.369" y="28.346" width="10.308" height="28.346" style="transform-box:fill-box; transform-origin:bottom; animation:bar-up 700ms cubic-bezier(.23,1,.32,1) 300ms both;"></rect><rect fill="#009D80" x="24.739" y="0" width="10.308" height="28.346" style="transform-box:fill-box; transform-origin:bottom; animation:bar-up 700ms cubic-bezier(.23,1,.32,1) 390ms both;"></rect><rect fill="#026E62" x="24.739" y="28.346" width="10.308" height="28.346" style="transform-box:fill-box; transform-origin:bottom; animation:bar-up 700ms cubic-bezier(.23,1,.32,1) 480ms both;"></rect></svg></span>
+          <span style="display:flex; flex-direction:column; align-items:flex-start; gap:5px;"><span style="font-size:17px; font-weight:500; letter-spacing:0.2em; line-height:1;">REMI</span><span style="font-size:10px; letter-spacing:0.16em; line-height:1; text-transform:uppercase; color:rgba(255,255,255,0.52);">‹ Home · Workflow</span></span>
+        </button>
+        <span style="width:1px; height:18px; align-self:center; margin:0 16px 0 22px; background:rgba(255,255,255,0.14);"></span>
+        <nav style="display:flex; align-items:stretch;">
+          <sc-for list="{{ nav }}" as="n" hint-placeholder-count="7">
+            <button onClick="{{ n.go }}" title="{{ n.label }}" style="position:relative; display:inline-flex; align-items:center; gap:8px; padding:0 13px; border:0; background:transparent; color:{{ n.fg }}; font-size:14px; font-weight:500; white-space:nowrap; cursor:pointer; transition:color var(--dur-fast) var(--ease-out);" style-hover="color:#fff">
+              <span style="font-family:'Material Symbols Outlined'; font-size:18px; line-height:1; font-variation-settings:'FILL' 0, 'wght' 300, 'opsz' 20;">{{ n.icon }}</span>{{ n.label }}
+              <span style="position:absolute; left:10px; right:10px; bottom:0; height:2px; background:#009D80; transform:scaleX({{ n.ink }}); transform-origin:left; transition:transform var(--dur-slow) var(--spring-soft);"></span>
+            </button>
+          </sc-for>
+        </nav>
+        <div style="flex:1;"></div>
+        <div style="display:flex; align-items:center; gap:18px;">
+          <button onClick="{{ goTransition }}" title="Transition" style="display:flex; flex-direction:column; align-items:flex-end; gap:5px; border:0; background:transparent; padding:0; color:#fff; cursor:pointer; text-align:right;">
+            <span style="display:flex; align-items:center; gap:8px; font-family:var(--font-numeric); font-size:10.5px; letter-spacing:0.12em; text-transform:uppercase; color:rgba(255,255,255,0.55);"><span style="position:relative; width:8px; height:8px;"><span style="position:absolute; inset:0; border-radius:50%; background:{{ verdict.dot }};"></span><span style="position:absolute; inset:0; border-radius:50%; border:1.5px solid {{ verdict.dot }}; animation:n1-ping 2.4s ease-out infinite;"></span></span>Mon 5 Oct · BD3 · {{ verdict.word }}</span>
+            <span style="display:flex; align-items:baseline; gap:8px;"><span style="font-family:var(--font-numeric); font-size:19px; color:#fff;">61</span><span style="font-size:12.5px; color:rgba(255,255,255,0.72);">business days to Fixed Income</span></span>
+          </button>
+          <span style="width:1px; height:28px; background:rgba(255,255,255,0.14);"></span>
+          <span style="display:flex; flex-direction:column; align-items:flex-end; gap:5px;"><span style="font-family:var(--font-numeric); font-size:10.5px; letter-spacing:0.12em; text-transform:uppercase; color:rgba(255,255,255,0.55);">London</span><span style="font-family:var(--font-numeric); font-size:17px; color:#fff;">{{ clock }}</span></span>
+          <button onClick="{{ openPalette }}" title="Search or add (⌘K)" style="width:34px; height:34px; display:grid; place-items:center; border:1px solid rgba(255,255,255,0.18); border-radius:50%; background:transparent; color:rgba(255,255,255,0.78); cursor:pointer; transition:border-color var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);" style-hover="border-color:#009D80; color:#fff"><span style="font-family:'Material Symbols Outlined'; font-size:18px; font-variation-settings:'wght' 300;">search</span></button>
+          <button onClick="{{ openCheckInTop }}" style="display:flex; align-items:center; gap:8px; height:36px; padding:0 16px 0 12px; border:1px solid #009D80; background:#009D80; color:#fff; cursor:pointer; font-size:14px; font-weight:500; box-shadow:0 6px 18px rgba(0,157,128,0.25); transition:background var(--dur-fast) var(--ease-out), transform var(--dur-fast) var(--ease-out);" style-hover="background:#026E62; border-color:#026E62; transform:translateY(-1px)" style-active="transform:scale(0.97)">
+            <span style="font-family:'Material Symbols Outlined'; font-size:18px; font-variation-settings:'wght' 400;">edit_note</span>
+            <span>Tell Remi</span>
+          </button>
+        </div>
+        <span style="position:absolute; left:0; right:0; bottom:0; height:2px; background-image:repeating-linear-gradient(90deg, rgba(127,224,200,0.5) 0 10px, transparent 10px 24px); background-size:48px 2px; animation:n1-flow 3.2s linear infinite; opacity:0.3; pointer-events:none;"></span>
+      </header>
+
+      <main style="position:relative; min-height:0; min-width:0;">
+        <section data-screen-label="Today" style="position:absolute; inset:0; overflow:auto; opacity:{{ sv.today.o }}; visibility:{{ sv.today.v }}; transition:{{ sv.today.t }};">
+          <dc-import name="Today" model="{{ model }}" hint-size="100%,100%"></dc-import>
+        </section>
+        <section data-screen-label="Notes" style="position:absolute; inset:0; overflow:hidden; opacity:{{ sv.notes.o }}; visibility:{{ sv.notes.v }}; transition:{{ sv.notes.t }};">
+          <dc-import name="Notes" style="position:absolute; inset:0;" model="{{ model }}" hint-size="100%,100%"></dc-import>
+        </section>
+        <section data-screen-label="Timeline" style="position:absolute; inset:0; overflow:hidden; opacity:{{ sv.timeline.o }}; visibility:{{ sv.timeline.v }}; transition:{{ sv.timeline.t }};">
+          <dc-import name="Timeline" model="{{ model }}" hint-size="100%,100%"></dc-import>
+        </section>
+        <section data-screen-label="Calendar" style="position:absolute; inset:0; overflow-y:auto; overflow-x:hidden; opacity:{{ sv.calendar.o }}; visibility:{{ sv.calendar.v }}; transition:{{ sv.calendar.t }};">
+          <dc-import name="Calendar" model="{{ model }}" hint-size="100%,100%"></dc-import>
+        </section>
+        <section data-screen-label="Projects" style="position:absolute; inset:0; overflow:auto; opacity:{{ sv.projects.o }}; visibility:{{ sv.projects.v }}; transition:{{ sv.projects.t }};">
+          <dc-import name="Projects" model="{{ model }}" hint-size="100%,100%"></dc-import>
+        </section>
+        <section data-screen-label="Project workspace" style="position:absolute; inset:0; overflow:auto; opacity:{{ sv.workspace.o }}; visibility:{{ sv.workspace.v }}; transition:{{ sv.workspace.t }};">
+          <dc-import name="Workspace" model="{{ model }}" hint-size="100%,100%"></dc-import>
+        </section>
+        <section data-screen-label="Routines" style="position:absolute; inset:0; overflow:auto; opacity:{{ sv.routines.o }}; visibility:{{ sv.routines.v }}; transition:{{ sv.routines.t }};">
+          <dc-import name="Routines" model="{{ model }}" hint-size="100%,100%"></dc-import>
+        </section>
+        <section data-screen-label="Transition" style="position:absolute; inset:0; overflow:auto; opacity:{{ sv.transition.o }}; visibility:{{ sv.transition.v }}; transition:{{ sv.transition.t }};">
+          <dc-import name="Transition" model="{{ model }}" hint-size="100%,100%"></dc-import>
+        </section>
+      </main>
+    </div>
+
+    <div style="position:absolute; inset:0; z-index:20; pointer-events:{{ dr.pe }};">
+      <div onClick="{{ closeDrawer }}" style="position:absolute; inset:0; background:color-mix(in oklch, var(--ink) 18%, transparent); opacity:{{ dr.o }}; transition:opacity var(--dur-base) var(--ease-out);"></div>
+      <div data-screen-label="Check-in drawer" style="position:absolute; top:0; right:0; bottom:0; width:1160px; max-width:calc(100% - 160px); background:var(--paper); border-left:1px solid var(--hairline); box-shadow:-24px 0 48px -32px color-mix(in oklch, var(--ink) 30%, transparent); transform:{{ dr.t }}; opacity:{{ dr.po }}; transition:transform var(--dur-slow) var(--spring-soft), opacity var(--dur-base) var(--ease-out);">
+        <dc-import name="CheckIn" style="position:absolute; inset:0;" model="{{ model }}" open="{{ dr.open }}" pid="{{ dr.pid }}" session="{{ dr.session }}" prefill="{{ dr.prefill }}" on-close="{{ closeDrawer }}" on-save="{{ saveCheckIn }}" hint-size="100%,100%"></dc-import>
+      </div>
+    </div>
+
+    <div style="position:absolute; inset:0; z-index:30; pointer-events:{{ pal.pe }};">
+      <div onClick="{{ closePalette }}" style="position:absolute; inset:0; background:color-mix(in oklch, var(--ink) 10%, transparent); opacity:{{ pal.o }}; transition:opacity var(--dur-fast) var(--ease-out);"></div>
+      <div style="position:absolute; left:50%; top:132px; width:680px; margin-left:-340px; background:var(--paper-raised); border:1px solid var(--hairline); border-radius:var(--radius-m); box-shadow:0 24px 48px -28px color-mix(in oklch, var(--ink) 35%, transparent); overflow:hidden; opacity:{{ pal.o }}; transform:{{ pal.t }}; transition:opacity var(--dur-fast) var(--ease-out), transform var(--dur-base) var(--spring-soft);">
+        <div style="display:flex; align-items:center; gap:12px; padding:0 18px; height:60px; border-bottom:1px solid var(--hairline);">
+          <span style="font-family:'Material Symbols Outlined'; font-size:20px; color:var(--ink-muted); font-variation-settings:'wght' 300;">search</span>
+          <input ref="{{ palRef }}" value="{{ pal.q }}" onChange="{{ palInput }}" onKeyDown="{{ palKey }}" placeholder="Jump to a screen or project, or type “+6h returns” to add scope" style="flex:1; border:0; outline:0; background:transparent; font-size:17px; color:var(--ink);">
+          <span style="font-family:var(--font-numeric); font-size:11px; color:var(--ink-muted); padding:2px 6px; border:1px solid var(--hairline); border-radius:var(--radius-s);">esc</span>
+        </div>
+        <div style="padding:6px 8px 10px; max-height:460px; overflow:auto;">
+          <sc-for list="{{ pal.groups }}" as="g" hint-placeholder-count="0">
+            <div style="padding:12px 12px 6px; font-size:11px; font-weight:500; letter-spacing:0.09em; text-transform:uppercase; color:var(--brand-dark);">{{ g.label }}</div>
+            <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="0">
+              <button onClick="{{ it.run }}" onMouseEnter="{{ it.hover }}" style="width:100%; display:flex; align-items:center; gap:12px; padding:0 12px; height:40px; border:0; border-radius:var(--radius-s); background:{{ it.bg }}; text-align:left; cursor:pointer; transition:background var(--dur-fast) var(--ease-out);">
+                <span style="width:7px; height:7px; border-radius:50%; background:{{ it.dot }}; flex:none;"></span>
+                <span style="flex:1; font-size:14px; color:var(--ink);">{{ it.label }}</span>
+                <span style="font-family:var(--font-numeric); font-size:12px; color:var(--ink-muted);">{{ it.hint }}</span>
+              </button>
+            </sc-for>
+          </sc-for>
+          <sc-if value="{{ pal.empty }}">
+            <div style="padding:28px 12px; font-size:14px; color:var(--ink-muted);">Nothing matches that. Try a project name, a screen, or “+4h manco”.</div>
+          </sc-if>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;frame&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;1920 × 1080&quot;,&quot;2560 × 1440&quot;,&quot;Fit window&quot;],&quot;default&quot;:&quot;1920 × 1080&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Viewport&quot;},&quot;motion&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;Full&quot;,&quot;Reduced&quot;],&quot;default&quot;:&quot;Full&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;Motion&quot;},&quot;accents&quot;:{&quot;editor&quot;:&quot;color&quot;,&quot;options&quot;:[[&quot;#009D80&quot;,&quot;#2F6B9A&quot;],[&quot;#026E62&quot;,&quot;#5B7FA8&quot;],[&quot;#34C1A3&quot;,&quot;#1F4E79&quot;]],&quot;default&quot;:[&quot;#009D80&quot;,&quot;#2F6B9A&quot;],&quot;tsType&quot;:&quot;string[]&quot;,&quot;section&quot;:&quot;Brand&quot;},&quot;serif&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Brand&quot;,&quot;label&quot;:&quot;Display face for goals&quot;}}">
+const DAY = 86400000;
+const dn = s => Math.round(Date.UTC(+s.slice(0, 4), +s.slice(5, 7) - 1, +s.slice(8, 10)) / DAY);
+const isoOf = n => new Date(n * DAY).toISOString().slice(0, 10);
+const WDS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const WDL = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const MOS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const MOL = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const HOL = { '2026-12-25': 'Christmas Day', '2026-12-28': 'Boxing Day (substitute)', '2027-01-01': "New Year's Day", '2027-03-26': 'Good Friday', '2027-03-29': 'Easter Monday' };
+const TODAY = dn('2026-10-05'), MOVE = dn('2027-01-04'), DEC_RUN = dn('2026-12-03');
+const CAL0 = dn('2026-08-31'), CAL1 = dn('2027-04-30');
+const CAPACITY = 8;
+
+const CAL = (() => {
+  const days = {}, bds = [], idx = {};
+  let mo = -1, c = 0;
+  for (let n = CAL0; n <= CAL1; n++) {
+    const d = new Date(n * DAY), m = d.getUTCMonth(), w = d.getUTCDay(), i = isoOf(n);
+    if (m !== mo) { mo = m; c = 0; }
+    const hol = HOL[i] || null, bd = w > 0 && w < 6 && !hol;
+    if (bd) { c++; idx[n] = bds.length; bds.push(n); }
+    days[n] = { n, iso: i, w, m, d: d.getUTCDate(), y: d.getUTCFullYear(), bd, bdm: bd ? c : null, hol };
+  }
+  const nextBD = n => { while (days[n] && !days[n].bd) n++; return n; };
+  const addBD = (n, k) => bds[Math.min(bds.length - 1, Math.max(0, idx[nextBD(n)] + k))];
+  const bdDiff = (a, b) => idx[nextBD(b)] - idx[nextBD(a)];
+  return { days, bds, idx, nextBD, addBD, bdDiff };
+})();
+
+const F = {
+  s: n => { const d = CAL.days[n]; return WDS[d.w] + ' ' + d.d + ' ' + MOS[d.m]; },
+  dm: n => { const d = CAL.days[n]; return d.d + ' ' + MOS[d.m]; },
+  l: n => { const d = CAL.days[n]; return WDL[d.w] + ' ' + d.d + ' ' + MOL[d.m]; },
+  wd: n => WDS[CAL.days[n].w], mon: n => MOS[CAL.days[n].m], monL: n => MOL[CAL.days[n].m], d: n => CAL.days[n].d,
+  iso: isoOf, dn
+};
+
+const FUNDS = ['Senior Direct Lending I', 'Senior Direct Lending II', 'Unitranche Partners', 'Mezzanine Opportunities', 'Asset-Backed Finance', 'Infrastructure Debt', 'Real Estate Debt', 'Trade Finance', 'Special Situations', 'Opportunistic Credit', 'Credit Co-invest', 'Evergreen Income'];
+
+const ROUTINES = [
+  { id: 'r-ret', domain: 'pc', name: 'Fund & security-level returns', short: 'Returns', detail: '12 funds', rule: '3rd business day, monthly', bd: 3, h: 6, pid: 'ret', status: 'Automating, then handover', statusNote: 'Returns pipeline automation replaces the manual run; successor takes over from the December cycle.', readiness: 0.55 },
+  { id: 'r-man', domain: 'pc', name: 'Managing Committee pack', short: 'ManCo pack', detail: 'Monthly pack', rule: '8th business day, monthly', bd: 8, h: 4, pid: 'manco', status: 'Automating, then handover', statusNote: 'ManCo pack automation builds the pack; commentary stays manual and moves to the successor.', readiness: 0.35 }
+];
+
+const ROT_DEF = [['Germany', 'DE', 6, 'Build'], ['France', 'FR', 5, 'Build'], ['Italy', 'IT', 6, 'Build'], ['Spain', 'ES', 5, 'Build'], ['Netherlands', 'NL', 4, 'Build'], ['Belgium', 'BE', 4, 'Build'], ['Austria', 'AT', 4, 'Build'], ['Portugal', 'PT', 4, 'Build'], ['Ireland', 'IE', 4, 'Build'], ['Finland', 'FI', 4, 'Build'], ['Germany', 'DE', 3, 'Refresh']];
+const ROT = (() => { let s = MOVE; return ROT_DEF.map(([country, code, len, pass], i) => { const e = CAL.addBD(s, len - 1); const seg = { i, country, code, len, pass, s, e, sS: F.s(s), eS: F.s(e) }; s = CAL.addBD(e, 1); return seg; }); })();
+
+const PHASES = ['Define', 'Plan', 'Run', 'Close'];
+
+const BASE_PROJECTS = [
+  { id: 'ret', domain: 'pc', name: 'Returns pipeline automation', short: 'Returns pipeline', goal: 'Returns for all 12 funds produced in under 30 minutes with no manual steps, ready to hand over.',
+    start: '2026-09-14', target: '2026-11-27', forecast: '2026-12-02', prev: '2026-11-27', exit: ['Automate', 'Hand over'], confidence: 3, checkin: '2026-10-03', phase: 2,
+    rate: 3.5, bd3: 0, bd8: 2, rateAfter: 0, ov: { '2026-11-04': 3.5 }, baseline: 60, readiness: 0.6,
+    milestones: [{ name: 'Fund-level engine reconciles', date: '2026-10-16' }, { name: 'Parallel run on November BD3', date: '2026-11-04' }, { name: 'Security-level attribution', date: '2026-11-20' }],
+    endName: 'Handover-ready',
+    charter: { why: 'The move to Fixed Income is on 4 Jan. Returns run every BD3 and cannot leave with me, so the process has to run without me before the December cycle.',
+      success: ['All 12 funds produced in under 30 minutes', 'No manual steps between administrator files and the returns pack', 'A successor completes the December run unaided'],
+      inScope: ['Fund-level returns for all 12 funds', 'Security-level returns and attribution', 'Reconciliation to administrator NAVs', 'Runbook for the successor'],
+      outScope: ['Attribution below security level', 'Changes to the investor reporting template'],
+      constraints: ['Administrator files land on the evening of BD2', 'Runs on the existing scheduler; no new infrastructure'] },
+    now: [{ m: 'Security-level data feed connected', due: '2026-10-15', tasks: [{ id: 'ret-1', t: 'Request the security-level extract from the administrator', h: 0.5 }, { id: 'ret-2', t: 'Parse and validate the extract', h: 4 }] },
+      { m: 'Fund-level engine reconciles', due: '2026-10-16', tasks: [{ id: 'ret-3', t: 'Map source files for the last 4 funds', h: 3 }, { id: 'ret-4', t: 'Reconcile September to administrator NAVs', h: 4 }, { id: 'ret-5', t: 'Handle FX-hedged share classes', h: 3 }] }],
+    next: [{ m: 'Parallel run on November BD3', due: '2026-11-04' }, { m: 'Security-level attribution', due: '2026-11-20' }, { m: 'Runbook drafted', due: '2026-11-27' }],
+    later: 'Hand the automated run to a successor after the December cycle, then retire the manual spreadsheets.',
+    scope: [{ date: '2026-10-03', what: 'Security-level attribution', h: 10, bd: 3, from: '27 Nov', to: '2 Dec' }],
+    checkins: [
+      { date: '2026-09-08', note: 'Charter written. Baseline 60h.', forecast: '2026-11-20', conf: 4, ms: [{ name: 'Fund-level engine reconciles', date: '2026-10-09' }, { name: 'Parallel run on November BD3', date: '2026-11-04' }] },
+      { date: '2026-09-22', note: 'Fund-level engine running for 8 of 12 funds. Administrator access took a week longer than planned.', forecast: '2026-11-27', conf: 4, ms: [{ name: 'Fund-level engine reconciles', date: '2026-10-16' }, { name: 'Parallel run on November BD3', date: '2026-11-04' }] },
+      { date: '2026-10-03', note: 'Security-level attribution added to scope, +10h.', forecast: '2026-12-02', conf: 3, ms: [{ name: 'Fund-level engine reconciles', date: '2026-10-16' }, { name: 'Parallel run on November BD3', date: '2026-11-04' }, { name: 'Security-level attribution', date: '2026-11-20' }] }],
+    risks: [{ r: 'Security-level files arrived late every month, so the pipeline never ran end to end.', m: 'Build a fallback that flags missing securities and still completes the fund-level run.' },
+      { r: 'Nobody owned it after I left, and the first January run failed quietly.', m: 'Name the successor by 13 Nov and have them run the December cycle while I watch.' },
+      { r: 'Scope kept growing until the handover date passed.', m: 'Freeze scope at the November check-in; new requests go to the successor’s backlog.' }] },
+  { id: 'manco', domain: 'pc', name: 'ManCo pack automation', short: 'ManCo automation', goal: 'The ManCo pack builds itself from source data; the analyst only writes commentary.',
+    start: '2026-09-21', target: '2026-12-11', forecast: '2026-12-11', prev: null, exit: ['Automate', 'Hand over'], confidence: 4, checkin: '2026-09-26', phase: 2,
+    rate: 1.5, bd3: 2, bd8: 1.5, rateAfter: 0, ov: { '2026-11-04': 0 }, baseline: 40, readiness: 0.35,
+    milestones: [{ name: 'Performance section builds itself', date: '2026-10-16' }, { name: 'First self-built pack, November BD8', date: '2026-11-11' }],
+    endName: 'Handover-ready',
+    charter: { why: 'The pack takes 4h every BD8. A successor inherits it after the move; automating first means they inherit commentary, not plumbing.',
+      success: ['The pack builds from source in one step', 'Only the commentary is written by hand', 'The successor produces the December pack'],
+      inScope: ['Performance, exposure and pipeline sections', 'Chart and table templating'], outScope: ['Commentary drafting', 'The board-level pack'], constraints: ['Finance signs off the automated NAV bridge'] },
+    now: [{ m: 'Performance section builds itself', due: '2026-10-16', tasks: [{ id: 'man-1', t: 'Map NAV bridge to source tables', h: 0.75 }, { id: 'man-2', t: 'Template the performance section', h: 0.75 }, { id: 'man-3', t: 'Test build against the September pack', h: 0.5 }, { id: 'man-4', t: 'Exposure tables from source', h: 3 }] }],
+    next: [{ m: 'First self-built pack, November BD8', due: '2026-11-11' }, { m: 'Exposure and pipeline sections', due: '2026-11-27' }],
+    later: 'The successor writes the December commentary on a pack that built itself.',
+    scope: [],
+    checkins: [{ date: '2026-09-21', note: 'Charter written. Baseline 40h.', forecast: '2026-12-11', conf: 4 }, { date: '2026-09-26', note: 'Pack inventoried: 14 of 22 charts come straight from source.', forecast: '2026-12-11', conf: 4 }],
+    risks: [{ r: 'Finance never signed off the automated NAV bridge, so every pack was rechecked by hand.', m: 'Book the sign-off session for the November pack now.' }] },
+  { id: 'play', domain: 'pc', name: 'PC handover playbook', short: 'Handover playbook', goal: 'A successor can run every PC process alone from written runbooks.',
+    start: '2026-09-28', target: '2026-12-18', forecast: '2026-12-18', prev: null, exit: ['Hand over'], confidence: 4, checkin: '2026-10-02', phase: 2,
+    rate: 1, bd3: 0, bd8: 0.5, rateAfter: 0, ov: {}, baseline: 30, readiness: 0.2,
+    milestones: [{ name: 'Returns runbook', date: '2026-11-06' }, { name: 'ManCo runbook', date: '2026-11-27' }, { name: 'Successor runs BD3 alone', date: '2026-12-03' }],
+    endName: 'Signed off',
+    charter: { why: 'Everything I know about PC operations lives in my head and three spreadsheets.', success: ['Every routine has a runbook', 'The successor runs BD3 and BD8 alone, once each'],
+      inScope: ['Returns and ManCo runbooks', 'Contacts and escalation paths'], outScope: ['Training beyond the two routines'], constraints: ['Successor not yet named'] },
+    now: [{ m: 'Returns runbook outline', due: '2026-10-16', tasks: [{ id: 'pl-1', t: 'Record the October BD3 run step by step', h: 2 }, { id: 'pl-2', t: 'Draft the runbook outline', h: 1.5 }] }],
+    next: [{ m: 'Returns runbook', due: '2026-11-06' }, { m: 'ManCo runbook', due: '2026-11-27' }, { m: 'Successor runs December BD3 alone', due: '2026-12-03' }],
+    later: 'Sign off the handover once the successor has run both routines unaided.',
+    scope: [],
+    checkins: [{ date: '2026-09-28', note: 'Charter written. Baseline 30h.', forecast: '2026-12-18', conf: 4 }, { date: '2026-10-02', note: 'Recorded the September BD3 run as raw notes.', forecast: '2026-12-18', conf: 4 }],
+    risks: [{ r: 'The successor was named too late to shadow a live run.', m: 'Escalate the naming decision at the 13 Nov check-in.' }] },
+  { id: 'fion', domain: 'fi', name: 'FI onboarding & data access', short: 'FI onboarding', goal: 'Ready to run sovereign analysis on day one in FI: data, models and access in place.',
+    start: '2026-09-21', target: '2027-01-04', forecast: '2027-01-04', prev: null, exit: null, confidence: 4, checkin: '2026-09-30', phase: 2,
+    rate: 1, bd3: 0, bd8: 0, rateAfter: 1, ov: {}, baseline: 35,
+    milestones: [{ name: 'Curve & auction feeds', date: '2026-10-30' }, { name: 'Sovereign model walkthrough', date: '2026-11-26' }, { name: 'Day-one dry run', date: '2026-12-17' }],
+    endName: 'Day one',
+    readinessList: [{ t: 'Market data entitlements', done: true }, { t: 'Research library access', done: true }, { t: 'Curve & auction data feeds', due: '2026-10-30' }, { t: 'Sovereign model walkthrough', due: '2026-11-26' }, { t: 'Day-one dry run', due: '2026-12-17' }],
+    charter: { why: 'The rotation starts with Germany on 4 Jan. Access requests take weeks, so they start now.', success: ['Curve and auction data on screen', 'The sovereign model runs on live data', 'The Germany build pass starts on day one'],
+      inScope: ['Data entitlements', 'Model walkthroughs', 'Workspace setup'], outScope: ['Any analysis before the move'], constraints: ['One hour a day until the move'] },
+    now: [{ m: 'Data entitlements requested', due: '2026-10-16', tasks: [{ id: 'fi-1', t: 'Submit entitlement forms', h: 1 }, { id: 'fi-2', t: 'Agree curve data sources with the FI desk', h: 1.5 }] }],
+    next: [{ m: 'Curve & auction data feeds', due: '2026-10-30' }, { m: 'Sovereign model walkthrough', due: '2026-11-26' }],
+    later: 'Dry-run the Germany build pass in the last week of December.',
+    scope: [],
+    checkins: [{ date: '2026-09-21', note: 'Charter written. Baseline 35h.', forecast: '2027-01-04', conf: 4 }, { date: '2026-09-30', note: 'Market data entitlements approved; feeds pending.', forecast: '2027-01-04', conf: 4 }],
+    risks: [{ r: 'Data access landed in the second week of January, so the first rotation started blind.', m: 'Chase feeds weekly; use the desk’s shared terminal as a fallback.' }] },
+  { id: 'alpha', domain: 'fi', name: 'Alpha engine v0', short: 'Alpha engine', goal: 'A tested signal pipeline that ranks eurozone sovereign curve trades daily.',
+    start: '2026-12-03', target: '2027-03-25', targetLabel: 'Late Mar 2027', forecast: null, prev: null, exit: null, confidence: null, checkin: null, phase: 0,
+    rate: 2, bd3: 0, bd8: 0, rateAfter: 3, ov: {}, baseline: 0,
+    milestones: [], endName: 'v0 tested',
+    charter: { why: 'The rotation builds the country knowledge; the engine turns it into ranked trades.', success: ['Ranks curve trades across all 10 countries, daily', 'Backtested over five years of data'], inScope: [], outScope: [], constraints: [] },
+    now: [], next: [], later: '', scope: [], checkins: [], risks: [] }
+];
+
+BASE_PROJECTS[0].checklists = [{ id: 'cl-1', title: 'Handover checklist', items: [{ id: 'cl-1a', t: 'Successor has scheduler access', done: false }, { id: 'cl-1b', t: 'Runbook reviewed with the successor', done: false }, { id: 'cl-1c', t: 'Administrator knows who to contact from January', done: false }] }];
+BASE_PROJECTS.forEach(p => { if (!p.checklists) p.checklists = []; });
+
+const STORE = 'remi.v1';
+const loadSaved = () => { try { const s = JSON.parse(localStorage.getItem(STORE) || 'null'); return s && Array.isArray(s.projects) ? s : null; } catch (e) { return null; } };
+const MAN0 = { id: 'man-0', t: 'Send the NAV bridge spec to Finance', h: 0.5, due: '2026-10-02' };
+BASE_PROJECTS[1].now[0].tasks.unshift({ ...MAN0 });
+const SAVED = loadSaved();
+if (SAVED && !SAVED.m2) { const mc = SAVED.projects.find(p => p.id === 'manco'); if (mc && mc.now && mc.now[0] && !mc.now[0].tasks.some(t => t.id === 'man-0')) mc.now[0].tasks.unshift({ ...MAN0 }); SAVED.m2 = true; }
+const BASE_NOTES = {
+  '2026-10-05': [{ id: 'n1', t: '08:41', text: 'Admin files landed at 07:40 this morning instead of last night, so returns started late.' }, { id: 'n2', t: '09:55', text: '5 of 12 funds done. Unitranche needed the manual FX fix again, which is exactly what the pipeline should remove.' }, { id: 'n3', t: '11:20', text: 'Finance happy to review the ManCo NAV bridge spec on Thursday.' }],
+  '2026-10-02': [{ id: 'n4', t: '16:10', text: 'Recorded the September BD3 run as raw notes for the playbook. Needs tidying into steps.' }, { id: 'n5', t: '17:32', text: 'FI desk suggested Bloomberg curve data rather than the internal feed for day one.' }],
+  '2026-10-01': [{ id: 'n6', t: '10:05', text: 'Chased the entitlement forms. Market data approved; feeds still pending.' }]
+};
+const BASE_DONE_ON = { 'ret-1': '2026-10-01', 'fi-1': '2026-10-02' };
+const normalize = p => ({ checklists: [], milestones: [], now: [], next: [], risks: [], scope: [], checkins: [], ov: {}, later: '', ...p, charter: { why: '', success: [], inScope: [], outScope: [], constraints: [], ...(p.charter || {}) } });
+const derivedMs = p => {
+  const map = new Map();
+  [...p.now, ...p.next].forEach(x => { if (x.m && x.due) map.set(x.m, { name: x.m, date: x.due }); });
+  const dates = new Set([...map.values()].map(x => x.date));
+  p.milestones.forEach(x => { if (x.name && !map.has(x.name) && !dates.has(x.date)) map.set(x.name, x); });
+  return [...map.values()].sort((a, b) => a.date < b.date ? -1 : a.date > b.date ? 1 : 0);
+};
+
+const BASE_FEED = [
+  { id: 'f1', pid: 'ret', kind: 'scope', title: 'Returns pipeline', body: 'Scope added (security-level attribution, +10h). Forecast moved 27 Nov → 2 Dec.', delta: '+3 BD', tone: 'risk', when: 'Sat 3 Oct' },
+  { id: 'f2', pid: 'manco', kind: 'stale', title: 'ManCo pack automation', body: 'No check-in for 9 days.', delta: '9 days', tone: 'quiet', when: 'Today' },
+  { id: 'f3', pid: null, day: '2026-11-04', kind: 'overload', title: 'Wed 4 Nov (BD3)', body: 'BAU plus planned project work comes to 9.5h of an 8h day.', delta: 'Overload', tone: 'overload', when: 'Plan' }
+];
+
+const STAGES = ['Manual', 'Automating', 'Shadowed', 'Handed over'];
+const ORD = n => n + (n % 10 === 1 && n !== 11 ? 'st' : n % 10 === 2 && n !== 12 ? 'nd' : n % 10 === 3 && n !== 13 ? 'rd' : 'th');
+const occurs = (r, d) => !!(d && d.bd && (r.kind === 'daily' || (r.kind === 'weekly' && d.w === r.wd) || ((r.kind || 'monthly') === 'monthly' && d.bdm === r.bd)));
+const ruleText = r => r.kind === 'daily' ? 'Every business day' : r.kind === 'weekly' ? 'Every ' + WDL[r.wd] : ORD(r.bd) + ' business day, monthly';
+const ruleShort = r => r.kind === 'daily' ? 'Daily' : r.kind === 'weekly' ? 'Weekly · ' + WDS[r.wd] : 'BD' + r.bd;
+ROUTINES.forEach(x => { x.kind = 'monthly'; x.stage = 1; });
+const normR = x => ({ domain: 'pc', kind: 'monthly', bd: 5, wd: 2, h: 1, stage: 0, statusNote: '', detail: '', pid: null, ...x, short: x.short || x.name });
+
+function dayLoad(n, projects, routines) {
+  const d = CAL.days[n];
+  if (!d || !d.bd) return null;
+  const items = [];
+  if (n < MOVE) (routines || ROUTINES).forEach(r => { if (r.stage < 3 && occurs(r, d)) items.push({ id: r.id, pid: r.pid, kind: 'bau', domain: 'pc', h: +r.h || 0, name: r.short || r.name || 'Untitled routine' }); });
+  else { const seg = ROT.find(s => n >= s.s && n <= s.e); if (seg) items.push({ id: 'rot', pid: 'rot', kind: 'bau', domain: 'fi', h: 4, name: seg.country + ' · ' + seg.pass }); }
+  projects.forEach(p => {
+    const end = p.forecastN != null ? p.forecastN : p.targetN;
+    if (n < p.startN || n > end) return;
+    let h;
+    if (p.ov && p.ov[d.iso] != null) h = p.ov[d.iso];
+    else if (n >= MOVE) h = p.rateAfter || 0;
+    else if (d.bdm === 3) h = p.bd3;
+    else if (d.bdm === 8) h = p.bd8;
+    else h = p.rate;
+    if (h > 0) items.push({ id: p.id, pid: p.id, kind: 'proj', domain: p.domain, h, name: p.short });
+  });
+  const bau = items.filter(i => i.kind === 'bau').reduce((a, i) => a + i.h, 0);
+  const proj = items.filter(i => i.kind === 'proj').reduce((a, i) => a + i.h, 0);
+  const total = bau + proj;
+  return { n, items, bau, proj, total, free: Math.max(0, CAPACITY - total), over: total > CAPACITY };
+}
+
+const SCREENS = [['today', 'Today', 'today'], ['notes', 'Notes', 'notes'], ['timeline', 'Timeline', 'view_timeline'], ['calendar', 'Calendar', 'calendar_month'], ['projects', 'Projects', 'stacks'], ['routines', 'Routines', 'repeat'], ['transition', 'Transition', 'arrow_forward']];
+
+class LondonClock extends React.Component {
+  state = { t: '' };
+  tick = () => { const p = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/London', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }).format(new Date()); this.setState({ t: p }); };
+  componentDidMount() { this.tick(); this.iv = setInterval(this.tick, 1000); }
+  componentWillUnmount() { clearInterval(this.iv); }
+  render() { return React.createElement('span', { style: { fontVariantNumeric: 'tabular-nums' } }, this.state.t); }
+}
+class Component extends DCLogic {
+  state = {
+    routines: (SAVED && SAVED.routines ? SAVED.routines : ROUTINES).map(normR),
+    screen: 'today', ws: 'ret', projects: (SAVED ? SAVED.projects : BASE_PROJECTS).map(normalize), feed: SAVED && SAVED.feed ? SAVED.feed : BASE_FEED, hover: null,
+    funds: SAVED && SAVED.funds ? SAVED.funds : FUNDS.map((f, i) => i < 5), tasks: SAVED && SAVED.tasks ? SAVED.tasks : { 'ret-1': true, 'fi-1': true },
+    notes: SAVED && SAVED.notes ? SAVED.notes : BASE_NOTES,
+    doneOn: SAVED && SAVED.doneOn ? SAVED.doneOn : BASE_DONE_ON, bauDone: SAVED && SAVED.bauDone ? SAVED.bauDone : {},
+    drawer: { open: false, pid: 'manco', session: 0, prefill: null },
+    pal: { open: false, q: '', i: 0 }, flash: {}, moved: {}, vtPhase: null, vtId: null, instant: false,
+    vw: typeof window !== 'undefined' ? window.innerWidth : 1920, vh: typeof window !== 'undefined' ? window.innerHeight : 1080
+  };
+  palRef = React.createRef();
+
+  componentDidMount() {
+    this.onResize = () => this.setState({ vw: window.innerWidth, vh: window.innerHeight });
+    this.onKey = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') { e.preventDefault(); this.state.pal.open ? this.closePalette() : this.openPalette(); }
+      else if (e.key === 'Escape') { if (this.state.pal.open) this.closePalette(); else if (this.state.drawer.open) this.closeDrawer(); }
+    };
+    window.addEventListener('resize', this.onResize);
+    window.addEventListener('keydown', this.onKey);
+    this.applyTweaks();
+  }
+  componentDidUpdate() {
+    this.applyTweaks();
+    const s = this.state;
+    if (this._sv && (s.projects !== this._sv.projects || s.tasks !== this._sv.tasks || s.feed !== this._sv.feed || s.funds !== this._sv.funds || s.routines !== this._sv.routines || s.doneOn !== this._sv.doneOn || s.bauDone !== this._sv.bauDone || s.notes !== this._sv.notes)) {
+      clearTimeout(this.saveT);
+      this.saveT = setTimeout(() => { try { localStorage.setItem(STORE, JSON.stringify({ projects: this.state.projects, tasks: this.state.tasks, feed: this.state.feed, funds: this.state.funds, routines: this.state.routines, doneOn: this.state.doneOn, bauDone: this.state.bauDone, notes: this.state.notes, m2: true })); } catch (e) {} }, 250);
+    }
+    this._sv = { projects: s.projects, tasks: s.tasks, feed: s.feed, funds: s.funds, routines: s.routines, doneOn: s.doneOn, bauDone: s.bauDone, notes: s.notes };
+  }
+
+  updateProject = (id, fn) => this.setState(s => ({ projects: s.projects.map(p => p.id === id ? normalize(fn(p)) : p) }));
+  logChange = (item) => this.setState(s => ({ feed: [{ id: 'f' + Date.now(), when: 'Just now', tone: 'quiet', ...item }, ...s.feed] }));
+  createProject = (domain) => {
+    const id = 'p' + Date.now();
+    const p = normalize({ id, domain, name: 'Untitled project', short: 'Untitled project', goal: '', start: isoOf(TODAY), target: isoOf(CAL.addBD(TODAY, 30)), forecast: isoOf(CAL.addBD(TODAY, 30)), prev: null,
+      exit: domain === 'pc' ? [] : null, confidence: null, checkin: null, phase: 0, rate: 0, bd3: 0, bd8: 0, rateAfter: 0, baseline: 0, endName: 'Done' });
+    this.setState(s => ({ projects: [...s.projects, p], screen: 'workspace', ws: id, instant: false, pal: { ...s.pal, open: false }, focusGoal: id }));
+  };
+  removeProject = (id) => this.setState(s => ({ projects: s.projects.filter(p => p.id !== id), feed: s.feed.filter(f => f.pid !== id), screen: 'projects', ws: s.projects.find(p => p.id !== id).id }));
+  updateRoutine = (id, fn) => this.setState(s => ({ routines: s.routines.map(x => x.id === id ? normR(fn(x)) : x) }));
+  addRoutine = () => { const id = 'r' + Date.now().toString(36); this.setState(s => ({ routines: [...s.routines, normR({ id, name: '', short: '' })], focusRoutine: id })); };
+  removeRoutine = (id) => { const x = this.state.routines.find(y => y.id === id); this.setState(s => ({ routines: s.routines.filter(y => y.id !== id) })); if (x && x.name) this.logChange({ pid: null, kind: 'edit', title: x.name, body: 'Routine removed from the plan.', delta: 'BAU' }); };
+  resetData = () => { try { localStorage.removeItem(STORE); } catch (e) {} this.setState({ notes: BASE_NOTES, doneOn: BASE_DONE_ON, bauDone: {}, routines: ROUTINES.map(normR), projects: BASE_PROJECTS.map(normalize), feed: BASE_FEED, funds: FUNDS.map((f, i) => i < 5), tasks: { 'ret-1': true, 'fi-1': true }, ws: 'ret', screen: 'today', pal: { ...this.state.pal, open: false } }); };
+  componentWillUnmount() { window.removeEventListener('resize', this.onResize); window.removeEventListener('keydown', this.onKey); }
+
+  applyTweaks() {
+    if (!document.getElementById('remi-ph')) { const st = document.createElement('style'); st.id = 'remi-ph'; st.textContent = 'textarea::placeholder,input::placeholder{color:color-mix(in oklch, var(--ink-faint) 70%, var(--paper));opacity:1;}input[type="date"]::-webkit-calendar-picker-indicator{opacity:0.45;cursor:pointer;}'; document.head.appendChild(st); }
+    const r = document.documentElement, p = this.props;
+    r.dataset.motion = p.motion === 'Reduced' ? 'reduced' : 'full';
+    const acc = Array.isArray(p.accents) ? p.accents : null;
+    if (acc && acc.length >= 2) { r.style.setProperty('--pc-accent', acc[0]); r.style.setProperty('--fi-accent', acc[1]); }
+    else { r.style.removeProperty('--pc-accent'); r.style.removeProperty('--fi-accent'); }
+    if (p.serif === false) r.style.setProperty('--font-display', 'var(--font-ui)'); else r.style.removeProperty('--font-display');
+  }
+  reduced() { return this.props.motion === 'Reduced' || (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); }
+
+  go = (screen) => this.setState({ screen, instant: false, pal: { ...this.state.pal, open: false } });
+  setHover = (id) => { if (this.state.hover !== id) this.setState({ hover: id || null }); };
+  openProject = (id, viaCard) => {
+    this.setState({ pal: { ...this.state.pal, open: false } });
+    if (!viaCard || !document.startViewTransition || this.reduced() || this.state.screen === 'workspace') { this.setState({ screen: 'workspace', ws: id, instant: false }); return; }
+    this.setState({ vtPhase: 'from', vtId: id }, () => {
+      const t = document.startViewTransition(() => new Promise(res => this.setState({ screen: 'workspace', ws: id, vtPhase: 'to', instant: true }, res)));
+      t.finished.finally(() => this.setState({ vtPhase: null, vtId: null, instant: false }));
+    });
+  };
+  openCheckIn = (pid, prefill) => {
+    const d = this.state.drawer;
+    this.setState({ drawer: { open: true, pid: pid || null, session: d.session + 1, prefill: prefill || null }, pal: { ...this.state.pal, open: false } });
+  };
+  closeDrawer = () => this.setState({ drawer: { ...this.state.drawer, open: false } });
+  openPalette = () => { this.setState({ pal: { open: true, q: '', i: 0 } }); setTimeout(() => this.palRef.current && this.palRef.current.focus(), 30); };
+  closePalette = () => this.setState({ pal: { ...this.state.pal, open: false } });
+  toggleFund = (i) => this.setState(s => ({ funds: s.funds.map((v, j) => j === i ? !v : v) }));
+  toggleTask = (id) => this.setState(s => { const on = !s.tasks[id]; const d = { ...s.doneOn }; if (on) d[id] = isoOf(TODAY); else delete d[id]; return { tasks: { ...s.tasks, [id]: on }, doneOn: d }; });
+  toggleBau = (key) => this.setState(s => { const b = { ...s.bauDone }; if (b[key]) delete b[key]; else b[key] = isoOf(TODAY); return { bauDone: b }; });
+  addNote = (day, text) => { const d = new Date(); const t = String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); const id = 'n' + Date.now().toString(36); this.setState(s => ({ notes: { ...s.notes, [day]: [...(s.notes[day] || []), { id, t, text }] } })); return id; };
+  updateNote = (day, id, text) => this.setState(s => ({ notes: { ...s.notes, [day]: (s.notes[day] || []).map(n => n.id === id ? { ...n, text } : n) } }));
+  removeNote = (day, id) => this.setState(s => { const list = (s.notes[day] || []).filter(n => n.id !== id); const nn = { ...s.notes }; if (list.length) nn[day] = list; else delete nn[day]; return { notes: nn }; });
+  setAllFunds = (v) => this.setState({ funds: FUNDS.map(() => v) });
+
+  saveCheckIn = (d) => {
+    this.closeDrawer();
+    if (d && d.changes) { setTimeout(() => this.applyUpdate(d.changes), 220); return; }
+    setTimeout(() => this.applyCheckIn(d), 220);
+  };
+  applyCheckIn(d) {
+    const p0 = this.state.projects.find(p => p.id === d.pid);
+    if (!p0) return;
+    const hasF = !!p0.forecast;
+    const fN = hasF ? dn(p0.forecast) : null;
+    const delta = hasF && d.scopeH > 0 ? Math.ceil(d.scopeH / (p0.rate || 1)) : 0;
+    const newF = delta ? CAL.addBD(fN, delta) : fN;
+    const what = (d.scopeWhat || '').trim() || 'New scope';
+    const note = [d.changed, d.scopeH > 0 ? what + ' added, +' + d.scopeH + 'h' : '', d.blockers ? 'Blocked: ' + d.blockers : ''].filter(Boolean).join('. ') || 'Plan confirmed.';
+    const p1 = { ...p0,
+      forecast: hasF ? isoOf(newF) : null, prev: delta ? p0.forecast : p0.prev,
+      confidence: d.confidence ?? p0.confidence, checkin: isoOf(TODAY), blocker: d.blockers || null,
+      scope: d.scopeH > 0 ? [...p0.scope, { date: isoOf(TODAY), what, h: d.scopeH, bd: delta, from: hasF ? F.dm(fN) : '—', to: hasF ? F.dm(newF) : '—' }] : p0.scope,
+      checkins: [...p0.checkins, { date: isoOf(TODAY), note, forecast: hasF ? isoOf(newF) : null, conf: d.confidence ?? p0.confidence }] };
+    const tasks = { ...this.state.tasks }; (d.done || []).forEach(id => { tasks[id] = true; });
+    const item = delta
+      ? { id: 'f' + Date.now(), pid: p0.id, kind: 'scope', title: p0.short, body: 'Scope added (' + what.toLowerCase() + ', +' + d.scopeH + 'h). Forecast moved ' + F.dm(fN) + ' → ' + F.dm(newF) + '.', delta: '+' + delta + ' BD', tone: 'risk', when: 'Just now' }
+      : { id: 'f' + Date.now(), pid: p0.id, kind: 'checkin', title: p0.short, body: 'Checked in. ' + (d.changed ? d.changed.replace(/\.$/, '') + '. ' : '') + (hasF ? 'Forecast holds at ' + F.dm(fN) + '.' : ''), delta: '±0 BD', tone: 'quiet', when: 'Just now' };
+    const feed = [item, ...this.state.feed.filter(f => !(f.kind === 'stale' && f.pid === p0.id))];
+    this.setState(s => ({ projects: s.projects.map(p => p.id === p0.id ? p1 : p), tasks, feed, flash: { ...s.flash, [p0.id]: !!delta }, moved: { ...s.moved, [p0.id]: delta ? { delta, label: '+' + delta + ' BD', at: Date.now() } : null } }));
+    this.fT = this.fT || {}; this.mT = this.mT || {};
+    clearTimeout(this.fT[p0.id]); clearTimeout(this.mT[p0.id]);
+    this.fT[p0.id] = setTimeout(() => this.setState(s => ({ flash: { ...s.flash, [p0.id]: false } })), 1100);
+    this.mT[p0.id] = setTimeout(() => this.setState(s => ({ moved: { ...s.moved, [p0.id]: null } })), 5200);
+  }
+  applyUpdate(changes) {
+    const by = {};
+    changes.forEach(c => { if (c.project_id) (by[c.project_id] = by[c.project_id] || []).push(c); });
+    Object.entries(by).forEach(([pid, cs]) => {
+      const p0 = this.state.projects.find(p => p.id === pid);
+      if (!p0) return;
+      const pre = {};
+      cs.filter(c => c.type === 'target_move' && c.date).forEach(c => { pre.target = c.date; });
+      const hpd = cs.find(c => c.type === 'hours_per_day' && c.value > 0);
+      if (hpd && p0.forecast) {
+        const from = Math.max(TODAY, dn(p0.start)), bdLeft = CAL.bdDiff(from, dn(p0.forecast)) + 1;
+        const left = (p0.rate || 1) * bdLeft, need = Math.max(1, Math.ceil(left / hpd.value));
+        const k = p0.rate ? hpd.value / p0.rate : 1;
+        Object.assign(pre, { rate: hpd.value, bd3: (p0.bd3 || 0) * k, bd8: (p0.bd8 || 0) * k, rateAfter: (p0.rateAfter || 0) * k, forecast: isoOf(CAL.addBD(from, need - 1)), prev: p0.forecast });
+      } else if (hpd) pre.rate = hpd.value;
+      const adds = cs.filter(c => c.type === 'task_add' && c.text);
+      if (Object.keys(pre).length || adds.length) this.updateProject(pid, raw => {
+        let r = { ...raw, ...pre };
+        if (pre.target) delete r.targetLabel;
+        if (adds.length) {
+          const now = (r.now || []).map(x => ({ ...x, tasks: [...x.tasks] }));
+          if (!now.length) now.push({ m: 'Added from an update', due: isoOf(CAL.addBD(TODAY, 9)), tasks: [] });
+          adds.forEach((c, i) => now[0].tasks.push({ id: 'u' + Date.now().toString(36) + i, t: c.text, h: +c.hours || 1 }));
+          r.now = now;
+        }
+        return r;
+      });
+      if (hpd && pre.forecast && pre.forecast !== p0.forecast) { this.setState(st => ({ flash: { ...st.flash, [pid]: true } })); this.fT = this.fT || {}; clearTimeout(this.fT[pid]); this.fT[pid] = setTimeout(() => this.setState(st => ({ flash: { ...st.flash, [pid]: false } })), 1100); }
+      const sc = cs.filter(c => c.type === 'scope_add' && +c.hours > 0);
+      const conf = cs.find(c => c.type === 'confidence');
+      const bl = cs.find(c => c.type === 'blocker');
+      this.applyCheckIn({ pid, done: cs.filter(c => c.type === 'task_done').map(c => c.task_id),
+        changed: cs.filter(c => c.type === 'note').map(c => c.text.replace(/\.$/, '')).join('. '),
+        scopeWhat: sc.map(c => c.text).join(', '), scopeH: sc.reduce((a, c) => a + (+c.hours || 0), 0),
+        blockers: bl ? bl.text : '', confidence: conf ? conf.value : null });
+    });
+    changes.filter(c => c.type === 'bau_done').forEach(c => {
+      if (c.routine_id === 'r-ret' && occurs(this.state.routines.find(r => r.id === 'r-ret') || {}, CAL.days[TODAY])) this.setAllFunds(true);
+      else this.setState(st => st.bauDone[c.routine_id + ':' + isoOf(TODAY)] ? null : { bauDone: { ...st.bauDone, [c.routine_id + ':' + isoOf(TODAY)]: isoOf(TODAY) } });
+    });
+  }
+
+  buildModel() {
+    const s = this.state;
+    const P = s.projects.map(p => {
+      const startN = dn(p.start), targetN = dn(p.target), forecastN = p.forecast ? dn(p.forecast) : null, prevN = p.prev ? dn(p.prev) : null;
+      const delta = forecastN != null ? CAL.bdDiff(targetN, forecastN) : null;
+      const status = forecastN == null ? 'define' : delta > 0 ? 'risk' : 'on';
+      const since = p.checkin ? TODAY - dn(p.checkin) : null;
+      const added = p.scope.reduce((a, x) => a + x.h, 0);
+      const accent = p.domain === 'pc' ? 'var(--pc-accent)' : 'var(--fi-accent)';
+      return { ...p, milestones: derivedMs(p), startN, targetN, forecastN, prevN, delta, status, since, stale: since != null && since >= 7, added,
+        growth: p.baseline ? Math.round(added / p.baseline * 100) : 0,
+        accent, soft: p.domain === 'pc' ? 'var(--pc-accent-soft)' : 'var(--fi-accent-soft)',
+        domainName: p.domain === 'pc' ? 'Private Credit' : 'Fixed Income',
+        forecastS: forecastN != null ? F.s(forecastN) : 'Not yet', forecastDM: forecastN != null ? F.dm(forecastN) : '—',
+        targetS: p.targetLabel || F.s(targetN), targetDM: p.targetLabel || F.dm(targetN),
+        prevS: prevN != null ? F.s(prevN) : null, prevDM: prevN != null ? F.dm(prevN) : null,
+        deltaLabel: delta == null ? 'No forecast' : delta > 0 ? '+' + delta + ' BD' : delta < 0 ? '−' + (-delta) + ' BD' : 'On target',
+        sinceLabel: since == null ? 'Not yet' : since === 0 ? 'Today' : since === 1 ? 'Yesterday' : since + ' days ago',
+        phaseName: PHASES[p.phase], flash: !!s.flash[p.id], moved: s.moved[p.id] || null,
+        statusColor: status === 'risk' ? 'var(--risk)' : status === 'define' ? 'var(--ink-faint)' : accent };
+    });
+    const pmap = {}; P.forEach(p => { pmap[p.id] = p; });
+    const RT = s.routines;
+    const loads = {}; CAL.bds.forEach(n => { loads[n] = dayLoad(n, P, RT); });
+
+    const pcP = P.filter(p => p.domain === 'pc');
+    const lastPC = Math.max(...pcP.map(p => p.forecastN));
+    const buffer = CAL.bdDiff(lastPC, MOVE);
+    const ret = pmap.ret;
+    const toRun = CAL.bdDiff(ret.forecastN, DEC_RUN);
+    let verdict;
+    if (pcP.some(p => p.forecastN >= MOVE)) verdict = { word: 'Off track for the move', short: 'Not yet', dot: 'var(--overload)', tone: 'var(--overload)', sentence: 'A Private Credit exit now lands on or after 4 Jan. Something has to be cut, automated later, or handed over as it stands.' };
+    else if (ret.forecastN >= DEC_RUN) verdict = { word: 'Move at risk', short: 'At risk', dot: 'var(--risk)', tone: 'var(--risk)', sentence: 'Every Private Credit exit still lands before 4 Jan, but the returns pipeline now misses the December run on Thu 3 Dec, the last one your successor can shadow with you there.' };
+    else verdict = { word: P.some(p => p.status === 'risk') ? 'Move on track, narrowly' : 'Move on track', short: P.some(p => p.status === 'risk') ? 'Yes, narrowly' : 'Yes', dot: 'var(--ink)', tone: 'var(--ink)', sentence: 'Every Private Credit exit lands before 4 Jan, with ' + buffer + ' business days to spare. The one to watch is the returns pipeline: forecast ' + ret.forecastS + ', ' + toRun + ' business day' + (toRun === 1 ? '' : 's') + ' before the December run your successor needs to shadow.' };
+    verdict.buffer = buffer; verdict.toRun = toRun;
+
+    const upcoming = CAL.bds.filter(n => n >= TODAY && n <= CAL.addBD(MOVE, 10) && loads[n].over).map(n => ({ n, s: F.s(n), bdm: CAL.days[n].bdm, total: loads[n].total }));
+    const attention = [
+      ...P.filter(p => p.status === 'risk').map(p => ({ id: 'a-' + p.id, pid: p.id, kind: 'At risk', title: p.name, body: 'Forecast ' + p.forecastS + ', target ' + p.targetS, chip: p.deltaLabel, tone: 'risk' })),
+      ...upcoming.map(o => ({ id: 'o-' + o.n, pid: null, day: o.n, kind: 'Overload', title: o.s + ' (BD' + o.bdm + ')', body: o.total + 'h of an 8h day', chip: '+' + (o.total - CAPACITY) + 'h', tone: 'overload' })),
+      ...P.filter(p => p.stale).map(p => ({ id: 's-' + p.id, pid: p.id, kind: 'Stale', title: p.name, body: 'No check-in for ' + p.since + ' days', chip: p.since + 'd', tone: 'quiet' }))
+    ];
+    const candidates = P.filter(p => p.since != null).sort((a, b) => b.since - a.since);
+    const prompt = candidates[0] && candidates[0].stale ? candidates[0] : null;
+    const nextDue = candidates[0] || null;
+
+    const routines = RT.map(r => {
+      const occ = CAL.bds.filter(n => n >= TODAY && occurs(r, CAL.days[n])).slice(0, 3);
+      return { ...r, rule: ruleText(r), ruleShort: ruleShort(r), stageName: STAGES[r.stage], status: STAGES[r.stage], next: occ.map(n => ({ n, s: F.s(n), after: n >= MOVE, today: n === TODAY })) };
+    });
+
+    const previewShift = (pid, h) => {
+      const p = pmap[pid];
+      if (!p || p.forecastN == null) return null;
+      const delta = h > 0 ? Math.ceil(h / (p.rate || 1)) : 0;
+      const to = delta ? CAL.addBD(p.forecastN, delta) : p.forecastN;
+      const mod = P.map(x => x.id === pid ? { ...x, forecastN: to } : x);
+      const newOver = [];
+      CAL.bds.forEach(n => { if (n > p.forecastN && n <= to) { const l = dayLoad(n, mod, RT); if (l && l.over && !loads[n].over) newOver.push({ n, s: F.s(n), total: l.total }); } });
+      return { delta, from: p.forecastN, to, fromS: F.s(p.forecastN), toS: F.s(to), fromDM: F.dm(p.forecastN), toDM: F.dm(to), deltaLabel: delta ? '+' + delta + ' BD' : '±0 BD',
+        vsTarget: CAL.bdDiff(p.targetN, to), newOver, missesDecRun: pid === 'ret' && to >= DEC_RUN, crossesMove: p.domain === 'pc' && to >= MOVE };
+    };
+
+    return {
+      TODAY, MOVE, DEC_RUN, CAPACITY, F, CAL, ROT, PHASES, HOL, FUNDS,
+      P, pmap, loads, routines, verdict, attention, prompt, nextDue, feed: s.feed, upcoming,
+      hover: s.hover, setHover: this.setHover, go: this.go, openProject: this.openProject, openCheckIn: this.openCheckIn,
+      funds: s.funds, toggleFund: this.toggleFund, tasks: s.tasks, toggleTask: this.toggleTask, doneOn: s.doneOn, bauDone: s.bauDone, toggleBau: this.toggleBau, setAllFunds: this.setAllFunds,
+      ws: s.ws, screen: s.screen, vtPhase: s.vtPhase, vtId: s.vtId, previewShift, reduced: this.props.motion === 'Reduced',
+      STAGES, occursOn: (r, n) => occurs(r, CAL.days[n]), updateRoutine: this.updateRoutine, addRoutine: this.addRoutine, removeRoutine: this.removeRoutine, focusRoutine: s.focusRoutine, clearFocusRoutine: () => this.setState({ focusRoutine: null }),
+      routineReq: s.routineReq, openRoutine: (id) => this.setState({ routineReq: { id, t: Date.now() }, screen: 'routines', instant: false }),
+      notes: s.notes, addNote: this.addNote, updateNote: this.updateNote, removeNote: this.removeNote,
+      dayReq: s.dayReq, previewDay: (n) => this.setState({ dayReq: { n, t: Date.now() }, screen: 'today', instant: false }),
+      updateProject: this.updateProject, logChange: this.logChange, createProject: this.createProject, removeProject: this.removeProject, focusGoal: s.focusGoal, clearFocusGoal: () => this.setState({ focusGoal: null })
+    };
+  }
+
+  paletteGroups(model) {
+    const s = this.state, q = s.pal.q.trim().toLowerCase();
+    const items = [];
+    const hm = q.match(/\+?\s*(\d+(?:\.\d+)?)\s*h\b/);
+    if (hm) {
+      const h = parseFloat(hm[1]);
+      const rest = q.replace(hm[0], '').trim();
+      model.P.filter(p => p.forecastN != null && (!rest || (p.name + ' ' + p.short).toLowerCase().includes(rest))).forEach(p => items.push({ group: 'Quick add', label: 'Add ' + h + 'h of scope to ' + p.short, hint: 'check-in', dot: p.accent, run: () => this.openCheckIn(p.id, { scopeH: h }) }));
+    }
+    const match = (l) => !q || hm || l.toLowerCase().includes(q);
+    SCREENS.forEach(([id, label]) => { if (!hm && match(label)) items.push({ group: 'Jump to', label, hint: '', dot: 'var(--hairline)', run: () => this.go(id) }); });
+    model.P.forEach(p => { if (!hm && match(p.name)) items.push({ group: 'Projects', label: p.name, hint: p.forecastS, dot: p.accent, run: () => this.openProject(p.id) }); });
+    model.P.forEach(p => { if (!hm && (q ? ('check in ' + p.name).toLowerCase().includes(q) : true)) items.push({ group: 'Tell Remi', label: 'Tell Remi about ' + p.short, hint: p.sinceLabel, dot: p.accent, run: () => this.openCheckIn(p.id) }); });
+    if (!hm) {
+      [['pc', 'New Private Credit project'], ['fi', 'New Fixed Income project']].forEach(([d, label]) => { if (!q || label.toLowerCase().includes(q) || 'new project'.includes(q)) items.push({ group: 'Create', label, hint: '', dot: d === 'pc' ? 'var(--pc-accent)' : 'var(--fi-accent)', run: () => this.createProject(d) }); });
+      if (q && 'reset sample data'.includes(q)) items.push({ group: 'Create', label: 'Reset to sample data', hint: 'clears your edits', dot: 'var(--ink-faint)', run: this.resetData });
+    }
+    const flat = items.slice(0, 16);
+    const sel = Math.min(s.pal.i, Math.max(0, flat.length - 1));
+    flat.forEach((it, i) => { it.bg = i === sel ? 'color-mix(in oklch, var(--ink) 6%, var(--paper-raised))' : 'transparent'; it.hover = () => { if (this.state.pal.i !== i) this.setState({ pal: { ...this.state.pal, i } }); }; });
+    this._palFlat = flat; this._palSel = sel;
+    const groups = [];
+    flat.forEach(it => { let g = groups.find(g => g.label === it.group); if (!g) groups.push(g = { label: it.group, items: [] }); g.items.push(it); });
+    return groups;
+  }
+
+  renderVals() {
+    const s = this.state, p = this.props;
+    const frame = p.frame || '1920 × 1080';
+    const [W, H] = frame === '2560 × 1440' ? [2560, 1440] : frame === 'Fit window' ? [s.vw, s.vh] : [1920, 1080];
+    const sc = frame === 'Fit window' ? 1 : Math.min(s.vw / W, s.vh / H);
+    const st = { w: W, h: H, s: sc, x: Math.round((s.vw - W * sc) / 2), y: Math.round((s.vh - H * sc) / 2) };
+    const model = this.buildModel();
+    const nav = SCREENS.map(([id, label, icon]) => {
+      const on = s.screen === id || (id === 'projects' && s.screen === 'workspace');
+      return { id, label, icon, go: () => this.go(id), ink: on ? 1 : 0, fg: on ? '#fff' : 'rgba(255,255,255,0.62)' };
+    });
+    const sv = {};
+    ['today', 'notes', 'timeline', 'calendar', 'projects', 'workspace', 'routines', 'transition'].forEach(id => {
+      const on = s.screen === id;
+      sv[id] = { o: on ? 1 : 0, v: on ? 'visible' : 'hidden', t: s.instant ? 'none' : on ? 'opacity var(--dur-base) var(--ease-out) 60ms, visibility 0s linear 0s' : 'opacity var(--dur-fast) var(--ease-out), visibility 0s linear var(--dur-fast)' };
+    });
+    const dro = s.drawer.open;
+    const dr = { open: dro, pid: s.drawer.pid, session: s.drawer.session, prefill: s.drawer.prefill, pe: dro ? 'auto' : 'none', o: dro ? 1 : 0, po: dro ? 1 : 0, t: dro ? 'translateX(0)' : 'translateX(104%)' };
+    const groups = s.pal.open ? this.paletteGroups(model) : [];
+    const pal = { pe: s.pal.open ? 'auto' : 'none', o: s.pal.open ? 1 : 0, t: s.pal.open ? 'translateY(0)' : 'translateY(-8px)', q: s.pal.q, groups, empty: s.pal.open && groups.length === 0 };
+    return {
+      st, nav, sv, model, dr, pal, verdict: model.verdict, clock: this.clockEl || (this.clockEl = React.createElement(LondonClock)),
+      openPalette: this.openPalette, closePalette: this.closePalette, closeDrawer: this.closeDrawer, saveCheckIn: this.saveCheckIn, palRef: this.palRef,
+      goTransition: () => this.go('transition'),
+      goHome: () => { const root = document.querySelector('[data-screen-label="Remi app"]'); if (root && !this.reduced()) { root.style.transition = 'opacity 180ms var(--ease-out)'; root.style.opacity = '0'; setTimeout(() => { window.location.href = 'Remi%20Home.dc.html'; }, 180); } else window.location.href = 'Remi%20Home.dc.html'; },
+      openCheckInTop: () => this.openCheckIn(s.screen === 'workspace' ? s.ws : null),
+      palInput: (e) => this.setState({ pal: { ...this.state.pal, q: e.target.value, i: 0 } }),
+      palKey: (e) => {
+        const n = (this._palFlat || []).length;
+        if (e.key === 'ArrowDown') { e.preventDefault(); this.setState({ pal: { ...this.state.pal, i: Math.min(n - 1, this._palSel + 1) } }); }
+        else if (e.key === 'ArrowUp') { e.preventDefault(); this.setState({ pal: { ...this.state.pal, i: Math.max(0, this._palSel - 1) } }); }
+        else if (e.key === 'Enter') { const it = (this._palFlat || [])[this._palSel]; if (it) it.run(); }
+      }
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,168 @@
+/* Workspace.dc.html:147-160 (the Charter lists) and :525 (placeholders and empty copy). */
+.list {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--hairline);
+}
+
+.head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.row {
+  display: grid;
+  align-items: start;
+  margin-top: 3px;
+}
+.index {
+  font-family: var(--font-numeric);
+  font-size: 12px;
+  color: var(--ink-muted);
+  padding-top: 5px;
+}
+
+.check {
+  margin-top: 5px;
+  margin-right: 10px;
+}
+
+.field {
+  width: calc(100% + 12px);
+  margin: 0 -6px;
+  padding: 3px 6px;
+  font-family: var(--font-ui);
+  line-height: 1.45;
+  color: var(--ink);
+}
+.field:focus {
+  color: var(--ink);
+}
+.l {
+  font-size: 15px;
+}
+.m {
+  font-size: 14px;
+}
+.muted {
+  color: var(--ink-muted);
+}
+.done {
+  color: var(--ink-muted);
+  text-decoration: line-through;
+  text-decoration-color: var(--done);
+}
+.done:focus {
+  text-decoration: none;
+}
+
+.meta {
+  padding-top: 5px;
+  padding-left: 12px;
+  font-family: var(--font-numeric);
+  font-size: 11px;
+  color: var(--ink-muted);
+  white-space: nowrap;
+}
+
+/* Upright: the redesign sets every inline italic upright (Visuelt has no italic). */
+.empty {
+  margin-top: 4px;
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--ink-muted);
+}
+
+/*
+ * `addVisibility="hover"` (Transition.dc.html:98-109): '+ Add' sits 12px after the label
+ * without moving it, and shows while the list is hovered or holds focus, or while it is empty.
+ */
+.headLabel {
+  position: relative;
+}
+.headAdd {
+  position: absolute;
+  left: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%);
+  white-space: nowrap;
+  opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+[data-add='hover']:hover .headAdd,
+[data-add='hover']:focus-within .headAdd,
+[data-add='hover'][data-empty] .headAdd {
+  opacity: 1;
+}
+
+/* `row="line"`: the Transition onboarding rows (Transition.dc.html:98-109). */
+.lineHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+}
+.line {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 42px;
+  border-bottom: 1px solid var(--hairline);
+}
+.lineText,
+.lineGhost {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: 15px;
+  color: var(--ink);
+}
+.lineText {
+  display: block;
+  margin: 0 -6px;
+  padding: 2px 6px;
+  border: 0;
+  border-radius: var(--radius-s);
+  background: transparent;
+  text-align: left;
+  cursor: text;
+  transition: background var(--dur-fast) var(--ease-out);
+}
+.lineText:hover {
+  background: color-mix(in oklch, var(--ink) 4%, transparent);
+}
+.lineText:focus-visible {
+  outline: 1.5px solid var(--focus);
+  outline-offset: 0;
+}
+.line[data-done] .lineText {
+  color: var(--ink-muted);
+}
+.lineGhost {
+  color: var(--ink-muted);
+}
+.lineEdit {
+  flex: 1;
+  min-width: 0;
+}
+.lineEdit .lineField {
+  width: calc(100% + 12px);
+  margin: 0 -6px;
+  padding: 2px 6px;
+  font-family: var(--font-ui);
+  font-size: 15px;
+  color: var(--ink);
+}
+.lineMeta {
+  font-family: var(--font-numeric);
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+.lineEmpty {
+  font-size: 14px;
+  color: var(--ink-muted);
+  padding: 10px 0;
+  border-bottom: 1px solid var(--hairline);
+}

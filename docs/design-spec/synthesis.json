@@ -1,0 +1,949 @@
+{
+ "productSummary": "Remi is a personal workflow dashboard for one investment analyst at Ninety One who is moving from Private Credit (PC) to Fixed Income (FI). The move date is a placeholder, Mon 4 Jan 2027, stored as MOVE. Everything runs only on the user's Mac, and the prototype's 'today' is pinned to Mon 5 Oct 2026, BD3.\n\nWhat Remi plans, at business-day (BD) level, about 3 months ahead:\n- BAU (recurring work). PC BAU follows business-day rules, e.g. BD3 fund and security-level returns for 12 funds (6h), and BD8 ManCo pack (4h). FI BAU is a eurozone sovereign country rotation that starts on the move date.\n- Goal-first projects. Each has a charter, a rolling-wave plan (Now milestones with estimated tasks, Next milestones, and one line of Later intent), check-ins, a scope log, snapshots, a premortem risk list and, for PC, an exit route.\n\nHow it works:\n- A pure engine derives per-day load and capacity (8h/day), forecasts, flags (at risk, overload, stale) and a move verdict. The verdict answers 'Am I on track to move cleanly?' and depends on every PC exit landing before MOVE, and on the returns pipeline landing before the December BD3 run (DEC_RUN, Thu 3 Dec 2026) that the successor must shadow.\n- The main source of change is scope growth, fed in through check-ins. A free-text 'Tell Remi' update is parsed by an LLM, or by a regex fallback, into typed change proposals. The user reviews them before anything is applied.\n- The signature UX is 'the plan moves'. Bars glide on a spring, a ghost of the previous plan appears, dates roll like an odometer, and a +N BD chip shows.\n\nSurfaces:\n1. A Home launcher.\n2. The 'Control Panel' app: an 88px nav rail, a 72px header, eight always-mounted screens (Today, Notes, Timeline, Calendar, Projects, Project workspace, Routines, Transition), a right-hand check-in drawer (1160px) and a ⌘K command palette.\n3. A standalone Notion-style Textbook for numbered study notes, with KaTeX formulas and sandboxed live HTML charts. It is not in SPEC.md.\n4. A Foundations design-system page.\n\nCurrent state: the prototype is Claude Design .dc.html files running on a generated runtime (support.js), with all state held in localStorage ('remi.v1' and 'remi.textbook.v1').\n\nProduction target:\n- A React + TypeScript SPA (Vite) using design tokens as CSS variables.\n- A pure TypeScript engine package shared by the UI and the API. The client needs synchronous calendar and forecast maths for layout and live previews.\n- A local-only API bound to 127.0.0.1. SPEC recommends Node + Hono + SQLite via Drizzle. It uses the user's folder architecture: core, schemas, repositories, services, utils, api.\n- Persistence in SQLite, with an append-only event log as the source of truth (SPEC §7).\n- AI calls proxied server-side, subject to compliance.\n\nColours and fonts are brand stand-ins until the Ninety One template arrives. Components must read tokens only, so the brand swap touches :root and nothing else.",
+ "screens": [
+  {
+   "name": "Home (launcher)",
+   "route": "/",
+   "summary": "Standalone page with no nav rail. The prototype renders it on a fixed 1920x1080 stage scaled with min(vw/1920, vh/1080) and letterboxed in color-mix(ink 6%, paper).\n\nLayout:\n- Header bar: 88px tall, 120px side insets, hairline bottom border. Left: serif 'Remi' wordmark at 26px. Right: 'Mon 5 Oct · BD3', a divider, then '61 business days to Fixed Income'. All of this text is hard-coded.\n- Hero: at left 120, top 176, width 1100. Greeting in small caps 'Good morning|afternoon|evening · Monday 5 October' (the time-of-day word comes from the real clock). H1 in Libre Caslon 92px/1.02, letter-spacing -0.025em: 'Where to this morning|afternoon|evening?'.\n- Two 816x560 cards in a 2-column grid at top 388 with a 48px gap. Cards have paper-raised background, 6px radius, an inset hairline border, and padding 34 40 30.\n\nCard 01 'Control Panel':\n- Description: 'Today, the timeline, projects, routines and the move, recalculated as you go.'\n- Decorative animated preview: a 30-bar capacity strip (CAP array; CAPH on hover), 5 mini Gantt rows, a today line at 4% and a move line at 84%.\n- Footer: 'Returns pipeline', a Roll 'Wed 2 Dec', and a '+3 BD' pill. On hover these become 'Fri 4 Dec' and '+5 BD'. Also a meta line '{n} projects · {n} routines · {n} notes today'.\n\nCard 02 'Textbook':\n- Description: 'Numbered notes, clean formulas and live charts you drop in from Claude.'\n- Typeset primer excerpt with the formula ΔP / P ≈ −D × Δy.\n- On hover: 'Convexity' types out (steps(9), 520ms) and a slash menu appears after 560ms.\n- Footer: '{N} pages · {M} live chart(s)'.\n\nCard hover: border turns ink, the card lifts -4px, and the round arrow button fills ink.\n\nClicking a card, or pressing 1 or 2, plays the expand overlay: the card rect becomes the full stage over 420ms spring, then navigation happens at +520ms.\n\nPage footer: 'Press [1] or [2] to jump straight in' and 'A personal instrument. Nothing here is shared.'\n\nData: counts are read from localStorage today. Production reads them from GET /api/home/summary.\n\nNote: the screenshots show an older copy ('IN THE WORKS' badge, a sub-headline). The code is the source of truth.",
+   "keyComponents": [
+    "HomeHeader",
+    "Hero greeting + headline",
+    "LauncherCard (shared shell)",
+    "ControlPanelCard preview (capacity strip, mini Gantt, Roll forecast + delta pill)",
+    "TextbookCard preview (typewriter, slash menu)",
+    "Roll",
+    "ExpandOverlay",
+    "PageFooter with key chips"
+   ]
+  },
+  {
+   "name": "App shell / Control Panel chrome",
+   "route": "/app layout (wraps /today, /notes, /timeline, /calendar, /projects, /projects/:id, /routines, /transition)",
+   "summary": "Grid: 88px nav rail | minmax(0,1fr). The right column has grid-template-rows 72px header | main.\n\nNav rail (border-right hairline, padding 22px 0 20px, gap 4px), top to bottom:\n- Home button: 'Remi' in serif 22px over '‹ Home' at 10px. It fades the app to opacity 0 over 180ms, then routes to Home.\n- 7 nav buttons, each 72x62, with a Material Symbol at 22px wght 300 and an 11px/500 label: Today [today], Notes [notes], Timeline [view_timeline], Calendar [calendar_month], Projects [stacks, also active on the workspace], Routines [repeat], Transition [arrow_forward].\n  - Active: paper-raised background, hairline border, ink text.\n  - Inactive: transparent background, ink-muted text.\n  - Transition: 140ms ease-out.\n- Flex spacer.\n- ⌘K button, 72x52.\n\nHeader (padding 0 48px, gap 28px, hairline bottom border), left to right:\n- Date 'Mon 5 Oct' (17/600) · 'BD3' (mono 13).\n- 1x22 divider.\n- Countdown button '61' (17/600) + 'business days to Fixed Income' (15 muted). It goes to Transition.\n- Verdict: a 6px dot + verdict.word (13 muted).\n- Spacer.\n- 'Jump to or add' search trigger: 36px tall, min-width 260, paper-raised, with a ⌘K chip.\n- Primary 'Tell Remi' button: ink background, paper text, edit_note icon. Hover background is ink 86% mixed with paper; active state scales to 0.98. It opens the check-in drawer, focused on the workspace project when you are on the workspace.\n\nMain: eight absolutely stacked sections. All stay mounted; the active one has opacity 1 and visible, the rest opacity 0 and hidden.\n- Cross-fade in: 240ms ease-out with a 60ms delay.\n- Cross-fade out: 140ms, then visibility is hidden.\n- Notes and Timeline sections use overflow:hidden. The others use overflow:auto.\n\nOverlays: the check-in drawer layer (z 20) and the command palette layer (z 30).\n\nGlobal keys:\n- ⌘K / Ctrl+K toggles the palette, even while typing.\n- Escape closes the palette first, otherwise the drawer.\n\nThe prototype also scales a fixed 1920x1080 or 2560x1440 frame. Production should be responsive, with both sizes looking like this layout (fluid main, fixed rail and header).",
+   "keyComponents": [
+    "NavRail",
+    "HeaderBar (date/BD, countdown, verdict, search trigger, Tell Remi)",
+    "ScreenStack (always-mounted, cross-fading)",
+    "CheckInDrawer host",
+    "CommandPalette",
+    "HoverProvider (global linked-highlight id)",
+    "ErrorBoundary per screen"
+   ]
+  },
+  {
+   "name": "Today",
+   "route": "/today (optional ?day=YYYY-MM-DD for preview)",
+   "summary": "Default screen. Padding 40 48 48. Grid 7fr/5fr with column-gap 72. At 1920 the left column is about 971px and the right about 693px.\n\nLEFT column. The day-switch animation applies only here. It has three blocks with arrival delays 0, 40 and 80ms.\n\n(1) Day header\n- Kicker: 'Today' | 'Tomorrow · preview' | '<Weekday> · N business days ahead'. Plus a 'Back to today' pill when previewing.\n- H1: serif 52px/1.1, the long date, e.g. 'Monday 5 October'.\n- Meta line: 'BD3 of 22' (mono) · '8h working day' · verdict.word in ink.\n\n(2) Capacity\n- Title 'Today’s capacity' / '<Weekday>’s capacity'. Label '8h of 8h planned · 0h free', or '9.5h planned · 1.5h over' in overload colour.\n- A 14px segmented bar. BAU segments are split into ceil(h) hour cells in the accent colour. Project segments use the soft fill with an accent outline. Free space is an outline. There is an 8h capacity marker, and the bar pulses when over.\n- Legend: BAU / Project / Free.\n\n(3) Plan\n- Title 'Today’s plan', with the note 'BAU first, then focus blocks' (preview: 'As planned today; it moves if the plan does').\n- Rows use a 64px hours gutter at 24/500.\n- Returns BAU card, shown only when r-ret runs that day:\n  - 'BAU · Private Credit', 'BD3, monthly', 'Routine ↗'.\n  - Title 'Fund & security-level returns', a Roll count, and 'of 12 funds'.\n  - A 2px progress line, then a 3-column checklist of the 12 funds.\n  - Interactive on today only. Preview shows it unchecked with 'Fresh checklist for this run · ticking opens on the day'.\n- Other BAU rows, e.g. 'BD8 · automating', or the rotation row '4h a day'.\n- NoBau row: 'No BAU on this day. The next run is <date>.'\n- Project focus blocks, one per project with hours that day:\n  - 'Project · <domain>', 'Focus block', the name, 'Workspace ↗'.\n  - The goal in serif italic 17px.\n  - The Now tasks sliced to fit that day's hours, with 18px checkboxes.\n  - Milestone line: '◆ Next milestone: <name> · <date>'.\n\nRIGHT column (arrival delays 120 and 160ms).\n\n(4) Week strip\n- Title 'This week' / 'Week of D Mon'. Subtitle '5–9 Oct · pick a day to preview it'.\n- Five day cards (Mon–Fri of the selected day's week), each with:\n  - a label and BD number;\n  - a 6px mini capacity bar;\n  - '7h of 8h' or '9.5h · over';\n  - BAU chips 'Returns 6h' and milestone chips '◆ name';\n  - up to 2 project items with a bar (h/4 width) and hours;\n  - '+N more'.\n- Selected card: 2px ink top border and paper-raised background.\n\n(5) Month snapshot\n- Always today's month. Title 'October so far', with a Roll 'N of M done · K overdue'.\n- Cumulative bar chart, one bar per BD, 60px tall: outline = due by then, late fill = risk 55% mixed with paper, done fill = ink.\n- Axis '1 Oct' to '30 Oct'. Legend Done / Overdue / Due by then.\n- Two groups, BAU (limit 4) and Projects (limit 5), each with a mini progress bar and count. Rows are 16px checkboxes with due labels: 'done 5 Oct' / 'overdue 1 BD' / 'today' / 'Thu 15 Oct'. 'Show N more and M done' / 'Show less'.\n\nHover on any item sets the global hover id. Other items dim to 0.3 (bar segments to 0.25).\n\nComputed but NOT rendered: the 'What changed' feed, 'Needs attention' and the check-in prompt card. SPEC and the older screenshots have them; restoring them is an open question.",
+   "keyComponents": [
+    "DayHeader",
+    "CapacityBar (14px day)",
+    "PlanHeader",
+    "ReturnsBauCard (routine run checklist)",
+    "OtherBauRow",
+    "NoBauRow",
+    "FocusBlock with task slice + milestone line",
+    "Checkbox (18px / 16px)",
+    "WeekStrip + WeekDayCard (mini capacity bar, chips)",
+    "MonthSnapshot (cumulative bars, groups, rows)",
+    "Roll"
+   ]
+  },
+  {
+   "name": "Notes",
+   "route": "/notes (optional /notes/:date)",
+   "summary": "Three-column grid: 300px | minmax(0,1fr) | 340px.\n\nLEFT 'Notebook' rail:\n- Header: kicker 'Notebook' and '6 notes across 3 days'.\n- Scroll list of days, descending:\n  - every business day from today back 27 calendar days;\n  - plus any day in that window that has notes;\n  - plus older days that have notes.\n- Week headers: 'This week' / 'Week of 28 Sep'.\n- Day rows: 'Today · Mon 5 Oct' or 'Fri 2 Oct', a count, and a one-line serif preview of the latest note. Empty days show 'No notes' / 'Nothing yet today' in italic.\n- Selected row: paper-raised background with an inset hairline.\n\nCENTRE (max 820px, centred, padding 36 56 80):\n- Kicker: 'Today' / 'Last business day' / 'N business days ago' / holiday name / 'Weekend', plus a '‹ Today' pill.\n- H1: serif 48px.\n- Sub line: 'BD3 · 3 notes · <top 3 mentions>'.\n- Composer:\n  - 64px time column: live HH:MM on today, '—:—' otherwise.\n  - Serif 20px auto-grow textarea. Placeholder 'Jot something down…' or 'Add a note to Fri 2 Oct…'.\n  - Live tag chips.\n  - Hint 'Enter to jot · Shift+Enter for a new line'.\n  - Enter adds the note.\n- Entries, newest first:\n  - Mono time and an inline-editable serif 18px textarea.\n  - Blur commits. A blank value deletes the note. Escape reverts.\n  - Clickable tag chips open the project workspace or routine.\n  - A just-added note is tinted pc-accent 7% for 1400ms, then fades over 900ms.\n- Empty-state copy for today and for other days.\n\nRIGHT rail (paper-raised, padding 32):\n- 'Remi reads these' with an explanation.\n- CTA 'Turn this day into an update'. It opens Tell Remi prefilled with the day's notes as 'HH:MM text' lines. When the day is empty it reads 'Nothing to send yet' and is disabled.\n- Note: 'Remi currently has N recent notes as background' (last 5 BDs).\n- 'Mentioned on this day': tag, name, count.\n- 'This week': Mon–Fri spark bars. Bar height = count/max(3, max) with a 440ms spring. Clicking a bar selects that day.\n\nDay switch: fade and translateY ±6px. The swap happens at 120ms, then the composer is focused. The composer is autofocused 320ms after arriving on the screen.",
+   "keyComponents": [
+    "NotebookHeader",
+    "DayList / WeekHeader / DayRow",
+    "DayPageHeader",
+    "Composer (auto-grow textarea, live TagChips)",
+    "NoteEntry (inline edit)",
+    "TagChip",
+    "EmptyDay",
+    "RemiReadsPanel CTA",
+    "MentionsList",
+    "WeekSpark"
+   ]
+  },
+  {
+   "name": "Timeline",
+   "route": "/timeline (?zoom=3m|2w&week=n)",
+   "summary": "Gantt with one column per business day. Padding 28 48 24. There is a 280px label column, and the chart width W is measured with a ResizeObserver (1456px at 1920).\n\nTop bar:\n- Eyebrow 'Timeline'. Title 'Three months' / 'Two weeks'.\n- Mono subtitle: '28 Sep 2026 – 15 Jan 2027 · 77 business days', or '5 Oct – 16 Oct · 10 business days' in 2w.\n- Legend: BAU, Project, Past target, Previous plan, Milestone, Target, Overload.\n- Pan controls: 32x32 chevrons plus 'This week'. Visible in 2w only.\n- Zoom segmented control '2 weeks | 3 months'. A sliding ink pill 96px wide, positioned at left 3px or 99px.\n\nZoom windows:\n- 3m: T0 Mon 28 Sep to T1 Fri 15 Jan. That is 77 BD columns plus 15 gap slivers of 5px each. Weekends and holidays collapse into one sliver per run.\n- 2w: 10 BDs (Mon of the current week plus wk×7), with 18px slivers. wk is clamped to [-1, 13].\n\nChart rows:\n- Date header, 80px, four tiers:\n  - months: 13/600, label pinned when clamped, hidden if narrower than 70px;\n  - ISO weeks 'W41' in mono 10;\n  - day pills: '5' in 3m or 'Mon 5' in 2w; today is inverted ink;\n  - BD numbers: '3' / 'BD3'; BD1 in ink.\n- Capacity row, 76px, caption 'Hours per day against 8h. Notched = BAU, solid = project.':\n  - one vertical stack per BD at 5px/hour, with a dashed 8h line at bottom 51px;\n  - BAU notches use a repeating gradient of 4px fill and 1px gap;\n  - projects use a soft fill with an accent outline;\n  - overload turns red with a one-shot pulse;\n  - tag 'FI move · Mon 4 Jan'.\n- Lanes (scroll area). Group header 40px; BAU row 38px; rotation row 48px; project row 64px.\n  - 'Private Credit · BAU': one tick per occurrence, 4px wide in 3m. In 2w it is wide with text 'Returns · 6h'. After the move or once handed over, it is drawn outlined.\n  - 'Private Credit · Projects'.\n  - 'Fixed Income · BAU': the 'Eurozone sovereign rotation 4h/day' row. Segments are Build (solid, soft fill) or Refresh (dashed). Codes show in 3m, 'Germany · Build' in 2w. Note: 'Starts Mon 4 Jan with Germany, first Build pass →'.\n  - 'Fixed Income · Projects'.\n- Project row, left side: name, a Roll of the forecast date, and a delta chip.\n- Project row, right side, layered:\n  - ghost of the previous plan (dashed, opacity 0.55);\n  - forecast bar;\n  - risk overrun from target to forecast;\n  - milestone diamonds (filled once passed);\n  - forecast end diamond;\n  - target Γ marker;\n  - flash ghost end diamond plus 'was 27 Nov';\n  - 'moved +N BD' chip;\n  - off-range label 'Target Late Mar 2027 →'.\n  - Define status draws a hatched bar.\n- Overlay lines: today (1px ink) and the FI move (1.5px fi-accent).\n- Footnote: 'Weekends and UK bank holidays are collapsed to slivers. Hover a row to trace it through the capacity strip; click for details.'\n\nHover and tooltip:\n- Hovering a row sets the global hover; everything else dims to 0.28.\n- A 300px cursor tooltip is positioned imperatively. Variants: day, routine, rotation, project, milestone.\n\nClicking a project row opens a 460px side panel (no scrim). It contains:\n- domain chip and close button;\n- name, and the goal in serif 24px;\n- facts: Forecast, Target, Against target, Confidence 'N of 5', Last check-in;\n- milestone list;\n- 'Open workspace' and 'Tell Remi' buttons.\n\nZoom and pan re-lay out every element with 440ms spring transitions.",
+   "keyComponents": [
+    "TimelineHeader",
+    "Legend",
+    "PanControls",
+    "ZoomSegmentedControl",
+    "NonWorkingBands",
+    "DateHeader (months/weeks/days/BD tiers)",
+    "CapacityStrip (vertical, 5px/h)",
+    "LaneGroupHeader",
+    "BauRoutineRow ticks",
+    "RotationRow segments",
+    "ProjectRow (bar, overrun, ghost, diamonds, target marker, moved chip, Roll)",
+    "TodayAndMoveLines",
+    "HoverTooltip",
+    "ProjectSidePanel (460px)"
+   ]
+  },
+  {
+   "name": "Calendar",
+   "route": "/calendar (optional /calendar/:yyyy-mm?day=YYYY-MM-DD)",
+   "summary": "Month grid. Padding 28 48 32, min-height 880.\n\nHeader:\n- Kicker 'Calendar'. Title in serif 28px, e.g. 'October 2026'.\n- Mono sub-line: '22 business days' or '21 business days · 1 overloaded'.\n- Legend: BAU chip, project hours, milestone.\n- Nav: prev, 'This month', next. Prev/next dim to 0.35 at the ends of the range.\n\nGrid:\n- Columns repeat(5, minmax(0,1fr)) 64px 64px, i.e. wide Mon–Fri and narrow Sat/Sun.\n- Weekday heads have a 1px ink bottom rule.\n- Rows share the available height (5 or 6 rows).\n\nCell (in-month business days):\n- Day-number badge: today is inverted ink. 'BD3' at top right.\n- Holiday name, if any.\n- BAU chips 'Returns · 6h'.\n- Milestone diamond lines. Also the forecast-end marker '<short> · <endName lowercased>', drawn in risk colour when at risk.\n- Pinned to the bottom: project bars (width h/8×62%) with labels, and a 5px load meter with a total label.\n- Overload: everything red, pulsing once with a 300ms delay.\n- Weekends and holidays get a 3.5% ink tint. Out-of-month cells are at opacity 0.35 and inert.\n- Selected cell: 1.5px inset ink ring.\n\nDay panel: clicking an in-month cell toggles a 440px right panel (no scrim, slides in on the spring). Contents:\n- Kicker: 'Today' / 'Tomorrow' / 'N business days ahead' / 'N business days ago' / 'Weekend' / 'Bank holiday'.\n- Prev/next business-day buttons and close.\n- Serif 32px title, e.g. 'Wednesday 14 October'. Sub 'BD10 of October' (plus ' · Fixed Income' after the move).\n- 12px capacity bar with '7h of 8h · 1h free'.\n- Plan rows (48px hours column). Project rows are clickable and open the workspace, and list the task allocation for today and future days.\n- 'Due this day': milestones, forecast ends, targets, 'Move to Fixed Income'.\n- Empty copy.\n- CTA 'Open the day’s plan in Today', shown only for business days from today on. It routes to Today in preview.\n\nMonth change: fade and translateX ±10px, swapping at 130ms. Escape closes the panel.",
+   "keyComponents": [
+    "CalendarHeader",
+    "WeekdayHeadRow",
+    "DayCell",
+    "BauChip",
+    "MilestoneDiamondLine",
+    "ProjectBar",
+    "CellLoadMeter",
+    "DayPanel (440px)",
+    "PanelCapacityBar (12px)",
+    "PanelPlanRow with task allocation",
+    "PanelDueList",
+    "OpenInTodayButton"
+   ]
+  },
+  {
+   "name": "Projects (index)",
+   "route": "/projects",
+   "summary": "Padding 36 48 48.\n\nHeader:\n- Eyebrow 'Projects'. Title 'Every project leads with what it is for'.\n- Right-aligned helper text 'Private Credit first, then Fixed Income · click a project to open its workspace'.\n\nColumn header:\n- Grid minmax(0,1fr) 200px 130px 120px 150px 24px, column-gap 28, 1px ink bottom rule.\n- Columns: Goal | Forecast · target | Scope growth | Confidence | Last check-in | (arrow).\n\nGroup headers:\n- '● Private Credit' with the note 'Wind down by 4 Jan: automate or hand over · N past target' or '· all inside target'.\n- '● Fixed Income' with the note 'Ready for day one, then build'.\n- Each has a '+ New project' outline button (28px).\n\nRows:\n- Padding 22 16 with margin 0 -16 (the hover fill bleeds past the column edge). 6px radius, hairline bottom border.\n- Goal column: name (13/600), a stale badge 'Stale · N days' when stale, and the goal in serif 26px/1.28 (max 34em). The goal is muted when stale or empty. It carries view-transition-name 'remi-goal' on the clicked card.\n- Forecast column: a Roll of the forecast date ('Not yet' for Define) and a delta chip (risk tint when late; 'no plan' for Define). 'target <targetS>' below.\n- Scope growth: '+17% · 70h' (risk-tinted) over a 4px bar, baseline part in hairline and added part in risk.\n- Confidence: 5 pips, 10x8, plus 'N/5'.\n- Last check-in: sinceLabel, risk-tinted when stale, with a 'Check in now' underline button.\n- Arrow affordance that nudges 4px on hover.\n\nHover: the row gets a paper-raised background; other rows dim to 0.55.\n\nClicking a row opens the workspace with the shared-element goal view transition.\n\nArrival on first load: the header fades and slides; group headers fade (20 and 120ms); rows slide with delays of 40 + i×30ms.\n\nThe Phase column was removed; screenshot 01-pass1 shows it.",
+   "keyComponents": [
+    "PageHeader",
+    "ColumnHeader",
+    "DomainGroupHeader + New project button",
+    "ProjectRow",
+    "StaleBadge",
+    "GoalSentence (view-transition source)",
+    "ForecastCell (Roll + DeltaChip)",
+    "ScopeGrowthCell",
+    "ConfidencePips",
+    "LastCheckInCell",
+    "ArrowAffordance"
+   ]
+  },
+  {
+   "name": "Project workspace",
+   "route": "/projects/:id",
+   "summary": "Single-project screen, layout A from screenshots cp/dp/hv, which the code implements. Padding 22 48 40, flex column, gap 20.\n\n1) Header\n- '‹ Projects' back link, domain chip, and an inline-editable project name (14/600; editing it also sets short).\n- Hero goal textarea: Libre Caslon 44px/1.12, letter-spacing -0.015em, max 30em, text-wrap balance. Placeholder 'What will be true when this is done?'. It is the view-transition target 'remi-goal'. It is autofocused when a new project is created.\n\n2) Stats strip\n- Grid repeat(2,0.9fr) 1.3fr repeat(3,1fr), ink top rule.\n- START: a Roll date button that opens the business-day date picker. Sub line '15 BD in of 58' / 'starts in N BD'.\n- TARGET: a Roll of targetLabel or targetS. Sub line 'N BD from today' / 'passed'.\n- FORECAST: label changes to 'FORECAST THEN' in history. Background tint risk 7% when late. A 'moved +N BD' badge shows for 5.2s after a slip. Contents: a Roll date and a delta chip '+3 BD vs target'. Sub line 'N BD of work left'.\n- HOURS A DAY: an input clamped to 0–24 that re-forecasts. Sub line 'averages Xh once BAU days are counted' or 'planned focus time'.\n- WORK LEFT: a derived input clamped to 0–999 that re-forecasts.\n- TO LAND ON TARGET: a Roll of the needed hours per day. It turns risk-coloured when more than the rate + 0.05.\n\n3) Progress and verdict\n- A 3px progress rule filling to elapsed/total in the accent colour.\n- Verdict row: a dot and a sentence (5 branches plus suffixes), the confidence meter (5 pills, 12x8), 'Checked in <since>' (risk-coloured when stale), and an outline 'Tell Remi' button.\n\n4) History scrubber\n- Grid 200px | 1fr, with 58px top padding.\n- Left: 'PLAN AS OF', a Roll date, a hint, and 'Back to now'.\n- Bar row (44px): the plan bar, risk overrun, milestone diamonds, end diamond, target flag and today line.\n- Hover shows up to 3 rows of packed labels with stems, plus a crosshair tooltip, e.g. 'Mon 19 Oct · BD13 · 3.5h planned · <label>'.\n- Track row (44px): month ticks, check-in stops (9px circles) and a 4x21 drag handle. The handle uses pointer capture and snaps to a stop on release.\n- While scrubbing, everything interpolates between snapshots. In history mode the body dims to 0.35 and becomes inert.\n\n5) Body (grid 4fr | 8fr, column gap 72)\n- Charter:\n  - 'Why now' textarea.\n  - Success measures (numbered 01, 02), In scope, Out of scope, Constraints. Each list has '+ Add', auto-grow item textareas, and italic empty-state copy.\n  - 'Remove project' two-step button (armed state is red for 4s).\n- Plan: 'Plan', plus '{est}h estimated in Now' or 'Drafted after the charter'. Three columns 5fr/4fr/3fr:\n  - Now ('next 2 weeks · 5–16 Oct'): milestone blocks, each with a diamond, name input, date button, and task rows (15px checkbox, textarea, hours input). '+ Add task', '+ Add milestone'.\n  - Next ('2–6 weeks · milestones only'): milestone rows with date buttons.\n  - Later: an italic serif line of intent.\n\nEditing rules:\n- All inline fields use draft/commit: commit on blur or Enter; Escape reverts; a blank value removes the item.\n- Business-day date picker popover, 292px: month grid with 'BD{n}' sub-labels. Picking rolls weekends and holidays forward to the next business day. Has a 'Today' button and a note.\n\nComputed but NOT rendered, although SPEC requires them and the older layout B screenshots show them: phase stepper, exit route, scope log with chart, check-ins timeline, risks (premortem) and checklists.",
+   "keyComponents": [
+    "Back link",
+    "DomainTag",
+    "InlineEditableInput/Textarea (draft/commit)",
+    "Goal hero textarea (view-transition target)",
+    "StatCell x6 (Roll values, date buttons, numeric inputs)",
+    "DeltaChip + moved badge",
+    "ProgressRule",
+    "VerdictSentence",
+    "ConfidenceMeter",
+    "Outline Tell Remi button",
+    "HistoryScrubber (bar, labels, crosshair, track, handle)",
+    "Charter lists",
+    "Now milestone block + TaskRow (15px checkbox)",
+    "Next milestone row",
+    "Later intent",
+    "BusinessDayDatePicker",
+    "TwoStepConfirmButton"
+   ]
+  },
+  {
+   "name": "Routines",
+   "route": "/routines (optional #routineId deep link)",
+   "summary": "Padding 32 48 40. Eyebrow 'Routines'. Title 'What repeats, and where each routine goes next'.\n\nPRIVATE CREDIT section\n- Header: dot, 'Private Credit', and '{n} routine(s) on your plan until the move · each one leaves by automation or handover'. Plus an 'Add BAU routine' button.\n- Column grid: minmax(0,1.35fr) 110px minmax(0,1.2fr) minmax(0,1.55fr), gap 40. Columns: 'Routine · rule' | 'Effort' | 'Next three' | 'Handover'.\n- Each row:\n  - Inline name input (20/500).\n  - Kind segmented control: Monthly | Weekly | Daily.\n  - Monthly shows a BD stepper '− BD3 +' (range 1–20). Weekly shows a Mon–Fri picker.\n  - Rule sentence, e.g. '3rd business day, monthly · 12 funds'.\n  - Effort: auto-width hours input (24px) + 'h', 'per run', and a monthly estimate '6h a month' / '≈4.3h a month' / '≈21h a month'.\n  - Next three: a 4x34 tick (filled when the run is today), the date, and 'today' / '{n} BD away' / 'after the move'.\n  - Handover stepper: Manual → Automating → Shadowed → Handed over, each with a 9px dot. Changing it logs a feed item.\n  - Handover note textarea, placeholder 'Where does this routine go after the move?'.\n  - 'Via <Project> · <forecast>' link.\n  - Two-step 'Remove'.\n- Hovering a row dims the other rows to 0.35.\n- Deep link from Today's 'Routine ↗': scrolls to the row with a 120px offset and flashes a pc-accent 8% tint for 1600ms.\n\nFIXED INCOME section\n- Header subtitle: 'Eurozone sovereign rotation · 4h a day from the move · one country at a time, then round again'.\n- Read-only racetrack, 328px tall with 120px gutters:\n  - Stadium outline: 2px, fi-accent 35%, radius 999.\n  - Two rows of 5 tiles (112px tall, 28px gap): top row 01–05, bottom row reversed 10–06, with chevrons showing clockwise flow.\n  - Tile 01 has an ink border, the flag 'First up · Mon 4 Jan' and 'Refresh 9 Mar – 11 Mar'.\n  - 'Now' label: 'Waiting to start. 61 BD to go.'\n  - Middle stats: 'Loop 1: 10 countries · 46 business days' | 'Estimated completion: Mon 8 Mar 2027' | 'Then: Back to Germany to refresh, Tue 9 Mar – 11 Mar'.\n- Legend: Build / Refresh.\n- Hovering the FI block sets hover 'rot'.",
+   "keyComponents": [
+    "PcSectionHeader + Add button",
+    "RoutineColumnHeader",
+    "RoutineRow",
+    "InlineNameInput",
+    "KindSegmented",
+    "BdStepper",
+    "WeekdayPicker",
+    "EffortInput",
+    "NextThree",
+    "HandoverStepper",
+    "HandoverNote",
+    "ProjectLink",
+    "TwoStepConfirmButton (Remove)",
+    "FiRotationTrack",
+    "RotationTile",
+    "RotationLegend"
+   ]
+  },
+  {
+   "name": "Transition",
+   "route": "/transition",
+   "summary": "Answers 'Am I on track to move cleanly?'. Padding 36 48 48, flex column, gap 40.\n\n1) Hero (grid 5fr | 7fr, gap 72)\n- Left: eyebrow 'Transition'; a huge '61' (120px, weight 300, line-height 0.9, letter-spacing -0.04em); 'business days to Fixed Income' / 'Monday 4 January 2027'.\n- Right: eyebrow 'Am I on track to move cleanly?'; a 10px dot plus verdict.short at 36/600 ('Yes' / 'Yes, narrowly' / 'At risk' / 'Not yet'); the verdict sentence at 17px muted.\n\n2) Business-day strip\n- Flag lane, 44px:\n  - PC forecast flags '<short> · D Mon', drawn in risk colour when late.\n  - 'Dec run' in muted.\n  - 'Move' in fi-accent, right-aligned.\n  - Sticks alternate between low (10px) and high (26px) by sorted index.\n  - Flags move with a 440ms spring on 'left'.\n- Tick bar, 22px: one block per remaining business day (strictly after today and before the move). Blocks up to the last PC exit are filled pc-accent-soft with a 55% outline; later ones are hollow buffer blocks. Tooltip 'Tue 6 Oct · BD4'.\n- Month labels.\n- Legend.\n\n3) Two columns (1fr 1fr, gap 72)\nPRIVATE CREDIT 'wind down':\n- Group 'Wind-down projects · N projects'. Rows (grid 1fr 170px 150px) show the name, a readiness bar with %, the forecast 'D Mon' and a delta chip. Clicking opens the workspace; hovering dims the others to 0.35.\n- 'Routines by handover status': name, note, and a stage pill.\n\nFIXED INCOME 'ramp up':\n- 'Onboarding readiness · 2 of 5 ready': checklist rows (42px) with due dates. Note: 'Forecast ready Mon 4 Jan, the day of the move. The dry run on Thu 17 Dec is the real test.'\n- 'First rotation · starts on day one': 3 tiles (DE/FR/IT) and a 'Whole rotation, loop 1 ends Mon 8 Mar ↗' link to Routines.\n- 'After day one': an Alpha engine row with 'Target Late Mar 2027'.\n\nDifferences from the screenshot 04-pass1: it groups projects by exit route (Automate→Hand over, Hand over, Finish, Stop) and has different readiness figures. SPEC also asks for grouping by exit route. The code currently uses a single group.",
+   "keyComponents": [
+    "TransitionHero countdown",
+    "VerdictBlock",
+    "FlagLane",
+    "BusinessDayTickBar",
+    "MonthMarks",
+    "StripLegend",
+    "DomainColumnHeader",
+    "WindDownProjectGroup/Row (readiness bar, DeltaChip)",
+    "RoutineHandoverRow (status pill)",
+    "OnboardingReadinessList",
+    "RotationTile x3",
+    "WholeRotationLink",
+    "AfterDayOneRow"
+   ]
+  },
+  {
+   "name": "Tell Remi check-in drawer",
+   "route": "overlay on any app route (e.g. ?checkin=<projectId|any>)",
+   "summary": "Sits on a full-app overlay layer (z 20) with an ink 18% scrim.\n- Panel: 1160px wide (max calc(100% - 160px)), paper background, hairline left border, shadow -24px 0 48px -32px ink 30%.\n- Slides between translateX(104%) and 0 over 440ms spring, with opacity over 240ms.\n- Stays mounted. Its state resets on every open (session counter).\n\nLayout: rows 84px header | body | 76px footer.\n- Header: 'Tell Remi' (22/600), the subtitle 'Say what happened in your own words. Remi works out what to change and shows you before anything moves.', and a close button.\n- Body: grid 1fr | 500px.\n\nLeft column:\n- Focus chip: soft accent, 'About <project name>', with an x to clear it. Without a focus: 'About anything: mention projects or routines by name'.\n- Large serif 22px/1.55 textarea on paper-raised, with a placeholder example. It is locked at 0.6 opacity while thinking. Focus border uses --focus. It autofocuses at 380ms.\n- Hint line: word count or instruction.\n- 'Send to Remi ⌘↵' button, shown in compose only.\n\nRight column, one of four phases:\n- COMPOSE: 'Remi can', a 6-row capability list (140px key, italic serif example), and a footnote.\n- THINKING: 'Reading your update' / 'a few seconds'. A 2px bar goes 0→88% over 2600ms with cubic-bezier(0.2,0.7,0.3,1). Echo quotes (up to 5 sentences) stagger in 180ms apart.\n- REVIEW:\n  - 'Remi will change' plus 'simple reading' or '<n> of <total> selected'. A 19px serif summary.\n  - Groups per project (or 'BAU · today') with an ink rule, a dot, the name, and an EffectChip showing the forecast impact live from the accepted rows.\n  - Toggleable rows (26 | 104 | 1fr): checkbox, KIND label, text. Rows that are off get a strike-through and opacity 0.55.\n  - 'Not sure where these go' list, and the nothing-found message.\n  - Groups enter with a 70ms stagger.\n- ERROR: 'Remi couldn’t read that just now' with 'Try again' and 'Use a simple reading'.\n\nFooter: phase note. In review: 'Edit update' plus 'Apply N change(s) ⌘↵' (or 'Nothing selected'). In other phases: 'Cancel'.\n\nKeys: ⌘/Ctrl+Enter sends in compose and applies in review.\n\nApplying closes the drawer at once and applies the changes 220ms later, so the 'plan moves' animation plays as the drawer slides away.\n\nThe structured form (Done / What changed / New scope + chips / Blockers / Confidence 1–5, a live preview with overload days and 'Misses the December run', and a 'Structured | Tell Remi' toggle) exists only in screenshot 02-sig and in the shell's applyCheckIn/previewShift. Whether to rebuild it is an open question.",
+   "keyComponents": [
+    "DrawerHost (scrim + sliding panel)",
+    "FocusChip",
+    "Composer textarea",
+    "CapabilitiesPanel",
+    "ThinkingPanel (progress + echo)",
+    "ReviewPanel",
+    "ChangeGroup + EffectChip",
+    "ChangeRow (toggle)",
+    "UnplacedList",
+    "ErrorPanel",
+    "Footer (Edit update / Apply / Cancel)"
+   ]
+  },
+  {
+   "name": "Command palette",
+   "route": "overlay (⌘K / Ctrl+K)",
+   "summary": "On a layer at z 30 over an ink 10% scrim.\n- Panel: 680px wide, centred, top 132px, paper-raised, hairline border, radius 6, shadow 0 24px 48px -28px ink 35%.\n- Opens with opacity (140ms) and translateY -8px → 0 (240ms spring). The input is focused 30ms after opening.\n\nInput row (60px):\n- search icon, a 17px input, and an 'esc' chip.\n- Placeholder: 'Jump to a screen or project, or type “+6h returns” to add scope'.\n\nResults (max-height 460, at most 16 items):\n- Group labels are 11/600 caps.\n- Rows are 40px: a 7px dot, a 14px label and a mono 12px hint.\n- The selected row is ink 6% mixed with paper-raised.\n- Groups, in order:\n  - Quick add (regex '<n>h'): 'Add {h}h of scope to {short}', hint 'check-in'.\n  - Jump to: screens.\n  - Projects: hint forecastS.\n  - Tell Remi: 'Tell Remi about {short}', hint sinceLabel.\n  - Create: New PC / New FI project, and 'Reset to sample data'.\n\nKeys: ArrowUp/Down (no wrap), Enter runs the selected item, hover selects.\n\nEmpty state: 'Nothing matches that. Try a project name, a screen, or “+4h manco”.'",
+   "keyComponents": [
+    "PaletteInput",
+    "PaletteGroup label",
+    "PaletteItem",
+    "EmptyState"
+   ]
+  },
+  {
+   "name": "Textbook",
+   "route": "/textbook and /textbook/:pageId",
+   "summary": "Separate Notion-style notebook, not in SPEC. Layout: grid 288px sidebar (56px rail when collapsed, 440ms spring) | 1fr main | 264px outline.\n\nSIDEBAR\n- Header: 'Remi ‹ Home' brand, 'TEXTBOOK', hide button (⌘\\).\n- 'Find a page' search: case-insensitive match on titles and block text, showing a flat result list.\n- Tree:\n  - Home row with total page count.\n  - Draggable section headers: chevron, accent dot, uppercase label (double-click to rename), count, hover-revealed delete x (empty section only) and '+'.\n  - Page rows indented 16px per depth, with guides, caret, title, chart badge, and a hover '+' to add a sub-page.\n  - 'New section' button.\n- Footer: 'LIVE CHARTS' count and blurb.\n\nMAIN\n- 56px top bar: breadcrumb, save status, 'Add live chart' (file picker) and a two-step 'Delete' ('Click again to delete with N inside').\n- HOME view (max 1120):\n  - 'Everything you have written down' and a stats line.\n  - Section cards (3-column grid, 2px accent top strip, up to 5 pages each, '+ New page').\n  - 'Recently edited' (6 pages, relative dates).\n  - 'Live charts' previews (iframe, 220px).\n- PAGE view (max 840):\n  - Title textarea: serif 48px, placeholder 'Untitled'.\n  - Meta line: '{h1} sections · {n} live charts · {w} words · edited {d MMM}'.\n  - Blocks, each on a 44px hover gutter with '+' and a drag handle.\n  - Block types:\n    - p, bullet (17/1.65)\n    - h1 (serif 32), h2 (22/600), h3 (18/600), auto-numbered 1 / 1.1 / 1.1.1\n    - callout (paper-raised, risk diamond, serif italic)\n    - formula (KaTeX display; click to edit LaTeX with live preview)\n    - page link\n    - divider\n    - live chart: sandboxed srcDoc iframe with header controls LIVE / name / S-M-L / Replay / Replace / fullscreen / remove, a drag-resize handle (200–900px) and an italic caption. An empty chart is a drop-zone placeholder.\n  - Slash menu (300px, 10 items).\n  - Markdown shortcuts: '# ', '## ', '### ', '- ', '* ', '> ', '$$ ', '---'.\n  - Enter splits, Backspace merges or converts, arrows navigate between blocks.\n  - File drop overlay. Fullscreen chart overlay. Toasts.\n\nOUTLINE\n- 'ON THIS PAGE': numbered headings; clicking smooth-scrolls.\n- 'SHORTCUTS' legend.\n\nSample chart: charts/price-yield.html, a 10y 3% bond with a duration tangent and the convexity gap, animated with rAF.",
+   "keyComponents": [
+    "SidebarPanel / CollapsedRail",
+    "SectionHeaderRow (drag reorder, rename)",
+    "PageTreeRow",
+    "TopBar breadcrumb",
+    "TextbookHome (section cards, recent, chart previews)",
+    "PageHeader title + meta",
+    "BlockRow gutter (+, drag handle, drop line)",
+    "HeadingBlock",
+    "TextBlock",
+    "CalloutBlock",
+    "FormulaBlock (KaTeX)",
+    "PageLinkBlock",
+    "DividerBlock",
+    "LiveChartBlock (sandboxed iframe)",
+    "LiveChartPlaceholder",
+    "SlashMenu",
+    "FileDropOverlay",
+    "FullScreenChart",
+    "Toast",
+    "OutlineNav"
+   ]
+  },
+  {
+   "name": "Foundations (design system reference)",
+   "route": "/foundations (dev/Storybook-like, optional)",
+   "summary": "A living spec page, max-width 1480px, padding 64 64 120, with 88px gaps between sections.\n\nHeader: 'Remi · design foundations' / 'A notebook that recalculates itself'.\n\nSections:\n- 01 Colour: swatches with roles.\n- 02 Type: 3 families and a 7-step scale.\n- 03 Space, radius and grid: space bars 4–64, radius demos, a 12-column grid illustration, frame and grid rules.\n- 04 Motion:\n  - 5 motion tokens.\n  - An interactive signature demo, 'Signature moment: the plan moves', with 'Add +10h scope' / 'Replay'. Timings: glide 440 spring; ghost holds 1000 then fades 400; roll 440; delta chip 180 then held 5s.\n  - An 8-row interaction table.\n- 05 Components: specimens under their build names:\n  - CapacityBar day, mini and strip\n  - TimelineBar states\n  - MilestoneDiamond, TargetMarker, BauTick, BauChip\n  - RotationSegment and RotationTile\n  - DeltaChip, DomainTag, ConfidenceControl\n  - GoalStatement/ProjectCard (normal and stale)\n  - FeedItem, Tooltip, CheckInField, NavRail item, PageHeader, CommandPalette, EmptyState\n  - A hidden PhaseStepper spec\n\nRule: components read tokens only.",
+   "keyComponents": [
+    "Token swatches",
+    "Type scale",
+    "Spacing/radius demos",
+    "Grid illustration",
+    "SignatureDemo",
+    "Component specimens"
+   ]
+  }
+ ],
+ "domainEntities": [
+  {
+   "name": "Settings (singleton)",
+   "fields": [
+    "id (always 1)",
+    "timezone: string (business timezone for 'today', e.g. 'Europe/London'; open question)",
+    "todayOverride: ISO date | null (dev/demo; prototype pins 2026-10-05)",
+    "moveDate: ISO date (placeholder 2027-01-04)",
+    "moveTaper: 'hard' | 'taper' (open question)",
+    "capacityHoursPerDay: number (default 8)",
+    "holidayRegion: 'england-wales' | 'south-africa' (open)",
+    "staleThresholdDays: number (default 7; calendar days today, open question)",
+    "overloadLookaheadBD: number (default 10, i.e. overloads up to MOVE+10 BD)",
+    "newProjectHorizonBD: number (default 30)",
+    "keyProjectId: string | null (generalises the hard-coded 'ret' in the verdict)",
+    "keyRoutineId: string | null (generalises 'r-ret'; key run = its last occurrence before the move, 2026-12-03 in seed)",
+    "keyRunDateOverride: ISO | null",
+    "motionPreference: 'system' | 'full' | 'reduced'",
+    "accentPc: CSS colour (default #526e2a)",
+    "accentFi: CSS colour (default #47619c)",
+    "serifDisplay: boolean (default true)",
+    "aiProvider: 'none' | 'anthropic' | 'firm-gateway' | 'local' (compliance-gated)",
+    "aiSendRecentNotes: boolean",
+    "createdAt",
+    "updatedAt"
+   ],
+   "notes": "SPEC Settings = {holidayCalendar, hoursPerDay, leave[], fiStartDate}. Settings are exposed to the client in a bootstrap payload because the client engine needs them for synchronous layout and preview maths."
+  },
+  {
+   "name": "Holiday",
+   "fields": [
+    "date: ISO (PK with region)",
+    "region: 'england-wales' | 'south-africa'",
+    "name: string"
+   ],
+   "notes": "Seed list (UK): 2026-12-25 Christmas Day; 2026-12-28 Boxing Day (substitute); 2027-01-01 New Year's Day; 2027-03-26 Good Friday; 2027-03-29 Easter Monday. It is missing 2026-08-31 (Summer bank holiday), 2027-05-03 and later dates. Generate by rule, or load a full table per region."
+  },
+  {
+   "name": "LeaveDay",
+   "fields": [
+    "date: ISO (PK)",
+    "hours: number | null (null = full day)",
+    "note: string"
+   ],
+   "notes": "From SPEC (capacity minus leave). The prototype has no leave. Decide whether a leave day remains a business day for BD numbering and only removes capacity. BD numbering (bdm) should follow holidays, not personal leave."
+  },
+  {
+   "name": "Project",
+   "fields": [
+    "id: uuid (seed ids 'ret','manco','play','fion','alpha' kept for import)",
+    "domain: 'pc' | 'fi'",
+    "name: string (required; blank reverts)",
+    "short: string (display short name; today the Workspace name edit overwrites it)",
+    "goal: string (hero sentence; may be empty only while in Define)",
+    "startDate: ISO",
+    "targetDate: ISO",
+    "targetLabel: string | null (fuzzy display override, e.g. 'Late Mar 2027'; cleared when target moves)",
+    "forecastDate: ISO | null (null = status 'define')",
+    "prevForecastDate: ISO | null (forecast before the last slip; drives the ghost)",
+    "exitRoutes: ('Finish'|'Automate'|'Hand over'|'Stop')[] ordered, max 2 (PC only; null for FI)",
+    "confidence: 1..5 | null",
+    "lastCheckinDate: ISO | null",
+    "phase: 0..3 (Define, Plan, Run, Close)",
+    "rateHoursPerDay: number ('rate', planned focus hours per normal BD)",
+    "bd3Hours: number (hours on BD3 of each month; generalise, see notes)",
+    "bd8Hours: number",
+    "rateAfterMove: number (hours per BD on or after MOVE)",
+    "baselineHours: number (charter estimate; drives scope growth %)",
+    "readiness: number 0..1 (manual in seed: ret 0.6, manco 0.35, play 0.2)",
+    "endName: string (forecast end label, e.g. 'Handover-ready', 'Signed off', 'Day one', 'v0 tested', 'Done')",
+    "laterIntent: string (Later horizon, one line)",
+    "whyNow: string (charter.why)",
+    "blocker: string | null (set or cleared by check-ins)",
+    "afterDayOneNote: string | null (replaces the hard-coded Alpha note on Transition)",
+    "sortOrder: number (per domain; insertion order today)",
+    "createdAt",
+    "updatedAt"
+   ],
+   "notes": "Derived fields, computed by the engine and never stored: startN, targetN, forecastN, prevN; delta = bdDiff(target, forecast); status define|risk|on; since, stale; added = Σ scope.h; growth = round(added/baseline×100); accent/soft/domainName; forecastS, forecastDM, targetS, targetDM, prevS, prevDM, deltaLabel, sinceLabel, phaseName; milestones (derivedMs); statusColor. Transient UI flags (not persisted): flash (1100ms), moved {delta,label,at} (5200ms)."
+  },
+  {
+   "name": "CharterItem",
+   "fields": [
+    "id: uuid",
+    "projectId: FK",
+    "list: 'success' | 'inScope' | 'outScope' | 'constraints'",
+    "text: string (blank on commit = delete)",
+    "order: number"
+   ],
+   "notes": "Charter = whyNow (on Project) plus these 4 ordered lists. Seed 'ret' has 3 success items, 4 in scope, 2 out of scope and 2 constraints."
+  },
+  {
+   "name": "Milestone",
+   "fields": [
+    "id: uuid",
+    "projectId: FK",
+    "horizon: 'now' | 'next' | 'explicit' (legacy p.milestones, used only to fill gaps)",
+    "name: string (outcome)",
+    "dueDate: ISO | null (snapped to the next BD by the picker)",
+    "order: number",
+    "done: boolean",
+    "doneAt: ISO | null"
+   ],
+   "notes": "In the prototype, Now blocks {m, due, tasks[]} and Next items {m, due} are keyed by NAME. derivedMs merges them with the explicit list, deduplicated by name and date. Production should use ids. The month snapshot toggles milestones as pseudo-tasks 'ms:<pid>:<name>', which should become Milestone.done."
+  },
+  {
+   "name": "Task",
+   "fields": [
+    "id: uuid (seed ids ret-1..5, man-0..4, pl-1/2, fi-1/2)",
+    "projectId: FK",
+    "milestoneId: FK (Now milestones only)",
+    "text: string (blank = delete)",
+    "hours: number (0..24 in the Workspace, 0.25..80 via AI, default 1)",
+    "dueDate: ISO | null (optional; falls back to the milestone due date)",
+    "order: number",
+    "done: boolean",
+    "doneAt: ISO | null (today the global doneOn map; check-in ticks don't set it, which is a bug)"
+   ],
+   "notes": "Task completion is currently the global maps tasks{} and doneOn{}; fold it into the task. Seed: ret-1 done 2026-10-01, fi-1 done 2026-10-02."
+  },
+  {
+   "name": "HourOverride",
+   "fields": [
+    "projectId: FK",
+    "date: ISO",
+    "hours: number (0 allowed = explicit zero)"
+   ],
+   "notes": "'ov' map. Seed: ret {2026-11-04: 3.5}, manco {2026-11-04: 0}. There is no UI to edit overrides yet. refit scales them proportionally when the rate changes."
+  },
+  {
+   "name": "ScopeChange",
+   "fields": [
+    "id: uuid",
+    "projectId: FK",
+    "checkinId: FK | null",
+    "date: ISO",
+    "what: string",
+    "hours: number",
+    "slipBD: number ('bd')",
+    "fromForecast: ISO | null (prototype stores the 'D Mon' string)",
+    "toForecast: ISO | null"
+   ],
+   "notes": "Seed ret: 2026-10-03 'Security-level attribution' 10h, slip 3 BD, 27 Nov → 2 Dec."
+  },
+  {
+   "name": "CheckIn (snapshot)",
+   "fields": [
+    "id: uuid",
+    "projectId: FK",
+    "date: ISO (at)",
+    "note: string ('Plan confirmed.' fallback)",
+    "forecastDate: ISO | null",
+    "confidence: 1..5 | null",
+    "milestoneSnapshot: [{milestoneId?, name, date}] (ms; the prototype's applyCheckIn doesn't store it, which is a bug)",
+    "targetDate: ISO (add so history compares against the target at that time)",
+    "rawText: string | null",
+    "source: 'ai' | 'simple' | 'form' | 'system'",
+    "changes: json (accepted Change[])",
+    "blockers: string | null",
+    "doneTaskIds: string[]"
+   ],
+   "notes": "Drives the Workspace history scrubber. SPEC wants full plan snapshots via an append-only RemiEvent log."
+  },
+  {
+   "name": "Risk",
+   "fields": [
+    "id: uuid",
+    "projectId: FK",
+    "risk: string (premortem failure: 'It's January and this failed. Why?')",
+    "mitigation: string",
+    "order: number"
+   ],
+   "notes": "Computed in the Workspace but not rendered today."
+  },
+  {
+   "name": "Checklist / ChecklistItem",
+   "fields": [
+    "Checklist: id, projectId, title, order",
+    "ChecklistItem: id, checklistId, text, done, doneAt, order"
+   ],
+   "notes": "Seed ret: 'Handover checklist' with 3 items, all not done. Not rendered today."
+  },
+  {
+   "name": "ReadinessItem (FI onboarding)",
+   "fields": [
+    "id: uuid",
+    "projectId: FK",
+    "text: string",
+    "done: boolean",
+    "dueDate: ISO | null",
+    "doneAt: ISO | null",
+    "order: number"
+   ],
+   "notes": "Seed fion: Market data entitlements (done); Research library access (done); Curve & auction data feeds (2026-10-30); Sovereign model walkthrough (2026-11-26); Day-one dry run (2026-12-17). Shown on Transition. There is no edit UI yet."
+  },
+  {
+   "name": "Routine",
+   "fields": [
+    "id: uuid (seed 'r-ret', 'r-man')",
+    "domain: 'pc' | 'fi'",
+    "name: string",
+    "short: string (curated short label; currently overwritten on rename)",
+    "detail: string (e.g. '12 funds')",
+    "kind: 'monthly' | 'weekly' | 'daily' (SPEC adds every: month|quarter)",
+    "bd: 1..20 (monthly, business day of month)",
+    "weekday: 1..5 (weekly)",
+    "hours: number 0..capacity (per run)",
+    "stage: 0..3 (Manual, Automating, Shadowed, Handed over)",
+    "statusNote: string (handover note)",
+    "projectId: FK | null (linked automation project)",
+    "coTagWithProject: boolean (generalises the r-ret tagging exception)",
+    "handoverNoteForTransition: string | null (replaces hard-coded r-ret/r-man notes; or derive from the last pre-move run)",
+    "readiness: number | null (legacy, unused)",
+    "sortOrder",
+    "createdAt",
+    "updatedAt"
+   ],
+   "notes": "New routine defaults (normR): domain pc, monthly, bd 5, wd 2 (Tue), h 1, stage 0, statusNote '', detail '', pid null, name ''. Seed: r-ret BD3 6h pid ret stage 1; r-man BD8 4h pid manco stage 1."
+  },
+  {
+   "name": "RoutineChecklistItem (e.g. funds)",
+   "fields": [
+    "id: uuid",
+    "routineId: FK",
+    "label: string",
+    "order: number"
+   ],
+   "notes": "Generalises the hard-coded FUNDS list attached to r-ret: Senior Direct Lending I, Senior Direct Lending II, Unitranche Partners, Mezzanine Opportunities, Asset-Backed Finance, Infrastructure Debt, Real Estate Debt, Trade Finance, Special Situations, Opportunistic Credit, Credit Co-invest, Evergreen Income."
+  },
+  {
+   "name": "RoutineRun (BAU completion) + RunChecklistTick",
+   "fields": [
+    "RoutineRun: routineId, occurrenceDate (ISO), completedAt (timestamp) | null",
+    "RunChecklistTick: routineId, occurrenceDate, itemId, done, doneAt"
+   ],
+   "notes": "Replaces bauDone {'<routineId>:<ISO>': ISO} and the global funds boolean[12], which is not keyed by date. For routines with a checklist, the run counts as done when all items are ticked (Today uses funds.every)."
+  },
+  {
+   "name": "Rotation / RotationSegment",
+   "fields": [
+    "Rotation: id, domain 'fi', title 'Eurozone sovereign rotation', startDate (= moveDate), hoursPerDay (4) | pace {hoursPerWeek | asCapacityAllows}",
+    "RotationSegment: id, rotationId, order, country, code (ISO-2), lengthBD, pass 'Build' | 'Refresh', loop number"
+   ],
+   "notes": "Seed order: DE 6 Build, FR 5, IT 6, ES 5, NL 4, BE 4, AT 4, PT 4, IE 4, FI 4 (all Build), then DE 3 Refresh. Start and end dates are derived. Derived dates: DE 4–11 Jan; FR 12–18 Jan; IT 19–26 Jan; ES 27 Jan–2 Feb; NL 3–8 Feb; BE 9–12 Feb; AT 15–18 Feb; PT 19–24 Feb; IE 25 Feb–2 Mar; FI 3–8 Mar; DE Refresh 9–11 Mar. Loop 1 = 46 BD. SPEC mentions build and refresh templates."
+  },
+  {
+   "name": "Note",
+   "fields": [
+    "id: uuid",
+    "day: ISO (notebook day; may differ from createdAt when backfilling)",
+    "text: string (trimmed, non-empty, multi-line)",
+    "createdAt: timestamp (timeLabel 'HH:MM' derived in the user's timezone)",
+    "updatedAt: timestamp",
+    "order: sequence (within the day, insertion order)"
+   ],
+   "notes": "Seed notes: 2026-10-05 n1 08:41, n2 09:55, n3 11:20; 2026-10-02 n4 16:10, n5 17:32; 2026-10-01 n6 10:05. Tags are computed from EntityAlias, or stored in note_mentions."
+  },
+  {
+   "name": "EntityAlias",
+   "fields": [
+    "id",
+    "entityType: 'project' | 'routine'",
+    "entityId",
+    "alias: string (lower-case)"
+   ],
+   "notes": "Seed: ret [returns pipeline, pipeline, attribution]; manco [manco, nav bridge, managing committee]; play [playbook, runbook, successor]; fion [onboarding, entitlement, fi desk, curve data, bloomberg]; alpha [alpha engine, alpha, signal]; r-ret [returns, funds]; r-man [manco pack, bd8]. CheckIn simple() has a different table (ret adds 'returns automation'; fion has 'data access'), so unify them. Name and short are always implicit keys."
+  },
+  {
+   "name": "FeedEvent (activity)",
+   "fields": [
+    "id: uuid",
+    "projectId: FK | null",
+    "routineId: FK | null",
+    "day: ISO | null (overload events)",
+    "kind: 'scope' | 'checkin' | 'edit' | 'stale' | 'overload'",
+    "title: string",
+    "body: string",
+    "delta: string (chip text, e.g. '+3 BD', '±0 BD', 'Target', 'BAU', 'Overload', '9 days')",
+    "tone: 'risk' | 'quiet' | 'overload'",
+    "createdAt: timestamp (the 'when' label is formatted client-side)"
+   ],
+   "notes": "Stale and overload items should be computed (flags), not stored as static feed rows. Deleting a project cascades its feed items."
+  },
+  {
+   "name": "RemiEvent (append-only log)",
+   "fields": [
+    "id: uuid",
+    "at: timestamp",
+    "type: string (e.g. project.created, task.toggled, checkin.applied, routine.stageChanged)",
+    "payload: json",
+    "actor: 'user' | 'ai-proposal-accepted' | 'import'"
+   ],
+   "notes": "SPEC: source of truth, with everything else derived. Pragmatic option: write state tables plus an event row in the same transaction, and use events for history and snapshots."
+  },
+  {
+   "name": "Textbook: Section / Page / Block / ChartAsset",
+   "fields": [
+    "TextbookSection: id, label ('' allowed → 'Untitled section'), accent (CSS colour), sortOrder, collapsed",
+    "TextbookPage: id, sectionId, parentId | null (self-FK, any depth; must be in the same section), title, sortOrder, createdAt, updatedAt",
+    "TextbookBlock: id, pageId, sortOrder, type 'p'|'h1'|'h2'|'h3'|'bullet'|'callout'|'formula'|'page'|'chart'|'divider', text (LaTeX for formula), targetPageId (type page), chartAssetId, height 200..900 (default 380), caption",
+    "ChartAsset: id, filename, sizeBytes, contentHash, html (blob or file on disk), uploadedAt"
+   ],
+   "notes": "Default sections: fi 'Fixed Income' var(--fi-accent); pc 'Private Credit' var(--pc-accent); gen 'General' var(--ink-faint). New section accents cycle through oklch(0.5 0.1 200/320/170/300/230). Seed pages: fi-rates 'Rates primer' (with the price-yield chart), fi-rot 'Eurozone sovereign rotation', pc-ret 'Returns methodology', gen-how 'How the Textbook works'."
+  },
+  {
+   "name": "UserPrefs (client or server)",
+   "fields": [
+    "textbookSidebarOpen: boolean",
+    "textbookCollapsedPageIds: string[]",
+    "lastTextbookPageId",
+    "timelineZoom: '3m' | '2w'"
+   ],
+   "notes": "Not persisted in the prototype."
+  },
+  {
+   "name": "Read models (derived, API responses)",
+   "fields": [
+    "CalendarDay {n, iso, w, m, d, y, bd, bdm | null, hol | null, isoWeek}",
+    "DayLoad {n, iso, items:[{id, pid, kind 'bau'|'proj', domain, h, name}], bau, proj, total, free, over}",
+    "Verdict {state 'on_track'|'narrow'|'at_risk'|'off_track', word, short, dot, sentence, buffer, toRun}",
+    "AttentionItem {id, pid|null, day?, kind 'At risk'|'Overload'|'Stale', title, body, chip, tone}",
+    "UpcomingOverload {n, s, bdm, total}",
+    "DerivedRoutine {...Routine, rule, ruleShort, stageName, next:[{n, s, after, today}]}",
+    "ProjectMovement {projectId, from, to, deltaBD, cause 'scope'|'rate'|'target'}"
+   ],
+   "notes": "The engine package produces these identically on server and client."
+  }
+ ],
+ "engineAlgorithms": [
+  {
+   "name": "Day numbers and formatters",
+   "inputs": "ISO date strings",
+   "outputs": "integer day numbers; display strings",
+   "spec": "Day numbers:\n- dn(iso) = round(Date.UTC(y, m-1, d) / 86400000), i.e. UTC days since the epoch. dn('2026-10-05') = 20731, a Monday.\n- isoOf(n) = new Date(n*86400000).toISOString().slice(0,10).\n- Weekday = getUTCDay() (0 = Sun).\n\nFormatters:\n- F.s(n) = WDS[w] + ' ' + d + ' ' + MOS[m], e.g. 'Mon 5 Oct'.\n- F.dm(n) = '5 Oct'.\n- F.l(n) = 'Monday 5 October'.\n- F.wd = 'Mon'; F.mon = 'Oct'; F.monL = 'October'; F.d = 5.\n- ORD(n) = n + ('st' if n%10===1 && n!==11; 'nd' if 2 && !12; 'rd' if 3 && !13; else 'th').\n- hrs(h) = round(h×100)/100 + 'h'.\n- hr(x) rounds to 1 decimal.\n\nDisplay conventions:\n- The minus sign is U+2212 '−' in delta labels.\n- Date ranges use an en dash with spaces: 'A – B'. The week label uses an unspaced en dash: '5–9 Oct'.\n\nProduction:\n- Canonical API dates are ISO strings.\n- 'Today' is a business-timezone calendar date, or Settings.todayOverride when set.\n- Formatters need a year variant for ranges that span years."
+  },
+  {
+   "name": "Business-day calendar",
+   "inputs": "range [from, to], holidays by region, (leave)",
+   "outputs": "days map, bds[], idx, nextBD, addBD, bdDiff, bdm",
+   "spec": "Build a record for every day n in the range: {n, iso, w, m, d, y, bd, bdm, hol}.\n- bd = w in 1..5 && no holiday.\n- bdm = running count of business days within the calendar month (1-based, resets when the month changes); null on non-business days.\n- hol = holiday name or null.\n- bds = ascending array of business days. idx[n] = position of n in bds.\n\nOperations:\n- nextBD(n): step forward while days[n] exists and is not a business day.\n- addBD(n, k) = bds[clamp(idx[nextBD(n)] + k, 0, len-1)]. k may be negative. It silently clamps at the ends of the range.\n- bdDiff(a, b) = idx[nextBD(b)] - idx[nextBD(a)]. Non-business inputs roll forward first. Outside the range it returns NaN.\n\nPrototype range: 2026-08-31..2027-04-30, which has 170 business days.\n- Monthly counts: Oct 22, Nov 21, Dec 21 (25 and 28 Dec are holidays), Jan 20, Feb 20, Mar 21, Apr 22.\n- bdDiff(TODAY, MOVE) = 62.\n- Business days strictly between Mon 5 Oct and Mon 4 Jan = 61, which is the '61' in the UI.\n\nProduction:\n- Generate the range dynamically, or lazily extend it by year.\n- Raise a typed error or extend the range instead of clamping or crashing.\n- Unit-test with Vitest.\n- Also provide ISO-8601 week numbers: shift to the Thursday of the week, then 1 + round((thu - jan4Thursday) / 7 days)."
+  },
+  {
+   "name": "Routine occurrence, rule text and effort",
+   "inputs": "routine, calendar day",
+   "outputs": "boolean; strings; next N dates",
+   "spec": "occurs(r, d) = d exists && d.bd && ANY of:\n- r.kind === 'daily';\n- r.kind === 'weekly' && d.w === r.wd;\n- r.kind is 'monthly' (or missing) && d.bdm === r.bd.\nA monthly routine whose bd is larger than the month's business-day count never fires that month; there is no clamp.\n\nText:\n- ruleText: 'Every business day' | 'Every ' + full weekday name | ORD(bd) + ' business day, monthly'.\n- ruleShort: 'Daily' | 'Weekly · ' + short weekday | 'BD' + bd.\n\nNext occurrences:\n- next = the first 3 business days n >= TODAY where occurs(r, n) is true, each as {n, s: F.s(n), after: n >= MOVE, today: n === TODAY}.\n- This ignores stage, so handed-over routines still list dates.\n- 'n BD away' = bdDiff(TODAY, n).\n\nMonthly effort estimate:\n- daily: '≈' + round(h×21) + 'h a month'.\n- weekly: '≈' + round(h×4.3×10)/10 + 'h a month'.\n- monthly: h + 'h a month', with no ≈.\n\nnextRunAfter(S) (the NoBau copy):\n- The earliest date in any routine's next[] that is greater than S. Otherwise 'after the move'.\n- Production should compute this from S, not from the 3 dates counted from today."
+  },
+  {
+   "name": "FI rotation schedule",
+   "inputs": "segments [country, code, lengthBD, pass], startDate = MOVE",
+   "outputs": "segments with s, e, sS, eS; loopBD; loopEnd; refresh",
+   "spec": "Layout:\n- Start with s = MOVE.\n- For each segment in order: e = addBD(s, len-1); record {i, country, code, len, pass, s, e, sS: F.s(s), eS: F.s(e)}; then s = addBD(e, 1).\n- Segments run back to back in business days and skip holidays.\n- Total length is 49 BD, ending Thu 11 Mar 2027.\n\nDerived values:\n- loopBD = Σ len of the Build passes = 46.\n- loopEnd = the last Build segment's eS, 'Mon 8 Mar'. The prototype hard-codes ROT[9] and appends ' 2027'.\n- refresh = ROT[10]: 'Tue 9 Mar – 11 Mar'.\n- currentSegment = the segment containing today, or 'Waiting to start. N BD to go.' before the move.\n\nIn dayLoad, each business day inside a segment carries BAU {id:'rot', domain:'fi', h: hoursPerDay (4), name: country + ' · ' + pass}."
+  },
+  {
+   "name": "dayLoad (capacity per business day)",
+   "inputs": "n, derived projects, routines, rotation, settings",
+   "outputs": "DayLoad {n, items, bau, proj, total, free, over}",
+   "spec": "Return null if n is not a business day.\n\nBAU:\n- If n < MOVE: for each routine with stage < 3 where occurs(r, day) is true, push {id: r.id, pid: r.pid, kind:'bau', domain: 'pc', h: +r.h || 0, name: r.short || r.name || 'Untitled routine'}.\n  - The domain is hard-coded to 'pc'; production should use r.domain.\n  - The hours come from the routine.\n- Otherwise (n >= MOVE): all routines are ignored. If n falls inside a rotation segment, push {id:'rot', pid:'rot', kind:'bau', domain:'fi', h: 4, name: country + ' · ' + pass}.\n\nProjects, in project order:\n- end = forecastN ?? targetN. Skip the project if n < startN or n > end.\n- Hours, first match wins:\n  1. ov[iso] (explicit override, even 0);\n  2. n >= MOVE → rateAfter || 0;\n  3. bdm === 3 → bd3;\n  4. bdm === 8 → bd8;\n  5. rate.\n- Push {id, pid, kind:'proj', domain, h, name: p.short} only if h > 0.\n\nTotals:\n- bau = Σ BAU hours; proj = Σ project hours; total = bau + proj.\n- free = max(0, CAP - total).\n- over = total > CAP, strictly greater. CAP = 8.\n\nSeed checks:\n- Mon 5 Oct (BD3): Returns 6 + ManCo 2 = 8h, 0 free.\n- Ordinary October/November day: ret 3.5 + manco 1.5 + play 1 + fion 1 = 7h.\n- Mon 12 Oct (BD8): ManCo pack 4 + ret 2 + manco 1.5 + play 0.5 = 8h.\n- Wed 4 Nov (BD3): Returns 6 + ret override 3.5 = 9.5h, over. This is the only overload in the range.\n- Mon 4 Jan: Germany · Build 4 + fion 1 + alpha 3 = 8h.\n\nProduction:\n- Replace the hard-coded bd3/bd8 hooks with a general 'reduced project hours on routine days' mechanism.\n- Count FI routines after the move.\n- Make hours per day, rotation hours and capacity (from Settings, minus leave) configurable.\n- Memoise the result. The prototype recomputes 170 days × all projects on every render."
+  },
+  {
+   "name": "Project derivation and derivedMs",
+   "inputs": "stored project, TODAY, calendar",
+   "outputs": "DerivedProject",
+   "spec": "Numbers and status:\n- startN, targetN, forecastN (null if no forecast), prevN.\n- delta = forecastN != null ? bdDiff(targetN, forecastN) : null.\n- status = forecastN == null ? 'define' : delta > 0 ? 'risk' : 'on'. Being early counts as 'on'.\n- since = checkin ? TODAY - dn(checkin) : null, in CALENDAR days.\n- stale = since != null && since >= 7.\n- added = Σ scope.h. growth = baseline ? round(added/baseline×100) : 0.\n\nLabels:\n- deltaLabel = null → 'No forecast'; > 0 → '+N BD'; < 0 → '−N BD'; 0 → 'On target'.\n- sinceLabel = 'Not yet' | 'Today' | 'Yesterday' | 'N days ago'.\n- forecastS = F.s or 'Not yet'. forecastDM = F.dm or '—'.\n- targetS = targetLabel || F.s. targetDM = targetLabel || F.dm.\n- statusColor: risk → var(--risk); define → var(--ink-faint); otherwise the domain accent.\n\nderivedMs(p):\n1. Put every now[] and next[] entry that has both m and due into a Map keyed by name, as {name: m, date: due}. A later entry with the same name overwrites an earlier one.\n2. Add each explicit p.milestones entry only if its name is not already in the map AND its date is not already used.\n3. Sort by ISO date ascending.\nA milestone is 'passed' when date < TODAY. Production should key milestones by id."
+  },
+  {
+   "name": "Move verdict",
+   "inputs": "derived projects, MOVE, key project, key run date",
+   "outputs": "Verdict {word, short, dot, sentence, buffer, toRun}",
+   "spec": "Inputs:\n- pcP = PC projects. lastPC = max(forecastN). Null coerces to 0; guard against this in production.\n- buffer = bdDiff(lastPC, MOVE). This counts the move day, so the seed gives 8, while the Transition strip shows 7 hollow blocks.\n- ret = pmap[keyProjectId] (hard-coded 'ret').\n- toRun = bdDiff(ret.forecastN, DEC_RUN). DEC_RUN = 2026-12-03, the last r-ret occurrence before the move.\n\nRules, evaluated in order:\n1. Any PC forecastN >= MOVE:\n   - word 'Off track for the move'; short 'Not yet'; dot var(--overload).\n   - sentence 'A Private Credit exit now lands on or after 4 Jan. Something has to be cut, automated later, or handed over as it stands.'\n2. Else, ret.forecastN >= DEC_RUN:\n   - word 'Move at risk'; short 'At risk'; dot var(--risk).\n   - sentence 'Every Private Credit exit still lands before 4 Jan, but the returns pipeline now misses the December run on Thu 3 Dec, the last one your successor can shadow with you there.'\n3. Else:\n   - word 'Move on track, narrowly' / short 'Yes, narrowly' if ANY project (any domain) has status 'risk'; otherwise 'Move on track' / 'Yes'. dot var(--ink).\n   - sentence 'Every Private Credit exit lands before 4 Jan, with {buffer} business days to spare. The one to watch is the returns pipeline: forecast {ret.forecastS}, {toRun} business day(s) before the December run your successor needs to shadow.'\n\nSeed result: narrowly, buffer 8, toRun 1.\n\nProduction:\n- Use a configurable key project, key routine and key run.\n- Format dates from the move date.\n- Handle the key project being missing and the case of no PC projects."
+  },
+  {
+   "name": "Flags: upcoming overloads, attention, check-in prompt",
+   "inputs": "loads, derived projects",
+   "outputs": "upcoming[], attention[], prompt, nextDue",
+   "spec": "upcoming:\n- Business days n with TODAY <= n <= addBD(MOVE, 10) and loads[n].over.\n- Each as {n, s, bdm, total}.\n\nattention, in this order:\n(a) Each risk project: {id:'a-'+id, pid, kind:'At risk', title: name, body: 'Forecast ' + forecastS + ', target ' + targetS, chip: deltaLabel, tone: 'risk'}.\n(b) Each upcoming overload: {id:'o-'+n, day: n, kind:'Overload', title: s + ' (BD' + bdm + ')', body: total + 'h of an 8h day', chip: '+' + (total-8) + 'h', tone: 'overload'}.\n(c) Each stale project: {id:'s-'+id, kind:'Stale', title: name, body: 'No check-in for ' + since + ' days', chip: since + 'd', tone: 'quiet'}.\n\nPrompt:\n- candidates = projects with since != null, sorted by since descending.\n- prompt = candidates[0] if it is stale, otherwise null.\n- nextDue = candidates[0].\n\nSeed: attention = [At risk Returns pipeline +3 BD, Overload Wed 4 Nov (BD3) +1.5h, Stale ManCo 9d]; prompt = manco.\n\nSPEC also defines 'overload' as BAU alone exceeding capacity on a day, or the week total exceeding capacity. Reconcile with the per-day rule used here."
+  },
+  {
+   "name": "Workspace forecast maths (dayH, workBetween, finishFor, refit)",
+   "inputs": "project, rate, dates, hours",
+   "outputs": "hours per day, work totals, forecast date, updated project",
+   "spec": "dayH(p, n, rate):\n- 0 if n is not a business day.\n- k = p.rate ? rate/p.rate : 1.\n- Otherwise, first match wins: ov[iso]×k; if n >= MOVE, (rateAfter||0)×k; if bdm 3, (bd3||0)×k; if bdm 8, (bd8||0)×k; else rate.\n\nworkBetween(p, a, b, rate) = Σ dayH over business days a..b inclusive.\n\nfinishFor(p, from, hours, rate):\n- If hours <= 0, return nextBD(from).\n- Otherwise walk business days from 'from', accumulating dayH, and return the first n where the sum >= hours - 0.01.\n- If the calendar runs out, it returns the last business day, a silent clamp.\n\nWork left: from = max(TODAY, startN); left = forecastN != null ? round(workBetween(p, from, forecastN, p.rate)×2)/2 : null. It is derived, never stored.\n\nrefit(raw, fields, rate, hours, start):\n1. kk = p.rate ? rate/p.rate : 1.\n2. If the rate changed, multiply bd3, bd8, rateAfter and every ov value by kk.\n3. If hours == null or rate <= 0, return the rate and field changes only, leaving the forecast untouched.\n4. Otherwise nf = finishFor(merged project, max(TODAY, start), hours, rate). Set forecast = iso(nf) and prev = (raw.forecast && raw.forecast !== iso(nf)) ? raw.forecast : raw.prev.\n\nUses:\n- Rate edit: refit(rate = new, hours = left, start = startN).\n- Work-left edit: refit(rate = raw.rate || 1, hours = new), which also saves rate 1 if it was 0.\n- Start edit: refit(fields {start}, rate = raw.rate || 0, hours = left, start = new).\nNone of these edits logs feed or a check-in."
+  },
+  {
+   "name": "Workspace panel metrics and verdict sentence",
+   "inputs": "derived project, loads",
+   "outputs": "stat values, sentence, dot",
+   "spec": "Metrics:\n- from = max(TODAY, startN); started = startN <= TODAY; hasF = forecastN != null.\n- bdLeft = hasF ? max(0, bdDiff(from, forecastN)+1) : null.\n- bdTgt = targetN >= from ? bdDiff(from, targetN)+1 : 0.\n- capTgt = workBetween(p, from, targetN, rate).\n- need = left != null && bdTgt > 0 ? left/bdTgt : null. This is a flat average and ignores BD3/BD8/override days, so it can print 'plan 3.5h a day instead of 3.5h'. Production should solve for k such that workBetween(from, target, k) = left.\n- avgPlan = left/bdLeft. The 'averages Xh once BAU days are counted' sub shows when |avgPlan - rate| > 0.2.\n- buffer = hasF ? bdDiff(forecastN, targetN) : null.\n- total = hasF ? bdDiff(startN, forecastN)+1 : 0. done = started ? max(0, bdDiff(startN, TODAY)) : 0. progress = min(100, done/total×100).\n- overDays = business days in [from, forecastN] where loads[n].over and this project is among the items.\n- needBad = need > rate + 0.05.\n\nSentence, first match wins:\n(1) No forecast: 'No plan yet. Enter the work left and hours a day, and Remi works out when it lands.' (ink-faint).\n(2) PC and forecastN >= MOVE: 'Lands after the move on 4 Jan. At {rate}h a day this does not leave with you; cut {max(0, left - workBetween(from, addBD(MOVE,-1)))}h or plan more time.' (overload).\n(3) buffer < 0: 'Lands {-buffer} BD after target. To make {targetS}, plan {need}h a day instead of {rate}h, or cut about {max(0, left - capTgt)}h of work.' (risk).\n(4) buffer === 0: 'No buffer. It lands on the target day, so any new scope pushes it past {targetS}.' (risk).\n(5) Otherwise: '{buffer} BD of buffer: roughly {workBetween(addBD(forecastN,1), targetN)}h of new scope before the target moves.' (ink).\n\nAppended when they apply:\n- ' It sits on {k} overloaded day{s}, first {F.s(overDays[0])}.'\n- ' Not checked in for {since} days, so treat the forecast as untested.'\n- ' Starts in {bdDiff(TODAY, startN)} BD.'\n\nPlan note: status define → 'Drafted after the charter'; otherwise '{Σ hours of undone Now tasks, 2dp}h estimated in Now'."
+  },
+  {
+   "name": "Check-in apply (applyUpdate + applyCheckIn) as ONE transaction",
+   "inputs": "accepted Change[] (and optional raw text, focus)",
+   "outputs": "updated projects, tasks, feed, BAU runs, movements",
+   "spec": "Change union:\n- task_done {project_id, task_id}\n- task_add {project_id, text, hours}\n- scope_add {project_id, text, hours}\n- blocker {project_id, text}\n- confidence {project_id, value}\n- target_move {project_id, date}\n- hours_per_day {project_id, value}\n- note {project_id, text}\n- bau_done {routine_id}\n\nPhase A: group changes by project_id. For each project p0:\n1. pre.target = the date of the LAST target_move.\n2. hpd = the first hours_per_day with value > 0.\n   - If p0 has a forecast:\n     - from = max(TODAY, dn(start)); bdLeft = bdDiff(from, forecast)+1.\n     - left = (rate||1)×bdLeft; need = max(1, ceil(left/hpd.value)).\n     - k = rate ? hpd.value/rate : 1.\n     - pre gets rate = hpd.value, bd3×k, bd8×k, rateAfter×k, forecast = iso(addBD(from, need-1)), prev = old forecast.\n   - Otherwise only rate = hpd.value.\n3. adds = task_add changes that have text. Append each to now[0].tasks as {id, t: text, h: +hours || 1}. If there is no Now milestone, first create {m:'Added from an update', due: addBD(TODAY, 9), tasks: []}.\n4. If the target changed, delete targetLabel.\n5. If hpd changed the forecast, raise flash[pid] for 1100ms.\n\nPhase B: ALWAYS run applyCheckIn against the UPDATED project (new rate and forecast):\n- done = task_done ids.\n- changed = note texts with any trailing '.' stripped, joined with '. '.\n- scopeWhat = scope texts joined with ', '. scopeH = Σ scope hours.\n- blockers = the FIRST blocker text, or ''.\n- confidence = the first confidence value, or null.\n\napplyCheckIn(d):\n- hasF = project has a forecast.\n- slip = hasF && scopeH > 0 ? ceil(scopeH/(rate||1)) : 0. This uses the flat rate only.\n- newF = slip ? addBD(fN, slip) : fN.\n- what = trim(scopeWhat) || 'New scope'.\n- note = [changed, scopeH > 0 ? what + ' added, +' + scopeH + 'h' : '', blockers ? 'Blocked: ' + blockers : ''] filtered and joined with '. ', or 'Plan confirmed.' if empty.\n- Project updates:\n  - forecast = newF; prev = slip ? old forecast : old prev (this overrides the prev set by the hpd step);\n  - confidence = d.confidence ?? old; checkin = TODAY;\n  - blocker = d.blockers || null (every check-in overwrites or clears it);\n  - if scopeH > 0, append a scope entry {date TODAY, what, h, bd: slip, from, to};\n  - always append a checkin {date, note, forecast, conf}. Production should also store the milestone snapshot, target and raw text.\n- Mark done tasks as done. Production must also set doneAt; the prototype doesn't.\n- Feed item:\n  - if slip: {kind:'scope', tone:'risk', title: short, body: 'Scope added (' + what.toLowerCase() + ', +' + h + 'h). Forecast moved ' + dm(fN) + ' → ' + dm(newF) + '.', delta: '+N BD'};\n  - otherwise: {kind:'checkin', tone:'quiet', body: 'Checked in. ' + (changed ? changed + '. ' : '') + (hasF ? 'Forecast holds at ' + dm(fN) + '.' : ''), delta: '±0 BD'}.\n  - Prepend it, and remove this project's 'stale' feed items.\n- Transient UI: flash = !!slip for 1100ms; moved = slip ? {delta, label: '+N BD', at} : null for 5200ms. A new check-in on the same project resets both timers.\n\nPhase C, for each bau_done:\n- If the routine has a run checklist (r-ret) and it occurs today, tick every item for today's run.\n- Otherwise record RoutineRun(routineId, today).\n\nProduction:\n- Execute all phases in ONE DB transaction.\n- Return movements [{projectId, from, to, deltaBD, cause}] so the client can play flash and moved.\n- The client waits 220ms after the drawer closes before animating.\n- Don't rely on synchronous setState ordering; the prototype does."
+  },
+  {
+   "name": "Check-in preview (EffectChip) and previewShift",
+   "inputs": "accepted changes per project; or (pid, hours)",
+   "outputs": "chip text/tone; shift details",
+   "spec": "EffectChip, computed only if forecastN != null, from the ACCEPTED rows in the group:\n- h = Σ scope_add hours; rc = first hours_per_day; tg = first target_move.\n- to = forecastN.\n- If rc: from = max(TODAY, startN); left = rate×(bdDiff(from, forecastN)+1); to = addBD(from, max(1, ceil(left/rc.value)) - 1).\n- If h: to = addBD(to, ceil(h/((rc ? rc.value : rate) || 1))).\n- tgt = tg ? dn(tg.date) : targetN.\n- d = bdDiff(forecastN, to); late = to > tgt.\n- d !== 0 → text 'D Mon → D Mon · ±N BD'. When late: background risk 22%/paper, text risk 40%/ink. Otherwise outlined, ink-muted, hairline.\n- d === 0 with a target move → 'forecast holds', or 'now N BD past target' when late.\n- Otherwise no chip.\nIt must use exactly the same maths as apply. The prototype differs when rate is 0: preview uses rate, apply uses rate||1.\n\npreviewShift(pid, h):\n- delta = h > 0 ? ceil(h/(rate||1)) : 0; to = addBD(forecastN, delta).\n- newOver = business days in (forecastN, to] that become over with the extended project and were not over before.\n- Returns {delta, from, to, fromS, toS, fromDM, toDM, deltaLabel ('+N BD'|'±0 BD'), vsTarget: bdDiff(targetN, to), newOver: [{n, s, total}], missesKeyRun: pid is the key project && to >= keyRun, crossesMove: pc && to >= MOVE}.\n- Seed: ret +6h → +2 BD, 2 Dec → Fri 4 Dec, new overload Fri 4 Dec at 9h, misses the key run.\nThis is the input for the structured check-in live preview."
+  },
+  {
+   "name": "Focus-block / day task allocation (Today and Calendar)",
+   "inputs": "project, day S, loads, task done map",
+   "outputs": "tasks planned for that day",
+   "spec": "Steps:\n1. all = p.now.flatMap(ms => ms.tasks).\n   - On a future day, drop tasks that are already done.\n   - On today, keep done tasks. This is a quirk: tasks done on earlier days still consume today's hours. Production should keep tasks done today and drop tasks done earlier.\n2. off = 0 on today. Otherwise off = Σ of this project's planned hours on business days TODAY <= n < S.\n3. Walk the tasks cumulatively. Task i covers [a0, a1) with a1 = a0 + (+t.h || 0).\n4. Include a task if a1 > off + 0.01 and a0 < off + dayHours - 0.01.\n\nEmpty copy:\n- No Now tasks at all: 'No tasks planned in Now yet. Add them in the workspace.'\n- None left in the window: 'The tasks in Now are used up before this day. Plan the next ones in the workspace.'\n\nCalendar shows the allocation only when S >= TODAY.\n\nNext milestone line:\n- The first entry of [...now, ...next] with due >= S, sorted by ISO.\n- Label: 'Milestone due this day: ' or 'Next milestone: ' + name + ' · ' + F.s(due).\n\nSeed (today, ManCo, 2h): man-0 0.5h, man-1 0.75h, man-2 0.75h."
+  },
+  {
+   "name": "Today month snapshot",
+   "inputs": "TODAY's month, routines, projects, completions",
+   "outputs": "rows, counts, cumulative bars",
+   "spec": "Setup: take the business days of TODAY's month. mStart = the first, mEnd = the last.\n\nBAU rows:\n- For each routine with stage < 3, and each business day n in the month where n < MOVE and occurs(r, n):\n  - key = routineId:iso.\n  - done: for a checklist routine on today, every item ticked; otherwise a run completion exists. doneOn = the completion date.\n  - text = name + (monthly ? '' : ' · ' + dm(n)). sub = 'BD' + bdm. due = n.\n\nProject rows (projects with a forecast):\n- Every Now task whose (t.due || ms.due) <= mEnd. There is no lower bound, so earlier overdue tasks are included.\n- Every NEXT milestone with due <= mEnd, as '◆ name'.\n- sub = short.\n\nCounts:\n- total = rows; doneN = done rows; lateN = not done && due < TODAY.\n\nCumulative bars, for each business day index i:\n- plan = count(due <= n).\n- dn = past ? count(done && doneOn <= n) : 0.\n- late = past ? count(due < n && !(done && doneOn <= n)) : 0.\n- Heights: outline = plan/total, late layer = (dn + late)/total, done layer = dn/total. All are 0% before arrival.\n- The late and done layers stagger by i×8ms.\n- Tooltip: 'Mon 5 Oct · 3 due by then, 2 done, 1 overdue'.\n\nRow due label:\n- 'done D Mon' | 'overdue N BD' (bdDiff(due, TODAY)) | 'today' | F.s(due).\n\nGroups (BAU limit 4, Projects limit 5):\n- Open rows sorted by due ascending; done rows by doneOn descending.\n- Collapsed shows the first `limit` open rows. Expanded shows all open, then all done.\n- more = 'Show {hidden} more and {done} done' | 'Show less'.\n- empty = 'Nothing due this month.' | 'All done for the month.'\n\nSeed: '2 of 17 done · 1 overdue'."
+  },
+  {
+   "name": "Timeline geometry",
+   "inputs": "window [T0, T1] or 2-week window, measured width W, zoom",
+   "outputs": "slot x positions, Lx/Rx/Cx, month/week labels",
+   "spec": "Slots:\n- Iterate T0..T1. Each business day is a slot {t:'bd', a:n, b:n}.\n- Each run of consecutive non-business days collapses into one {t:'gap', a:first, b:last}.\n- Gap width s = 5px in 3m, 18px in 2w.\n\nWindow:\n- 3m: winA = T0, winB = T1.\n- 2w: winA = Monday of today's week + wk×7; winB = winA + 13.\n- vis = slots fully inside the window. nbd = BD slots in vis; ng = gap slots in vis.\n\nPositions:\n- Column width w = max(4, (W - ng×s)/max(1, nbd)).\n- Give every slot a cumulative x. off = vis[0].x in 2w, 0 in 3m.\n- Lx(n) = left edge of the slot for nextBD(n), minus off. Values before T0 map to -off-40; after T1 to total-off+40.\n- Rx(n) = right edge. After T1 it maps to total-off+80.\n- Cx = (Lx + Rx)/2.\n\nLabels:\n- Month labels span all slots: x = max(0, x0), width clamped to W, opacity 1 if width > 70. Label is the full month name, plus the year for January and for the first month.\n- Weeks: an ISO-week label at the first business day of each week.\n\nCapacity strip: 5px per hour; bar width max(3, min(colW - 5, 30)).\n\nProject geometry:\n- a = Lx(startN).\n- Bar width = (risk ? Rx(target) : Rx(forecast ?? target)) - a.\n- Overrun from Rx(target) to Rx(forecast).\n- Ghost from a to Rx(prevN).\n- Milestone diamonds at Cx - 5.\n- End diamond at Rx(end) - 7.\n- Target marker at Rx(target); hidden for Define projects or targets past T1.\n- Moved chip at Rx(forecast) + 10.\n\nStagger: rows i×30 + 60ms (FI offset by PC count); rotation segments 200 + i×20ms; capacity columns round(i×2.5)ms. After 900ms (settled) all delays become 0.\n\nBAU tick width: 4px in 3m, max(4, colW - 10) in 2w.\n\nTooltip positioning: k = offsetWidth/rect.width (to undo scale). x = cursor + 16, flipped by -332 if x + 310 > width. y = cursor + 16, flipped by -150 if y + 140 > height.\n\nProduction: derive T0/T1 from today and the move date (e.g. Monday of the previous week through MOVE + 2 weeks), not hard-coded dates."
+  },
+  {
+   "name": "Transition strip and flags",
+   "inputs": "TODAY, MOVE, PC projects, key run",
+   "outputs": "ticks, flags, month marks",
+   "spec": "Remaining days:\n- rem = business days n with TODAY < n < MOVE. N = rem.length = 61 in the seed.\n\nTicks:\n- A tick is filled pc-accent-soft with a pc-accent 55% outline if n <= lastPC, otherwise hollow with a hairline outline.\n- Title: F.s(n) + ' · BD' + bdm.\n\nPositions (these ignore the 2px gaps between ticks):\n- pos(n) = (index of the first rem >= n, or N)/N × 100%.\n- posEnd(n) = the same with '> n'.\n\nFlags:\n- Each PC project with a forecast: x = posEnd(forecastN), label short + ' · ' + forecastDM, colour risk 45%/ink if at risk else ink.\n- 'Dec run': x = pos(DEC_RUN), ink-muted.\n- 'Move': x = 100%, fi-accent, right-aligned via translateX(-100%).\n- Sort by x; the sort is stable.\n- Odd sorted index: label lifted 18px with a 26px stick. Even: lifted 2px with a 10px stick.\n- Seed: ret 68.852%, Dec run 68.852%, manco 80.328%, play 88.525%. Note ret and Dec run overlap.\n\nMonth marks: at k/N wherever the month changes, labelled with the full month name.\n\nProject row:\n- readiness% = round(readiness × 100).\n- Chip in risk tint if at risk.\n- Hovering dims the other rows to 0.35.\n\nOnboarding count: '{done} of {total} ready'.\n\nRotation tiles: ROT[0..2], each 'D Mon – D Mon', with the first tile emphasised."
+  },
+  {
+   "name": "History scrubber (snapshots and interpolation)",
+   "inputs": "project check-ins (snapshots), current state",
+   "outputs": "interpolated plan strip, labels",
+   "spec": "Snapshots:\n- snaps = checkins.map(c => {date: dn(c.date), f: dn(forecast) | null, conf, ms: (c.ms || current milestones) as {name, n}}).\n- If there are no check-ins, snaps = [current].\n- Otherwise the last snapshot is replaced with {current live state, date: lastCheckin.date}.\n\nAxis:\n- A0 = min(startN, snapshot dates) - 4.\n- A1 = max(targetN > TODAY + 200 ? TODAY + 120 : targetN, TODAY, all snapshot forecasts) + 12.\n- pct(n) = clamp01((n - A0)/(A1 - A0)) × 100%.\n- Stop x positions: xs[i] = (date - A0)/(A1 - A0) × 100.\n\nInterpolation for pos in [0, last]:\n- i0 = floor(pos); t = pos - i0; i1 = min(last, i0 + 1).\n- fNow = lerp(A.f, B.f, t). risk = fNow > targetN + 0.5.\n- Plan bar from pct(startN) to pct(min(fNow, targetN) + 1). Overrun from pct(targetN + 1) to pct(fNow + 1).\n- Milestones use the union of names. If a name is in both snapshots, lerp its date. Opacity = (inA ? 1 - t : 0) + (inB ? t : 0).\n- End diamond at pct(fNow + 0.5); target at pct(targetN + 1); today at pct(TODAY + 0.5).\n- near = snaps[round(pos)] supplies the confidence and the 'Plan as of' date.\n\nPointer to pos:\n- Piecewise linear between stops.\n- On release, round. If the result is the last stop, pos = null (live).\n\nHover labels:\n- Start, milestones, forecast ('{endName} · forecast') and Target.\n- Estimated width = len×6.1 + dateLen×6.2 + 34.\n- Anchor: left if xp < 6%, right if xp > 94%, else centred.\n- Greedy packing into 3 rows at 17px pitch.\n\nCrosshair text: F.s(n) + (' · BD' + bdm | ' · ' + holiday | ' · weekend') + (' · ' + dayH + 'h planned' when startN <= n <= fNow) + (' · ' + label on that day).\n\nProduction: store full snapshots, including the target, so the history delta compares against the target that applied at the time."
+  },
+  {
+   "name": "Calendar month grid and day panel",
+   "inputs": "month (y, m), loads, projects",
+   "outputs": "cells and panel content",
+   "spec": "Grid range:\n- first = the 1st of the month. start = first - ((w(first) + 6) % 7), i.e. Monday-based.\n- end = last day of the month + (6 - ((w(last) + 6) % 7)).\n- Cells run start..end (35 or 42). inMonth = same month AND same year; the prototype compares month only.\n\nCell content (in-month business days only):\n- BAU chips: '{name} · {h}h'.\n- Milestones dated that day. Fill is the accent if the day is past, otherwise paper.\n- Forecast ends: '{short} · {endName lowercased}', in risk colour if at risk.\n- Project bars: width h/8 × 62%, red if the day is over.\n- Load meter: cap = max(total, 8); segments calc(h/cap×100% - 1px); plus a free segment.\n\nMonth sub-line: nBD + ' business days' + (overN ? ' · ' + overN + ' overloaded' : '').\n\nPanel kicker:\n- 'Today' | 'Weekend' | 'Bank holiday'.\n- Otherwise from ahead = bdDiff(TODAY, sel): 'N business day(s) ago', 'Tomorrow' (ahead === 1, in business days), or 'N business days ahead'.\n\nPanel sub: 'BD{bdm} of {Month}' (+ ' · Fixed Income' if on or after MOVE) | holiday name | 'Not a business day'.\n\nDue list:\n- milestones '{name} · {short}';\n- forecast ends '{short} · {endName} (forecast)';\n- targets '{short} · target';\n- 'Move to Fixed Income' on MOVE.\n\nPanel capacity label: '{t}h of 8h · {free}h free' | '{t}h planned · {t-8}h over'.\n\nstep(k): move to the adjacent business day. It switches month only within the displayed range.\n\nOpen-in-Today is allowed when the day is a business day and on or after TODAY."
+  },
+  {
+   "name": "Command palette search",
+   "inputs": "query string, projects, screens",
+   "outputs": "grouped items (max 16)",
+   "spec": "Setup: q = trimmed, lower-cased query. hm = q.match(/\\+?\\s*(\\d+(?:\\.\\d+)?)\\s*h\\b/).\n\nQuick add (when hm matches):\n- h = parseFloat(hm[1]). rest = q with the match removed, trimmed.\n- For each project with a forecast whose (name + ' ' + short) lower-cased includes rest (or all such projects if rest is empty): {group 'Quick add', label 'Add {h}h of scope to {short}', hint 'check-in', dot accent, run openCheckIn(id, {scopeH: h})}.\n- No other groups appear in quick-add mode.\n\nOtherwise, in this order:\n- Jump to: screens whose label includes q (all if q is empty). Dot hairline, empty hint.\n- Projects: name includes q. Hint forecastS.\n- Tell Remi: ('check in ' + name) includes q. Label 'Tell Remi about {short}', hint sinceLabel. Note that typing 'tell' matches nothing here; fix this.\n- Create: 'New Private Credit project' and 'New Fixed Income project', shown if q is empty, the label includes q, or 'new project'.includes(q).\n- 'Reset to sample data' (hint 'clears your edits'): only when q is non-empty and 'reset sample data'.includes(q). This should be dev-only.\n\nTruncate to 16 items. sel = min(i, len - 1).\n\nWith an empty query the list is 7 Jump to + 5 Projects + 4 Tell Remi, so the cap cuts the 5th Tell Remi and both Create items.\n\nKeys: ArrowUp and ArrowDown clamp (no wrap). Typing resets i to 0."
+  },
+  {
+   "name": "Note auto-tagging, mentions, recent notes, day list",
+   "inputs": "note text, aliases, projects, routines",
+   "outputs": "tags, mentions, recentN, day summaries",
+   "spec": "tagsFor(text): l = lower-cased text.\n\nProjects, in project order:\n- keys = [name, short, ...aliases], lower-cased.\n- If ANY non-empty key is a substring of l, add a tag {id, name: short, accent, soft, open: openProject}.\n\nRoutines, in routine order:\n- keys = [name, short, ...aliases], filtered to length > 3. This drops 'bd8'.\n- If a key matches AND NOT (the routine's linked project already matched AND the routine is not flagged co-tag, i.e. not r-ret), add a tag {id, name: (short || name) + ' · BAU', accent: pc-accent (should be the routine's domain), open: openRoutine}.\n\nProjects come first, then routines. Matching is plain substring with no word boundaries, so false positives occur (e.g. 'alpha' in 'alphabet'). Consider word boundaries.\n\nWorked examples:\n- n2 → [Returns pipeline, Returns · BAU].\n- n3 → [ManCo automation].\n\nMentions for a day:\n- For each saved note, for each tag, count the notes.\n- Sort by count descending (stable). Label 'N note(s)'.\n\nrecentN:\n- Σ notes on the last 5 business days <= TODAY. This is the same set the AI receives as recent_notes, each formatted '{F.s} {HH:MM}: {text}'.\n\nDay list:\n- Business days from TODAY back to TODAY - 27, plus any day in that window with notes, plus older days with notes. Descending.\n- Week header 'This week' / 'Week of D Mon'.\n- Preview = the latest-added note.\n\ntotalLine: '{N} notes across {M} days'.\n\nWeek spark:\n- Mon–Fri of today's week, as calendar days.\n- Height = c/max(3, max) %, with a 2px minimum.\n\ndayText (CTA prefill): notes in insertion order, 'HH:MM text' joined with newlines. Production should prefix the date when the day is not today."
+  },
+  {
+   "name": "AI parse validation and simple fallback",
+   "inputs": "LLM JSON or free text",
+   "outputs": "{summary, changes[], unplaced[]}",
+   "spec": "validate(raw):\n- open = map from Now-task id to project id, for undone tasks only.\n- For each change c:\n  - Drop it if !c or !c.type.\n  - bau_done: keep only if the routine exists AND occurs today.\n  - Every other type needs pmap[project_id].\n  - task_done: keep only if open[task_id] === project_id.\n  - task_add / scope_add: need text. text = String(text).slice(0,120). hours = clamp(+hours || (task_add ? 1 : 0), 0.25, 80).\n  - blocker / note: need text. text sliced to 160.\n  - confidence: v = round(+value). Keep if 1 <= v <= 5 and v differs from the current value.\n  - target_move: must match /^\\d{4}-\\d{2}-\\d{2}$/ and fall inside the calendar. date = iso(nextBD(dn(date))).\n  - hours_per_day: keep if 0 < v <= 8 (capacity).\n  - Unknown types are dropped.\n- Remove exact duplicates (by JSON.stringify).\n- summary = String(raw.summary || ''). unplaced = raw.unplaced filtered, stringified, max 4. Guard against unplaced not being an array.\n\nsimple(text), the offline heuristic:\n- Keyword map ret / manco / play / fion / alpha. Generalise it to aliases for all projects.\n- Split sentences on /(?<=[.!?])\\s+|\\n+/. last = the focus project.\n- For each sentence, lower-cased as l:\n  - pid = the first project whose alias or short name appears in l.\n  - If l matches /returns (bau|run)|returns are done|returns done/, add bau_done for r-ret and move to the next sentence.\n  - pid = pid || last. If still none, push the sentence to unplaced. Otherwise last = pid.\n  - h = /(\\d+(?:\\.\\d+)?)\\s*(?:h|hr|hrs|hour|hours)\\b/. If h matches AND /(want|also|add|scope|new|extra|asked)/ matches, add scope_add. Its text has the hours phrase and any lead-in ('... wants/asked for/add/added ') stripped, a trailing '.' removed, max 80 characters.\n  - Blocker: /(?:waiting|blocked|stuck)(?:\\s+(?:on|for|by))?\\s+([^.;,]+)/.\n  - Confidence: /confidence\\s*(?:is|at|now|:|of)?\\s*(?:a\\s+)?([1-5])/.\n  - Hours per day: /(\\d+(?:\\.\\d+)?)\\s*h(?:ours?)?\\s*(?:a|per)\\s*day/.\n  - If /(finished|done|completed|sent|wrapped|shipped)/ matches, then for each open Now task: take its words longer than 3 letters. Add task_done if hits >= 2, or if (1 <= word count <= 3 and hits >= 1).\n  - If no blocker, confidence, scope or rate matched, add a note with the sentence sliced to 140.\n- summary = 'Here is what a simple reading picked out. Untick anything that is wrong.' when there are changes.\n- The output then goes through validate()."
+  },
+  {
+   "name": "Capacity bar segment builder",
+   "inputs": "DayLoad, capacity, gap, hover id, arrived",
+   "outputs": "segments with widths/colours",
+   "spec": "cap = max(total, CAPACITY).\n\nSegment order: BAU items, then project items (in item order), then a free segment when free > 0.\n\nWidth = on ? calc(h/cap×100% - gap px) : 0%. Gap is 2px on big bars and 1px on mini bars.\n\nBAU segment:\n- Transparent, holding ceil(h) child cells (flex 1, radius 1.5px, 2px or 1px gap).\n- Cells are the domain accent, or --overload when the day is over.\n\nProject segment:\n- Background: over ? color-mix(overload 20%, paper) : domain soft. The strip variant uses 22%.\n- Inset 1px line: overload or accent.\n\nFree segment: transparent with an inset hairline.\n\nCapacity marker: at CAPACITY/cap %, 1px ink, extending 5px above and below the bar. Visible only when over.\n\nOpacity: 0.25 when another id is hovered.\n\nVertical strip variant (Timeline): segment height = h×5px. BAU uses repeating-linear-gradient(to top, C 0 4px, transparent 4px 5px)."
+  },
+  {
+   "name": "Roll tokenizer (odometer)",
+   "inputs": "string value",
+   "outputs": "columns [{cells, cur, y}]",
+   "spec": "Lookup tables:\n- DIG = ['', '0'..'9']. WD = Mon..Sun. MON = Jan..Dec.\n- col(cells, cur) = {cells, cur, y: 'translateY(' + (-max(0, cells.indexOf(cur))×1.25) + 'em)'}.\n- stat(s) = a single fixed cell.\n\nDate form, /^(?:(Mon|…|Sun) )?(\\d{1,2}) (Jan|…|Dec)$/:\n- [WD col, ' '] if a weekday is present, then tens digit (blank for single-digit days), units digit, ' ', month.\n\nNumber form, /^([+−-]?)(\\d{1,3})(?:\\.(\\d))?(\\D*)$/:\n- sign col ['', '+', '−'] (hyphen-minus becomes U+2212);\n- 3 digit cols from padStart(3, ' ') with blanks as '';\n- '.' col; decimal digit col; static suffix (e.g. ' BD').\n\nAnything else renders as static text.\n\nRender:\n- A hidden full-string sizer, plus an aria-hidden overlay.\n- One 1.25em-tall overflow:hidden window per column, sized by its own hidden 'cur'.\n- Each window holds a reel of 1.25em cells moved with transform over 440ms spring-soft.\n- Columns MUST keep stable keys by position, or the roll won't animate.\n- There is no wrap (9 → 0 rolls back down) and column width snaps.\n- Add a screen-reader label with the real value."
+  },
+  {
+   "name": "Textbook algorithms",
+   "inputs": "pages, blocks",
+   "outputs": "numbering, counts, tree, cascades",
+   "spec": "Heading numbers:\n- Walk the blocks in order. h1: c1++, c2 = c3 = 0 → '1'. h2: c2++, c3 = 0 → '1.1'. h3: c3++ → '1.1.1'.\n- An h2 before any h1 gives '0.1'.\n\nWord count: Σ over blocks whose type is one of p/h1/h2/h3/bullet/callout of text.trim().split(/\\s+/).length.\n\nTree:\n- Top-level pages = pages in the section with no parent, or whose parent is missing (orphans are promoted).\n- Depth-first walk in array order. Indent = 4 + depth×16px.\n\nDelete cascade:\n- Remove the page and all its descendants.\n- Strip page-link blocks that point at removed pages.\n- If no pages remain, reseed 'How the Textbook works'.\n- Navigate to the surviving parent, or else the first page.\n\nDrop index: the first row whose vertical midpoint is below the cursor, or else the last row.\n\nBlock move: splice out, then insert at (idx > from ? idx - 1 : idx).\n\nSection reorder: always inserts before the target.\n\nChart:\n- Height = clamp(200, 900, round(h0 + dy/scale)).\n- Accepted files match /\\.html?$/i or have type text/html.\n- Files over 4 MB get a warning.\n\nSearch: case-insensitive substring over titles and block text.\n\nRelative date: floor elapsed days. 0 → 'today', 1 → 'yesterday', otherwise en-GB 'D MMM'.\n\nRecent: the 6 pages with the latest updatedAt. Path = section / ancestor titles. Snippet = first non-empty p or callout."
+  },
+  {
+   "name": "localStorage import (migration)",
+   "inputs": "remi.v1 and remi.textbook.v1 JSON blobs",
+   "outputs": "DB rows",
+   "spec": "remi.v1 shape:\n- projects[] in stored shape;\n- tasks {id: bool}; doneOn {id: ISO};\n- feed[] (its 'when' is a display string);\n- funds bool[12] (today's r-ret run); routines[];\n- bauDone {'rid:ISO': ISO};\n- notes {ISO: [{id, t: 'HH:MM', text}]};\n- m2: true.\nMigration m2 inserts man-0 into manco now[0] if it is missing.\n\nMapping:\n- Project fields map to the entity tables. Now blocks become now-horizon milestones with their tasks. Next items become next-horizon milestones. Explicit milestones are kept.\n- 'ov' becomes HourOverride. scope from/to 'D Mon' strings must be resolved to ISO dates in the right year.\n- checkins become CheckIn records.\n- tasks and doneOn become task done flags and doneAt.\n- bauDone becomes RoutineRun rows. funds becomes RunChecklistTick rows for r-ret on the import-day occurrence.\n- Note t becomes createdAt = day + t in the local timezone.\n- Feed 'when' values are unrecoverable; use the import time.\n\nTextbook: sections, pages (tree via parent), blocks, and chart html strings → ChartAsset. The src marker 'charts/price-yield.html' maps to the bundled sample."
+  }
+ ],
+ "mutations": [
+  "project.create(domain): name/short 'Untitled project'; goal ''; start today; target = forecast = today + 30 BD; prev null; exit [] (pc) or null (fi); confidence null; checkin null; phase 0; rate/bd3/bd8/rateAfter/baseline 0; endName 'Done'. Then navigate to the workspace and focus the goal.",
+  "project.rename(name): also sets short. A blank name reverts.",
+  "project.setGoal(text)",
+  "project.setWhyNow(text)",
+  "project.setLaterIntent(text)",
+  "project.charterItem.add(list: success|inScope|outScope|constraints). Creates a blank item and focuses it.",
+  "project.charterItem.edit(text). A blank value removes the item.",
+  "project.setStartDate(date). Snaps to the next business day and runs refit keeping work left constant. Logs no feed item.",
+  "project.setTargetDate(date). Snaps to the next business day, clears targetLabel, and logs feed {kind 'edit', title short, body 'Target moved {old} → {new}.', delta 'Target'}.",
+  "project.setHoursPerDay(rate 0..24). Runs refit with work left constant, scales bd3/bd8/rateAfter/overrides proportionally, and sets prev if the forecast changed.",
+  "project.setWorkLeft(hours 0..999). Runs refit at the current rate; a rate of 0 becomes 1.",
+  "project.nowMilestone.add. Blank milestone due today + 9 BD, focused.",
+  "project.nextMilestone.add. Blank milestone due today + 20 BD.",
+  "milestone.rename(name). Syncs the explicit milestone list; the prototype matches by name. A blank name deletes the milestone and its explicit entry.",
+  "milestone.setDue(date). Snaps to the next business day.",
+  "milestone.toggleDone. From the Today month snapshot; the prototype uses a pseudo-task 'ms:<pid>:<name>'.",
+  "task.add(milestoneId). Default {text '', hours 1}.",
+  "task.edit(text). A blank value deletes the task.",
+  "task.setHours(0..24)",
+  "task.toggleDone. Sets or clears doneAt = today. Used by the Today focus blocks, the Today month snapshot, the Workspace and the Calendar.",
+  "project.delete. Two-step confirm; cascades feed, check-ins, scope, snapshots and other children. It must not crash when this is the last project.",
+  "project.setPhase(0..3). Computed, not rendered. Logs feed 'Phase moved A → B.' plus ' Forecast starts at the target, {date}.'; if there is no forecast and phase > 0, forecast = target.",
+  "project.toggleExitRoute(Finish|Automate|Hand over|Stop). PC only, keeps the last two. Computed, not rendered.",
+  "project.risk.add / edit(r, m) / remove (blank). Not rendered yet.",
+  "project.checklist.add / item.add / item.edit / item.toggle. Not rendered yet.",
+  "project.readinessItem.add / edit / toggle / setDue. There is no UI yet (seed only). Needed by Transition.",
+  "project.setReadiness(0..1). No UI yet; could be manual or derived.",
+  "project.hourOverride.set(date, hours) / clear. No UI yet (seed only).",
+  "checkin.apply(changes[]). One transaction applying task_done, task_add, scope_add, blocker, confidence, target_move, hours_per_day, note and bau_done. Writes a check-in record and snapshot, updates lastCheckin and blocker, writes scope and feed entries, and removes stale feed items.",
+  "checkin.submitStructured({pid, done[], changed, scopeWhat, scopeH, blockers, confidence}). Only if the structured form is rebuilt.",
+  "routine.create. Defaults: pc, monthly, BD5, Tue, 1h, Manual, empty name; the new row is focused.",
+  "routine.rename(name). Sets both name and short in the prototype; decide whether short stays separate.",
+  "routine.setKind(monthly|weekly|daily)",
+  "routine.setBusinessDay(1..20)",
+  "routine.setWeekday(1..5)",
+  "routine.setHours(0..capacity). Accepts a comma as the decimal separator.",
+  "routine.setStage(0..3). Logs feed 'Handover status X → Y.' (+ ' It drops off your plan.' when set to Handed over), delta 'BAU'.",
+  "routine.setHandoverNote(text)",
+  "routine.delete. Two-step confirm; if the routine had a name, logs feed 'Routine removed from the plan.'",
+  "routine.setDetail / setProject / setDomain. No UI yet, but needed.",
+  "routineRun.toggleComplete(routineId, occurrenceDate). From the Today month snapshot; the prototype stores the completion date as TODAY.",
+  "routineRun.toggleChecklistItem(routineId, date, itemId). The fund tick on Today; only allowed for today's run.",
+  "routineRun.setAllChecklistItems(routineId, date, done). From the month snapshot row, or bau_done.",
+  "routine.checklistItem.add / edit / remove / reorder. The fund list; no UI yet.",
+  "note.create(day, text). createdAt = now; the day may be past or future.",
+  "note.update(id, text). A blank value deletes the note.",
+  "note.delete(id)",
+  "alias.add / remove(entityType, entityId, alias). No UI yet; replaces the hard-coded tables.",
+  "settings.update(moveDate, capacity, holidayRegion, timezone, staleThreshold, keyProject, keyRoutine, motion, accents, serif, aiProvider)",
+  "holiday.add / remove, leave.add / remove",
+  "rotation.update(segments order/lengths/pass, hoursPerDay). No UI yet; read-only today.",
+  "textbook.section.create / rename (blank on an empty unnamed section deletes it) / delete (empty only, not the last section) / reorder / setCollapsed",
+  "textbook.page.create(sectionId), textbook.page.createSub(parentId, replaceBlockId?), textbook.page.setTitle (newlines stripped), textbook.page.delete (cascade descendants and strip links)",
+  "textbook.block.insert(index, type), block.edit(text), block.setType (markdown shortcut or slash command), block.split (Enter), block.merge / convert / delete (Backspace), block.move (drag), formula.edit (LaTeX)",
+  "textbook.chart.add(file(s), index) / replace(blockId, file) / remove / setHeight (S 280 / M 380 / L 560 / drag 200–900) / setCaption",
+  "dev.resetSampleData (development only)",
+  "import.localStorage(remi.v1, remi.textbook.v1). One-off.",
+  "UI-only state, never persisted: navigation, drawer, palette, hover, timeline zoom and pan, selected day, scrubber position, drafts, flash/moved animation flags, sidebar open."
+ ],
+ "proposedApi": [
+  "All routes are served by the local Hono app bound to 127.0.0.1 under /api. Bodies are JSON and validated by schemas (zod) that are shared with the client. Mutation responses return the changed rows plus any derived deltas; the client re-derives the rest with the shared engine. IDs are server-generated UUIDs. Errors use {error:{code, message, field?}} with status 400, 404, 409 or 422.",
+  "GET /api/bootstrap — everything the SPA needs on load, for synchronous engine maths. Response {today:{iso, bdm, monthBDs, isBD}, settings, holidays[], calendar:{from, to, days: CalendarDay[]}, projects: ProjectAggregate[] (with charter, milestones, tasks, overrides, scope, checkins, risks, checklists, readinessItems), routines: Routine[] (with checklist items), routineRuns[], runTicks[], rotation:{startDate, hoursPerDay, segments[]}, notesIndex:{days:[{day, count, latestPreview}], total, dayCount}, feed: FeedEvent[] (latest 100), aliases[], derived:{loads, verdict, attention, upcoming, prompt, nextDue, daysToMove}}.",
+  "GET /api/calendar?from=YYYY-MM-DD&to=YYYY-MM-DD — {days: CalendarDay[] (iso, w, bd, bdm, hol, isoWeek)}. Extends the range on demand; returns 422 outside the supported years.",
+  "GET /api/loads?from&to — {loads: {[iso]: DayLoad}}.",
+  "GET /api/move — Transition read model: {moveDate, moveLabel, daysToMove (business days strictly between today and the move), verdict, remainingDays[{iso, bdm, pcRunning}], flags[{kind: project|keyRun|move, projectId?, label, iso, status}], pcProjects[{id, name, readiness, forecast, deltaLabel, status, exitRoutes}], routines[{id, name, stage, note}], onboarding:{projectId, items[], doneCount}, rotationPreview{first3[], loopEnd}, afterDayOne[]}.",
+  "GET /api/today?date=YYYY-MM-DD — day plan read model: {day, kicker, bdm, monthBDs, load, bauRows[], checklistRun?:{routineId, items[{id, label, done}], editable}, focusBlocks[{projectId, hours, tasks[], emptyReason?, nextMilestone?}], nextRunAfter}. Optional, because the client can compute it with the engine.",
+  "GET /api/month-snapshot?month=YYYY-MM — {rows[{kind: bau|task|milestone, id, text, sub, due, done, doneOn}], bars[{iso, plan, done, late}], totals{total, done, late}}.",
+  "GET /api/home/summary — {today, bdm, daysToMove, projectCount, routineCount, notesToday, keyProject{name, forecast, deltaLabel}, textbook{pages, liveCharts}}.",
+  "GET /api/settings, PATCH /api/settings — Settings (validates moveDate, capacity 1..24, region enum).",
+  "GET /api/holidays?region&from&to, POST /api/holidays {date, name, region}, DELETE /api/holidays/:region/:date; GET/POST/DELETE /api/leave.",
+  "GET /api/projects — ProjectAggregate[] with derived fields (status, delta, since, stale, growth).",
+  "POST /api/projects {domain: 'pc'|'fi'} → 201 ProjectAggregate with the defaults, and an event project.created.",
+  "GET /api/projects/:id — ProjectAggregate.",
+  "PATCH /api/projects/:id {name?, short?, goal?, whyNow?, laterIntent?, targetDate?, targetLabel?, phase?, exitRoutes?, confidence?, readiness?, endName?, baselineHours?, bd3Hours?, bd8Hours?, rateAfterMove?, afterDayOneNote?} → {project, feed?: FeedEvent[]}. targetDate snaps to the next business day, clears targetLabel and logs a feed item. Changing phase logs a feed item. name also sets short unless short is sent.",
+  "POST /api/projects/:id/replan {rate?: number 0..24, workLeftHours?: number 0..999, startDate?: ISO} → {project, movement?:{from, to, deltaBD}}. This is refit.",
+  "DELETE /api/projects/:id → 204. Cascades. Returns 409 LAST_PROJECT if the UI requires at least one project (or handle an empty workspace).",
+  "PUT /api/projects/:id/overrides/:date {hours} and DELETE /api/projects/:id/overrides/:date.",
+  "POST /api/projects/:id/charter/:list {text?} → CharterItem; PATCH /api/charter-items/:id {text} (blank → 204 delete); DELETE /api/charter-items/:id; PUT /api/projects/:id/charter/:list/order {ids[]}.",
+  "POST /api/projects/:id/milestones {horizon: 'now'|'next', name?, dueDate?} (default due today+9 BD for now, +20 BD for next) → Milestone; PATCH /api/milestones/:id {name?, dueDate?, done?}; DELETE /api/milestones/:id (cascades tasks).",
+  "POST /api/milestones/:id/tasks {text?, hours? = 1} → Task; PATCH /api/tasks/:id {text?, hours? (0..24), done?} (done sets or clears doneAt); DELETE /api/tasks/:id; PUT /api/milestones/:id/tasks/order {ids[]}.",
+  "POST/PATCH/DELETE /api/projects/:id/risks[/:riskId] {risk, mitigation}; POST/PATCH/DELETE /api/projects/:id/checklists[/:clId] and /api/checklists/:clId/items[/:itemId] {text, done}; POST/PATCH/DELETE /api/projects/:id/readiness-items[/:itemId] {text, done, dueDate}.",
+  "GET /api/projects/:id/snapshots → [{checkinId, date, forecast, target, confidence, milestones[{id, name, date}]}] in date order.",
+  "POST /api/projects/:id/preview-shift {hours} → {delta, from, to, deltaLabel, vsTarget, newOverloadDays[{iso, total}], missesKeyRun, crossesMove}.",
+  "POST /api/checkins/parse {text, focusProjectId?} → {summary, changes: Change[], unplaced: string[], source: 'ai'|'simple'}. The server builds the context, calls the approved provider and runs validate(). Returns 503 AI_DISABLED when AI is off (the client offers the simple reading) and 502 AI_BAD_REPLY on malformed output. Must support AbortController cancellation.",
+  "POST /api/checkins/parse-simple {text, focusProjectId?} → the same shape, from the deterministic heuristic (no network).",
+  "POST /api/checkins/preview {changes: Change[]} → {perProject: [{projectId, from, to, deltaBD, late, label, targetAfter}]}. Uses the same maths as apply (or the client runs it with the shared engine).",
+  "POST /api/checkins/apply {changes: Change[], rawText?, focusProjectId?, source} → {projects: ProjectAggregate[], feed: FeedEvent[], routineRuns[], runTicks[], movements: [{projectId, from, to, deltaBD, cause: 'scope'|'rate'|'target'}]}. Runs in ONE DB transaction and writes a CheckIn with its snapshot per project.",
+  "POST /api/projects/:id/checkins {doneTaskIds[], changed, scopeWhat, scopeHours, blockers, confidence} → same response as apply. Structured form, only if it is rebuilt.",
+  "GET /api/routines → DerivedRoutine[] (rule, ruleShort, stageName, next[3]).",
+  "POST /api/routines {} → 201 Routine with defaults; PATCH /api/routines/:id {name?, short?, kind?, bd? (1..20), weekday? (1..5), hours? (0..capacity), stage? (0..3), statusNote?, detail?, projectId?, domain?} → {routine, feed?}. A stage change logs a feed item.",
+  "DELETE /api/routines/:id → 204, and logs 'Routine removed from the plan.' if the routine had a name.",
+  "GET /api/routines/:id/occurrences?from&to | ?after=ISO&limit=3 → [{iso, bdm, afterMove, today}].",
+  "PUT /api/routines/:id/runs/:date {completed: boolean} → RoutineRun. Rejects dates on which the routine does not occur.",
+  "PUT /api/routines/:id/runs/:date/items/:itemId {done} and PUT /api/routines/:id/runs/:date/items {done} (set all) → run ticks.",
+  "GET/POST/PATCH/DELETE /api/routines/:id/checklist-items[/:itemId] {label, order}.",
+  "GET /api/rotation → {startDate, hoursPerDay, segments[{id, order, country, code, lengthBD, pass, start, end}], loopBD, loopEnd, refresh, current:{status: 'waiting'|'active'|'done', segmentId?, bdToStart?}}; PUT /api/rotation {hoursPerDay?, segments[]?} (future editing).",
+  "GET /api/notes?from&to → {days: {[iso]: NoteOut[]}}. NoteOut = {id, day, text, timeLabel, createdAt, updatedAt, tags[{targetType, targetId, label, domain}]}.",
+  "GET /api/notes/days?from&to → [{day, count, latestPreview, isBusinessDay, bdm, holiday, weekMonday}]; GET /api/notes/summary → {total, days}.",
+  "POST /api/notes {day, text} → 201 NoteOut; PATCH /api/notes/:id {text} (422 if empty; the client sends DELETE for blank); DELETE /api/notes/:id → 204.",
+  "GET /api/notes/recent?businessDays=5 → [{day, time, text}]. Also used server-side for the AI context.",
+  "GET /api/aliases; POST /api/aliases {entityType, entityId, alias}; DELETE /api/aliases/:id.",
+  "GET /api/feed?limit=50&before=cursor → FeedEvent[] (createdAt timestamps). POST /api/feed is internal only; services write feed entries.",
+  "GET /api/textbook → {sections[], pages[{id, sectionId, parentId, title, updatedAt, chartCount, childCount}]}; GET /api/textbook/home → {counts{pages, sections, charts, words}, recent[6], charts[3], sectionCards[]}; GET /api/textbook/search?q.",
+  "POST /api/textbook/sections {label?, accent?}; PATCH /api/textbook/sections/:id {label?, accent?, collapsed?}; DELETE /api/textbook/sections/:id (409 unless the section is empty and not the last); PUT /api/textbook/sections/order {ids[]}.",
+  "POST /api/textbook/pages {sectionId, parentId?, title?, replaceBlockId?} → {page, parentLinkBlock?}; GET /api/textbook/pages/:id → page with blocks; PATCH /api/textbook/pages/:id {title}; PUT /api/textbook/pages/:id/blocks {blocks[], baseVersion} (debounced autosave with optimistic concurrency, 409 on conflict); DELETE /api/textbook/pages/:id → {nextPageId}.",
+  "POST /api/textbook/charts (multipart .html/.htm, size limit, hash dedupe) → {assetId, name, sizeBytes}; GET /api/textbook/charts/:id/content → raw HTML, served with a restrictive CSP (ideally from a separate origin or port) for sandboxed iframes.",
+  "POST /api/import/local {remiV1?: object, textbookV1?: object} → {imported counts, warnings[]}. One-off migration.",
+  "POST /api/dev/reset-sample-data. Development builds only; reseeds the prototype sample data.",
+  "GET /api/events?since=cursor (optional). Returns the append-only RemiEvent log for history and debugging."
+ ],
+ "sharedComponents": [
+  "Roll (odometer text). Used by Today (funds done, month done count), Projects (forecast), Timeline (row forecast), Workspace (start, target, forecast, to-land, 'plan as of'), Home (forecast, delta), Foundations demo. Columns need stable positional keys and must carry an accessible label.",
+  "Checkbox. Sizes: 18px (Today funds and tasks), 16px (month rows, Transition onboarding, drawer review rows), 15px (Workspace tasks). Border 1.5px, radius 3px. Done = ink background with a paper 'check' glyph. Glyph opacity transitions 140ms; scale 0.4→1 over 180ms cubic-bezier(0.34,1.5,0.64,1), no scale under reduced motion. The label turns ink-muted with a line-through in var(--done).",
+  "CapacityBar. Variants:\n- day, 14px (Today)\n- panel, 12px (Calendar panel)\n- week mini, 6px (Today week strip)\n- cell meter, 5px (Calendar)\n- vertical strip, 5px/h (Timeline)\n- Home decorative strip\nIt is built by the shared segment builder: notched BAU, soft project, outlined free, 8h marker, overload colours and one pulse.",
+  "DeltaChip. Examples: '+3 BD' (risk tint 22%/40%), '−N BD' and 'On target' (neutral hairline), 'no plan', '+N BD vs target', 'moved +N BD'. Used in Projects, Timeline, Workspace, Transition, the drawer EffectChip and the Foundations FeedItem (which uses 20%/45%). Standardise on one recipe.",
+  "StaleBadge / status chip. Example: 'Stale · 9 days', inset risk 45%/paper ring with a hollow dot. Used in Projects and the Foundations GoalStatement.",
+  "DomainTag / DomainChip. 22px, soft background, 6px accent dot, 11/600 with 0.04em tracking. Used in the Workspace header, Timeline side panel, drawer focus chip and Foundations.",
+  "DomainDot and section header (7px dot + 15/600 or 20/600 title + muted note, 1px ink bottom rule). Used in Projects groups, Routines, Transition columns and Notes mentions.",
+  "Eyebrow label. 11px/600, 0.08em letter-spacing, uppercase, ink-muted. Used on every screen.",
+  "SectionTitleRow. 20/600 title with a right-hand note, 1px ink bottom rule, padding-bottom 10px. Used in Today (plan, week, month), Workspace (Charter, Plan) and Textbook Home.",
+  "BauChip. 20px, soft background, 3x10 accent tick, 11/500, e.g. 'Returns · 6h'. Used in Today week cards, Calendar cells and Foundations.",
+  "MilestoneDiamond. 7–10px, rotated 45°, 1.5px accent border, filled once passed. Also ForecastEndDiamond (14px with a 2px paper knockout ring, risk colour when late), a flash ghost diamond (18px dashed) and TargetMarker (Γ flag: 1px ink vertical + 7px top bar). Used in Timeline, the Workspace scrubber, Calendar, Today, Transition flags and Home.",
+  "TimelineBar. States: on track, at risk (bar to target + risk overrun), done (--done), ghost (dashed previous plan), no plan yet (hatched 135° soft). Used in Timeline, the Workspace scrubber, Home and Foundations.",
+  "BauTick. 4px, radius 2. Filled normally; outlined once handed over or after the move. Used in Timeline and Foundations.",
+  "RotationSegment. Build = solid border + soft fill; Refresh = dashed, no fill. Used in Timeline.",
+  "RotationTile. Mono index·code, pass pill, country 16–18/500, date range. The current tile has a 1.5px ink border and a flag. Used in Routines (10), Transition (3) and Foundations.",
+  "ConfidencePips (read-only meter). 5 pips: 10x8 in Projects, 12x8 in Workspace. Filled pips are ink, empty ones hairline, plus an 'N/5' label.",
+  "ConfidenceControl (1–5 picker, 52x40 buttons). Only in Foundations and the legacy structured check-in.",
+  "Stepper controls. SegmentedControl (Timeline zoom pill with a sliding ink indicator; Routines kind Monthly/Weekly/Daily; Textbook chart S/M/L); BD stepper (− BDn +); WeekdayPicker (Mon–Fri).",
+  "HandoverStepper / PhaseStepper. Dots joined by connectors: past = filled ink, current = hollow ink with 600-weight label, future = ink-faint. Used in Routines; the phase stepper exists in the Foundations spec and is unrendered in the Workspace.",
+  "InlineEditable (input / auto-grow textarea). Draft/commit pattern: commit on blur or Enter; Escape reverts and stops propagation; blank removes or reverts. Hover background ink 3–4%; focus paper-raised with an inset hairline. Used in Workspace (all fields), Routines (name, hours, note), Notes entries and Textbook blocks. Needs a JS autosize fallback because field-sizing is Chromium-only.",
+  "BusinessDayDatePicker. 292px popover: Monday-first grid, 'BD{n}' sub-labels, weekend and holiday tooltips, picks snap to the next business day, 'Today' button, note line. Used in Workspace start, target and milestone dates.",
+  "SidePanel / Sheet (right slide-in, no scrim). Timeline project panel 460px; Calendar day panel 440px. translateX(104%) → 0 over 440ms spring, opacity 240ms. Content must stay mounted during the exit animation.",
+  "Drawer (right, with scrim). Check-in drawer 1160px (max calc(100% − 160px)) over an ink 18% scrim.",
+  "CommandPalette. 680px, grouped rows with dot, label and mono hint.",
+  "HoverTooltip. 280–300px, paper-raised, hairline border, radius 6, shadow 0 12px 28px -18px ink 40%. Used in Timeline (cursor-following) and Foundations.",
+  "Buttons:\n- Primary: ink background, paper text, 36–40px, radius 6, active scale 0.98, hover ink 86% mixed with paper.\n- Outline: 1px ink or hairline border; the Workspace Tell Remi outline inverts on hover.\n- Ghost / icon button.\n- Text link with north_east icon: 'Routine ↗', 'Workspace ↗', 'Via … ↗', 'Whole rotation ↗'.\n- '+ Add' small ghost buttons.",
+  "TwoStepConfirmButton. First click arms it (label changes, overload colour, auto-disarms after 3.5–4s); second click confirms. Used by Remove project, Remove routine and Delete page.",
+  "ProgressRule. 2–4px hairline track with an accent or ink fill; width transitions 440ms spring. Used in the Today funds card, Workspace progress, Transition readiness and month group minis.",
+  "WeekStrip / DayCard. Used in Today; the Notes WeekSpark is a simplified relative.",
+  "EmptyState copy blocks. Italic serif or muted, written with care. Used on every screen.",
+  "Toast. Ink pill at the bottom centre, shown 3200ms. Used in Textbook; reusable app-wide, e.g. for undo.",
+  "NavRail, HeaderBar and ScreenStack (app shell).",
+  "HoverProvider (global linked-highlight id). Setter only fires on change. Dim opacity varies by screen today: Today 0.3/0.25, Calendar 0.25, Timeline 0.28, Routines 0.35, Transition 0.35, Projects 0.55; Foundations specifies 0.28. Standardise.",
+  "ErrorBoundary per screen and around the drawer (the prototype runtime isolates each component).",
+  "Icon. Material Symbols Outlined, weight 300, opsz 20–24, FILL 0..1. Subset used: add, arrow_forward, calendar_month, check, chevron_left, chevron_right, close, edit_note, north_east, notes, repeat, search, stacks, today, unfold_more, view_timeline. Textbook adds delete, description, drag_indicator, functions, home, horizontal_rule, insert_chart, left_panel_close, left_panel_open, open_in_full, title, upload_file. Self-host the font."
+ ],
+ "designTokens": "This is the :root block from Remi.dc.html. It is identical in Foundations; Home and Textbook carry copies of it.\n\nColours\n- --paper: oklch(0.975 0.007 85). Page background. Screenshot sample ≈ #FAF5F1.\n- --paper-raised: oklch(0.99 0.004 85). Inputs, palette, drawer preview, cards, selected rows.\n- --ink: oklch(0.23 0.012 70). Text, primary buttons, today, strong rules. ≈ #28231F.\n- --ink-muted: oklch(0.47 0.012 70). Secondary text; 6.3:1 on paper.\n- --ink-faint: oklch(0.58 0.01 75). Idle checkboxes and separators. Not for body text.\n- --hairline: oklch(0.9 0.008 80). Rules and outlines.\n- --pc-accent: oklch(0.5 0.1 128). Private Credit olive.\n- --pc-accent-soft: color-mix(in oklch, var(--pc-accent) 13%, var(--paper)).\n- --fi-accent: oklch(0.5 0.1 265). Fixed Income blue.\n- --fi-accent-soft: color-mix(in oklch, var(--fi-accent) 13%, var(--paper)).\n- --risk: oklch(0.7 0.13 70). Amber: at risk, overrun past target, stale.\n- --overload: oklch(0.56 0.17 28). Brick red: a day over capacity.\n- --done: oklch(0.74 0.008 85). Done state, strike-through colour.\n- --focus: oklch(0.35 0.02 80). Focus border on inputs; no glow.\n\nBrand stand-ins\n- The shell's 'accents' tweak overrides both accents at runtime. Default is ['#526e2a', '#47619c'], so these hex values are the effective accents.\n- Other options offered: ['#00737e', '#5e5a9a'], ['#1f744f', '#32669a'], ['#884b75', '#007187'].\n- The 'serif' tweak set to false makes --font-display fall back to var(--font-ui).\n- All brand values are placeholders until the Ninety One PowerPoint template arrives. The swap must touch :root only.\n\nTypography\n- Font tokens:\n  - --font-ui: \"Albert Sans\", ui-sans-serif, system-ui, sans-serif. Weights 300–700, italic 400–600.\n  - --font-display: \"Libre Caslon Text\", Georgia, serif. 400, 700, italic 400.\n  - --font-numeric: \"JetBrains Mono\", ui-monospace, monospace. 400, 500.\n- Body: font-variant-numeric tabular-nums, -webkit-font-smoothing antialiased, text-rendering optimizeLegibility.\n- Global rules:\n  - button, input, textarea inherit font and colour.\n  - a: ink, hairline underline, 3px offset. a:hover: pc-accent (Textbook uses fi-accent).\n  - ::selection: pc-accent at 22%.\n  - Placeholders: color-mix(in oklch, var(--ink-faint) 70%, var(--paper)), opacity 1.\n\nDocumented scale (Foundations)\n- 52/1.1 display, -0.015em: day heading.\n- 26/1.28 display, -0.005em: goal statements in lists.\n- 20/1.3 600, -0.01em: section titles; item titles use 500.\n- 15/1.5 400: body and list rows.\n- 13/1.45: secondary text and legends.\n- 11/1.3 600 caps, 0.08em: eyebrows.\n- 12 mono: dates, hours, business days.\n\nSizes actually used in the screens\n- Home H1: 92px display, weight 400, line-height 1.02, -0.025em.\n- Transition countdown: 120px sans, weight 300, line-height 0.9, -0.04em.\n- Today H1: 52px.\n- Notes H1 and Textbook title: 48px.\n- Workspace goal: 44px/1.12, -0.015em. Foundations says 48; the code uses 44.\n- Home card titles: 44px display.\n- Textbook h1: 32px serif. Calendar panel title: 32px serif.\n- Calendar month title: 28px serif.\n- Transition verdict: 36/600.\n- Workspace stat values and Routines effort: 24–26/500.\n- Textbook h2: 22/600. Drawer textarea: 22px serif.\n- Workspace history date: 17px. Tooltip body: 13px.\n\nSpacing, radius, layout\n- Space tokens: --space-1 4px, --space-2 8px, --space-3 12px, --space-4 16px, --space-5 24px, --space-6 32px, --space-7 48px, --space-8 64px.\n- Radii: --radius-s 3px (chips, pills, palette rows); --radius-m 6px (cards, panels, inputs, buttons, swatches, tooltip). Hard-coded extras: bars and segments 2px, inner capacity cells 1.5px, ticks 1px.\n- Frame rules:\n  - Design at 1920×1080 and check at 2560×1440; content widens, row heights hold.\n  - Nav rail 88px; nav items 72×62. Header 72px.\n  - 48px content margins, 12 columns, 24px gutters, 72px between major columns.\n  - List rows 40px. Timeline project rows 64px.\n- Screen paddings:\n  - Today 40 48 48.\n  - Timeline 28 48 24.\n  - Calendar 28 48 32.\n  - Projects 36 48 48.\n  - Workspace 22 48 40.\n  - Routines 32 48 40.\n  - Transition 36 48 48.\n  - Notes: grid 300 | 1fr | 340.\n  - Textbook: grid 288 (56 collapsed) | 1fr | 264.\n- Principle: whitespace and hairlines instead of boxes inside boxes.\n\nElevation (only drawer, palette, tooltip and popovers get shadows)\n- Check-in drawer: -24px 0 48px -32px color-mix(ink 30%, transparent).\n- Timeline and Calendar side panels: -24px 0 48px -36px color-mix(ink 35%, transparent).\n- Palette: 0 24px 48px -28px color-mix(ink 35%, transparent).\n- Tooltip: 0 12px 28px -18px color-mix(ink 40%, transparent).\n- Date picker and Textbook slash menu: 0 18px 40px -24px color-mix(ink 45%, transparent).\n- Scrims: drawer ink 18%; palette ink 10%.\n- Letterbox (prototype only): ink 6% into paper.\n\nColour-mix recipes (centralise as derived tokens)\n- Risk:\n  - risk chip background: risk 22% into paper (FeedItem uses 20%);\n  - risk chip text: risk 40% into ink (FeedItem and stale use 45%);\n  - stale ring: risk 45% into paper;\n  - risk text: risk 45% into ink;\n  - month-snapshot late fill: risk 55% into paper;\n  - Workspace forecast late tint: risk 7% into transparent.\n- Overload:\n  - overload chip background: overload 14% into paper; text: overload 75% into ink;\n  - overloaded project fill: overload 20% into paper (Timeline strip uses 22%).\n- Ink tints:\n  - selected palette row: ink 6% into paper-raised;\n  - hover tints: ink 2.5%, 3%, 3.5%, 4%, 5% or 6% into transparent;\n  - weekend and holiday cells: ink 3.5% into paper; Timeline weekend band 4.5%; holiday band 9%.\n- Accent tints:\n  - fresh-row flash: pc-accent 7–8%;\n  - Transition PC tick outline: pc-accent 55% into paper;\n  - rotation track outline: fi-accent 35% into paper.\n- Primary button hover: ink 86% into paper.\n\nZ-index\n- Calendar panel 5.\n- Timeline overlay lines 3, tooltip 10, side panel 12.\n- Drawer layer 20. Home expand overlay 20.\n- Palette layer 30. Textbook slash menu 30.\n- Workspace date-picker backdrop 40, panel 41. Textbook fullscreen chart 40.\n\nMotion tokens\n- --dur-fast 140ms, --dur-base 240ms, --dur-slow 440ms.\n- --ease-out: cubic-bezier(0.23, 1, 0.32, 1).\n- --spring-soft: linear(0, 0.049 5%, 0.156 10%, 0.283 15%, 0.408 20%, 0.522 25%, 0.62 30%, 0.702 35%, 0.769 40%, 0.864 50%, 0.922 60%, 0.956 70%, 0.976 80%, 0.987 90%, 1).\n- Under reduced motion, --spring-soft is steps(1, jump-start).\n\nKeyframes\n- remi-pulse: 0% box-shadow 0 0 0 0 color-mix(in oklch, var(--overload) 50%, transparent) → 100% 0 0 0 7px color-mix(overload 0%).\n- remi-settle: opacity 0 + translateY(6px) → opacity 1, none.\n- remi-tick: scale 0.6 → 1.08 (60%) → 1.\n\nIcons\n- Material Symbols Outlined, weight 300 (the 400 and 500 requests don't load), FILL 0, opsz 24, at 13–22px.\n\nFonts to self-host\n- Albert Sans, JetBrains Mono, Libre Caslon Text, Material Symbols, and KaTeX for the Textbook.",
+ "motionSystem": "Principles, from Foundations:\n- 'Alive, never busy. Motion explains a change; nothing loops.'\n- Nothing runs longer than 600ms.\n- Use ease-out for opacity and colour. These fades are kept under reduced motion.\n- Use the spring for layout and movement. It becomes instant under reduced motion.\n\nTokens:\n- --dur-fast 140ms: feedback, hover, press, tick fill, linked highlight.\n- --dur-base 240ms: fades, cross-fades, segmented pills.\n- --dur-slow 440ms: glides, zoom, drawers.\n- --ease-out: cubic-bezier(0.23,1,0.32,1).\n- --spring-soft: a critically damped linear() curve with no overshoot, always run at 440ms. It is roughly Motion {type:'spring', bounce:0, visualDuration:0.35}, i.e. stiffness 180, damping 27.\n- Implement mostly as CSS transitions keyed off state. The prototype relies on stable DOM nodes, so inline style changes animate from the old computed value. Keep keys stable, especially Roll columns and chart elements.\n\nReduced motion:\n- One source of truth: the OS prefers-reduced-motion setting OR a user setting. This sets :root[data-motion='reduced'].\n- --spring-soft becomes steps(1, jump-start), so spatial transitions jump.\n- Remove JS-driven translates: arrival offsets, day or month switch slides, and the hover lift.\n- Remove the overload pulses, the checkbox scale pop and the moved-chip scale.\n- View transitions get 0s duration.\n- Smooth scroll becomes auto.\n- Opacity and colour fades remain.\n- The prototype is inconsistent here (model.reduced only reads the tweak prop); fix that.\n\n1. Screen switching\n- All screens stay mounted, so local state and scroll position survive a switch.\n- Entering screen: opacity 0→1 over 240ms ease-out after a 60ms delay; visibility flips immediately.\n- Leaving screen: opacity 1→0 over 140ms ease-out; visibility becomes hidden at 140ms.\n- If production unmounts screens on route change, it must restore scroll and state and emulate this cross-fade.\n\n2. Card to workspace shared-element transition (View Transitions API)\n- Sequence:\n  1. Set vtPhase='from' on the clicked card; its goal gets view-transition-name 'remi-goal'.\n  2. Call document.startViewTransition(() => a promise that resolves after the DOM commits screen=workspace, vtPhase='to', instant=true). The workspace goal textarea is now named 'remi-goal', and the section cross-fade is disabled.\n  3. When finished, clear the vt state and set instant=false.\n- CSS:\n  - ::view-transition-group(remi-goal): 420ms, cubic-bezier(0.23,1,0.32,1).\n  - old and new remi-goal: height 100%, width auto, object-fit none, object-position left top (the text grows from top-left without stretching).\n  - root: 220ms.\n- Skip it when reduced, when startViewTransition is unsupported, when not triggered from a card, or when already on the workspace.\n- The goal grows from 26px in the list to 44px.\n\n3. Arrival (first mount only, after a double requestAnimationFrame)\n- Today: 5 blocks, opacity 0→1 and translateY(6px)→none over 140ms ease-out, delays 0/40/80/120/160ms. The capacity bar grows from 0 (440ms spring, 90ms delay). Week mini bars grow with a 160ms delay. Month bars grow with an i×8ms stagger.\n- Projects: header fades and slides (140ms). Group headers fade (20ms, 120ms). Rows slide 6px with delays of 40 + i×30ms.\n- Timeline:\n  - bars grow from width 0 (440ms spring, row delay i×30+60ms);\n  - rotation segments start at 200 + i×20ms;\n  - capacity columns stagger round(i×2.5)ms;\n  - diamonds scale 0→1 (240ms ease-out);\n  - after 900ms, all delays become 0.\n- Home:\n  - header 200ms;\n  - greeting 180ms opacity + 260ms spring;\n  - H1 at +40ms;\n  - cards 220ms opacity at +120 and +170ms, 360ms spring;\n  - capacity bars i×12ms;\n  - Gantt rows i×50+80ms;\n  - footer at +240ms.\n- Foundations spec: '140 ease-out per block · 40 stagger · 340 total, first load only.'\n- Decide whether arrival replays on the first view of a screen. In the prototype it plays hidden at app load.\n\n4. 'The plan moves' (signature, after a check-in)\n- The drawer closes immediately. Changes apply 220ms later so the eye is back on the plan. Only the affected bars move.\n- Glide: forecast bar width, overrun, end diamond and moved chip 'left' animate over 440ms spring.\n- Ghost:\n  - the previous-plan dashed bar goes to opacity 1 while flash is set (1100ms), then rests at 0.55 for as long as prev exists;\n  - the dashed ghost end diamond and 'was 27 Nov' label appear instantly (0ms), hold, then fade over 400ms ease-out.\n- Roll: date digits, weekday and month roll over 440ms spring.\n- Delta chip: '+N BD' fades in (180ms) and scales 0.9→1 (180ms ease-out, origin left). It holds for 5200ms (moved), then fades. The label is cached so the text survives the fade.\n- The Workspace 'moved +N BD' badge follows the same rules. The forecast late tint animates its background over 440ms ease-out.\n- A new check-in on the same project restarts the timers.\n\n5. Linked highlight\n- Hovering a project, routine or 'rot' anywhere dims unrelated elements. Opacity transitions over 140ms ease-out.\n- Target opacity should be one value (Foundations says 0.28; screens currently use 0.25–0.55).\n\n6. Overlays\n- Drawer: panel translateX(104%)↔0 over 440ms spring, plus opacity over 240ms. Scrim fades over 240ms ease-out. Textarea autofocuses at 380ms.\n- Palette: scrim 140ms; panel opacity 140ms plus translateY(-8px)→0 over 240ms spring; input focused at +30ms.\n- Side panels (Timeline 460px, Calendar 440px): translateX(104%)↔0 over 440ms spring plus opacity 240ms. Keep content mounted during exit.\n- Date picker: instant. Tooltip: opacity 140ms, position follows the cursor with no transition.\n\n7. Local transitions\n- Today day switch: left column fades to 0 (120ms ease-out) and translateX(dir×-8px) over 240ms spring. Swap at 120ms, then return.\n- Notes day switch: opacity 140ms and translateY(dir×6px) over 240ms spring. Swap at 120ms; focus the composer at +40ms.\n- Calendar month change: opacity 140ms and translateX(dir×-10px) over 240ms spring. Swap at 130ms. Panel prev/next steps change instantly.\n- Timeline zoom and pan: every x and width transitions over 440ms spring. Month labels cross-fade 240ms when narrower than 70px. The zoom pill slides over 240ms spring. Pan controls fade 240ms.\n- Workspace scrubber:\n  - while dragging, values recompute on every pointermove and the springy transitions lag slightly behind;\n  - the handle has no transition while dragging and springs 440ms on release;\n  - milestones cross-fade by snapshot membership;\n  - the body dims to 0.35 over 240ms;\n  - hover labels fade over 140ms.\n- Capacity segments: width 440ms spring; opacity 140ms.\n- Overload pulse: remi-pulse 600ms ease-out, one iteration. Delays: Today bar 300ms, week bar 400ms, Timeline 450ms, Calendar cell 300ms, Calendar panel 200ms. Foundations says 450ms. It does not replay when switching between two overloaded days (same animation string); a keyed restart could fix this.\n\n8. Controls and small feedback\n- Checkbox tick: background and border 140ms; glyph opacity 140ms; scale 0.4→1 over 180ms cubic-bezier(0.34,1.5,0.64,1); label colour 240ms; strike-through instant. Foundations and remi-tick disagree (0.6→1.08→1); reconcile.\n- Confidence pips: background 240ms.\n- Progress fills: width 440ms spring.\n- Routines stage dots: 240ms.\n- Fresh row flash: accent 8% held 1200/1600ms, background fades over 440ms. Notes version: 7% held 1400ms, fades over 900ms.\n- Transition flags: left 440ms spring. Ticks: background 240ms.\n- Buttons: nav colours 140ms; primary active scale(0.98), instant; hover instant unless stated.\n\n9. Check-in drawer internals\n- Thinking bar: 0→88% over 2600ms cubic-bezier(0.2,0.7,0.3,1).\n- Echo lines: opacity and translateY(4px) over 240ms, staggered i×180ms.\n- Review groups: opacity 220ms plus translateY(6px) over 320ms spring, staggered k×70ms.\n- Row toggle: opacity 1↔0.55 over 140ms.\n\n10. Home\n- Card hover: lift -4px (360ms spring), box-shadow border 240ms, arrow nudge 2px spring.\n- CAP to CAPH bars re-stagger. Overrun width animates.\n- Typewriter: max-width 0→9ch, steps(9) over 520ms.\n- Slash menu: opacity 200ms plus translateY(-4px) over 320ms spring, delayed 560ms on enter and 0ms on exit.\n- Expand overlay:\n  - place the overlay over the card at radius 6, then fade it in over 140ms;\n  - at +120ms animate left, top, width, height and radius to the full stage over 420ms spring;\n  - navigate at +520ms.\n- Going home from the app or Textbook: fade opacity over 180ms ease-out, then navigate.\n\n11. Textbook\n- Sidebar: grid columns 288↔56 over 440ms spring; panel translateX(-24px) with opacity.\n- Chevrons: rotate over 240ms spring.\n- Page swap: fade 140ms plus translateY(6px) over 240ms spring, swap at 120ms.\n- Home cards: stagger i×50ms.\n- New block: held at opacity 0 and translateY(4px) for 60ms, then animated in (220ms opacity, 320ms spring).\n- Iframe height: 440ms spring.\n- Toast: opacity 240ms plus translateY(8px) over 440ms spring.\n- Drop overlay: 140ms.",
+ "aiIntegration": "CURRENT FLOW (CheckIn.dc.html)\n\n1. The user opens Tell Remi. Entry points:\n   - the header button (focus = workspace project, else none);\n   - palette 'Tell Remi about X';\n   - palette quick-add '+6h returns', which prefills 'New scope on <short>, about 6h: ';\n   - the Timeline panel, the Workspace, and the Projects 'Check in now' button;\n   - Notes 'Turn this day into an update', which prefills 'HH:MM text' lines.\n2. The user types free text and presses Send or ⌘↵.\n3. The client calls:\n   window.claude.complete({system: SYS, max_tokens: 1800, messages: [{role: 'user', content: 'CONTEXT\\n' + JSON.stringify(context) + '\\n\\nUPDATE\\n' + text}]})\n   No model id, temperature or streaming is set.\n\nThe CONTEXT payload:\n- today: 'YYYY-MM-DD (Monday 5 October, BD3)'\n- focus_project: project id or null\n- projects[], each with: {id, name, short, domain (display name), forecast, target, hours_per_day, confidence, open_tasks: [{id, text, hours}] (undone Now tasks only), milestones: ['name (date)']}\n- routines[], each with: {id, name, rule text, runs_today}\n- recent_notes: every note from the last 5 business days up to today, formatted 'Fri 2 Oct 16:10: text'\n\nThe system prompt (verbatim in CheckIn.dc.html lines 127–145):\n- It asks for a single JSON object {summary, changes[], unplaced[]}.\n- It defines nine change types with examples: task_done, task_add, scope_add ('a day' = 8h), blocker, confidence (1–5, only if stated), target_move (YYYY-MM-DD), hours_per_day, note (20 words max), bau_done (a routine that runs today).\n- It says recent_notes are background only.\n- Rules: be conservative and never invent work; match by name, short name or obvious reference; focus_project captures remarks that name no other project; resolve relative dates against today; at most one note per project; prefer task_done over note.\n\n4. Reply handling:\n   - Take the greedy match /\\{[\\s\\S]*\\}/ and JSON.parse it.\n   - Run validate(). Its rules (id existence, open-task ownership, clamps and length limits, confidence must differ from the current value, target snapped to the next business day and inside the calendar, 0 < hours_per_day <= 8, bau_done only if the routine runs today, dedupe) are in engineAlgorithms.\n   - If window.claude is absent, the 'simple reading' regex parser runs instead.\n   - Any other error shows an error panel with 'Try again' and 'Use a simple reading'.\n5. Review: changes are grouped per project, each shown with a live forecast EffectChip. The user unticks anything wrong.\n6. Apply: saveCheckIn closes the drawer and applies the accepted changes 220ms later (applyUpdate, then applyCheckIn).\n\nPRODUCTION DESIGN\n\n- Move the AI call server-side: POST /api/checkins/parse. The browser never holds credentials. SPEC: 'the server can later … hold AI credentials'.\n- core/config holds:\n  - aiProvider: 'none' | 'anthropic' | 'firm-gateway' (e.g. Claude through a firm-approved cloud tenancy) | 'local' (an on-device model);\n  - model id, timeout and max tokens (1800);\n  - aiSendRecentNotes (boolean);\n  - redaction options.\n- The context is built server-side from the DB, not trusted from the client.\n- Use structured output: tool use with a JSON schema for the Change union, instead of the greedy regex. Validate with the shared zod schema and then the validate() business rules, and return {summary, changes, unplaced, source}.\n- Keep the deterministic 'simple reading' fallback, and make it the default when AI is off. Generalise it: keywords come from the EntityAlias table plus project and routine names and short names, not the hard-coded ret/manco/play/fion/alpha/r-ret lists. Unify it with the Notes tagger.\n- Fix the fallback quirks:\n  - blocker text is lower-cased;\n  - a note is added alongside task_done;\n  - both scope_add and hours_per_day come from the same sentence.\n- Support cancellation (AbortController) and a session guard, so a late reply cannot land in a newly opened drawer.\n- Keep the review-before-apply contract: AI output is only ever a proposal. Store the accepted changes with rawText and source on the CheckIn record and in the event log.\n- Apply runs in one server transaction and returns movements for the animation.\n- Decide on the structured form: SPEC §7.4 and the brief wanted a structured form with live preview (screenshot 02-sig), plus the free-text box as the future state. The code ships only the free-text flow. If the structured form is rebuilt, it uses POST /api/projects/:id/checkins and preview-shift.\n\n'STAY LOCAL' IMPLICATIONS (SPEC: 'Nothing leaves the Mac'; open question 6)\n\n- Each AI parse sends the following off the machine:\n  - the free text;\n  - every project's name, short name, dates, hours per day and confidence;\n  - open task text and hours;\n  - milestone names and dates;\n  - routine names and rules;\n  - full text of the last 5 business days of notes.\n  It does NOT send goals, charters or risks.\n- This needs compliance sign-off on which route is permitted: a firm-approved Claude route, a local model, or none.\n- Until sign-off, ship with aiProvider = 'none' (simple reading only). Show a clear indicator of which provider is in use. Consider an audit log of exactly what was sent, and a toggle to exclude notes.\n- The Notes rail copy 'Notes from your last five business days go along with every Tell Remi update' must reflect the real setting.\n\nOTHER NETWORK EGRESS TO REMOVE FOR STAY-LOCAL\n\n- Google Fonts and Material Symbols: self-host.\n- React, ReactDOM and Babel from unpkg: bundle them.\n- KaTeX from jsDelivr: bundle it.\n- Textbook live-chart iframes run arbitrary user HTML with scripts and network access (the sample chart fetches Google Fonts). Serve chart content with a restrictive CSP (connect-src 'none', font and style limited to self), or from an isolated local origin, and keep sandbox='allow-scripts' without allow-same-origin.\n- Future integrations (Outlook meetings reducing capacity, Excel import) belong in the server and likely need IT sign-off.",
+ "persistenceToday": "Everything lives in browser localStorage. There is no backend.\n\n1) 'remi.v1', written by Remi.dc.html (the app shell)\n\nThe whole-state JSON blob:\n- projects: Project[] in stored shape (not derived);\n- tasks: {taskId: boolean};\n- doneOn: {taskId: ISO};\n- feed: FeedEvent[], where 'when' is a display string such as 'Just now' or 'Sat 3 Oct' and ids are 'f' + Date.now();\n- funds: boolean[12], today's returns-run ticks, not keyed by date;\n- routines: Routine[];\n- bauDone: {'<routineId>:<ISO occurrence>': ISO done date};\n- notes: {ISO day: [{id: 'n' + base36, t: 'HH:MM', text}]};\n- m2: true.\n\nLoading:\n- The blob is read once at module evaluation.\n- It is accepted only if projects is an array. Otherwise each slice falls back to its seed: BASE_PROJECTS, ROUTINES, BASE_FEED, funds with the first 5 ticked, tasks {ret-1, fi-1}, BASE_NOTES, and BASE_DONE_ON {ret-1: 2026-10-01, fi-1: 2026-10-02}.\n- normalize() and normR() fill in defaults.\n- Migration m2 inserts task man-0 ('Send the NAV bridge spec to Finance', 0.5h, due 2026-10-02) at the start of manco now[0] when it is missing.\n\nSaving:\n- In componentDidUpdate, a 250ms debounce fires when any of the 8 slices changes by reference.\n- Errors (quota, private mode) are swallowed.\n- The very first state change after mount is skipped.\n\nResetting:\n- 'Reset to sample data' in the palette removes the key and restores the seeds.\n\nNot persisted: screen, ws, hover, drawer, palette, flash/moved, the view-transition state and requests. A reload always opens Today with ws = 'ret'.\n\n2) 'remi.textbook.v1', written by Remi Textbook.dc.html\n\nShape: {cur, pages: [{id, section, parent?, title, updated, blocks: [...]}], sections: [{id, label, accent}], secCollapsed}.\n- Chart HTML is stored inline as strings.\n- The seed chart uses the src marker 'charts/price-yield.html', hydrated from the SAMPLE_CHART constant.\n- Saved with a 350ms debounce on every mutation, including navigation and each resize pointermove.\n- On a quota error it shows a toast.\n- cur is forced to '__home' on load.\n\n3) Remi Home.dc.html is read-only. It reads both keys for its counts, using the hard-coded key notes['2026-10-05'].\n\n4) Foundations has no persistence.\n\nID generation relies on Date.now() and base36, so collisions are possible.\n\nProduction:\n- Replace all of this with SQLite behind the local API, with the event log as the source of truth.\n- Provide a one-off import endpoint for both blobs.",
+ "hardcodedToGeneralise": [
+  "TODAY is fixed at 2026-10-05 (Mon, BD3). Use the real date in the business timezone, with an optional demo override. addNote already uses the real clock for its time, so notes currently mix the real time with the fake date.",
+  "MOVE = 2027-01-04 is a module constant, and the text '4 Jan' is baked into the verdict sentences, the Projects PC group note ('Wind down by 4 Jan'), the Workspace verdict ('Lands after the move on 4 Jan'), Transition ('Monday 4 January 2027'), Timeline ('FI move · Mon 4 Jan', 'Starts Mon 4 Jan with Germany…'), Routines ('First up · Mon 4 Jan'), and the Textbook seed. Store it in Settings and format it everywhere.",
+  "DEC_RUN = 2026-12-03 and the key project id 'ret' are hard-coded in the verdict and previewShift. The verdict crashes if 'ret' is deleted. Make both configurable (keyProjectId and keyRoutineId), and derive the key run as the routine's last occurrence before the move.",
+  "Routine id 'r-ret' is special-cased in many places: the Today funds checklist card (gutter '6h', 'BD3, monthly', 'BAU · Private Credit', 'of 12 funds', FUNDS.length 12), Timeline (label 'Fund & security returns'), Transition (routine notes 'Successor shadows the Thu 3 Dec run…' and 'Successor builds the Thu 10 Dec pack…' for r-man), Notes (aliases and the co-tag exception), the CheckIn simple() regex and '(ticks all 12 funds)', and applyUpdate bau_done. Replace these with a generic 'routine with run checklist' and per-routine fields.",
+  "The FUNDS list of 12 names is a constant, and funds is a global boolean[12] not keyed by run date. Replace with RoutineChecklistItem plus per-occurrence ticks.",
+  "Header text is literal: 'Mon 5 Oct', 'BD3', '61'. The same appears on Home ('Mon 5 Oct · BD3', '61', 'Monday 5 October'), on Transition ('61', 'Monday 4 January 2027') and on Routines ('Waiting to start. 61 BD to go.'). Compute these from the calendar and use one definition of 'business days to the move'.",
+  "CAPACITY = 8 is hard-coded in the shell and in copy: '8h working day', 'of 8h planned', '…h of 8h', 'Hours per day against 8h.', 'h of an 8h day', the Calendar bar width h/8×62%, 'total - 8', the Routines hours clamp max 8, the AI hours_per_day upper bound 8, the prompt 'a day = 8', and Home's CAP scale h/10. Read it from Settings.",
+  "The calendar only covers 2026-08-31..2027-04-30. Anything outside crashes (F.* formatters, dayLoad) or silently clamps (addBD, finishFor). Validation drops targets outside this range. Make the range dynamic.",
+  "The holiday list HOL is hard-coded to 5 UK dates and is missing 31 Aug 2026. Timeline copy says 'UK bank holidays'. Use a region-driven holiday table.",
+  "The rotation is hard-coded: ROT_DEF (order, lengths, passes), 4h/day in dayLoad and in the copy ('4h/day', '4h a day from the move', '4h a day'), 'Loop 1', '10 countries', loopEnd = ROT[9].eS + ' 2027', the refresh extra .replace(' · 3 BD', ''), the tooltip sentence listing the countries, and tile 01 always styled as current with its flag.",
+  "dayLoad hard-codes BAU domain 'pc', ignores all routines on or after MOVE (so FI routines never count), and uses fixed project bd3/bd8 hooks on BD3/BD8 that are not linked to the routines' rules.",
+  "Timeline window: T0 2026-09-28, T1 2027-01-15, the subtitle '28 Sep 2026 – 15 Jan 2027', the 2w subtitle '10 business days' (wrong in holiday weeks), pan bounds wk ∈ [-1, 13], and the FI row stagger offset i+3 (assumes 3 PC projects; Projects has the same assumption).",
+  "Calendar MONTHS = Oct 2026–Jan 2027, 'This month' = index 0, and inMonth compares the month only.",
+  "Workspace 'Now' subheading 'next 2 weeks · 5–16 Oct' should be TODAY → addBD(TODAY, 9). 'Next' says '2–6 weeks'.",
+  "Transition: onboarding note dry-run date '2026-12-17' and 'the day of the move'; the Alpha 'After day one' note and the pmap.fion/pmap.alpha lookups (the screen crashes if either is deleted); ROT[9]; the single 'Wind-down projects' group instead of grouping by exit route.",
+  "Notes: the project and routine alias tables are keyed to seed ids; routine tags always use the PC accent; the 'bd8' alias is dead because of the length > 3 filter. CheckIn simple() has a second, different alias table.",
+  "Home: CAP/CAPH arrays, rowsDef geometry, the 'Returns pipeline' forecast strings 'Wed 2 Dec'/'Fri 4 Dec' and deltas '+3 BD'/'+5 BD', count fallbacks (5 projects, 2 routines, 3 notes) that hide genuine zeros, the notes key '2026-10-05', and all Textbook preview copy.",
+  "Seed data (BASE_PROJECTS, ROUTINES, BASE_NOTES, BASE_FEED including the static stale and overload feed rows, BASE_DONE_ON, the Textbook SEED and SAMPLE_CHART) should be dev seeds only. Stale and overload should be computed flags, not stored feed rows.",
+  "The feed 'when' field stores display strings ('Just now' persists forever). Store createdAt timestamps.",
+  "IDs come from Date.now() ('p', 'r', 'u', 'f', 'n', 'pg', 'sec', 'b' prefixes). Use server UUIDs.",
+  "Palette: 'Reset to sample data' matches any substring of 'reset sample data' (so typing 'e' shows it) and should be dev-only. The 'Tell Remi' group matches 'check in ' + name.",
+  "Constants to move into config: stale threshold 7 calendar days, overload lookahead MOVE+10 BD, new-project horizon 30 BD, new milestone dues +9/+20 BD, 'Added from an update' milestone due +9 BD, Textbook chart size limit 4 MB, month-snapshot group limits 4/5, routine BD range 1..20.",
+  "Brand colours (oklch placeholders and the accent hex defaults) and fonts are stand-ins pending the Ninety One template. The prototype-only tweaks (frame, motion, accents, serif) should become Settings or dev-only.",
+  "Fixed 1920×1080 / 2560×1440 scaled canvas and coordinate hacks (divide by the scale factor k for tooltips, the date picker, Routines scroll and the Textbook resize and slash menu). The Textbook slash menu subtracts a hard-coded 288px sidebar width.",
+  "The 'Weekends and UK bank holidays…' footnote and the legend copy 'Notched = BAU, solid = project' (project segments are actually soft fill plus outline).",
+  "The monthly effort estimate uses fixed constants (21 BD per month, 4.3 weeks per month). It could use the real calendar."
+ ],
+ "openQuestions": [
+  "Move date and taper: is Mon 4 Jan 2027 correct? Does PC work stop that day or taper off? Does PC BAU stop counting at the move while FI BAU starts, as the prototype does?",
+  "Holiday calendar: England & Wales or South Africa? How many hours make a normal working day (8 is assumed)? What timezone should 'today' use? Should personal leave remove capacity while keeping BD numbering?",
+  "Countdown definition: should '61 business days' exclude both today and the move day (it currently does, although bdDiff gives 62)? Relatedly, the verdict says '8 business days to spare' (counts the move day) while the Transition strip shows 7 buffer blocks. Pick one convention.",
+  "PC routines: what is the exact BD rule, effort and cadence of each (e.g. ManCo monthly or quarterly)? Should routines support SPEC's 'every: quarter'? Should curated short names survive a rename (the prototype overwrites them)?",
+  "FI rotation: what country order? How long is a first build versus a refresh? Fixed 4h/day, hours per week, or 'as capacity allows'? What happens after loop 1 and its Germany refresh? Should the rotation be editable in the UI?",
+  "Brand: can you provide the Ninety One PowerPoint template so the placeholder oklch colours and the Albert Sans / Libre Caslon / JetBrains Mono stand-ins can be replaced? Keep the serif display face at all?",
+  "AI route (compliance): firm-approved Claude route, local model, or none? May recent notes and task text be sent? Until sign-off, should the app ship with the simple reading only?",
+  "Backend stack: SPEC recommends Node + Hono + SQLite (Drizzle) with a TypeScript engine shared by the UI and API. Confirm TypeScript across the stack, using the requested folders (core, schemas, repositories, services, utils, api), rather than, say, Python. A shared engine avoids maintaining two copies of the forecasting maths.",
+  "Forecast model: the prototype mixes models. Loads use overrides, rateAfter and BD3/BD8 rates. Scope slip uses ceil(hours/rate). The hours-per-day replan uses a flat rate × BD count. 'Need' is a flat average. SPEC describes pouring remaining estimates into free capacity, earliest target first, with BAU reserved first. Should production move to the SPEC engine (capacity-aware, cross-project), or keep per-project rates but unify the maths?",
+  "Check-in UX: rebuild the structured form (Done / What changed / New scope / Blockers / Confidence, with a live preview of new overload days and 'misses the December run', and a 'Structured | Tell Remi' toggle), or ship free-text Tell Remi only?",
+  "Workspace: reinstate the sections the JS computes but does not render, which SPEC requires? These are the phase stepper, exit route, scope log with growth chart, check-in history, premortem risks and handover checklists. The older layout B screenshots show them. Layout A (stat strip plus scrubber) is the current code.",
+  "Today right column: restore 'What changed since yesterday', 'Needs attention' and the check-in prompt card (computed but not rendered; required by SPEC), keep the current week strip plus 'October so far' month snapshot, or do both?",
+  "Transition: group PC projects by exit route (SPEC and screenshot: Automate→Hand over, Hand over, Finish, Stop, with 'honest alternative' copy), or keep the single 'Wind-down projects' group? Is project readiness entered manually or derived from task and milestone progress?",
+  "Check-in side effects: should every check-in clear an existing blocker that isn't restated (current behaviour)? Should a target move or hours change on its own count as a check-in and reset staleness? Should Workspace edits to rate, work left or start log feed items or snapshots?",
+  "Staleness: 7 calendar days (current) or business days?",
+  "History: store full plan snapshots per check-in (target, milestones, charter, Now/Next) for true replay, or only forecast, confidence and milestones? Should the history delta compare against the target at the time?",
+  "Textbook: is it in scope for v1 (it is not in SPEC)? Where should chart HTML be stored, and may charts access the network? Should the sample 'Rates primer' content ship?",
+  "Home launcher and Foundations page: keep them as routes in the production app (Home at '/', Foundations dev-only)? Or should the app open straight to Today?",
+  "Layout: is a truly responsive layout OK, or must production keep the fixed-canvas scaling of the prototype? Should all screens stay mounted (preserving scroll and state, as in the prototype), or should routes unmount and restore state?",
+  "Destructive actions: add undo (e.g. a toast) for note deletion by blanking, page, project and routine deletion? Prevent deleting the last project?",
+  "Should notes be allowed on future days (reachable today via the week spark, but then hidden from the list)?",
+  "Import: migrate your existing prototype edits from the browser's localStorage (remi.v1, remi.textbook.v1) on first run?",
+  "Linked-highlight dim level and reduced-motion policy: one standard dim opacity (0.28 per Foundations)? Should motion follow the OS setting plus an in-app toggle?",
+  "Phase 4 integrations (Outlook meetings reducing capacity, Excel import): confirm they are out of scope for this build. Connecting to the work Microsoft 365 will likely need IT sign-off."
+ ]
+}

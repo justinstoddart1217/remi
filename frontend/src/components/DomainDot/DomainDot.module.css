@@ -1,0 +1,7 @@
+/* Projects.dc.html:24; Routines.dc.html:17. */
+.dot {
+  flex: none;
+  display: inline-block;
+  border-radius: 50%;
+  align-self: center;
+}

@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="box-sizing:border-box; min-height:100%; padding:40px 48px 48px; display:grid; grid-template-columns:minmax(0,7fr) minmax(0,5fr); column-gap:72px; align-items:start;">
+
+  <div style="display:flex; flex-direction:column; gap:40px; min-width:0; opacity:{{ sw.o }}; transform:{{ sw.t }}; transition:opacity 120ms var(--ease-out), transform var(--dur-base) var(--spring-soft);">
+    <div style="opacity:{{ arr.o }}; transform:{{ arr.t }}; transition:opacity 140ms var(--ease-out) 0ms, transform 140ms var(--ease-out) 0ms;">
+      <div style="display:flex; align-items:center; gap:14px; margin-bottom:14px; min-height:24px;">
+        <span style="font-size:11px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink-muted);">{{ day.kicker }}</span>
+        <sc-if value="{{ day.ahead }}"><button onClick="{{ backToday }}" style="display:flex; align-items:center; gap:4px; height:24px; padding:0 9px 0 5px; border:1px solid var(--hairline); border-radius:var(--radius-s); background:var(--paper-raised); font-size:12px; color:var(--ink); cursor:pointer;" style-hover="border-color:var(--ink-faint)"><span style="font-family:'Material Symbols Outlined'; font-size:15px;">chevron_left</span>Back to today</button></sc-if>
+      </div>
+      <h1 style="margin:0; font-family:var(--font-display); font-weight:400; font-size:52px; line-height:1.1; letter-spacing:-0.015em;">{{ day.title }}</h1>
+      <div style="display:flex; align-items:center; gap:14px; margin-top:14px; font-size:15px; color:var(--ink-muted);">
+        <span style="font-family:var(--font-numeric); font-size:13px;">{{ day.bdLine }}</span>
+        <span style="width:3px; height:3px; border-radius:50%; background:var(--ink-faint);"></span>
+        <span>8h working day</span>
+        <span style="width:3px; height:3px; border-radius:50%; background:var(--ink-faint);"></span>
+        <span style="color:var(--ink);">{{ verdict.word }}</span>
+      </div>
+    </div>
+
+    <div style="opacity:{{ arr.o }}; transform:{{ arr.t }}; transition:opacity 140ms var(--ease-out) 40ms, transform 140ms var(--ease-out) 40ms;">
+      <div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:12px;">
+        <span style="font-size:11px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink-muted);">{{ day.capTitle }}</span>
+        <span style="font-size:14px; color:{{ capTone }};">{{ capLabel }}</span>
+      </div>
+      <div style="position:relative; display:flex; gap:2px; height:14px; border-radius:var(--radius-s); animation:{{ capAnim }};">
+        <sc-for list="{{ capSegs }}" as="c" hint-placeholder-count="3">
+          <div onMouseEnter="{{ c.enter }}" onMouseLeave="{{ c.leave }}" style="width:{{ c.w }}; flex:none; display:flex; gap:2px; height:100%; border-radius:2px; background:{{ c.bg }}; box-shadow:inset 0 0 0 1px {{ c.line }}; opacity:{{ c.op }}; overflow:hidden; transition:width var(--dur-slow) var(--spring-soft) 90ms, opacity var(--dur-fast) var(--ease-out);">
+            <sc-for list="{{ c.cells }}" as="k" hint-placeholder-count="0">
+              <div style="flex:1; background:{{ k }}; border-radius:1.5px;"></div>
+            </sc-for>
+          </div>
+        </sc-for>
+        <div style="position:absolute; top:-5px; bottom:-5px; left:{{ capMark }}; width:1px; background:var(--ink); opacity:{{ capMarkO }};"></div>
+      </div>
+      <div style="display:flex; gap:24px; margin-top:12px; font-size:13px; color:var(--ink-muted);">
+        <span style="display:flex; align-items:center; gap:8px;"><span style="display:flex; gap:2px;"><span style="width:5px; height:10px; border-radius:1px; background:var(--pc-accent);"></span><span style="width:5px; height:10px; border-radius:1px; background:var(--pc-accent);"></span><span style="width:5px; height:10px; border-radius:1px; background:var(--pc-accent);"></span></span>BAU <span style="font-family:var(--font-numeric); font-size:12px; color:var(--ink);">{{ L.bauH }}</span></span>
+        <span style="display:flex; align-items:center; gap:8px;"><span style="width:19px; height:10px; border-radius:1px; background:var(--pc-accent-soft); box-shadow:inset 0 0 0 1px var(--pc-accent);"></span>Project <span style="font-family:var(--font-numeric); font-size:12px; color:var(--ink);">{{ L.projH }}</span></span>
+        <span style="display:flex; align-items:center; gap:8px;"><span style="width:19px; height:10px; border-radius:1px; box-shadow:inset 0 0 0 1px var(--hairline);"></span>Free <span style="font-family:var(--font-numeric); font-size:12px; color:var(--ink);">{{ L.freeH }}</span></span>
+      </div>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:36px; opacity:{{ arr.o }}; transform:{{ arr.t }}; transition:opacity 140ms var(--ease-out) 80ms, transform 140ms var(--ease-out) 80ms;">
+      <div style="display:flex; align-items:baseline; justify-content:space-between; border-bottom:1px solid var(--ink); padding-bottom:10px;">
+        <span style="font-size:20px; font-weight:600; letter-spacing:-0.01em;">{{ day.planTitle }}</span>
+        <span style="font-size:13px; color:var(--ink-muted);">{{ day.planNote }}</span>
+      </div>
+
+      <sc-if value="{{ bau.show }}">
+      <div onMouseEnter="{{ bau.enter }}" onMouseLeave="{{ unhover }}" style="display:grid; grid-template-columns:64px minmax(0,1fr); column-gap:16px; opacity:{{ bau.op }}; transition:opacity var(--dur-fast) var(--ease-out);">
+        <div style="font-size:24px; font-weight:500; line-height:1.2;">6h</div>
+        <div style="min-width:0;">
+          <div style="display:flex; align-items:baseline; gap:12px; flex-wrap:wrap;">
+            <span style="font-size:11px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--pc-accent);">BAU · Private Credit</span>
+            <span style="font-family:var(--font-numeric); font-size:12px; color:var(--ink-muted);">BD3, monthly</span>
+            <sc-if value="{{ bau.note }}"><span style="font-size:12px; color:var(--ink-muted);">{{ bau.note }}</span></sc-if>
+            <span style="flex:1;"></span>
+            <button onClick="{{ bau.open }}" style="border:0; background:transparent; padding:0; cursor:pointer; font-size:14px; color:var(--ink-muted); display:flex; align-items:center; gap:4px;" style-hover="color:var(--ink)">Routine <span style="font-family:'Material Symbols Outlined'; font-size:16px;">north_east</span></button>
+          </div>
+          <div style="display:flex; align-items:baseline; justify-content:space-between; gap:16px; margin-top:6px;">
+            <span style="font-size:20px; font-weight:500; line-height:1.3;">Fund &amp; security-level returns</span>
+            <span style="display:inline-flex; align-items:baseline; gap:6px; font-size:15px; white-space:nowrap;"><span style="display:inline-flex;"><dc-import name="Roll" value="{{ fundsDone }}" hint-size="12px,18px"></dc-import></span><span style="color:var(--ink-muted);">of 12 funds</span></span>
+          </div>
+          <div style="height:2px; background:var(--hairline); margin:12px 0 4px; position:relative; overflow:hidden; border-radius:1px;">
+            <div style="position:absolute; left:0; top:0; bottom:0; width:{{ fundsPct }}; background:var(--pc-accent); transition:width var(--dur-slow) var(--spring-soft);"></div>
+          </div>
+          <div style="display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); column-gap:24px;">
+            <sc-for list="{{ funds }}" as="f" hint-placeholder-count="12">
+              <button onClick="{{ f.toggle }}" style="display:flex; align-items:center; gap:12px; height:40px; border:0; border-bottom:1px solid var(--hairline); background:transparent; text-align:left; cursor:{{ f.cur }}; padding:0; min-width:0;">
+                <span style="flex:none; width:18px; height:18px; box-sizing:border-box; border-radius:var(--radius-s); border:1.5px solid {{ f.bd }}; background:{{ f.bg }}; display:grid; place-items:center; transition:background var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);">
+                  <span style="font-family:'Material Symbols Outlined'; font-size:15px; line-height:1; color:var(--paper); font-variation-settings:'wght' 500; opacity:{{ f.ck }}; transform:scale({{ f.cks }}); transition:opacity var(--dur-fast) var(--ease-out), transform 180ms cubic-bezier(0.34, 1.5, 0.64, 1);">check</span>
+                </span>
+                <span style="font-size:14px; color:{{ f.fg }}; text-decoration:{{ f.td }}; text-decoration-color:var(--done); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; transition:color var(--dur-base) var(--ease-out);">{{ f.name }}</span>
+              </button>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+      </sc-if>
+
+      <sc-for list="{{ otherBau }}" as="o" hint-placeholder-count="0">
+        <div onMouseEnter="{{ o.enter }}" onMouseLeave="{{ unhover }}" style="display:grid; grid-template-columns:64px minmax(0,1fr); column-gap:16px; opacity:{{ o.op }}; transition:opacity var(--dur-fast) var(--ease-out);">
+          <div style="font-size:24px; font-weight:500; line-height:1.2;">{{ o.hours }}</div>
+          <div style="min-width:0;">
+            <div style="display:flex; align-items:baseline; gap:12px;"><span style="font-size:11px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:{{ o.accent }};">BAU · {{ o.domainName }}</span><span style="font-family:var(--font-numeric); font-size:12px; color:var(--ink-muted);">{{ o.rule }}</span></div>
+            <div style="display:flex; align-items:baseline; justify-content:space-between; gap:16px; margin-top:6px;"><span style="font-size:20px; font-weight:500; line-height:1.3;">{{ o.name }}</span><button onClick="{{ o.open }}" style="border:0; background:transparent; padding:0; cursor:pointer; font-size:14px; color:var(--ink-muted); display:flex; align-items:center; gap:4px;" style-hover="color:var(--ink)">Routine <span style="font-family:'Material Symbols Outlined'; font-size:16px;">north_east</span></button></div>
+          </div>
+        </div>
+      </sc-for>
+      <sc-if value="{{ noBau }}">
+        <div style="display:grid; grid-template-columns:64px minmax(0,1fr); column-gap:16px;">
+          <div style="font-size:24px; font-weight:500; line-height:1.2; color:var(--ink-faint);">0h</div>
+          <div style="font-size:15px; line-height:1.5; color:var(--ink-muted); padding-top:4px;">{{ noBau }}</div>
+        </div>
+      </sc-if>
+
+      <sc-for list="{{ blocks }}" as="b" hint-placeholder-count="1">
+        <div onMouseEnter="{{ b.enter }}" onMouseLeave="{{ unhover }}" style="display:grid; grid-template-columns:64px minmax(0,1fr); column-gap:16px; opacity:{{ b.op }}; transition:opacity var(--dur-fast) var(--ease-out);">
+          <div style="font-size:24px; font-weight:500; line-height:1.2;">{{ b.hours }}</div>
+          <div style="min-width:0;">
+            <div style="display:flex; align-items:baseline; gap:12px;">
+              <span style="font-size:11px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:{{ b.accent }};">Project · {{ b.domainName }}</span>
+              <span style="font-family:var(--font-numeric); font-size:12px; color:var(--ink-muted);">Focus block</span>
+            </div>
+            <div style="display:flex; align-items:baseline; justify-content:space-between; gap:16px; margin-top:6px;">
+              <span style="font-size:20px; font-weight:500; line-height:1.3;">{{ b.name }}</span>
+              <button onClick="{{ b.open }}" style="border:0; background:transparent; padding:0; cursor:pointer; font-size:14px; color:var(--ink-muted); display:flex; align-items:center; gap:4px;" style-hover="color:var(--ink)">Workspace <span style="font-family:'Material Symbols Outlined'; font-size:16px;">north_east</span></button>
+            </div>
+            <p style="margin:8px 0 10px; font-family:var(--font-display); font-style:italic; font-size:17px; line-height:1.45; color:var(--ink-muted); max-width:62ch; text-wrap:pretty;">{{ b.goal }}</p>
+            <sc-if value="{{ b.noTasks }}"><div style="font-size:14px; line-height:1.5; color:var(--ink-muted); padding:10px 0; border-bottom:1px solid var(--hairline);">{{ b.noTasks }}</div></sc-if>
+            <sc-for list="{{ b.tasks }}" as="t" hint-placeholder-count="3">
+              <button onClick="{{ t.toggle }}" style="width:100%; display:flex; align-items:center; gap:12px; height:40px; border:0; border-bottom:1px solid var(--hairline); background:transparent; text-align:left; cursor:pointer; padding:0;">
+                <span style="flex:none; width:18px; height:18px; box-sizing:border-box; border-radius:var(--radius-s); border:1.5px solid {{ t.bd }}; background:{{ t.bg }}; display:grid; place-items:center; transition:background var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);">
+                  <span style="font-family:'Material Symbols Outlined'; font-size:15px; line-height:1; color:var(--paper); font-variation-settings:'wght' 500; opacity:{{ t.ck }}; transform:scale({{ t.cks }}); transition:opacity var(--dur-fast) var(--ease-out), transform 180ms cubic-bezier(0.34, 1.5, 0.64, 1);">check</span>
+                </span>
+                <span style="flex:1; font-size:15px; color:{{ t.fg }}; text-decoration:{{ t.td }}; text-decoration-color:var(--done); transition:color var(--dur-base) var(--ease-out);">{{ t.t }}</span>
+                <span style="font-family:var(--font-numeric); font-size:12px; color:var(--ink-muted);">{{ t.hl }}</span>
+              </button>
+            </sc-for>
+            <sc-if value="{{ b.ms }}"><div style="display:flex; align-items:center; gap:10px; margin-top:12px; font-size:13px; color:var(--ink-muted);">
+              <span style="width:8px; height:8px; transform:rotate(45deg); background:{{ b.accent }};"></span>
+              <span>{{ b.ms }}</span>
+            </div></sc-if>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="display:flex; flex-direction:column; gap:40px; min-width:0; padding-top:4px;">
+    <div style="opacity:{{ arr.o }}; transform:{{ arr.t }}; transition:opacity 140ms var(--ease-out) 120ms, transform 140ms var(--ease-out) 120ms;">
+      <div style="display:flex; align-items:baseline; justify-content:space-between; border-bottom:1px solid var(--ink); padding-bottom:10px; margin-bottom:16px;">
+        <span style="font-size:20px; font-weight:600; letter-spacing:-0.01em;">{{ wk.title }}</span>
+        <span style="font-family:var(--font-numeric); font-size:12px; color:var(--ink-muted);">{{ wk.sub }}</span>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(5, minmax(0,1fr)); column-gap:14px;">
+        <sc-for list="{{ week }}" as="d" hint-placeholder-count="5">
+          <div onClick="{{ d.pick }}" style="min-width:0; display:flex; flex-direction:column; gap:8px; padding:10px 8px 10px; margin:0 -8px; border-top:2px solid {{ d.topBd }}; border-radius:0 0 var(--radius-m) var(--radius-m); background:{{ d.bg }}; cursor:pointer; transition:background var(--dur-fast) var(--ease-out), border-color var(--dur-base) var(--ease-out);" style-hover="background:color-mix(in oklch, var(--ink) 3.5%, transparent)">
+            <div style="display:flex; align-items:baseline; justify-content:space-between; gap:4px;">
+              <span style="font-size:14px; font-weight:{{ d.fw }};">{{ d.label }}<sc-if value="{{ d.isToday }}"><span style="font-size:11px; font-weight:500; color:var(--ink-muted); margin-left:6px;">today</span></sc-if></span>
+              <span style="font-family:var(--font-numeric); font-size:11px; color:var(--ink-muted);">{{ d.bd }}</span>
+            </div>
+            <div style="display:flex; gap:1px; height:6px; animation:{{ d.anim }}; border-radius:1px;">
+              <sc-for list="{{ d.segs }}" as="c" hint-placeholder-count="2">
+                <div style="width:{{ c.w }}; flex:none; display:flex; gap:1px; background:{{ c.bg }}; box-shadow:inset 0 0 0 1px {{ c.line }}; opacity:{{ c.op }}; border-radius:1px; overflow:hidden; transition:width var(--dur-slow) var(--spring-soft) 160ms, opacity var(--dur-fast) var(--ease-out);">
+                  <sc-for list="{{ c.cells }}" as="k" hint-placeholder-count="0"><div style="flex:1; background:{{ k }};"></div></sc-for>
+                </div>
+              </sc-for>
+            </div>
+            <span style="font-family:var(--font-numeric); font-size:11px; color:{{ d.loadTone }};">{{ d.loadLabel }}</span>
+            <div style="display:flex; flex-direction:column; gap:6px; margin-top:2px;">
+              <sc-for list="{{ d.chips }}" as="c" hint-placeholder-count="0">
+                <span onMouseEnter="{{ c.enter }}" onMouseLeave="{{ unhover }}" title="{{ c.label }}" style="align-self:flex-start; display:inline-flex; align-items:center; gap:5px; height:20px; max-width:100%; box-sizing:border-box; padding:0 6px; border-radius:var(--radius-s); background:{{ c.bg }}; color:var(--ink); font-size:11px; font-weight:500; white-space:nowrap; overflow:hidden; opacity:{{ c.op }}; transition:opacity var(--dur-fast) var(--ease-out);"><span style="flex:none; width:3px; height:10px; background:{{ c.accent }}; border-radius:1px;"></span><span style="min-width:0; overflow:hidden; text-overflow:ellipsis;">{{ c.label }}</span></span>
+              </sc-for>
+              <sc-for list="{{ d.items }}" as="it" hint-placeholder-count="2">
+                <div onMouseEnter="{{ it.enter }}" onMouseLeave="{{ unhover }}" style="display:flex; flex-direction:column; gap:4px; opacity:{{ it.op }}; transition:opacity var(--dur-fast) var(--ease-out); cursor:default;">
+                  <span style="font-size:12px; line-height:1.3; color:var(--ink);">{{ it.name }}</span>
+                  <span style="display:flex; align-items:center; gap:6px;"><span style="height:3px; width:{{ it.w }}; background:{{ it.accent }}; border-radius:1px;"></span><span style="font-family:var(--font-numeric); font-size:10px; color:var(--ink-muted);">{{ it.h }}</span></span>
+                </div>
+              </sc-for>
+              <sc-if value="{{ d.more }}"><span style="font-size:11px; color:var(--ink-muted);">{{ d.more }}</span></sc-if>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="opacity:{{ arr.o }}; transform:{{ arr.t }}; transition:opacity 140ms var(--ease-out) 160ms, transform 140ms var(--ease-out) 160ms;">
+      <div style="display:flex; align-items:baseline; justify-content:space-between; border-bottom:1px solid var(--ink); padding-bottom:10px;">
+        <span style="font-size:20px; font-weight:600; letter-spacing:-0.01em;">{{ mo.title }}</span>
+        <span style="display:flex; align-items:baseline; gap:6px; font-size:13px; color:var(--ink-muted);"><span style="display:inline-flex; color:var(--ink); font-weight:600;"><dc-import name="Roll" value="{{ mo.doneN }}" hint-size="16px,16px"></dc-import></span><span>of {{ mo.total }} done</span><sc-if value="{{ mo.late }}"><span style="color:color-mix(in oklch, var(--risk) 45%, var(--ink)); font-weight:600;">· {{ mo.late }}</span></sc-if></span>
+      </div>
+      <div style="position:relative; display:flex; align-items:flex-end; gap:3px; height:60px; margin-top:16px;">
+        <sc-for list="{{ mo.bars }}" as="b" hint-placeholder-count="22">
+          <div title="{{ b.title }}" style="position:relative; flex:1; height:100%;">
+            <div style="position:absolute; left:0; right:0; bottom:0; height:{{ b.plan }}; box-shadow:inset 0 0 0 1px {{ b.planLine }}; border-radius:1px; transition:height var(--dur-slow) var(--spring-soft);"></div>
+            <div style="position:absolute; left:0; right:0; bottom:0; height:{{ b.lateH }}; background:color-mix(in oklch, var(--risk) 55%, var(--paper)); border-radius:1px; transition:height var(--dur-slow) var(--spring-soft) {{ b.delay }};"></div>
+            <div style="position:absolute; left:0; right:0; bottom:0; height:{{ b.doneH }}; background:{{ b.doneBg }}; border-radius:1px; transition:height var(--dur-slow) var(--spring-soft) {{ b.delay }};"></div>
+            <sc-if value="{{ b.today }}"><div style="position:absolute; left:50%; bottom:-7px; width:1px; height:5px; background:var(--ink);"></div></sc-if>
+          </div>
+        </sc-for>
+      </div>
+      <div style="display:flex; justify-content:space-between; margin-top:9px; font-family:var(--font-numeric); font-size:10px; color:var(--ink-muted);"><span>{{ mo.from }}</span><span>{{ mo.to }}</span></div>
+      <div style="display:flex; gap:16px; margin-top:6px; font-size:12px; color:var(--ink-muted);">
+        <span style="display:flex; align-items:center; gap:6px;"><span style="width:8px; height:8px; border-radius:1px; background:var(--ink);"></span>Done</span>
+        <span style="display:flex; align-items:center; gap:6px;"><span style="width:8px; height:8px; border-radius:1px; background:color-mix(in oklch, var(--risk) 55%, var(--paper));"></span>Overdue</span>
+        <span style="display:flex; align-items:center; gap:6px;"><span style="width:8px; height:8px; border-radius:1px; box-shadow:inset 0 0 0 1px var(--ink-faint);"></span>Due by then</span>
+      </div>
+      <sc-for list="{{ mo.groups }}" as="g" hint-placeholder-count="2">
+        <div style="display:flex; align-items:center; gap:10px; margin-top:18px; padding-bottom:6px; border-bottom:1px solid var(--hairline);">
+          <span style="font-size:11px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink-muted);">{{ g.label }}</span>
+          <span style="flex:1;"></span>
+          <span style="width:56px; height:2px; background:var(--hairline); border-radius:1px; overflow:hidden;"><span style="display:block; height:100%; width:{{ g.pct }}; background:var(--ink); transition:width var(--dur-slow) var(--spring-soft);"></span></span>
+          <span style="font-family:var(--font-numeric); font-size:11px; color:var(--ink-muted); min-width:32px; text-align:right;">{{ g.count }}</span>
+        </div>
+        <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="3">
+          <div onMouseEnter="{{ it.enter }}" onMouseLeave="{{ unhover }}" style="display:grid; grid-template-columns:26px minmax(0,1fr) auto; column-gap:4px; align-items:center; min-height:34px; border-bottom:1px solid var(--hairline); opacity:{{ it.op }}; transition:opacity var(--dur-fast) var(--ease-out);">
+            <button onClick="{{ it.toggle }}" aria-label="Toggle" style="width:16px; height:16px; padding:0; box-sizing:border-box; border-radius:var(--radius-s); border:1.5px solid {{ it.bd }}; background:{{ it.bg }}; display:grid; place-items:center; cursor:pointer; transition:background var(--dur-fast) var(--ease-out), border-color var(--dur-fast) var(--ease-out);"><span style="font-family:'Material Symbols Outlined'; font-size:13px; line-height:1; color:var(--paper); opacity:{{ it.ck }}; transform:scale({{ it.cks }}); transition:opacity var(--dur-fast) var(--ease-out), transform 180ms cubic-bezier(0.34, 1.5, 0.64, 1);">check</span></button>
+            <span style="min-width:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-size:13px;"><span style="color:{{ it.fg }}; text-decoration:{{ it.td }}; text-decoration-color:var(--done); transition:color var(--dur-base) var(--ease-out);">{{ it.text }}</span><span style="color:var(--ink-muted);"> · {{ it.sub }}</span></span>
+            <span style="font-family:var(--font-numeric); font-size:11px; font-weight:{{ it.dueW }}; color:{{ it.dueFg }}; white-space:nowrap; padding-left:8px;">{{ it.due }}</span>
+          </div>
+        </sc-for>
+        <sc-if value="{{ g.empty }}"><div style="font-size:13px; color:var(--ink-muted); padding:10px 0; border-bottom:1px solid var(--hairline);">{{ g.empty }}</div></sc-if>
+        <sc-if value="{{ g.more }}"><button onClick="{{ g.toggleMore }}" style="border:0; background:transparent; padding:8px 0 0; font-size:12px; color:var(--ink-muted); cursor:pointer;" style-hover="color:var(--ink)">{{ g.more }}</button></sc-if>
+      </sc-for>
+    </div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { arrived: false, sel: null, fade: false, openG: {} };
+  pick(n) {
+    const cur = this.state.sel == null ? this.props.model.TODAY : this.state.sel;
+    if (n === cur) return;
+    clearTimeout(this.ft);
+    this.setState({ fade: true, dir: n > cur ? 1 : -1 });
+    this.ft = setTimeout(() => this.setState({ sel: n === this.props.model.TODAY ? null : n, fade: false }), 120);
+  }
+  componentWillUnmount() { clearTimeout(this.ft); }
+  componentDidUpdate() { const r = this.props.model && this.props.model.dayReq; if (r && r.t !== this._req) { this._req = r.t; this.pick(r.n); } }
+  componentDidMount() { requestAnimationFrame(() => requestAnimationFrame(() => this.setState({ arrived: true }))); }
+
+  segs(L, cap, on, hover, setHover, gap) {
+    const col = d => d === 'pc' ? 'var(--pc-accent)' : 'var(--fi-accent)';
+    const soft = d => d === 'pc' ? 'var(--pc-accent-soft)' : 'var(--fi-accent-soft)';
+    const pct = h => on ? 'calc(' + (h / cap * 100) + '% - ' + gap + 'px)' : '0%';
+    const op = id => hover && hover !== id ? 0.25 : 1;
+    const out = [];
+    L.items.filter(i => i.kind === 'bau').forEach(i => out.push({ w: pct(i.h), bg: 'transparent', line: 'transparent', cells: Array(Math.ceil(i.h)).fill(L.over ? 'var(--overload)' : col(i.domain)), op: op(i.id), enter: () => setHover(i.id), leave: () => setHover(null) }));
+    L.items.filter(i => i.kind === 'proj').forEach(i => out.push({ w: pct(i.h), bg: L.over ? 'color-mix(in oklch, var(--overload) 20%, var(--paper))' : soft(i.domain), line: L.over ? 'var(--overload)' : col(i.domain), cells: [], op: op(i.id), enter: () => setHover(i.id), leave: () => setHover(null) }));
+    if (L.free > 0) out.push({ w: pct(L.free), bg: 'transparent', line: 'var(--hairline)', cells: [], op: 1, enter: () => {}, leave: () => {} });
+    return out;
+  }
+
+  monthSnap(m, a, red, op) {
+    const { CAL, F, TODAY, MOVE } = m;
+    const d0 = CAL.days[TODAY];
+    const bds = CAL.bds.filter(n => CAL.days[n].m === d0.m && CAL.days[n].y === d0.y);
+    const mEnd = bds[bds.length - 1], mStart = bds[0];
+    const allFunds = m.funds.every(Boolean);
+    const box = done => ({ bd: done ? 'var(--ink)' : 'var(--ink-faint)', bg: done ? 'var(--ink)' : 'transparent', ck: done ? 1 : 0, cks: done || red ? 1 : 0.4, fg: done ? 'var(--ink-muted)' : 'var(--ink)', td: done ? 'line-through' : 'none' });
+    const bau = [];
+    m.routines.forEach(r => { if (r.stage >= 3) return; bds.forEach(n => { if (n >= MOVE || !m.occursOn(r, n)) return; const key = r.id + ':' + F.iso(n); const isRetToday = r.id === 'r-ret' && n === TODAY; const done = isRetToday ? allFunds : !!m.bauDone[key];
+      bau.push({ key, text: (r.name || 'Untitled routine') + (r.kind === 'monthly' ? '' : ' · ' + F.dm(n)), sub: 'BD' + CAL.days[n].bdm, due: n, done, doneOn: done ? (isRetToday ? TODAY : F.dn(m.bauDone[key])) : null, hid: r.id,
+        toggle: isRetToday ? () => m.setAllFunds(!allFunds) : () => m.toggleBau(key) }); }); });
+    const proj = [];
+    m.P.filter(p => p.forecastN != null).forEach(p => {
+      p.now.forEach(ms => ms.tasks.forEach(t => { const due = F.dn(t.due || ms.due); if (!due || due > mEnd) return; const done = !!m.tasks[t.id];
+        proj.push({ key: t.id, text: t.t || 'Untitled task', sub: p.short, due, done, doneOn: done ? (m.doneOn[t.id] ? F.dn(m.doneOn[t.id]) : mStart) : null, hid: p.id, toggle: () => m.toggleTask(t.id) }); }));
+      p.next.forEach(x => { const due = F.dn(x.due); if (!due || due > mEnd) return; const id = 'ms:' + p.id + ':' + x.m; const done = !!m.tasks[id];
+        proj.push({ key: id, text: '◆ ' + x.m, sub: p.short, due, done, doneOn: done ? (m.doneOn[id] ? F.dn(m.doneOn[id]) : mStart) : null, hid: p.id, toggle: () => m.toggleTask(id) }); });
+    });
+    const all = [...bau, ...proj];
+    const total = all.length, doneN = all.filter(x => x.done).length, lateN = all.filter(x => !x.done && x.due < TODAY).length;
+    const pct = k => total && a ? (k / total * 100) + '%' : '0%';
+    const bars = bds.map((n, i) => {
+      const plan = all.filter(x => x.due <= n).length;
+      const past = n <= TODAY;
+      const dn = past ? all.filter(x => x.done && x.doneOn <= n).length : 0;
+      const late = past ? all.filter(x => x.due < n && !(x.done && x.doneOn <= n)).length + (n === TODAY ? 0 : 0) : 0;
+      return { plan: pct(plan), planLine: past ? 'var(--ink-faint)' : 'color-mix(in oklch, var(--ink-faint) 55%, var(--paper))', doneH: pct(dn), lateH: pct(dn + late), doneBg: 'var(--ink)', today: n === TODAY, delay: Math.round(i * 8) + 'ms',
+        title: F.s(n) + ' · ' + plan + ' due by then' + (past ? ', ' + dn + ' done' + (late ? ', ' + late + ' overdue' : '') : '') };
+    });
+    const row = x => {
+      const late = !x.done && x.due < TODAY, today = !x.done && x.due === TODAY;
+      return { ...box(x.done), text: x.text, sub: x.sub, toggle: x.toggle, op: op(x.hid), enter: () => m.setHover(x.hid),
+        due: x.done ? 'done ' + F.dm(x.doneOn) : late ? 'overdue ' + CAL.bdDiff(x.due, TODAY) + ' BD' : today ? 'today' : F.s(x.due),
+        dueFg: x.done ? 'var(--ink-faint)' : late ? 'color-mix(in oklch, var(--risk) 45%, var(--ink))' : today ? 'var(--ink)' : 'var(--ink-muted)', dueW: late || today ? 600 : 400 };
+    };
+    const group = (label, items, lim, gk) => {
+      const open = items.filter(x => !x.done).sort((p, q) => p.due - q.due);
+      const done = items.filter(x => x.done).sort((p, q) => q.doneOn - p.doneOn);
+      const expanded = !!this.state.openG[gk];
+      const shown = expanded ? [...open, ...done] : open.slice(0, lim);
+      const hidden = open.length - shown.filter(x => !x.done).length;
+      const dn = done.length;
+      return { label, count: dn + '/' + items.length, pct: items.length ? (dn / items.length * 100) + '%' : '0%', items: shown.map(row),
+        empty: items.length === 0 ? 'Nothing due this month.' : open.length === 0 && !expanded ? 'All done for the month.' : null,
+        more: expanded ? 'Show less' : (hidden || dn) ? 'Show ' + [hidden ? hidden + ' more' : null, dn ? dn + ' done' : null].filter(Boolean).join(' and ') : null,
+        toggleMore: () => this.setState(s => ({ openG: { ...s.openG, [gk]: !s.openG[gk] } })) };
+    };
+    return { title: F.monL(TODAY) + ' so far', doneN: String(doneN), total: String(total), late: lateN ? lateN + ' overdue' : '',
+      bars, from: '1 ' + F.mon(TODAY), to: F.dm(mEnd),
+      groups: [group('BAU', bau, 4, 'bau'), group('Projects', proj, 5, 'proj')] };
+  }
+
+  renderVals() {
+    const m = this.props.model;
+    if (!m) return {};
+    const { F, CAL, TODAY, loads, pmap, hover, setHover } = m;
+    const a = this.state.arrived, red = m.reduced;
+    const arr = { o: a ? 1 : 0, t: a || red ? 'none' : 'translateY(6px)' };
+    const S = this.state.sel != null && loads[this.state.sel] ? this.state.sel : TODAY;
+    const isT = S === TODAY;
+    const L = loads[S];
+    const dS = CAL.days[S];
+    const monthBDs = CAL.bds.filter(n => CAL.days[n].m === dS.m && CAL.days[n].y === dS.y).length;
+    const ahead = CAL.bdDiff(TODAY, S);
+    const wdL = F.l(S).split(' ')[0];
+    const cap = Math.max(L.total, m.CAPACITY);
+    const op = id => hover && hover !== id ? 0.3 : 1;
+    const hrs = h => (Math.round(h * 100) / 100) + 'h';
+    const box = done => ({ bd: done ? 'var(--ink)' : 'var(--ink-faint)', bg: done ? 'var(--ink)' : 'transparent', ck: done ? 1 : 0, cks: done || red ? 1 : 0.4, fg: done ? 'var(--ink-muted)' : 'var(--ink)', td: done ? 'line-through' : 'none' });
+
+    const funds = m.FUNDS.map((name, i) => ({ name, ...box(isT && m.funds[i]), toggle: isT ? () => m.toggleFund(i) : () => {}, cur: isT ? 'pointer' : 'default' }));
+    const done = isT ? m.funds.filter(Boolean).length : 0;
+
+    const blocks = L.items.filter(i => i.kind === 'proj').map(i => {
+      const p = pmap[i.id];
+      const all = p.now.flatMap(x => x.tasks).filter(t => isT || !m.tasks[t.id]);
+      let off = 0;
+      if (!isT) CAL.bds.filter(n => n >= TODAY && n < S).forEach(n => { const it = loads[n].items.find(x => x.id === p.id && x.kind === 'proj'); if (it) off += it.h; });
+      const doneToday = isT ? 0 : 0;
+      let cum = 0; const today = [];
+      for (const t of all) { const a0 = cum, a1 = cum + (+t.h || 0); cum = a1; if (a1 > off + 0.01 && a0 < off + i.h - 0.01) today.push(t); }
+      const nm = [...p.now, ...p.next].filter(x => x.due && F.dn(x.due) >= S).sort((a, b) => a.due < b.due ? -1 : 1)[0];
+      return { id: p.id, name: p.name, goal: p.goal, hours: hrs(i.h), accent: p.accent, domainName: p.domainName, op: op(p.id),
+        enter: () => setHover(p.id), open: () => m.openProject(p.id),
+        tasks: today.map(t => ({ ...t, hl: hrs(t.h), ...box(!!m.tasks[t.id]), toggle: () => m.toggleTask(t.id) })),
+        noTasks: today.length ? null : (all.length ? 'The tasks in Now are used up before this day. Plan the next ones in the workspace.' : 'No tasks planned in Now yet. Add them in the workspace.'),
+        ms: nm ? (F.dn(nm.due) === S ? 'Milestone due this day: ' : 'Next milestone: ') + nm.m + ' · ' + F.s(F.dn(nm.due)) : '' };
+    });
+
+    const mon = S - (CAL.days[S].w - 1);
+    const wkLabel = F.d(mon) + (F.mon(mon) === F.mon(mon + 4) ? '' : ' ' + F.mon(mon)) + '–' + F.d(mon + 4) + ' ' + F.mon(mon + 4);
+    const week = [0, 1, 2, 3, 4].map(k => mon + k).filter(n => CAL.days[n].bd).map(n => {
+      const l = loads[n], isToday = n === TODAY;
+      const projs = l.items.filter(i => i.kind === 'proj').sort((x, y) => y.h - x.h);
+      const shown = projs.slice(0, 2);
+      const ms = m.P.flatMap(p => p.milestones.filter(x => F.dn(x.date) === n).map(x => ({ p, x })));
+      const on = n === S;
+      return { n, label: F.s(n).slice(0, 3) + ' ' + F.d(n), bd: 'BD' + CAL.days[n].bdm, fw: on ? 700 : 500, isToday, topBd: on ? 'var(--ink)' : 'var(--hairline)',
+        bg: on ? 'var(--paper-raised)' : 'transparent', pick: () => this.pick(n),
+        segs: this.segs(l, Math.max(l.total, m.CAPACITY), a, hover, setHover, 1),
+        anim: l.over && a && !red ? 'remi-pulse 600ms var(--ease-out) 1 400ms' : 'none',
+        loadLabel: l.over ? l.total + 'h · over' : l.total + 'h of 8h', loadTone: l.over ? 'var(--overload)' : 'var(--ink-muted)',
+        chips: [...l.items.filter(i => i.kind === 'bau').map(i => ({ label: i.name + ' ' + i.h + 'h', accent: i.domain === 'pc' ? 'var(--pc-accent)' : 'var(--fi-accent)', bg: i.domain === 'pc' ? 'var(--pc-accent-soft)' : 'var(--fi-accent-soft)', op: op(i.id), enter: () => setHover(i.id) })),
+          ...ms.map(({ p, x }) => ({ label: '◆ ' + x.name, accent: p.accent, bg: 'transparent', op: op(p.id), enter: () => setHover(p.id) }))],
+        items: shown.map(i => ({ name: pmap[i.id].short, h: hrs(i.h), w: (i.h / 4 * 100) + '%', accent: i.domain === 'pc' ? 'var(--pc-accent)' : 'var(--fi-accent)', op: op(i.id), enter: () => setHover(i.id) })),
+        more: projs.length > 2 ? '+' + (projs.length - 2) + ' more' : '' };
+    });
+
+    const tone = t => t === 'risk' ? { markBg: 'var(--risk)', markLine: 'var(--risk)', markR: '50%', chipBg: 'color-mix(in oklch, var(--risk) 20%, var(--paper))', chipFg: 'color-mix(in oklch, var(--risk) 45%, var(--ink))', chipLine: 'transparent' }
+      : t === 'overload' ? { markBg: 'var(--overload)', markLine: 'var(--overload)', markR: '1px', chipBg: 'color-mix(in oklch, var(--overload) 14%, var(--paper))', chipFg: 'color-mix(in oklch, var(--overload) 75%, var(--ink))', chipLine: 'transparent' }
+      : { markBg: 'transparent', markLine: 'var(--ink-faint)', markR: '50%', chipBg: 'transparent', chipFg: 'var(--ink-muted)', chipLine: 'var(--hairline)' };
+    const feed = m.feed.map(f => ({ ...f, ...tone(f.tone), op: op(f.pid), enter: () => setHover(f.pid) }));
+
+    const kindFg = t => t === 'risk' ? 'color-mix(in oklch, var(--risk) 45%, var(--ink))' : t === 'overload' ? 'var(--overload)' : 'var(--ink-muted)';
+    const attn = m.attention.filter(x => !(m.prompt && x.pid === m.prompt.id && x.kind === 'Stale')).map(x => ({ ...x, kindFg: kindFg(x.tone), op: op(x.pid),
+      enter: () => setHover(x.pid),
+      actLabel: x.kind === 'Overload' ? 'See day' : x.kind === 'Stale' ? 'Check in' : 'Open plan',
+      act: () => x.kind === 'Overload' ? m.go('timeline') : x.kind === 'Stale' ? m.openCheckIn(x.pid) : m.openProject(x.pid) }));
+    const pr = m.prompt;
+    const prompt = pr ? { id: pr.id, name: pr.name, sinceLabel: pr.sinceLabel, text: 'Its forecast of ' + pr.forecastS + ' hasn’t been tested since ' + F.s(F.dn(pr.checkin)) + '. Two minutes now keeps the plan honest.', act: () => m.openCheckIn(pr.id), enter: () => setHover(pr.id) } : null;
+    const noPrompt = !pr ? 'Every plan has had a check-in this week.' + (m.nextDue ? ' Next due: ' + m.nextDue.short + ', last checked ' + m.nextDue.sinceLabel.toLowerCase() + '.' : '') : null;
+
+    return {
+      sw: { o: this.state.fade ? 0 : 1, t: this.state.fade && !red ? 'translateX(' + (this.state.dir * -8) + 'px)' : 'none' },
+      day: { kicker: isT ? 'Today' : ahead === 1 ? 'Tomorrow · preview' : wdL + ' · ' + ahead + ' business days ahead', ahead: !isT, title: F.l(S), bdLine: 'BD' + dS.bdm + ' of ' + monthBDs,
+        capTitle: isT ? 'Today’s capacity' : wdL + '’s capacity', planTitle: isT ? 'Today’s plan' : wdL + '’s plan', planNote: isT ? 'BAU first, then focus blocks' : 'As planned today; it moves if the plan does' },
+      backToday: () => this.pick(TODAY),
+      wk: { title: mon === TODAY - (CAL.days[TODAY].w - 1) ? 'This week' : 'Week of ' + F.d(mon) + ' ' + F.mon(mon), sub: wkLabel + ' · pick a day to preview it' },
+      otherBau: L.items.filter(i => i.kind === 'bau' && i.id !== 'r-ret').map(i => { const r = m.routines.find(x => x.id === i.id); return { hours: hrs(i.h), name: r ? r.name : i.name, rule: r ? r.ruleShort + ' · ' + r.stageName.toLowerCase() : '4h a day', accent: i.domain === 'pc' ? 'var(--pc-accent)' : 'var(--fi-accent)', domainName: i.domain === 'pc' ? 'Private Credit' : 'Fixed Income', op: op(i.id), enter: () => setHover(i.id), open: () => m.openRoutine(i.id) }; }),
+      noBau: L.items.some(i => i.kind === 'bau') ? null : 'No BAU on this day. The next run is ' + (m.routines.map(r => r.next.find(x => x.n > S)).filter(Boolean).sort((a, b) => a.n - b.n).map(x => x.s)[0] || 'after the move') + '.',
+      mo: this.monthSnap(m, a, red, op),
+      arr, verdict: m.verdict, L: { bauH: hrs(L.bau), projH: hrs(L.proj), freeH: hrs(L.free) },
+      capSegs: this.segs(L, cap, a, hover, setHover, 2), capMark: (m.CAPACITY / cap * 100) + '%', capMarkO: L.over ? 1 : 0,
+      capAnim: L.over && a && !red ? 'remi-pulse 600ms var(--ease-out) 1 300ms' : 'none',
+      capLabel: L.over ? L.total + 'h planned · ' + (L.total - m.CAPACITY) + 'h over' : L.total + 'h of 8h planned · ' + hrs(L.free) + ' free', capTone: L.over ? 'var(--overload)' : 'var(--ink-muted)',
+      funds, fundsDone: String(done), fundsPct: (done / 12 * 100) + '%',
+      bau: { open: () => m.openRoutine('r-ret'), show: L.items.some(i => i.id === 'r-ret'), note: isT ? '' : 'Fresh checklist for this run · ticking opens on the day', op: op('r-ret'), enter: () => setHover('r-ret') }, blocks, week, feed,
+      attention: attn, attnCount: String(attn.length + (pr ? 1 : 0)), prompt, noPrompt,
+      unhover: () => setHover(null)
+    };
+  }
+}
+</script>
+</body>
+</html>

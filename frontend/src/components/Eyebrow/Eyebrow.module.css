@@ -1,0 +1,43 @@
+/*
+ * The quiet section label. Ninety One redesign: the default label is 11px/500 at 0.09em in
+ * --brand-dark (all 44 of them across the .dc.html screens); the coloured labels (a domain
+ * accent or ink) keep 11px/600 at 0.08em (Timeline panel, Calendar day panel, Transition).
+ */
+.eyebrow {
+  margin: 0;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+/* 'muted' is the historical name of the default tone; it now renders the brand label. */
+.muted,
+.brand {
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  color: var(--brand-dark);
+}
+.ink {
+  color: var(--ink);
+}
+.pc {
+  color: var(--pc-accent);
+}
+.fi {
+  color: var(--fi-accent);
+}
+.mint {
+  color: var(--brand-mint-2);
+}
+
+/*
+ * The mono label on the deep brand panels (Today.dc.html:52 day eyebrow, Remi Home.dc.html:146):
+ * numeric 12px at 0.1em, regular weight.
+ */
+.eyebrow.mono {
+  font-family: var(--font-numeric);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+}

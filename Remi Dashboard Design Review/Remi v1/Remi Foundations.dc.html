@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Remi · Foundations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Albert+Sans:ital,wght@0,300..700;1,400..600&amp;family=JetBrains+Mono:wght@400;500&amp;family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&amp;display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..24,300,0..1,0&amp;icon_names=add,arrow_forward,calendar_month,check,chevron_left,chevron_right,close,edit_note,north_east,repeat,search,stacks,today,unfold_more,view_timeline&amp;display=block">
+<style>
+:root{
+  --paper: oklch(0.975 0.007 85); --paper-raised: oklch(0.99 0.004 85);
+  --ink: oklch(0.23 0.012 70); --ink-muted: oklch(0.47 0.012 70); --ink-faint: oklch(0.58 0.01 75); --hairline: oklch(0.9 0.008 80);
+  --pc-accent: oklch(0.5 0.1 128); --pc-accent-soft: color-mix(in oklch, var(--pc-accent) 13%, var(--paper));
+  --fi-accent: oklch(0.5 0.1 265); --fi-accent-soft: color-mix(in oklch, var(--fi-accent) 13%, var(--paper));
+  --risk: oklch(0.7 0.13 70); --overload: oklch(0.56 0.17 28); --done: oklch(0.74 0.008 85); --focus: oklch(0.35 0.02 80);
+  --font-ui: "Albert Sans", ui-sans-serif, system-ui, sans-serif; --font-display: "Libre Caslon Text", Georgia, serif; --font-numeric: "JetBrains Mono", ui-monospace, monospace;
+  --radius-s: 3px; --radius-m: 6px;
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 24px; --space-6: 32px; --space-7: 48px; --space-8: 64px;
+  --dur-fast: 140ms; --dur-base: 240ms; --dur-slow: 440ms;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --spring-soft: linear(0, 0.049 5%, 0.156 10%, 0.283 15%, 0.408 20%, 0.522 25%, 0.62 30%, 0.702 35%, 0.769 40%, 0.864 50%, 0.922 60%, 0.956 70%, 0.976 80%, 0.987 90%, 1);
+}
+@media (prefers-reduced-motion: reduce){ :root{ --spring-soft: steps(1, jump-start); } }
+html,body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font-ui);font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased;}
+button,input,textarea{font:inherit;color:inherit;}
+a{color:var(--ink);text-decoration-color:var(--hairline);text-underline-offset:3px;}
+a:hover{color:var(--pc-accent);}
+</style>
+</helmet>
+<div style="max-width:1480px; margin:0 auto; padding:64px 64px 120px; display:flex; flex-direction:column; gap:88px;">
+
+  <div style="display:grid; grid-template-columns:minmax(0,7fr) minmax(0,5fr); column-gap:72px; align-items:end; border-bottom:1px solid var(--ink); padding-bottom:28px;">
+    <div>
+      <div style="font-size:11px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink-muted);">Remi · design foundations</div>
+      <h1 style="margin:14px 0 0; font-family:var(--font-display); font-weight:400; font-size:52px; line-height:1.1; letter-spacing:-0.015em;">A notebook that recalculates itself</h1>
+    </div>
+    <p style="margin:0; font-size:15px; line-height:1.55; color:var(--ink-muted); text-wrap:pretty;">Tokens, type, spacing, motion and the core components. Colour and type values are stand-ins until the Ninety One values arrive; components read tokens only, so the swap touches <span style="font-family:var(--font-numeric); font-size:13px; color:var(--ink);">:root</span> and nothing else. Open <a href="Remi.dc.html">Remi.dc.html</a> for the working screens.</p>
+  </div>
+
+  <section style="display:flex; flex-direction:column; gap:28px;">
+    <div style="display:flex; align-items:baseline; gap:16px;"><span style="font-family:var(--font-numeric); font-size:12px; color:var(--ink-muted);">01</span><span style="font-size:20px; font-weight:600; letter-spacing:-0.01em;">Colour</span><span style="font-size:14px; color:var(--ink-muted);">Colour carries meaning and only meaning. On track is the neutral default.</span></div>
+    <sc-for list="{{ colourGroups }}" as="g" hint-placeholder-count="3">
+      <div style="display:grid; grid-template-columns:200px minmax(0,1fr); column-gap:32px; padding-top:18px; border-top:1px solid var(--hairline);">
+        <div><div style="font-size:15px; font-weight:600;">{{ g.label }}</div><div style="font-size:13px; line-height:1.45; color:var(--ink-muted); margin-top:4px; text-wrap:pretty;">{{ g.note }}</div></div>
+        <div style="display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:16px;">
+          <sc-for list="{{ g.items }}" as="c" hint-placeholder-count="4">
+            <div style="display:flex; flex-direction:column; gap:8px;">
+              <div style="height:64px; border-radius:var(--radius-m); background:{{ c.v }}; box-shadow:inset 0 0 0 1px var(--hairline);"></div>
+              <span style="font-family:var(--font-numeric); font-size:12px; font-weight:500;">{{ c.name }}</span>
+              <span style="font-family:var(--font-numeric); font-size:11px; color:var(--ink-muted);">{{ c.value }}</span>
+              <span style="font-size:13px; line-height:1.4; color:var(--ink-muted);">{{ c.role }}</span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </sc-for>
+  </section>
+
+  <section style="display:flex; flex-direction:column; gap:28px;">
+    <div style="display:flex; align-items:baseline; gap:16px;"><span style="font-family:var(--font-numeric); font-size:12px; color:var(--ink-muted);">02</span><span style="font-size:20px; font-weight:600; letter-spacing:-0.01em;">Type</span><span style="font-size:14px; color:var(--ink-muted);">Seven sizes. The serif is reserved for goal statements and day headings.</span></div>
+    <div style="display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); column-gap:32px; padding:18px 0; border-top:1px solid var(--hairline); border-bottom:1px solid var(--hairline);">
+      <div><div style="font-family:var(--font-numeric); font-size:12px; font-weight:500;">--font-ui</div><div style="font-size:28px; margin-top:8px;">Albert Sans</div><div style="font-size:13px; color:var(--ink-muted); margin-top:4px;">Refined grotesk for all interface text. Stand-in for the brand face.</div></div>
+      <div><div style="font-family:var(--font-numeric); font-size:12px; font-weight:500;">--font-display</div><div style="font-family:var(--font-display); font-size:28px; margin-top:8px;">Libre Caslon Text</div><div style="font-size:13px; color:var(--ink-muted); margin-top:4px;">Goal statements and day headings only. Tweakable off.</div></div>
+      <div><div style="font-family:var(--font-numeric); font-size:12px; font-weight:500;">--font-numeric</div><div style="font-family:var(--font-numeric); font-size:28px; margin-top:8px;">JetBrains 0123</div><div style="font-size:13px; color:var(--ink-muted); margin-top:4px;">Business-day numbers, hours and any column of figures. Body text also sets tabular-nums.</div></div>
+    </div>
+    <sc-for list="{{ typeScale }}" as="t" hint-placeholder-count="7">
+      <div style="display:grid; grid-template-columns:200px minmax(0,1fr) 260px; column-gap:32px; align-items:baseline; padding:14px 0; border-bottom:1px solid var(--hairline);">
+        <span style="font-family:var(--font-numeric); font-size:12px; color:var(--ink-muted);">{{ t.spec }}</span>
+        <span style="font-family:{{ t.ff }}; font-size:{{ t.fs }}; font-weight:{{ t.fw }}; line-height:{{ t.lh }}; letter-spacing:{{ t.ls }}; text-transform:{{ t.tt }}; font-style:{{ t.fst }};">{{ t.sample }}</span>
+        <span style="font-size:13px; color:var(--ink-muted);">{{ t.use }}</span>
+      </div>
+    </sc-for>
+  </section>
+
+  <section style="display:flex; flex-direction:column; gap:28px;">
+    <div style="display:flex; align-items:baseline; gap:16px;"><span style="font-family:var(--font-numeric); font-size:12px; color:var(--ink-muted);">03</span><span style="font-size:20px; font-weight:600; letter-spacing:-0.01em;">Space, radius and grid</span><span style="font-size:14px; color:var(--ink-muted);">Whitespace and hairlines instead of boxes inside boxes.</span></div>
+    <div style="display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); column-gap:72px; border-top:1px solid var(--hairline); padding-top:18px;">
+      <div>
+        <sc-for list="{{ spaces }}" as="s" hint-placeholder-count="8">
+          <div style="display:grid; grid-template-columns:110px 60px minmax(0,1fr); align-items:center; height:32px; border-bottom:1px solid var(--hairline);">
+            <span style="font-family:var(--font-numeric); font-size:12px;">{{ s.name }}</span>
+            <span style="font-family:var(--font-numeric); font-size:12px; color:var(--ink-muted);">{{ s.v }}</span>
+            <span style="height:10px; width:{{ s.v }}; background:var(--ink); border-radius:1px;"></span>
+          </div>
+        </sc-for>
+        <div style="display:flex; gap:32px; margin-top:24px;">
+          <div style="display:flex; align-items:center; gap:12px;"><span style="width:48px; height:32px; border-radius:var(--radius-s); box-shadow:inset 0 0 0 1px var(--ink);"></span><span style="font-family:var(--font-numeric); font-size:12px;">--radius-s · 3px</span></div>
+          <div style="display:flex; align-items:center; gap:12px;"><span style="width:48px; height:32px; border-radius:var(--radius-m); box-shadow:inset 0 0 0 1px var(--ink);"></span><span style="font-family:var(--font-numeric); font-size:12px;">--radius-m · 6px</span></div>
+        </div>
+      </div>
+      <div>
+        <div style="position:relative; height:220px; border:1px solid var(--hairline); border-radius:var(--radius-m); overflow:hidden; display:grid; grid-template-columns:28px minmax(0,1fr);">
+          <div style="border-right:1px solid var(--hairline); background:var(--paper-raised);"></div>
+          <div style="display:grid; grid-template-rows:20px minmax(0,1fr);">
+            <div style="border-bottom:1px solid var(--hairline);"></div>
+            <div style="padding:10px 14px; display:grid; grid-template-columns:repeat(12, minmax(0,1fr)); column-gap:6px;">
+              <sc-for list="{{ cols }}" as="c" hint-placeholder-count="12"><span style="background:color-mix(in oklch, var(--pc-accent) 10%, transparent); box-shadow:inset 0 0 0 1px color-mix(in oklch, var(--pc-accent) 25%, transparent);"></span></sc-for>
+            </div>
+          </div>
+        </div>
+        <div style="display:grid; grid-template-columns:auto 1fr; column-gap:20px; row-gap:8px; margin-top:16px; font-size:14px;">
+          <span style="font-family:var(--font-numeric); font-size:12px; color:var(--ink-muted);">Frame</span><span>1920 × 1080; checked at 2560 × 1440 (content widens, row heights hold)</span>
+          <span style="font-family:var(--font-numeric); font-size:12px; color:var(--ink-muted);">Rail · header</span><span>88px rail, 72px persistent header</span>
+          <span style="font-family:var(--font-numeric); font-size:12px; color:var(--ink-muted);">Content</span><span>48px margins, 12 columns, 24px gutters; 72px between major columns</span>
+          <span style="font-family:var(--font-numeric); font-size:12px; color:var(--ink-muted);">Rows</span><span>40px list rows, 64px timeline project rows, hairline between</span>
+          <span style="font-family:var(--font-numeric); font-size:12px; color:var(--ink-muted);">Elevation</span><span>None, except drawer, palette and tooltip: one soft shadow each</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section style="display:flex; flex-direction:column; gap:28px;">
+    <div style="display:flex; align-items:baseline; gap:16px;"><span style="font-family:var(--font-numeric); font-size:12px; color:var(--ink-muted);">04</span><span style="font-size:20px; font-weight:600; letter-spacing:-0.01em;">Motion</span><span style="font-size:14px; color:var(--ink-muted);">Alive, never busy. Motion explains a change; nothing loops.</span></div>
+    <div style="display:grid; grid-template-columns:repeat(5, minmax(0,1fr)); gap:16px; border-top:1px solid var(--hairline); padding-top:18px;">
+      <sc-for list="{{ motionTokens }}" as="t" hint-placeholder-count="5">
+        <div style="display:flex; flex-direction:column; gap:6px;">
+          <span style="font-family:var(--font-numeric); font-size:12px; font-weight:500;">{{ t.name }}</span>
+          <span style="font-size:17px; font-weight:500;">{{ t.v }}</span>
+          <span style="font-size:13px; line-height:1.45; color:var(--ink-muted); text-wrap:pretty;">{{ t.note }}</span>
+        </div>
+      </sc-for>
+    </div>
+
+    <div style="display:grid; grid-template-columns:minmax(0,1fr) 380px; column-gap:48px; padding:28px 32px; background:var(--paper-raised); border:1px solid var(--hairline); border-radius:var(--radius-m);">
+      <div>
+        <div style="display:flex; align-items:baseline; justify-content:space-between;">
+          <span style="font-size:15px; font-weight:600;">Signature moment: the plan moves</span>
+          <button onClick="{{ replay }}" style="height:32px; padding:0 14px; border:0; border-radius:var(--radius-m); background:var(--ink); color:var(--paper); font-size:13px; font-weight:600; cursor:pointer;">{{ replayLabel }}</button>
+        </div>
+        <div style="display:grid; grid-template-columns:230px minmax(0,1fr); column-gap:20px; margin-top:22px; align-items:center;">
+          <div style="display:flex; flex-direction:column; gap:5px;">
+            <span style="font-size:14px; font-weight:500;">Returns pipeline automation</span>
+            <span style="display:flex; align-items:center; gap:8px; font-size:13px; color:var(--ink-muted);"><span style="display:inline-flex;"><dc-import name="Roll" value="{{ demo.fS }}" hint-size="72px,16px"></dc-import></span><span style="display:inline-flex; align-items:center; height:20px; padding:0 6px; border-radius:var(--radius-s); background:{{ demo.chipBg }}; color:{{ demo.chipFg }}; box-shadow:inset 0 0 0 1px {{ demo.chipLine }}; font-family:var(--font-numeric); font-size:11px; font-weight:500;"><span style="display:inline-flex;"><dc-import name="Roll" value="{{ demo.delta }}" hint-size="40px,14px"></dc-import></span></span></span>
+          </div>
+          <div style="position:relative; height:64px;">
+            <div style="position:absolute; left:0; right:0; top:52px; height:1px; background:var(--hairline);"></div>
+            <div style="position:absolute; top:41px; height:7px; left:0; width:{{ demo.ghostW }}; box-sizing:border-box; border:1.5px dashed var(--pc-accent); border-radius:2px; opacity:{{ demo.ghostO }}; transition:opacity 400ms var(--ease-out);"></div>
+            <div style="position:absolute; top:26px; height:10px; left:0; width:{{ demo.barW }}; border-radius:2px; background:var(--pc-accent);"></div>
+            <div style="position:absolute; top:26px; height:10px; left:{{ demo.tgt }}; width:{{ demo.overW }}; border-radius:0 2px 2px 0; background:var(--risk); transition:width var(--dur-slow) var(--spring-soft);"></div>
+            <div style="position:absolute; top:24px; left:{{ demo.end }}; width:14px; height:14px; margin-left:-7px; box-sizing:border-box; transform:rotate(45deg); background:{{ demo.endBg }}; border:2px solid var(--paper-raised); transition:left var(--dur-slow) var(--spring-soft), background var(--dur-base) var(--ease-out);"></div>
+            <div style="position:absolute; top:22px; left:{{ demo.oldEnd }}; width:18px; height:18px; margin-left:-9px; box-sizing:border-box; transform:rotate(45deg); border:1.5px dashed var(--pc-accent); opacity:{{ demo.flashO }}; transition:{{ demo.flashT }};"></div>
+            <div style="position:absolute; top:14px; height:32px; left:{{ demo.tgt }}; width:7px;"><div style="position:absolute; left:0; top:0; bottom:0; width:1px; background:var(--ink);"></div><div style="position:absolute; left:0; top:0; width:7px; height:1px; background:var(--ink);"></div></div>
+            <div style="position:absolute; top:4px; left:{{ demo.chipX }}; display:inline-flex; align-items:center; height:18px; padding:0 6px; margin-left:12px; border-radius:var(--radius-s); background:color-mix(in oklch, var(--risk) 22%, var(--paper)); color:color-mix(in oklch, var(--risk) 40%, var(--ink)); font-family:var(--font-numeric); font-size:11px; font-weight:600; opacity:{{ demo.chipO }}; transform:scale({{ demo.chipS }}); transform-origin:left center; transition:left var(--dur-slow) var(--spring-soft), opacity 180ms var(--ease-out), transform 180ms var(--ease-out);">+3 BD</div>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:10px; font-size:13px; line-height:1.45; color:var(--ink-muted);">
+        <div><span style="font-family:var(--font-numeric); color:var(--ink);">1 · glide</span> Bar end and overrun move on --spring-soft, 440ms. Motion: spring, bounce 0, visualDuration 0.35.</div>
+        <div><span style="font-family:var(--font-numeric); color:var(--ink);">2 · ghost</span> Old end appears at full strength, holds 1000ms, fades 400ms --ease-out. The dashed track of the previous plan stays, faint.</div>
+        <div><span style="font-family:var(--font-numeric); color:var(--ink);">3 · roll</span> Dates and counts roll per digit, weekday and month on --spring-soft, 440ms.</div>
+        <div><span style="font-family:var(--font-numeric); color:var(--ink);">4 · delta chip</span> Fades and scales 0.9 → 1 in 180ms, holds 5s beside the bar, then fades.</div>
+      </div>
+    </div>
+
+    <div style="border-top:1px solid var(--hairline);">
+      <div style="display:grid; grid-template-columns:220px 260px minmax(0,1fr); column-gap:32px; padding:10px 0; border-bottom:1px solid var(--ink); font-size:11px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:var(--ink-muted);"><span>Interaction</span><span>Values</span><span>Notes</span></div>
+      <sc-for list="{{ motionSpec }}" as="r" hint-placeholder-count="8">
+        <div style="display:grid; grid-template-columns:220px 260px minmax(0,1fr); column-gap:32px; padding:14px 0; border-bottom:1px solid var(--hairline); align-items:baseline;">
+          <span style="font-size:14px; font-weight:600;">{{ r.name }}</span>
+          <span style="font-family:var(--font-numeric); font-size:12px; line-height:1.5;">{{ r.v }}</span>
+          <span style="font-size:14px; line-height:1.5; color:var(--ink-muted); text-wrap:pretty;">{{ r.note }}</span>
+        </div>
+      </sc-for>
+    </div>
+  </section>
+
+  <section style="display:flex; flex-direction:column; gap:28px;">
+    <div style="display:flex; align-items:baseline; gap:16px;"><span style="font-family:var(--font-numeric); font-size:12px; color:var(--ink-muted);">05</span><span style="font-size:20px; font-weight:600; letter-spacing:-0.01em;">Components</span><span style="font-size:14px; color:var(--ink-muted);">Named as they will be in the build. BAU is a tick or chip; a project is a bar.</span></div>
+
+    <div style="display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); column-gap:72px; row-gap:0;">
+      <div style="padding:22px 0; border-top:1px solid var(--hairline);">
+        <div style="font-family:var(--font-numeric); font-size:12px; font-weight:500;">CapacityBar · day</div>
+        <div style="display:flex; flex-direction:column; gap:14px; margin-top:14px;">
+          <div><div style="display:flex; gap:2px; height:14px;"><sc-for list="{{ capA }}" as="c" hint-placeholder-count="3"><div style="width:{{ c.w }}; display:flex; gap:2px; border-radius:2px; background:{{ c.bg }}; box-shadow:inset 0 0 0 1px {{ c.line }}; overflow:hidden;"><sc-for list="{{ c.cells }}" as="k" hint-placeholder-count="0"><div style="flex:1; background:{{ k }}; border-radius:1.5px;"></div></sc-for></div></sc-for></div><div style="font-size:12px; color:var(--ink-muted); margin-top:6px;">Default · 6h BAU (notched) · 1h project (solid) · 1h free (outline)</div></div>
+          <div><div style="position:relative; display:flex; gap:2px; height:14px;"><sc-for list="{{ capB }}" as="c" hint-placeholder-count="2"><div style="width:{{ c.w }}; display:flex; gap:2px; border-radius:2px; background:{{ c.bg }}; box-shadow:inset 0 0 0 1px {{ c.line }}; overflow:hidden;"><sc-for list="{{ c.cells }}" as="k" hint-placeholder-count="0"><div style="flex:1; background:{{ k }}; border-radius:1.5px;"></div></sc-for></div></sc-for><div style="position:absolute; top:-5px; bottom:-5px; left:84.2%; width:1px; background:var(--ink);"></div></div><div style="font-size:12px; color:var(--overload); margin-top:6px;">Overload · 9.5h of 8h · the whole bar turns red and pulses once</div></div>
+        </div>
+      </div>
+      <div style="padding:22px 0; border-top:1px solid var(--hairline);">
+        <div style="font-family:var(--font-numeric); font-size:12px; font-weight:500;">CapacityBar · mini and strip</div>
+        <div style="display:flex; align-items:flex-end; gap:32px; margin-top:14px;">
+          <div style="width:160px;"><div style="display:flex; gap:1px; height:6px;"><span style="width:calc(75% - 1px); background:repeating-linear-gradient(to right, var(--pc-accent) 0 calc(16.66% - 1px), transparent calc(16.66% - 1px) 16.66%);"></span><span style="width:calc(25% - 1px); background:var(--pc-accent-soft); box-shadow:inset 0 0 0 1px var(--pc-accent);"></span></div><div style="font-family:var(--font-numeric); font-size:11px; color:var(--ink-muted); margin-top:6px;">8h of 8h</div></div>
+          <div style="display:flex; align-items:flex-end; gap:4px; height:56px;">
+            <sc-for list="{{ strip }}" as="s" hint-placeholder-count="6">
+              <div style="width:12px; display:flex; flex-direction:column-reverse; gap:1px;"><div style="height:{{ s.b }}px; background:repeating-linear-gradient(to top, {{ s.c }} 0 4px, transparent 4px 5px);"></div><div style="height:{{ s.p }}px; background:{{ s.soft }}; box-shadow:inset 0 0 0 1px {{ s.c }}; border-radius:1px;"></div></div>
+            </sc-for>
+          </div>
+          <span style="font-size:12px; color:var(--ink-muted); max-width:180px;">Timeline strip: one stacked bar per business day, 5px per hour.</span>
+        </div>
+      </div>
+
+      <div style="padding:22px 0; border-top:1px solid var(--hairline);">
+        <div style="font-family:var(--font-numeric); font-size:12px; font-weight:500;">TimelineBar · states</div>
+        <div style="display:flex; flex-direction:column; gap:14px; margin-top:14px;">
+          <sc-for list="{{ bars }}" as="b" hint-placeholder-count="4">
+            <div style="display:grid; grid-template-columns:90px minmax(0,1fr); align-items:center; column-gap:16px;">
+              <span style="font-size:13px; color:var(--ink-muted);">{{ b.label }}</span>
+              <div style="position:relative; height:16px;">
+                <div style="position:absolute; left:0; top:3px; height:10px; width:{{ b.w }}; border-radius:2px; background:{{ b.bg }}; box-sizing:border-box; border:{{ b.border }};"></div>
+                <div style="position:absolute; left:{{ b.w }}; top:3px; height:10px; width:{{ b.ow }}; border-radius:0 2px 2px 0; background:var(--risk);"></div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="padding:22px 0; border-top:1px solid var(--hairline);">
+        <div style="font-family:var(--font-numeric); font-size:12px; font-weight:500;">MilestoneDiamond · TargetMarker · BauTick · BauChip</div>
+        <div style="display:flex; align-items:center; gap:36px; margin-top:18px; flex-wrap:wrap;">
+          <span style="display:flex; align-items:center; gap:10px; font-size:13px; color:var(--ink-muted);"><span style="width:10px; height:10px; box-sizing:border-box; transform:rotate(45deg); border:1.5px solid var(--pc-accent); background:var(--paper);"></span>Upcoming</span>
+          <span style="display:flex; align-items:center; gap:10px; font-size:13px; color:var(--ink-muted);"><span style="width:10px; height:10px; box-sizing:border-box; transform:rotate(45deg); border:1.5px solid var(--pc-accent); background:var(--pc-accent);"></span>Passed</span>
+          <span style="display:flex; align-items:center; gap:10px; font-size:13px; color:var(--ink-muted);"><span style="width:13px; height:13px; transform:rotate(45deg); background:var(--pc-accent);"></span>Forecast end</span>
+          <span style="display:flex; align-items:center; gap:10px; font-size:13px; color:var(--ink-muted);"><span style="position:relative; width:7px; height:20px;"><span style="position:absolute; left:0; top:0; bottom:0; width:1px; background:var(--ink);"></span><span style="position:absolute; left:0; top:0; width:7px; height:1px; background:var(--ink);"></span></span>Target</span>
+          <span style="display:flex; align-items:center; gap:10px; font-size:13px; color:var(--ink-muted);"><span style="width:4px; height:18px; border-radius:2px; background:var(--pc-accent);"></span><span style="width:4px; height:18px; border-radius:2px; box-shadow:inset 0 0 0 1px var(--pc-accent);"></span>Tick, handed-over tick</span>
+          <span style="display:inline-flex; align-items:center; gap:5px; height:20px; padding:0 7px; border-radius:var(--radius-s); background:var(--pc-accent-soft); font-size:11px; font-weight:500;"><span style="width:3px; height:10px; background:var(--pc-accent); border-radius:1px;"></span>Returns · 6h</span>
+        </div>
+      </div>
+
+      <div style="padding:22px 0; border-top:1px solid var(--hairline);">
+        <div style="font-family:var(--font-numeric); font-size:12px; font-weight:500;">RotationSegment · RotationTile</div>
+        <div style="display:flex; gap:3px; margin-top:14px;">
+          <span style="width:120px; height:24px; box-sizing:border-box; border:1px solid var(--fi-accent); border-radius:2px; background:var(--fi-accent-soft); font-size:11px; font-weight:600; display:flex; align-items:center; padding-left:6px;">DE · Build</span>
+          <span style="width:100px; height:24px; box-sizing:border-box; border:1px solid var(--fi-accent); border-radius:2px; background:var(--fi-accent-soft); font-size:11px; font-weight:600; display:flex; align-items:center; padding-left:6px;">FR · Build</span>
+          <span style="width:60px; height:24px; box-sizing:border-box; border:1px dashed var(--fi-accent); border-radius:2px; font-size:11px; font-weight:600; display:flex; align-items:center; padding-left:6px;">DE · Refresh</span>
+        </div>
+        <div style="display:flex; gap:12px; margin-top:14px;">
+          <div style="width:200px; box-sizing:border-box; padding:12px 14px; border:1.5px solid var(--ink); border-radius:var(--radius-m); display:flex; flex-direction:column; gap:5px;"><div style="display:flex; justify-content:space-between;"><span style="font-family:var(--font-numeric); font-size:11px; color:var(--ink-muted);">01 · DE</span><span style="display:inline-flex; align-items:center; height:18px; padding:0 6px; border-radius:var(--radius-s); background:var(--fi-accent-soft); box-shadow:inset 0 0 0 1px var(--fi-accent); font-size:10px; font-weight:600;">Build</span></div><span style="font-size:16px; font-weight:500;">Germany</span><span style="font-family:var(--font-numeric); font-size:11px; color:var(--ink-muted);">4 Jan – 11 Jan · 6 BD</span></div>
+          <div style="width:200px; box-sizing:border-box; padding:12px 14px; border:1px solid var(--hairline); border-radius:var(--radius-m); display:flex; flex-direction:column; gap:5px;"><div style="display:flex; justify-content:space-between;"><span style="font-family:var(--font-numeric); font-size:11px; color:var(--ink-muted);">11 · DE</span><span style="display:inline-flex; align-items:center; height:18px; padding:0 6px; border-radius:var(--radius-s); box-shadow:inset 0 0 0 1px var(--fi-accent); font-size:10px; font-weight:600;">Refresh</span></div><span style="font-size:16px; font-weight:500;">Germany</span><span style="font-family:var(--font-numeric); font-size:11px; color:var(--ink-muted);">9 Mar – 11 Mar · 3 BD</span></div>
+        </div>
+      </div>
+      <div style="padding:22px 0; border-top:1px solid var(--hairline);">
+        <div style="font-family:var(--font-numeric); font-size:12px; font-weight:500;">DeltaChip · DomainTag · ConfidenceControl</div>
+        <div style="display:flex; align-items:center; gap:8px; margin-top:14px; flex-wrap:wrap;">
+          <span style="display:inline-flex; align-items:center; height:22px; padding:0 7px; border-radius:var(--radius-s); background:color-mix(in oklch, var(--risk) 22%, var(--paper)); color:color-mix(in oklch, var(--risk) 40%, var(--ink)); font-family:var(--font-numeric); font-size:11px; font-weight:500;">+3 BD</span>
+          <span style="display:inline-flex; align-items:center; height:22px; padding:0 7px; border-radius:var(--radius-s); box-shadow:inset 0 0 0 1px var(--hairline); color:var(--ink-muted); font-family:var(--font-numeric); font-size:11px; font-weight:500;">−1 BD</span>
+          <span style="display:inline-flex; align-items:center; height:22px; padding:0 7px; border-radius:var(--radius-s); box-shadow:inset 0 0 0 1px var(--hairline); color:var(--ink-muted); font-family:var(--font-numeric); font-size:11px; font-weight:500;">On target</span>
+          <span style="display:inline-flex; align-items:center; height:22px; padding:0 7px; border-radius:var(--radius-s); background:color-mix(in oklch, var(--overload) 14%, var(--paper)); color:color-mix(in oklch, var(--overload) 75%, var(--ink)); font-family:var(--font-numeric); font-size:11px; font-weight:500;">Overload</span>
+          <span style="width:16px;"></span>
+          <span style="display:inline-flex; align-items:center; gap:6px; height:22px; padding:0 8px; border-radius:var(--radius-s); background:var(--pc-accent-soft); font-size:11px; font-weight:600; letter-spacing:0.04em;"><span style="width:6px; height:6px; border-radius:50%; background:var(--pc-accent);"></span>Private Credit</span>
+          <span style="display:inline-flex; align-items:center; gap:6px; height:22px; padding:0 8px; border-radius:var(--radius-s); background:var(--fi-accent-soft); font-size:11px; font-weight:600; letter-spacing:0.04em;"><span style="width:6px; height:6px; border-radius:50%; background:var(--fi-accent);"></span>Fixed Income</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:28px; margin-top:16px;">
+          <div style="display:grid; grid-template-columns:repeat(5, 52px); gap:4px;">
+            <sc-for list="{{ confDemo }}" as="c" hint-placeholder-count="5"><button onClick="{{ c.pick }}" style="height:40px; border:1px solid {{ c.line }}; border-radius:var(--radius-s); background:{{ c.bg }}; color:{{ c.fg }}; font-size:15px; font-weight:600; cursor:pointer; transition:background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out);">{{ c.n }}</button></sc-for>
+          </div>
+        </div>
+      </div>
+
+      <div style="padding:22px 0; border-top:1px solid var(--hairline);">
+        <div style="font-family:var(--font-numeric); font-size:12px; font-weight:500;">GoalStatement · ProjectCard</div>
+        <div style="margin-top:14px; padding:18px 0; border-bottom:1px solid var(--hairline); display:grid; grid-template-columns:minmax(0,1fr) auto; column-gap:24px; align-items:end;">
+          <div><div style="font-size:13px; font-weight:600;">PC handover playbook</div><div style="font-family:var(--font-display); font-size:26px; line-height:1.28; margin-top:8px; text-wrap:pretty;">A successor can run every PC process alone from written runbooks.</div></div>
+          <div style="text-align:right;"><div style="font-size:15px; font-weight:500;">Fri 18 Dec</div><div style="font-size:13px; color:var(--ink-muted); margin-top:2px;">Run · 4/5 · 3 days ago</div></div>
+        </div>
+        <div style="padding:18px 0; display:grid; grid-template-columns:minmax(0,1fr) auto; column-gap:24px; align-items:end;">
+          <div><div style="display:flex; align-items:center; gap:10px;"><span style="font-size:13px; font-weight:600;">ManCo pack automation</span><span style="display:inline-flex; align-items:center; gap:6px; height:20px; padding:0 7px; border-radius:var(--radius-s); box-shadow:inset 0 0 0 1px color-mix(in oklch, var(--risk) 45%, var(--paper)); color:color-mix(in oklch, var(--risk) 45%, var(--ink)); font-size:11px; font-weight:500;">Stale · 9 days</span></div><div style="font-family:var(--font-display); font-size:26px; line-height:1.28; margin-top:8px; color:var(--ink-muted); text-wrap:pretty;">The ManCo pack builds itself from source data; the analyst only writes commentary.</div></div>
+          <div style="text-align:right;"><div style="font-size:15px; font-weight:500;">Fri 11 Dec</div><div style="font-size:13px; color:color-mix(in oklch, var(--risk) 45%, var(--ink)); margin-top:2px;">9 days ago</div></div>
+        </div>
+      </div>
+      <div style="padding:22px 0; border-top:1px solid var(--hairline);">
+        <div style="font-family:var(--font-numeric); font-size:12px; font-weight:500;">FeedItem · Tooltip · CheckInField</div>
+        <div style="display:grid; grid-template-columns:16px minmax(0,1fr) auto; column-gap:12px; padding:14px 0; border-bottom:1px solid var(--hairline); margin-top:6px;">
+          <span style="margin-top:6px; width:8px; height:8px; border-radius:50%; background:var(--risk);"></span>
+          <div><div style="display:flex; gap:10px; align-items:baseline;"><span style="font-size:15px; font-weight:600;">Returns pipeline</span><span style="font-family:var(--font-numeric); font-size:11px; color:var(--ink-muted);">Sat 3 Oct</span></div><div style="font-size:14px; line-height:1.45; color:var(--ink-muted); margin-top:3px;">Scope added (security-level attribution, +10h). Forecast moved 27 Nov → 2 Dec.</div></div>
+          <span style="display:inline-flex; align-items:center; height:22px; padding:0 7px; border-radius:var(--radius-s); background:color-mix(in oklch, var(--risk) 20%, var(--paper)); color:color-mix(in oklch, var(--risk) 45%, var(--ink)); font-family:var(--font-numeric); font-size:11px; font-weight:500;">+3 BD</span>
+        </div>
+        <div style="display:flex; gap:24px; margin-top:18px; align-items:flex-start;">
+          <div style="width:280px; padding:12px 14px; background:var(--paper-raised); border:1px solid var(--hairline); border-radius:var(--radius-m); box-shadow:0 12px 28px -18px color-mix(in oklch, var(--ink) 40%, transparent);">
+            <div style="display:flex; justify-content:space-between;"><span style="font-size:14px; font-weight:600;">Wed 4 Nov · BD3</span><span style="font-family:var(--font-numeric); font-size:11px; color:var(--overload);">Overload</span></div>
+            <div style="font-size:13px; line-height:1.45; color:var(--ink-muted); margin-top:4px;">Returns (BAU) · 6h</div>
+            <div style="font-size:13px; line-height:1.45; color:var(--ink-muted); margin-top:2px;">Returns pipeline · 3.5h</div>
+          </div>
+          <div style="flex:1; min-width:0;">
+            <div style="font-size:15px; font-weight:600;">Blockers</div>
+            <div style="margin-top:8px; height:40px; box-sizing:border-box; border:1px solid var(--focus); border-radius:var(--radius-m); background:var(--paper-raised); padding:0 12px; font-size:14px; display:flex; align-items:center;">Waiting on the security-level extract<span style="width:1px; height:18px; background:var(--ink); margin-left:2px;"></span></div>
+            <div style="font-size:12px; color:var(--ink-muted); margin-top:6px;">Focus state: 1px --focus border, no glow.</div>
+          </div>
+        </div>
+      </div>
+
+      <div style="padding:22px 0; border-top:1px solid var(--hairline);">
+        <div style="font-family:var(--font-numeric); font-size:12px; font-weight:500;">NavRail · PageHeader · CommandPalette</div>
+        <div style="display:flex; gap:24px; margin-top:14px; align-items:flex-start;">
+          <div style="display:flex; flex-direction:column; gap:4px; padding:10px 6px; border:1px solid var(--hairline); border-radius:var(--radius-m);">
+            <div style="width:64px; height:58px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px; background:var(--paper-raised); box-shadow:inset 0 0 0 1px var(--hairline); border-radius:var(--radius-m);"><span style="font-family:'Material Symbols Outlined'; font-size:22px; font-variation-settings:'wght' 300;">today</span><span style="font-size:11px; font-weight:500;">Today</span></div>
+            <div style="width:64px; height:58px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:5px; color:var(--ink-muted);"><span style="font-family:'Material Symbols Outlined'; font-size:22px; font-variation-settings:'wght' 300;">view_timeline</span><span style="font-size:11px; font-weight:500;">Timeline</span></div>
+          </div>
+          <div style="flex:1; min-width:0; display:flex; flex-direction:column; gap:14px;">
+            <div style="display:flex; align-items:center; gap:16px; height:48px; padding:0 16px; border:1px solid var(--hairline); border-radius:var(--radius-m);">
+              <span style="font-size:15px; font-weight:600;">Mon 5 Oct</span><span style="color:var(--ink-faint);">·</span><span style="font-family:var(--font-numeric); font-size:12px; color:var(--ink-muted);">BD3</span>
+              <span style="width:1px; height:18px; background:var(--hairline);"></span>
+              <span style="font-size:15px; font-weight:600;">61</span><span style="font-size:14px; color:var(--ink-muted);">business days to Fixed Income</span>
+              <span style="flex:1;"></span>
+              <span style="height:30px; padding:0 12px; border-radius:var(--radius-m); background:var(--ink); color:var(--paper); font-size:13px; font-weight:600; display:flex; align-items:center;">Check in</span>
+            </div>
+            <div style="border:1px solid var(--hairline); border-radius:var(--radius-m); background:var(--paper-raised); overflow:hidden;">
+              <div style="display:flex; align-items:center; gap:10px; height:44px; padding:0 14px; border-bottom:1px solid var(--hairline); font-size:15px;"><span style="font-family:'Material Symbols Outlined'; font-size:18px; color:var(--ink-muted);">search</span>+6h returns<span style="width:1px; height:16px; background:var(--ink);"></span></div>
+              <div style="padding:6px;"><div style="display:flex; align-items:center; gap:10px; height:34px; padding:0 10px; border-radius:var(--radius-s); background:color-mix(in oklch, var(--ink) 6%, var(--paper-raised)); font-size:13px;"><span style="width:7px; height:7px; border-radius:50%; background:var(--pc-accent);"></span><span style="flex:1;">Add 6h of scope to Returns pipeline</span><span style="font-family:var(--font-numeric); font-size:11px; color:var(--ink-muted);">check-in</span></div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="padding:22px 0; border-top:1px solid var(--hairline);">
+        <div style="font-family:var(--font-numeric); font-size:12px; font-weight:500;">EmptyState · written with care</div>
+        <div style="display:flex; flex-direction:column; gap:14px; margin-top:14px;">
+          <sc-for list="{{ empties }}" as="e" hint-placeholder-count="4">
+            <div style="display:grid; grid-template-columns:140px minmax(0,1fr); column-gap:20px; font-size:14px; line-height:1.5;">
+              <span style="font-size:12px; color:var(--ink-muted); padding-top:2px;">{{ e.where }}</span>
+              <span style="color:var(--ink-muted); text-wrap:pretty;">{{ e.text }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <div style="font-size:13px; line-height:1.5; color:var(--ink-muted); margin-top:18px;">Side panel (460px) and check-in drawer (1160px) slide from the right on --spring-soft over an 18% ink scrim; see them live in the app.</div>
+      </div>
+    </div>
+  </section>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { moved: true, flash: false, chip: false, conf: 3, run: 0 };
+  replay = () => {
+    clearTimeout(this.t1); clearTimeout(this.t2); clearTimeout(this.t3);
+    if (this.state.moved) { this.setState({ moved: false, flash: false, chip: false }); this.t1 = setTimeout(() => this.fire(), 700); }
+    else this.fire();
+  };
+  fire() {
+    this.setState({ moved: true, flash: true, chip: true, run: this.state.run + 1 });
+    this.t2 = setTimeout(() => this.setState({ flash: false }), 1000);
+    this.t3 = setTimeout(() => this.setState({ chip: false }), 5000);
+  }
+  componentWillUnmount() { clearTimeout(this.t1); clearTimeout(this.t2); clearTimeout(this.t3); }
+  renderVals() {
+    const s = this.state;
+    const pct = n => n + '%';
+    const TGT = 72, OLD = 72, NEW = 78;
+    const cg = [
+      { label: 'Paper and ink', note: 'Warm off-white paper, near-black ink. Saturation stays under 0.01.', items: [
+        { name: '--paper', value: 'oklch(0.975 0.007 85)', v: 'var(--paper)', role: 'Page background' },
+        { name: '--paper-raised', value: 'oklch(0.99 0.004 85)', v: 'var(--paper-raised)', role: 'Drawer preview, palette, inputs' },
+        { name: '--ink', value: 'oklch(0.23 0.012 70)', v: 'var(--ink)', role: 'Text, primary buttons, today' },
+        { name: '--ink-muted', value: 'oklch(0.47 0.012 70)', v: 'var(--ink-muted)', role: 'Secondary text · 6.3:1 on paper' },
+        { name: '--ink-faint', value: 'oklch(0.58 0.01 75)', v: 'var(--ink-faint)', role: 'Idle checkboxes, separators · not for body text' },
+        { name: '--hairline', value: 'oklch(0.9 0.008 80)', v: 'var(--hairline)', role: 'Rules and outlines' }] },
+      { label: 'Domains', note: 'One accent per domain; same lightness and chroma, different hue. Soft tints derive from the accent.', items: [
+        { name: '--pc-accent', value: 'oklch(0.5 0.1 128)', v: 'var(--pc-accent)', role: 'Private Credit' },
+        { name: '--pc-accent-soft', value: 'mix 13% into paper', v: 'var(--pc-accent-soft)', role: 'PC project fills, chips' },
+        { name: '--fi-accent', value: 'oklch(0.5 0.1 265)', v: 'var(--fi-accent)', role: 'Fixed Income' },
+        { name: '--fi-accent-soft', value: 'mix 13% into paper', v: 'var(--fi-accent-soft)', role: 'FI project fills, rotation' }] },
+      { label: 'Status', note: 'Used sparingly. Chip text mixes the status colour into ink so it holds 4.5:1.', items: [
+        { name: '--risk', value: 'oklch(0.7 0.13 70)', v: 'var(--risk)', role: 'At risk: overrun past target, stale' },
+        { name: '--overload', value: 'oklch(0.56 0.17 28)', v: 'var(--overload)', role: 'A day over 8h' },
+        { name: '--done', value: 'oklch(0.74 0.008 85)', v: 'var(--done)', role: 'Done: quiet strike-through' },
+        { name: '--focus', value: 'oklch(0.35 0.02 80)', v: 'var(--focus)', role: 'Focus border on inputs' }] }
+    ];
+    const typeScale = [
+      { spec: '52 / 1.1 · display', ff: 'var(--font-display)', fs: '52px', fw: 400, lh: 1.1, ls: '-0.015em', tt: 'none', fst: 'normal', sample: 'Monday 5 October', use: 'Day heading; workspace goal (48)' },
+      { spec: '26 / 1.28 · display', ff: 'var(--font-display)', fs: '26px', fw: 400, lh: 1.28, ls: '-0.005em', tt: 'none', fst: 'normal', sample: 'The ManCo pack builds itself from source data.', use: 'Goal statements in lists and panels' },
+      { spec: '20 / 1.3 · 600', ff: 'var(--font-ui)', fs: '20px', fw: 600, lh: 1.3, ls: '-0.01em', tt: 'none', fst: 'normal', sample: 'Today’s plan', use: 'Section titles, item titles (500)' },
+      { spec: '15 / 1.5 · 400', ff: 'var(--font-ui)', fs: '15px', fw: 400, lh: 1.5, ls: '0', tt: 'none', fst: 'normal', sample: 'Every Private Credit exit lands before 4 Jan.', use: 'Body, list rows' },
+      { spec: '13 / 1.45 · 400', ff: 'var(--font-ui)', fs: '13px', fw: 400, lh: 1.45, ls: '0', tt: 'none', fst: 'normal', sample: 'No check-in for 9 days.', use: 'Secondary text, legends' },
+      { spec: '11 / 1.3 · 600 caps', ff: 'var(--font-ui)', fs: '11px', fw: 600, lh: 1.3, ls: '0.08em', tt: 'uppercase', fst: 'normal', sample: 'Private Credit · Projects', use: 'Quiet section labels' },
+      { spec: '12 · numeric', ff: 'var(--font-numeric)', fs: '12px', fw: 400, lh: 1.4, ls: '0', tt: 'none', fst: 'normal', sample: 'BD3 · 6h · 27 Nov → 2 Dec', use: 'Dates, hours, business days' }
+    ];
+    const spaces = [1, 2, 3, 4, 5, 6, 7, 8].map((k, i) => ({ name: '--space-' + k, v: [4, 8, 12, 16, 24, 32, 48, 64][i] + 'px' }));
+    const motionTokens = [
+      { name: '--dur-fast', v: '140ms', note: 'Feedback: hover, press, tick fill, linked highlight.' },
+      { name: '--dur-base', v: '240ms', note: 'Fades, cross-fades, segmented pills.' },
+      { name: '--dur-slow', v: '440ms', note: 'Layout: glides, zoom, drawers. Nothing runs longer than 600ms.' },
+      { name: '--ease-out', v: 'cubic-bezier(.23,1,.32,1)', note: 'Opacity and colour. Kept in reduced motion.' },
+      { name: '--spring-soft', v: 'linear(…) no bounce', note: 'Critically damped spring. Motion: { type: "spring", bounce: 0, visualDuration: 0.35 } ≈ stiffness 180, damping 27.' }
+    ];
+    const motionSpec = [
+      { name: 'Plan moves', v: 'glide 440 spring · ghost 1000 hold + 400 fade · roll 440 spring · chip 180', note: 'Runs 220ms after the drawer closes so the eye is back on the plan. Only affected bars move.' },
+      { name: 'Linked highlight', v: 'opacity 140 ease-out → 0.28', note: 'Hovering a project anywhere dims everything that is not it: bars, capacity segments, chips, feed.' },
+      { name: 'Card → workspace', v: 'view transition 420 ease-out · root 220', note: 'The goal sentence is the shared element; it grows from 26px in the list to 48px in the header. Reduced motion: cross-fade.' },
+      { name: 'Timeline zoom', v: 'every x and width 440 spring', note: 'Columns, bars, ticks and header labels re-lay out together; no cut. Pan by week in two-week view.' },
+      { name: 'Capacity fill', v: 'width/height 440 spring · 90ms delay', note: 'Fills from empty on arrival. Overload pulses once (600ms ring, 450ms delay), then holds still.' },
+      { name: 'Arrival', v: '140 ease-out per block · 40 stagger · 340 total', note: 'First load only. Screens stay mounted, so switching screens is a 240ms cross-fade, not a replay.' },
+      { name: 'BAU tick', v: 'fill 140 · check 0.4 → 1, 180 cubic-bezier(.34,1.5,.64,1)', note: 'A small press-and-settle. Text drops to muted with a --done strike-through; progress count rolls.' },
+      { name: 'Reduced motion', v: '--spring-soft → steps(1, jump-start)', note: 'Movement resolves instantly; opacity cross-fades remain. Mirrors prefers-reduced-motion and the Motion tweak.' }
+    ];
+    const cap = (items, over) => items.map(([k, h, tot, d]) => {
+      const w = 'calc(' + (h / tot * 100) + '% - 2px)', c = d === 'fi' ? 'var(--fi-accent)' : 'var(--pc-accent)', soft = d === 'fi' ? 'var(--fi-accent-soft)' : 'var(--pc-accent-soft)';
+      if (k === 'bau') return { w, bg: 'transparent', line: 'transparent', cells: Array(Math.ceil(h)).fill(over ? 'var(--overload)' : c) };
+      if (k === 'proj') return { w, bg: over ? 'color-mix(in oklch, var(--overload) 20%, var(--paper))' : soft, line: over ? 'var(--overload)' : c, cells: [] };
+      return { w, bg: 'transparent', line: 'var(--hairline)', cells: [] };
+    });
+    const conf = s.conf;
+    return {
+      colourGroups: cg, typeScale, spaces, cols: Array(12).fill(0), motionTokens, motionSpec,
+      replay: this.replay, replayLabel: s.moved ? 'Replay' : 'Add +10h scope',
+      demo: {
+        fS: s.moved ? 'Wed 2 Dec' : 'Fri 27 Nov', delta: s.moved ? '+3 BD' : '0 BD',
+        chipBg: s.moved ? 'color-mix(in oklch, var(--risk) 22%, var(--paper))' : 'transparent', chipFg: s.moved ? 'color-mix(in oklch, var(--risk) 40%, var(--ink))' : 'var(--ink-muted)', chipLine: s.moved ? 'transparent' : 'var(--hairline)',
+        barW: pct(TGT), tgt: pct(TGT), overW: s.moved ? pct(NEW - TGT) : '0%', end: s.moved ? pct(NEW) : pct(OLD), endBg: s.moved ? 'var(--risk)' : 'var(--pc-accent)',
+        ghostW: pct(OLD), ghostO: s.moved ? (s.flash ? 1 : 0.55) : 0, oldEnd: pct(OLD), flashO: s.flash ? 1 : 0, flashT: s.flash ? 'opacity 0ms' : 'opacity 400ms var(--ease-out)',
+        chipX: pct(NEW), chipO: s.chip ? 1 : 0, chipS: s.chip ? 1 : 0.9
+      },
+      capA: cap([['bau', 6, 8], ['proj', 1, 8], ['free', 1, 8]], false),
+      capB: cap([['bau', 6, 9.5], ['proj', 3.5, 9.5]], true),
+      strip: [[6, 2], [0, 7], [0, 7], [4, 4], [6, 3.5], [4, 3]].map(([b, p], i) => ({ b: b * 5, p: p * 5, c: i === 4 ? 'var(--overload)' : 'var(--pc-accent)', soft: i === 4 ? 'color-mix(in oklch, var(--overload) 22%, var(--paper))' : 'var(--pc-accent-soft)' })),
+      bars: [
+        { label: 'On track', w: '70%', ow: '0%', bg: 'var(--pc-accent)', border: '0' },
+        { label: 'At risk', w: '62%', ow: '12%', bg: 'var(--pc-accent)', border: '0' },
+        { label: 'Done', w: '48%', ow: '0%', bg: 'var(--done)', border: '0' },
+        { label: 'Ghost', w: '62%', ow: '0%', bg: 'transparent', border: '1.5px dashed var(--pc-accent)' },
+        { label: 'No plan yet', w: '80%', ow: '0%', bg: 'repeating-linear-gradient(135deg, var(--fi-accent-soft) 0 4px, transparent 4px 8px)', border: '1px solid var(--fi-accent)' }
+      ],
+      confDemo: [1, 2, 3, 4, 5].map(k => ({ n: String(k), bg: conf === k ? 'var(--ink)' : 'var(--paper-raised)', fg: conf === k ? 'var(--paper)' : 'var(--ink)', line: conf === k ? 'var(--ink)' : 'var(--hairline)', pick: () => this.setState({ conf: k }) })),
+      phaseDemo: ['Define', 'Plan', 'Run', 'Close'].map((name, i) => ({ name, lineW: i === 0 ? '0px' : '18px', line: i <= 2 ? 'var(--ink)' : 'var(--hairline)', ring: i <= 2 ? 'var(--ink)' : 'var(--ink-faint)', fill: i < 2 ? 'var(--ink)' : 'var(--paper)', fw: i === 2 ? 600 : 400, fg: i === 2 ? 'var(--ink)' : i < 2 ? 'var(--ink-muted)' : 'var(--ink-faint)' })),
+      empties: [
+        { where: 'Scope log', text: 'No scope added since the charter. The plan is still the one you wrote.' },
+        { where: 'Check-in prompt', text: 'Every plan has had a check-in this week. Next due: FI onboarding, last checked 5 days ago.' },
+        { where: 'Charter, in scope', text: 'Not written yet. What must v0 do on its first day?' },
+        { where: 'Risks', text: 'No premortem yet. Picture January with this project abandoned, and write down the first reason that comes to mind.' }
+      ]
+    };
+  }
+}
+</script>
+</body>
+</html>

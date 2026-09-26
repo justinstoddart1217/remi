@@ -1,0 +1,15 @@
+/* Mirrors the prototype's inline `font-family:'Material Symbols Outlined'` spans, plus the
+   ligature-safety rules from Google's .material-symbols-outlined class. Size, line-height
+   and weight are left to the caller, as in the prototype. */
+.icon {
+  font-family: 'Material Symbols Outlined';
+  font-style: normal;
+  letter-spacing: normal;
+  text-transform: none;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+  user-select: none;
+}

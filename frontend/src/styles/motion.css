@@ -1,0 +1,63 @@
+/*
+ * Motion helpers shared by the screens (synthesis.motionSystem). The per-screen timing
+ * tables live in each screen's CSS module; these are the cross-cutting switches.
+ */
+
+/*
+ * Arrival (lib/arrival.ts). Stagger delays are written as
+ *   transition-delay: calc(var(--i) * 40ms * var(--stagger));
+ * --stagger is 1 until the root gets data-settled (900ms after arrival), then 0, so later
+ * changes (data refreshes, zoom) move without the arrival delays.
+ */
+:root {
+  --stagger: 1;
+}
+
+[data-settled] {
+  --stagger: 0;
+}
+
+/*
+ * Linked highlight (stores/hover.ts useDimmed). Elements add
+ * `opacity var(--dur-fast) var(--ease-out)` to their own transition list.
+ */
+:root [data-dim='true'] {
+  opacity: var(--linked-dim);
+}
+
+/*
+ * Reduced motion: --spring-soft already jumps (tokens.css); opacity fades stay. JS-driven
+ * translates, pulses and scale pops check useReducedMotion(). Smooth scrolling becomes
+ * instant.
+ */
+:root[data-motion='reduced'] {
+  scroll-behavior: auto;
+}
+
+:root[data-motion='reduced'] *,
+:root[data-motion='reduced'] *::before,
+:root[data-motion='reduced'] *::after {
+  scroll-behavior: auto !important;
+}
+
+/* Overload pulse: one 600ms ring, never looping. Delay per use via --pulse-delay. */
+.remi-pulse-once {
+  animation: remi-pulse 600ms var(--ease-out) var(--pulse-delay, 0ms) 1;
+}
+
+:root[data-motion='reduced'] .remi-pulse-once {
+  animation: none;
+}
+
+/* Visually hidden, still read by assistive tech (Roll's real value, icon-only labels). */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

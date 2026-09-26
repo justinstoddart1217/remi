@@ -1,0 +1,609 @@
+{
+  "about": "CheckIn.dc.html simple(text) (with validate()) over golden/corpus.mjs; focus = drawer focus project.",
+  "cases": [
+    {
+      "id": "harness-review",
+      "focus": null,
+      "text": "+6h returns, blocked on data access",
+      "result": {
+        "summary": "Here is what a simple reading picked out. Untick anything that is wrong.",
+        "changes": [
+          {
+            "type": "blocker",
+            "project_id": "fion",
+            "text": "data access"
+          }
+        ],
+        "unplaced": []
+      }
+    },
+    {
+      "id": "fx-attribution-scope",
+      "focus": "ret",
+      "text": "They want FX attribution too, about 6h.",
+      "result": {
+        "summary": "Here is what a simple reading picked out. Untick anything that is wrong.",
+        "changes": [
+          {
+            "type": "scope_add",
+            "project_id": "ret",
+            "text": "FX attribution too",
+            "hours": 6
+          }
+        ],
+        "unplaced": []
+      }
+    },
+    {
+      "id": "waiting-admin-extract",
+      "focus": "ret",
+      "text": "Still waiting on the admin extract.",
+      "result": {
+        "summary": "Here is what a simple reading picked out. Untick anything that is wrong.",
+        "changes": [
+          {
+            "type": "blocker",
+            "project_id": "ret",
+            "text": "the admin extract"
+          }
+        ],
+        "unplaced": []
+      }
+    },
+    {
+      "id": "push-playbook-target",
+      "focus": null,
+      "text": "Push the playbook target to 8 Jan.",
+      "result": {
+        "summary": "Here is what a simple reading picked out. Untick anything that is wrong.",
+        "changes": [
+          {
+            "type": "note",
+            "project_id": "play",
+            "text": "Push the playbook target to 8 Jan."
+          }
+        ],
+        "unplaced": []
+      }
+    },
+    {
+      "id": "manco-hours-a-day",
+      "focus": null,
+      "text": "I can give ManCo 2h a day now.",
+      "result": {
+        "summary": "Here is what a simple reading picked out. Untick anything that is wrong.",
+        "changes": [
+          {
+            "type": "hours_per_day",
+            "project_id": "manco",
+            "value": 2
+          }
+        ],
+        "unplaced": []
+      }
+    },
+    {
+      "id": "returns-bau-done",
+      "focus": null,
+      "text": "Returns are done for today.",
+      "result": {
+        "summary": "Here is what a simple reading picked out. Untick anything that is wrong.",
+        "changes": [
+          {
+            "type": "bau_done",
+            "routine_id": "r-ret"
+          }
+        ],
+        "unplaced": []
+      }
+    },
+    {
+      "id": "fx-share-classes-finished",
+      "focus": "ret",
+      "text": "Finished the FX share classes.",
+      "result": {
+        "summary": "Here is what a simple reading picked out. Untick anything that is wrong.",
+        "changes": [
+          {
+            "type": "task_done",
+            "project_id": "ret",
+            "task_id": "ret-5"
+          },
+          {
+            "type": "note",
+            "project_id": "ret",
+            "text": "Finished the FX share classes."
+          }
+        ],
+        "unplaced": []
+      }
+    },
+    {
+      "id": "nav-bridge-spec-sent",
+      "focus": null,
+      "text": "Sent the NAV bridge spec to Finance.",
+      "result": {
+        "summary": "Here is what a simple reading picked out. Untick anything that is wrong.",
+        "changes": [
+          {
+            "type": "task_done",
+            "project_id": "manco",
+            "task_id": "man-0"
+          },
+          {
+            "type": "task_done",
+            "project_id": "manco",
+            "task_id": "man-1"
+          },
+          {
+            "type": "note",
+            "project_id": "manco",
+            "text": "Sent the NAV bridge spec to Finance."
+          }
+        ],
+        "unplaced": []
+      }
+    },
+    {
+      "id": "extract-parsed",
+      "focus": "ret",
+      "text": "Parsed and validated the extract, all done.",
+      "result": {
+        "summary": "Here is what a simple reading picked out. Untick anything that is wrong.",
+        "changes": [
+          {
+            "type": "task_done",
+            "project_id": "ret",
+            "task_id": "ret-2"
+          },
+          {
+            "type": "note",
+            "project_id": "ret",
+            "text": "Parsed and validated the extract, all done."
+          }
+        ],
+        "unplaced": []
+      }
+    },
+    {
+      "id": "pipeline-confidence-2",
+      "focus": null,
+      "text": "Confidence is 2 on the pipeline now.",
+      "result": {
+        "summary": "Here is what a simple reading picked out. Untick anything that is wrong.",
+        "changes": [
+          {
+            "type": "confidence",
+            "project_id": "ret",
+            "value": 2
+          }
+        ],
+        "unplaced": []
+      }
+    },
+    {
+      "id": "playbook-slow-confidence",
+      "focus": null,
+      "text": "The playbook is going slowly. Confidence at 3.",
+      "result": {
+        "summary": "Here is what a simple reading picked out. Untick anything that is wrong.",
+        "changes": [
+          {
+            "type": "note",
+            "project_id": "play",
+            "text": "The playbook is going slowly."
+          },
+          {
+            "type": "confidence",
+            "project_id": "play",
+            "value": 3
+          }
+        ],
+        "unplaced": []
+      }
+    },
+    {
+      "id": "nav-bridge-blocked",
+      "focus": null,
+      "text": "Blocked by Finance sign-off on the NAV bridge.",
+      "result": {
+        "summary": "Here is what a simple reading picked out. Untick anything that is wrong.",
+        "changes": [
+          {
+            "type": "blocker",
+            "project_id": "manco",
+            "text": "finance sign-off on the nav bridge"
+          }
+        ],
+        "unplaced": []
+      }
+    },
+    {
+      "id": "entitlements-approved",
+      "focus": null,
+      "text": "Entitlement forms submitted and approved.",
+      "result": {
+        "summary": "Here is what a simple reading picked out. Untick anything that is wrong.",
+        "changes": [
+          {
+            "type": "note",
+            "project_id": "fion",
+            "text": "Entitlement forms submitted and approved."
+          }
+        ],
+        "unplaced": []
+      }
+    },
+    {
+      "id": "entitlements-done",
+      "focus": null,
+      "text": "Submitted the entitlement forms, done.",
+      "result": {
+        "summary": "Here is what a simple reading picked out. Untick anything that is wrong.",
+        "changes": [
+          {
+            "type": "note",
+            "project_id": "fion",
+            "text": "Submitted the entitlement forms, done."
+          }
+        ],
+        "unplaced": []
+      }
+    },
+    {
+      "id": "curve-sources-wrapped",
+      "focus": null,
+      "text": "Wrapped up agreeing the curve data sources with the FI desk.",
+      "result": {
+        "summary": "Here is what a simple reading picked out. Untick anything that is wrong.",
+        "changes": [
+          {
+            "type": "task_done",
+            "project_id": "fion",
+            "task_id": "fi-2"
+          },
+          {
+            "type": "note",
+            "project_id": "fion",
+            "text": "Wrapped up agreeing the curve data sources with the FI desk."
+          }
+        ],
+        "unplaced": []
+      }
+    },
+    {
+      "id": "alpha-can-wait",
+      "focus": null,
+      "text": "Alpha engine signal research can wait until January.",
+      "result": {
+        "summary": "Here is what a simple reading picked out. Untick anything that is wrong.",
+        "changes": [
+          {
+            "type": "note",
+            "project_id": "alpha",
+            "text": "Alpha engine signal research can wait until January."
+          }
+        ],
+        "unplaced": []
+      }
+    },
+    {
+      "id": "unrelated-chat",
+      "focus": null,
+      "text": "Had a good chat with the team about lunch.",
+      "result": {
+        "summary": "",
+        "changes": [],
+        "unplaced": [
+          "Had a good chat with the team about lunch."
+        ]
+      }
+    },
+    {
+      "id": "bd3-run-recorded",
+      "focus": "play",
+      "text": "Recorded the October BD3 run step by step, done.",
+      "result": {
+        "summary": "Here is what a simple reading picked out. Untick anything that is wrong.",
+        "changes": [
+          {
+            "type": "task_done",
+            "project_id": "play",
+            "task_id": "pl-1"
+          },
+          {
+            "type": "note",
+            "project_id": "play",
+            "text": "Recorded the October BD3 run step by step, done."
+          }
+        ],
+        "unplaced": []
+      }
+    },
+    {
+      "id": "successor-walkthrough-scope",
+      "focus": null,
+      "text": "The successor wants a walkthrough of the scheduler too, about 3 hours.",
+      "result": {
+        "summary": "Here is what a simple reading picked out. Untick anything that is wrong.",
+        "changes": [
+          {
+            "type": "scope_add",
+            "project_id": "play",
+            "text": "a walkthrough of the scheduler too",
+            "hours": 3
+          }
+        ],
+        "unplaced": []
+      }
+    },
+    {
+      "id": "attribution-extra-4h",
+      "focus": null,
+      "text": "Security-level attribution needs an extra 4h for FX.",
+      "result": {
+        "summary": "Here is what a simple reading picked out. Untick anything that is wrong.",
+        "changes": [
+          {
+            "type": "scope_add",
+            "project_id": "ret",
+            "text": "Security-level attribution needs an extra for FX",
+            "hours": 4
+          }
+        ],
+        "unplaced": []
+      }
+    },
+    {
+      "id": "manco-two-sentences",
+      "focus": null,
+      "text": "ManCo exposure tables are taking longer; waiting for source access. Confidence now 3.",
+      "result": {
+        "summary": "Here is what a simple reading picked out. Untick anything that is wrong.",
+        "changes": [
+          {
+            "type": "blocker",
+            "project_id": "manco",
+            "text": "source access"
+          },
+          {
+            "type": "confidence",
+            "project_id": "manco",
+            "value": 3
+          }
+        ],
+        "unplaced": []
+      }
+    },
+    {
+      "id": "returns-run-done",
+      "focus": null,
+      "text": "Returns run done, all 12 funds.",
+      "result": {
+        "summary": "Here is what a simple reading picked out. Untick anything that is wrong.",
+        "changes": [
+          {
+            "type": "bau_done",
+            "routine_id": "r-ret"
+          }
+        ],
+        "unplaced": []
+      }
+    },
+    {
+      "id": "pipeline-4h-a-day",
+      "focus": null,
+      "text": "I can give the pipeline 4 hours a day from Monday.",
+      "result": {
+        "summary": "Here is what a simple reading picked out. Untick anything that is wrong.",
+        "changes": [
+          {
+            "type": "hours_per_day",
+            "project_id": "ret",
+            "value": 4
+          }
+        ],
+        "unplaced": []
+      }
+    },
+    {
+      "id": "onboarding-stuck",
+      "focus": null,
+      "text": "Onboarding: data access still stuck with IT.",
+      "result": {
+        "summary": "Here is what a simple reading picked out. Untick anything that is wrong.",
+        "changes": [
+          {
+            "type": "blocker",
+            "project_id": "fion",
+            "text": "with it"
+          }
+        ],
+        "unplaced": []
+      }
+    },
+    {
+      "id": "source-files-mapped",
+      "focus": "ret",
+      "text": "Mapped source files for the last 4 funds, finished.",
+      "result": {
+        "summary": "Here is what a simple reading picked out. Untick anything that is wrong.",
+        "changes": [
+          {
+            "type": "task_done",
+            "project_id": "ret",
+            "task_id": "ret-3"
+          },
+          {
+            "type": "note",
+            "project_id": "ret",
+            "text": "Mapped source files for the last 4 funds, finished."
+          }
+        ],
+        "unplaced": []
+      }
+    },
+    {
+      "id": "cash-bridge-scope",
+      "focus": null,
+      "text": "New request from Finance: add a cash bridge to the ManCo pack, roughly 5h.",
+      "result": {
+        "summary": "Here is what a simple reading picked out. Untick anything that is wrong.",
+        "changes": [
+          {
+            "type": "scope_add",
+            "project_id": "manco",
+            "text": "a cash bridge to the ManCo pack",
+            "hours": 5
+          }
+        ],
+        "unplaced": []
+      }
+    },
+    {
+      "id": "september-reconciled",
+      "focus": "ret",
+      "text": "Reconciled September to administrator NAVs. Everything ties out.",
+      "result": {
+        "summary": "Here is what a simple reading picked out. Untick anything that is wrong.",
+        "changes": [
+          {
+            "type": "note",
+            "project_id": "ret",
+            "text": "Reconciled September to administrator NAVs."
+          },
+          {
+            "type": "note",
+            "project_id": "ret",
+            "text": "Everything ties out."
+          }
+        ],
+        "unplaced": []
+      }
+    },
+    {
+      "id": "performance-section-done",
+      "focus": "manco",
+      "text": "Templated the performance section and tested the build against the September pack, both done.",
+      "result": {
+        "summary": "Here is what a simple reading picked out. Untick anything that is wrong.",
+        "changes": [
+          {
+            "type": "task_done",
+            "project_id": "manco",
+            "task_id": "man-2"
+          },
+          {
+            "type": "task_done",
+            "project_id": "manco",
+            "task_id": "man-3"
+          },
+          {
+            "type": "note",
+            "project_id": "manco",
+            "text": "Templated the performance section and tested the build against the September pack, both done."
+          }
+        ],
+        "unplaced": []
+      }
+    },
+    {
+      "id": "dry-run-booked",
+      "focus": "fion",
+      "text": "Dry run for day one booked for 17 Dec.",
+      "result": {
+        "summary": "Here is what a simple reading picked out. Untick anything that is wrong.",
+        "changes": [
+          {
+            "type": "note",
+            "project_id": "fion",
+            "text": "Dry run for day one booked for 17 Dec."
+          }
+        ],
+        "unplaced": []
+      }
+    },
+    {
+      "id": "multi-line",
+      "focus": null,
+      "text": "Pipeline: engine now reconciles 11 of 12 funds.\nPlaybook: outline drafted.\nReturns are done for today.",
+      "result": {
+        "summary": "Here is what a simple reading picked out. Untick anything that is wrong.",
+        "changes": [
+          {
+            "type": "note",
+            "project_id": "ret",
+            "text": "Pipeline: engine now reconciles 11 of 12 funds."
+          },
+          {
+            "type": "note",
+            "project_id": "play",
+            "text": "Playbook: outline drafted."
+          },
+          {
+            "type": "bau_done",
+            "routine_id": "r-ret"
+          }
+        ],
+        "unplaced": []
+      }
+    },
+    {
+      "id": "confidence-unchanged",
+      "focus": null,
+      "text": "Target for the playbook moves to 8 January; confidence is 4.",
+      "result": {
+        "summary": "Here is what a simple reading picked out. Untick anything that is wrong.",
+        "changes": [],
+        "unplaced": []
+      }
+    },
+    {
+      "id": "mixed-focus-fallback",
+      "focus": "manco",
+      "text": "Exposure tables from source are half done. They also asked for a pipeline section, about 1.5h. Stuck on the NAV bridge sign-off.",
+      "result": {
+        "summary": "Here is what a simple reading picked out. Untick anything that is wrong.",
+        "changes": [
+          {
+            "type": "task_done",
+            "project_id": "manco",
+            "task_id": "man-1"
+          },
+          {
+            "type": "task_done",
+            "project_id": "manco",
+            "task_id": "man-4"
+          },
+          {
+            "type": "note",
+            "project_id": "manco",
+            "text": "Exposure tables from source are half done."
+          },
+          {
+            "type": "scope_add",
+            "project_id": "ret",
+            "text": "a pipeline section",
+            "hours": 1.5
+          },
+          {
+            "type": "blocker",
+            "project_id": "manco",
+            "text": "the nav bridge sign-off"
+          }
+        ],
+        "unplaced": []
+      }
+    },
+    {
+      "id": "empty",
+      "focus": "manco",
+      "text": "   ",
+      "result": {
+        "summary": "",
+        "changes": [],
+        "unplaced": []
+      }
+    }
+  ]
+}

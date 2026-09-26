@@ -1,0 +1,207 @@
+.body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  margin-top: 14px;
+}
+.body > * {
+  max-width: 100%;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* The brand eyebrow (Eyebrow's default tone). */
+.label {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--brand-dark);
+}
+.note {
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+
+.rollRow {
+  display: flex;
+  align-items: baseline;
+  gap: 32px;
+  font-size: 26px;
+  font-weight: 500;
+}
+.rollValue {
+  display: inline-flex;
+}
+
+.checkRows {
+  align-self: stretch;
+}
+.checkRow {
+  width: 100%;
+  height: 40px;
+  border-bottom: 1px solid var(--hairline);
+  font-size: 15px;
+}
+.taskLabel {
+  flex: 1;
+}
+.hours {
+  margin-left: auto;
+  font-family: var(--font-numeric);
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+
+.legend {
+  margin-top: -2px;
+}
+.body > [role='img'] {
+  align-self: stretch;
+}
+.cellRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 160px;
+}
+.cellLabel {
+  font-family: var(--font-numeric);
+  font-size: 10px;
+  color: var(--ink-muted);
+  min-width: 30px;
+  text-align: right;
+}
+.decor {
+  align-self: stretch;
+  position: relative;
+  height: 44px;
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+}
+
+.tickText {
+  padding-left: 8px;
+}
+
+.titles {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+/* A mono eyebrow sits on the deep brand panel it was drawn for. */
+.brandPanel {
+  padding: 12px 16px;
+  background: var(--brand-deep);
+}
+
+.rules {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.nameField {
+  width: calc(100% + 12px);
+  margin: 0 -6px;
+  padding: 2px 6px;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+.body > .nameField {
+  align-self: stretch;
+}
+.hoursField {
+  display: flex;
+  align-items: baseline;
+  font-size: 24px;
+  font-weight: 500;
+}
+.hoursInput {
+  margin-left: -6px;
+  padding: 0 2px 0 6px;
+  font-size: 24px;
+  font-weight: 500;
+}
+.whyField {
+  width: calc(100% + 12px);
+  margin: 0 -6px;
+  padding: 3px 6px;
+  font-size: 15px;
+  line-height: 1.55;
+}
+.body > .whyField,
+.stretch {
+  align-self: stretch;
+}
+
+.pickerRoot {
+  align-self: stretch;
+  position: relative;
+  min-height: 40px;
+}
+.dateTrigger {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  border: 0;
+  background: transparent;
+  font-family: var(--font-numeric);
+  font-size: 11px;
+  color: var(--ink-muted);
+  padding: 2px 4px;
+  border-radius: var(--radius-s);
+  cursor: pointer;
+}
+.dateTrigger:hover {
+  background: color-mix(in oklch, var(--ink) 5%, transparent);
+  color: var(--ink);
+}
+
+.frame {
+  align-self: stretch;
+  position: relative;
+  height: 340px;
+  overflow: hidden;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-m);
+  padding: 16px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.hoverRow {
+  display: flex;
+  gap: 12px;
+}
+.hoverTarget {
+  flex: 1;
+  height: 72px;
+  display: grid;
+  place-items: center;
+  border: 1px dashed var(--hairline);
+  border-radius: var(--radius-m);
+  font-size: 13px;
+  color: var(--ink-muted);
+}
+.panelTitle {
+  margin: 22px 0 10px;
+  font-family: var(--font-display);
+  font-size: 24px;
+  line-height: 1.3;
+}
+.lineCount {
+  font-size: 12px;
+  color: var(--ink-muted);
+}

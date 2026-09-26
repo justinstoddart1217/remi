@@ -1,0 +1,3736 @@
+{
+  "about": "Scripted mutations on a fresh shell; model summary before and after each step.",
+  "scenarios": [
+    {
+      "id": "checkin-ret-scope-6h",
+      "about": "applyCheckIn with 6h of new scope on the returns pipeline (prototype ceil(h/rate) slip)",
+      "before": {
+        "projects": [
+          {
+            "id": "ret",
+            "forecast": "2026-12-02",
+            "prev": "2026-11-27",
+            "target": "2026-11-27",
+            "delta": 3,
+            "deltaLabel": "+3 BD",
+            "status": "risk",
+            "rate": 3.5,
+            "bd3": 0,
+            "bd8": 2,
+            "rateAfter": 0,
+            "confidence": 3,
+            "checkin": "2026-10-03",
+            "since": 2,
+            "stale": false,
+            "added": 10,
+            "growth": 17,
+            "lastScope": {
+              "date": "2026-10-03",
+              "what": "Security-level attribution",
+              "h": 10,
+              "bd": 3,
+              "from": "27 Nov",
+              "to": "2 Dec"
+            },
+            "lastCheckin": {
+              "date": "2026-10-03",
+              "note": "Security-level attribution added to scope, +10h.",
+              "forecast": "2026-12-02",
+              "conf": 3,
+              "ms": [
+                {
+                  "name": "Fund-level engine reconciles",
+                  "date": "2026-10-16"
+                },
+                {
+                  "name": "Parallel run on November BD3",
+                  "date": "2026-11-04"
+                },
+                {
+                  "name": "Security-level attribution",
+                  "date": "2026-11-20"
+                }
+              ]
+            },
+            "nowTasks": [
+              "ret-1",
+              "ret-2",
+              "ret-3",
+              "ret-4",
+              "ret-5"
+            ]
+          },
+          {
+            "id": "manco",
+            "forecast": "2026-12-11",
+            "prev": null,
+            "target": "2026-12-11",
+            "delta": 0,
+            "deltaLabel": "On target",
+            "status": "on",
+            "rate": 1.5,
+            "bd3": 2,
+            "bd8": 1.5,
+            "rateAfter": 0,
+            "confidence": 4,
+            "checkin": "2026-09-26",
+            "since": 9,
+            "stale": true,
+            "added": 0,
+            "growth": 0,
+            "lastScope": null,
+            "lastCheckin": {
+              "date": "2026-09-26",
+              "note": "Pack inventoried: 14 of 22 charts come straight from source.",
+              "forecast": "2026-12-11",
+              "conf": 4
+            },
+            "nowTasks": [
+              "man-0",
+              "man-1",
+              "man-2",
+              "man-3",
+              "man-4"
+            ]
+          },
+          {
+            "id": "play",
+            "forecast": "2026-12-18",
+            "prev": null,
+            "target": "2026-12-18",
+            "delta": 0,
+            "deltaLabel": "On target",
+            "status": "on",
+            "rate": 1,
+            "bd3": 0,
+            "bd8": 0.5,
+            "rateAfter": 0,
+            "confidence": 4,
+            "checkin": "2026-10-02",
+            "since": 3,
+            "stale": false,
+            "added": 0,
+            "growth": 0,
+            "lastScope": null,
+            "lastCheckin": {
+              "date": "2026-10-02",
+              "note": "Recorded the September BD3 run as raw notes.",
+              "forecast": "2026-12-18",
+              "conf": 4
+            },
+            "nowTasks": [
+              "pl-1",
+              "pl-2"
+            ]
+          },
+          {
+            "id": "fion",
+            "forecast": "2027-01-04",
+            "prev": null,
+            "target": "2027-01-04",
+            "delta": 0,
+            "deltaLabel": "On target",
+            "status": "on",
+            "rate": 1,
+            "bd3": 0,
+            "bd8": 0,
+            "rateAfter": 1,
+            "confidence": 4,
+            "checkin": "2026-09-30",
+            "since": 5,
+            "stale": false,
+            "added": 0,
+            "growth": 0,
+            "lastScope": null,
+            "lastCheckin": {
+              "date": "2026-09-30",
+              "note": "Market data entitlements approved; feeds pending.",
+              "forecast": "2027-01-04",
+              "conf": 4
+            },
+            "nowTasks": [
+              "fi-1",
+              "fi-2"
+            ]
+          },
+          {
+            "id": "alpha",
+            "forecast": null,
+            "prev": null,
+            "target": "2027-03-25",
+            "delta": null,
+            "deltaLabel": "No forecast",
+            "status": "define",
+            "rate": 2,
+            "bd3": 0,
+            "bd8": 0,
+            "rateAfter": 3,
+            "confidence": null,
+            "checkin": null,
+            "since": null,
+            "stale": false,
+            "added": 0,
+            "growth": 0,
+            "lastScope": null,
+            "lastCheckin": null,
+            "nowTasks": []
+          }
+        ],
+        "verdict": {
+          "word": "Move on track, narrowly",
+          "buffer": 8,
+          "toRun": 1
+        },
+        "upcoming": [
+          {
+            "iso": "2026-11-04",
+            "s": "Wed 4 Nov",
+            "bdm": 3,
+            "total": 9.5
+          }
+        ],
+        "attention": [
+          "a-ret",
+          "o-2026-11-04",
+          "s-manco"
+        ],
+        "feedHead": [
+          {
+            "id": "f1",
+            "pid": "ret",
+            "kind": "scope",
+            "title": "Returns pipeline",
+            "body": "Scope added (security-level attribution, +10h). Forecast moved 27 Nov → 2 Dec.",
+            "delta": "+3 BD",
+            "tone": "risk",
+            "when": "Sat 3 Oct"
+          },
+          {
+            "id": "f2",
+            "pid": "manco",
+            "kind": "stale",
+            "title": "ManCo pack automation",
+            "body": "No check-in for 9 days.",
+            "delta": "9 days",
+            "tone": "quiet",
+            "when": "Today"
+          }
+        ],
+        "tasks": {
+          "ret-1": true,
+          "fi-1": true
+        },
+        "doneOn": {
+          "ret-1": "2026-10-01",
+          "fi-1": "2026-10-02"
+        },
+        "bauDone": {},
+        "fundsDone": 5,
+        "flash": {},
+        "moved": {}
+      },
+      "after": [
+        {
+          "projects": [
+            {
+              "id": "ret",
+              "forecast": "2026-12-04",
+              "prev": "2026-12-02",
+              "target": "2026-11-27",
+              "delta": 5,
+              "deltaLabel": "+5 BD",
+              "status": "risk",
+              "rate": 3.5,
+              "bd3": 0,
+              "bd8": 2,
+              "rateAfter": 0,
+              "confidence": 3,
+              "checkin": "2026-10-05",
+              "since": 0,
+              "stale": false,
+              "added": 16,
+              "growth": 27,
+              "blocker": null,
+              "lastScope": {
+                "date": "2026-10-05",
+                "what": "FX attribution",
+                "h": 6,
+                "bd": 2,
+                "from": "2 Dec",
+                "to": "4 Dec"
+              },
+              "lastCheckin": {
+                "date": "2026-10-05",
+                "note": "FX attribution added, +6h",
+                "forecast": "2026-12-04",
+                "conf": 3
+              },
+              "nowTasks": [
+                "ret-1",
+                "ret-2",
+                "ret-3",
+                "ret-4",
+                "ret-5"
+              ]
+            },
+            {
+              "id": "manco",
+              "forecast": "2026-12-11",
+              "prev": null,
+              "target": "2026-12-11",
+              "delta": 0,
+              "deltaLabel": "On target",
+              "status": "on",
+              "rate": 1.5,
+              "bd3": 2,
+              "bd8": 1.5,
+              "rateAfter": 0,
+              "confidence": 4,
+              "checkin": "2026-09-26",
+              "since": 9,
+              "stale": true,
+              "added": 0,
+              "growth": 0,
+              "lastScope": null,
+              "lastCheckin": {
+                "date": "2026-09-26",
+                "note": "Pack inventoried: 14 of 22 charts come straight from source.",
+                "forecast": "2026-12-11",
+                "conf": 4
+              },
+              "nowTasks": [
+                "man-0",
+                "man-1",
+                "man-2",
+                "man-3",
+                "man-4"
+              ]
+            },
+            {
+              "id": "play",
+              "forecast": "2026-12-18",
+              "prev": null,
+              "target": "2026-12-18",
+              "delta": 0,
+              "deltaLabel": "On target",
+              "status": "on",
+              "rate": 1,
+              "bd3": 0,
+              "bd8": 0.5,
+              "rateAfter": 0,
+              "confidence": 4,
+              "checkin": "2026-10-02",
+              "since": 3,
+              "stale": false,
+              "added": 0,
+              "growth": 0,
+              "lastScope": null,
+              "lastCheckin": {
+                "date": "2026-10-02",
+                "note": "Recorded the September BD3 run as raw notes.",
+                "forecast": "2026-12-18",
+                "conf": 4
+              },
+              "nowTasks": [
+                "pl-1",
+                "pl-2"
+              ]
+            },
+            {
+              "id": "fion",
+              "forecast": "2027-01-04",
+              "prev": null,
+              "target": "2027-01-04",
+              "delta": 0,
+              "deltaLabel": "On target",
+              "status": "on",
+              "rate": 1,
+              "bd3": 0,
+              "bd8": 0,
+              "rateAfter": 1,
+              "confidence": 4,
+              "checkin": "2026-09-30",
+              "since": 5,
+              "stale": false,
+              "added": 0,
+              "growth": 0,
+              "lastScope": null,
+              "lastCheckin": {
+                "date": "2026-09-30",
+                "note": "Market data entitlements approved; feeds pending.",
+                "forecast": "2027-01-04",
+                "conf": 4
+              },
+              "nowTasks": [
+                "fi-1",
+                "fi-2"
+              ]
+            },
+            {
+              "id": "alpha",
+              "forecast": null,
+              "prev": null,
+              "target": "2027-03-25",
+              "delta": null,
+              "deltaLabel": "No forecast",
+              "status": "define",
+              "rate": 2,
+              "bd3": 0,
+              "bd8": 0,
+              "rateAfter": 3,
+              "confidence": null,
+              "checkin": null,
+              "since": null,
+              "stale": false,
+              "added": 0,
+              "growth": 0,
+              "lastScope": null,
+              "lastCheckin": null,
+              "nowTasks": []
+            }
+          ],
+          "verdict": {
+            "word": "Move at risk",
+            "buffer": 8,
+            "toRun": -1
+          },
+          "upcoming": [
+            {
+              "iso": "2026-11-04",
+              "s": "Wed 4 Nov",
+              "bdm": 3,
+              "total": 9.5
+            },
+            {
+              "iso": "2026-12-04",
+              "s": "Fri 4 Dec",
+              "bdm": 4,
+              "total": 9
+            }
+          ],
+          "attention": [
+            "a-ret",
+            "o-2026-11-04",
+            "o-2026-12-04",
+            "s-manco"
+          ],
+          "feedHead": [
+            {
+              "id": "f1791189000000",
+              "pid": "ret",
+              "kind": "scope",
+              "title": "Returns pipeline",
+              "body": "Scope added (fx attribution, +6h). Forecast moved 2 Dec → 4 Dec.",
+              "delta": "+2 BD",
+              "tone": "risk",
+              "when": "Just now"
+            },
+            {
+              "id": "f1",
+              "pid": "ret",
+              "kind": "scope",
+              "title": "Returns pipeline",
+              "body": "Scope added (security-level attribution, +10h). Forecast moved 27 Nov → 2 Dec.",
+              "delta": "+3 BD",
+              "tone": "risk",
+              "when": "Sat 3 Oct"
+            }
+          ],
+          "tasks": {
+            "ret-1": true,
+            "fi-1": true
+          },
+          "doneOn": {
+            "ret-1": "2026-10-01",
+            "fi-1": "2026-10-02"
+          },
+          "bauDone": {},
+          "fundsDone": 5,
+          "flash": {
+            "ret": true
+          },
+          "moved": {
+            "ret": {
+              "delta": 2,
+              "label": "+2 BD",
+              "at": 1791189000000
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "palette-6h-returns-apply",
+      "about": "Palette \"+6h returns\" prefill, read by the simple reader with focus ret, then applied",
+      "before": {
+        "projects": [
+          {
+            "id": "ret",
+            "forecast": "2026-12-02",
+            "prev": "2026-11-27",
+            "target": "2026-11-27",
+            "delta": 3,
+            "deltaLabel": "+3 BD",
+            "status": "risk",
+            "rate": 3.5,
+            "bd3": 0,
+            "bd8": 2,
+            "rateAfter": 0,
+            "confidence": 3,
+            "checkin": "2026-10-03",
+            "since": 2,
+            "stale": false,
+            "added": 10,
+            "growth": 17,
+            "lastScope": {
+              "date": "2026-10-03",
+              "what": "Security-level attribution",
+              "h": 10,
+              "bd": 3,
+              "from": "27 Nov",
+              "to": "2 Dec"
+            },
+            "lastCheckin": {
+              "date": "2026-10-03",
+              "note": "Security-level attribution added to scope, +10h.",
+              "forecast": "2026-12-02",
+              "conf": 3,
+              "ms": [
+                {
+                  "name": "Fund-level engine reconciles",
+                  "date": "2026-10-16"
+                },
+                {
+                  "name": "Parallel run on November BD3",
+                  "date": "2026-11-04"
+                },
+                {
+                  "name": "Security-level attribution",
+                  "date": "2026-11-20"
+                }
+              ]
+            },
+            "nowTasks": [
+              "ret-1",
+              "ret-2",
+              "ret-3",
+              "ret-4",
+              "ret-5"
+            ]
+          },
+          {
+            "id": "manco",
+            "forecast": "2026-12-11",
+            "prev": null,
+            "target": "2026-12-11",
+            "delta": 0,
+            "deltaLabel": "On target",
+            "status": "on",
+            "rate": 1.5,
+            "bd3": 2,
+            "bd8": 1.5,
+            "rateAfter": 0,
+            "confidence": 4,
+            "checkin": "2026-09-26",
+            "since": 9,
+            "stale": true,
+            "added": 0,
+            "growth": 0,
+            "lastScope": null,
+            "lastCheckin": {
+              "date": "2026-09-26",
+              "note": "Pack inventoried: 14 of 22 charts come straight from source.",
+              "forecast": "2026-12-11",
+              "conf": 4
+            },
+            "nowTasks": [
+              "man-0",
+              "man-1",
+              "man-2",
+              "man-3",
+              "man-4"
+            ]
+          },
+          {
+            "id": "play",
+            "forecast": "2026-12-18",
+            "prev": null,
+            "target": "2026-12-18",
+            "delta": 0,
+            "deltaLabel": "On target",
+            "status": "on",
+            "rate": 1,
+            "bd3": 0,
+            "bd8": 0.5,
+            "rateAfter": 0,
+            "confidence": 4,
+            "checkin": "2026-10-02",
+            "since": 3,
+            "stale": false,
+            "added": 0,
+            "growth": 0,
+            "lastScope": null,
+            "lastCheckin": {
+              "date": "2026-10-02",
+              "note": "Recorded the September BD3 run as raw notes.",
+              "forecast": "2026-12-18",
+              "conf": 4
+            },
+            "nowTasks": [
+              "pl-1",
+              "pl-2"
+            ]
+          },
+          {
+            "id": "fion",
+            "forecast": "2027-01-04",
+            "prev": null,
+            "target": "2027-01-04",
+            "delta": 0,
+            "deltaLabel": "On target",
+            "status": "on",
+            "rate": 1,
+            "bd3": 0,
+            "bd8": 0,
+            "rateAfter": 1,
+            "confidence": 4,
+            "checkin": "2026-09-30",
+            "since": 5,
+            "stale": false,
+            "added": 0,
+            "growth": 0,
+            "lastScope": null,
+            "lastCheckin": {
+              "date": "2026-09-30",
+              "note": "Market data entitlements approved; feeds pending.",
+              "forecast": "2027-01-04",
+              "conf": 4
+            },
+            "nowTasks": [
+              "fi-1",
+              "fi-2"
+            ]
+          },
+          {
+            "id": "alpha",
+            "forecast": null,
+            "prev": null,
+            "target": "2027-03-25",
+            "delta": null,
+            "deltaLabel": "No forecast",
+            "status": "define",
+            "rate": 2,
+            "bd3": 0,
+            "bd8": 0,
+            "rateAfter": 3,
+            "confidence": null,
+            "checkin": null,
+            "since": null,
+            "stale": false,
+            "added": 0,
+            "growth": 0,
+            "lastScope": null,
+            "lastCheckin": null,
+            "nowTasks": []
+          }
+        ],
+        "verdict": {
+          "word": "Move on track, narrowly",
+          "buffer": 8,
+          "toRun": 1
+        },
+        "upcoming": [
+          {
+            "iso": "2026-11-04",
+            "s": "Wed 4 Nov",
+            "bdm": 3,
+            "total": 9.5
+          }
+        ],
+        "attention": [
+          "a-ret",
+          "o-2026-11-04",
+          "s-manco"
+        ],
+        "feedHead": [
+          {
+            "id": "f1",
+            "pid": "ret",
+            "kind": "scope",
+            "title": "Returns pipeline",
+            "body": "Scope added (security-level attribution, +10h). Forecast moved 27 Nov → 2 Dec.",
+            "delta": "+3 BD",
+            "tone": "risk",
+            "when": "Sat 3 Oct"
+          },
+          {
+            "id": "f2",
+            "pid": "manco",
+            "kind": "stale",
+            "title": "ManCo pack automation",
+            "body": "No check-in for 9 days.",
+            "delta": "9 days",
+            "tone": "quiet",
+            "when": "Today"
+          }
+        ],
+        "tasks": {
+          "ret-1": true,
+          "fi-1": true
+        },
+        "doneOn": {
+          "ret-1": "2026-10-01",
+          "fi-1": "2026-10-02"
+        },
+        "bauDone": {},
+        "fundsDone": 5,
+        "flash": {},
+        "moved": {}
+      },
+      "after": [
+        {
+          "projects": [
+            {
+              "id": "ret",
+              "forecast": "2026-12-04",
+              "prev": "2026-12-02",
+              "target": "2026-11-27",
+              "delta": 5,
+              "deltaLabel": "+5 BD",
+              "status": "risk",
+              "rate": 3.5,
+              "bd3": 0,
+              "bd8": 2,
+              "rateAfter": 0,
+              "confidence": 3,
+              "checkin": "2026-10-05",
+              "since": 0,
+              "stale": false,
+              "added": 16,
+              "growth": 27,
+              "blocker": null,
+              "lastScope": {
+                "date": "2026-10-05",
+                "what": "New scope on Returns pipeline: FX attribution",
+                "h": 6,
+                "bd": 2,
+                "from": "2 Dec",
+                "to": "4 Dec"
+              },
+              "lastCheckin": {
+                "date": "2026-10-05",
+                "note": "New scope on Returns pipeline: FX attribution added, +6h",
+                "forecast": "2026-12-04",
+                "conf": 3
+              },
+              "nowTasks": [
+                "ret-1",
+                "ret-2",
+                "ret-3",
+                "ret-4",
+                "ret-5"
+              ]
+            },
+            {
+              "id": "manco",
+              "forecast": "2026-12-11",
+              "prev": null,
+              "target": "2026-12-11",
+              "delta": 0,
+              "deltaLabel": "On target",
+              "status": "on",
+              "rate": 1.5,
+              "bd3": 2,
+              "bd8": 1.5,
+              "rateAfter": 0,
+              "confidence": 4,
+              "checkin": "2026-09-26",
+              "since": 9,
+              "stale": true,
+              "added": 0,
+              "growth": 0,
+              "lastScope": null,
+              "lastCheckin": {
+                "date": "2026-09-26",
+                "note": "Pack inventoried: 14 of 22 charts come straight from source.",
+                "forecast": "2026-12-11",
+                "conf": 4
+              },
+              "nowTasks": [
+                "man-0",
+                "man-1",
+                "man-2",
+                "man-3",
+                "man-4"
+              ]
+            },
+            {
+              "id": "play",
+              "forecast": "2026-12-18",
+              "prev": null,
+              "target": "2026-12-18",
+              "delta": 0,
+              "deltaLabel": "On target",
+              "status": "on",
+              "rate": 1,
+              "bd3": 0,
+              "bd8": 0.5,
+              "rateAfter": 0,
+              "confidence": 4,
+              "checkin": "2026-10-02",
+              "since": 3,
+              "stale": false,
+              "added": 0,
+              "growth": 0,
+              "lastScope": null,
+              "lastCheckin": {
+                "date": "2026-10-02",
+                "note": "Recorded the September BD3 run as raw notes.",
+                "forecast": "2026-12-18",
+                "conf": 4
+              },
+              "nowTasks": [
+                "pl-1",
+                "pl-2"
+              ]
+            },
+            {
+              "id": "fion",
+              "forecast": "2027-01-04",
+              "prev": null,
+              "target": "2027-01-04",
+              "delta": 0,
+              "deltaLabel": "On target",
+              "status": "on",
+              "rate": 1,
+              "bd3": 0,
+              "bd8": 0,
+              "rateAfter": 1,
+              "confidence": 4,
+              "checkin": "2026-09-30",
+              "since": 5,
+              "stale": false,
+              "added": 0,
+              "growth": 0,
+              "lastScope": null,
+              "lastCheckin": {
+                "date": "2026-09-30",
+                "note": "Market data entitlements approved; feeds pending.",
+                "forecast": "2027-01-04",
+                "conf": 4
+              },
+              "nowTasks": [
+                "fi-1",
+                "fi-2"
+              ]
+            },
+            {
+              "id": "alpha",
+              "forecast": null,
+              "prev": null,
+              "target": "2027-03-25",
+              "delta": null,
+              "deltaLabel": "No forecast",
+              "status": "define",
+              "rate": 2,
+              "bd3": 0,
+              "bd8": 0,
+              "rateAfter": 3,
+              "confidence": null,
+              "checkin": null,
+              "since": null,
+              "stale": false,
+              "added": 0,
+              "growth": 0,
+              "lastScope": null,
+              "lastCheckin": null,
+              "nowTasks": []
+            }
+          ],
+          "verdict": {
+            "word": "Move at risk",
+            "buffer": 8,
+            "toRun": -1
+          },
+          "upcoming": [
+            {
+              "iso": "2026-11-04",
+              "s": "Wed 4 Nov",
+              "bdm": 3,
+              "total": 9.5
+            },
+            {
+              "iso": "2026-12-04",
+              "s": "Fri 4 Dec",
+              "bdm": 4,
+              "total": 9
+            }
+          ],
+          "attention": [
+            "a-ret",
+            "o-2026-11-04",
+            "o-2026-12-04",
+            "s-manco"
+          ],
+          "feedHead": [
+            {
+              "id": "f1791189000000",
+              "pid": "ret",
+              "kind": "scope",
+              "title": "Returns pipeline",
+              "body": "Scope added (new scope on returns pipeline: fx attribution, +6h). Forecast moved 2 Dec → 4 Dec.",
+              "delta": "+2 BD",
+              "tone": "risk",
+              "when": "Just now"
+            },
+            {
+              "id": "f1",
+              "pid": "ret",
+              "kind": "scope",
+              "title": "Returns pipeline",
+              "body": "Scope added (security-level attribution, +10h). Forecast moved 27 Nov → 2 Dec.",
+              "delta": "+3 BD",
+              "tone": "risk",
+              "when": "Sat 3 Oct"
+            }
+          ],
+          "tasks": {
+            "ret-1": true,
+            "fi-1": true
+          },
+          "doneOn": {
+            "ret-1": "2026-10-01",
+            "fi-1": "2026-10-02"
+          },
+          "bauDone": {},
+          "fundsDone": 5,
+          "flash": {
+            "ret": true
+          },
+          "moved": {
+            "ret": {
+              "delta": 2,
+              "label": "+2 BD",
+              "at": 1791189000000
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "update-manco-2h-a-day",
+      "about": "hours_per_day change: the prototype refits with bdDiff+1 (applyUpdate)",
+      "before": {
+        "projects": [
+          {
+            "id": "ret",
+            "forecast": "2026-12-02",
+            "prev": "2026-11-27",
+            "target": "2026-11-27",
+            "delta": 3,
+            "deltaLabel": "+3 BD",
+            "status": "risk",
+            "rate": 3.5,
+            "bd3": 0,
+            "bd8": 2,
+            "rateAfter": 0,
+            "confidence": 3,
+            "checkin": "2026-10-03",
+            "since": 2,
+            "stale": false,
+            "added": 10,
+            "growth": 17,
+            "lastScope": {
+              "date": "2026-10-03",
+              "what": "Security-level attribution",
+              "h": 10,
+              "bd": 3,
+              "from": "27 Nov",
+              "to": "2 Dec"
+            },
+            "lastCheckin": {
+              "date": "2026-10-03",
+              "note": "Security-level attribution added to scope, +10h.",
+              "forecast": "2026-12-02",
+              "conf": 3,
+              "ms": [
+                {
+                  "name": "Fund-level engine reconciles",
+                  "date": "2026-10-16"
+                },
+                {
+                  "name": "Parallel run on November BD3",
+                  "date": "2026-11-04"
+                },
+                {
+                  "name": "Security-level attribution",
+                  "date": "2026-11-20"
+                }
+              ]
+            },
+            "nowTasks": [
+              "ret-1",
+              "ret-2",
+              "ret-3",
+              "ret-4",
+              "ret-5"
+            ]
+          },
+          {
+            "id": "manco",
+            "forecast": "2026-12-11",
+            "prev": null,
+            "target": "2026-12-11",
+            "delta": 0,
+            "deltaLabel": "On target",
+            "status": "on",
+            "rate": 1.5,
+            "bd3": 2,
+            "bd8": 1.5,
+            "rateAfter": 0,
+            "confidence": 4,
+            "checkin": "2026-09-26",
+            "since": 9,
+            "stale": true,
+            "added": 0,
+            "growth": 0,
+            "lastScope": null,
+            "lastCheckin": {
+              "date": "2026-09-26",
+              "note": "Pack inventoried: 14 of 22 charts come straight from source.",
+              "forecast": "2026-12-11",
+              "conf": 4
+            },
+            "nowTasks": [
+              "man-0",
+              "man-1",
+              "man-2",
+              "man-3",
+              "man-4"
+            ]
+          },
+          {
+            "id": "play",
+            "forecast": "2026-12-18",
+            "prev": null,
+            "target": "2026-12-18",
+            "delta": 0,
+            "deltaLabel": "On target",
+            "status": "on",
+            "rate": 1,
+            "bd3": 0,
+            "bd8": 0.5,
+            "rateAfter": 0,
+            "confidence": 4,
+            "checkin": "2026-10-02",
+            "since": 3,
+            "stale": false,
+            "added": 0,
+            "growth": 0,
+            "lastScope": null,
+            "lastCheckin": {
+              "date": "2026-10-02",
+              "note": "Recorded the September BD3 run as raw notes.",
+              "forecast": "2026-12-18",
+              "conf": 4
+            },
+            "nowTasks": [
+              "pl-1",
+              "pl-2"
+            ]
+          },
+          {
+            "id": "fion",
+            "forecast": "2027-01-04",
+            "prev": null,
+            "target": "2027-01-04",
+            "delta": 0,
+            "deltaLabel": "On target",
+            "status": "on",
+            "rate": 1,
+            "bd3": 0,
+            "bd8": 0,
+            "rateAfter": 1,
+            "confidence": 4,
+            "checkin": "2026-09-30",
+            "since": 5,
+            "stale": false,
+            "added": 0,
+            "growth": 0,
+            "lastScope": null,
+            "lastCheckin": {
+              "date": "2026-09-30",
+              "note": "Market data entitlements approved; feeds pending.",
+              "forecast": "2027-01-04",
+              "conf": 4
+            },
+            "nowTasks": [
+              "fi-1",
+              "fi-2"
+            ]
+          },
+          {
+            "id": "alpha",
+            "forecast": null,
+            "prev": null,
+            "target": "2027-03-25",
+            "delta": null,
+            "deltaLabel": "No forecast",
+            "status": "define",
+            "rate": 2,
+            "bd3": 0,
+            "bd8": 0,
+            "rateAfter": 3,
+            "confidence": null,
+            "checkin": null,
+            "since": null,
+            "stale": false,
+            "added": 0,
+            "growth": 0,
+            "lastScope": null,
+            "lastCheckin": null,
+            "nowTasks": []
+          }
+        ],
+        "verdict": {
+          "word": "Move on track, narrowly",
+          "buffer": 8,
+          "toRun": 1
+        },
+        "upcoming": [
+          {
+            "iso": "2026-11-04",
+            "s": "Wed 4 Nov",
+            "bdm": 3,
+            "total": 9.5
+          }
+        ],
+        "attention": [
+          "a-ret",
+          "o-2026-11-04",
+          "s-manco"
+        ],
+        "feedHead": [
+          {
+            "id": "f1",
+            "pid": "ret",
+            "kind": "scope",
+            "title": "Returns pipeline",
+            "body": "Scope added (security-level attribution, +10h). Forecast moved 27 Nov → 2 Dec.",
+            "delta": "+3 BD",
+            "tone": "risk",
+            "when": "Sat 3 Oct"
+          },
+          {
+            "id": "f2",
+            "pid": "manco",
+            "kind": "stale",
+            "title": "ManCo pack automation",
+            "body": "No check-in for 9 days.",
+            "delta": "9 days",
+            "tone": "quiet",
+            "when": "Today"
+          }
+        ],
+        "tasks": {
+          "ret-1": true,
+          "fi-1": true
+        },
+        "doneOn": {
+          "ret-1": "2026-10-01",
+          "fi-1": "2026-10-02"
+        },
+        "bauDone": {},
+        "fundsDone": 5,
+        "flash": {},
+        "moved": {}
+      },
+      "after": [
+        {
+          "projects": [
+            {
+              "id": "ret",
+              "forecast": "2026-12-02",
+              "prev": "2026-11-27",
+              "target": "2026-11-27",
+              "delta": 3,
+              "deltaLabel": "+3 BD",
+              "status": "risk",
+              "rate": 3.5,
+              "bd3": 0,
+              "bd8": 2,
+              "rateAfter": 0,
+              "confidence": 3,
+              "checkin": "2026-10-03",
+              "since": 2,
+              "stale": false,
+              "added": 10,
+              "growth": 17,
+              "lastScope": {
+                "date": "2026-10-03",
+                "what": "Security-level attribution",
+                "h": 10,
+                "bd": 3,
+                "from": "27 Nov",
+                "to": "2 Dec"
+              },
+              "lastCheckin": {
+                "date": "2026-10-03",
+                "note": "Security-level attribution added to scope, +10h.",
+                "forecast": "2026-12-02",
+                "conf": 3,
+                "ms": [
+                  {
+                    "name": "Fund-level engine reconciles",
+                    "date": "2026-10-16"
+                  },
+                  {
+                    "name": "Parallel run on November BD3",
+                    "date": "2026-11-04"
+                  },
+                  {
+                    "name": "Security-level attribution",
+                    "date": "2026-11-20"
+                  }
+                ]
+              },
+              "nowTasks": [
+                "ret-1",
+                "ret-2",
+                "ret-3",
+                "ret-4",
+                "ret-5"
+              ]
+            },
+            {
+              "id": "manco",
+              "forecast": "2026-11-25",
+              "prev": "2026-12-11",
+              "target": "2026-12-11",
+              "delta": -12,
+              "deltaLabel": "−12 BD",
+              "status": "on",
+              "rate": 2,
+              "bd3": 2.6666666666666665,
+              "bd8": 2,
+              "rateAfter": 0,
+              "confidence": 4,
+              "checkin": "2026-10-05",
+              "since": 0,
+              "stale": false,
+              "added": 0,
+              "growth": 0,
+              "blocker": null,
+              "lastScope": null,
+              "lastCheckin": {
+                "date": "2026-10-05",
+                "note": "Plan confirmed.",
+                "forecast": "2026-11-25",
+                "conf": 4
+              },
+              "nowTasks": [
+                "man-0",
+                "man-1",
+                "man-2",
+                "man-3",
+                "man-4"
+              ]
+            },
+            {
+              "id": "play",
+              "forecast": "2026-12-18",
+              "prev": null,
+              "target": "2026-12-18",
+              "delta": 0,
+              "deltaLabel": "On target",
+              "status": "on",
+              "rate": 1,
+              "bd3": 0,
+              "bd8": 0.5,
+              "rateAfter": 0,
+              "confidence": 4,
+              "checkin": "2026-10-02",
+              "since": 3,
+              "stale": false,
+              "added": 0,
+              "growth": 0,
+              "lastScope": null,
+              "lastCheckin": {
+                "date": "2026-10-02",
+                "note": "Recorded the September BD3 run as raw notes.",
+                "forecast": "2026-12-18",
+                "conf": 4
+              },
+              "nowTasks": [
+                "pl-1",
+                "pl-2"
+              ]
+            },
+            {
+              "id": "fion",
+              "forecast": "2027-01-04",
+              "prev": null,
+              "target": "2027-01-04",
+              "delta": 0,
+              "deltaLabel": "On target",
+              "status": "on",
+              "rate": 1,
+              "bd3": 0,
+              "bd8": 0,
+              "rateAfter": 1,
+              "confidence": 4,
+              "checkin": "2026-09-30",
+              "since": 5,
+              "stale": false,
+              "added": 0,
+              "growth": 0,
+              "lastScope": null,
+              "lastCheckin": {
+                "date": "2026-09-30",
+                "note": "Market data entitlements approved; feeds pending.",
+                "forecast": "2027-01-04",
+                "conf": 4
+              },
+              "nowTasks": [
+                "fi-1",
+                "fi-2"
+              ]
+            },
+            {
+              "id": "alpha",
+              "forecast": null,
+              "prev": null,
+              "target": "2027-03-25",
+              "delta": null,
+              "deltaLabel": "No forecast",
+              "status": "define",
+              "rate": 2,
+              "bd3": 0,
+              "bd8": 0,
+              "rateAfter": 3,
+              "confidence": null,
+              "checkin": null,
+              "since": null,
+              "stale": false,
+              "added": 0,
+              "growth": 0,
+              "lastScope": null,
+              "lastCheckin": null,
+              "nowTasks": []
+            }
+          ],
+          "verdict": {
+            "word": "Move on track, narrowly",
+            "buffer": 8,
+            "toRun": 1
+          },
+          "upcoming": [
+            {
+              "iso": "2026-10-05",
+              "s": "Mon 5 Oct",
+              "bdm": 3,
+              "total": 8.666666666666666
+            },
+            {
+              "iso": "2026-10-12",
+              "s": "Mon 12 Oct",
+              "bdm": 8,
+              "total": 8.5
+            },
+            {
+              "iso": "2026-11-04",
+              "s": "Wed 4 Nov",
+              "bdm": 3,
+              "total": 9.5
+            },
+            {
+              "iso": "2026-11-11",
+              "s": "Wed 11 Nov",
+              "bdm": 8,
+              "total": 8.5
+            }
+          ],
+          "attention": [
+            "a-ret",
+            "o-2026-10-05",
+            "o-2026-10-12",
+            "o-2026-11-04",
+            "o-2026-11-11"
+          ],
+          "feedHead": [
+            {
+              "id": "f1791189000000",
+              "pid": "manco",
+              "kind": "checkin",
+              "title": "ManCo automation",
+              "body": "Checked in. Forecast holds at 25 Nov.",
+              "delta": "±0 BD",
+              "tone": "quiet",
+              "when": "Just now"
+            },
+            {
+              "id": "f1",
+              "pid": "ret",
+              "kind": "scope",
+              "title": "Returns pipeline",
+              "body": "Scope added (security-level attribution, +10h). Forecast moved 27 Nov → 2 Dec.",
+              "delta": "+3 BD",
+              "tone": "risk",
+              "when": "Sat 3 Oct"
+            }
+          ],
+          "tasks": {
+            "ret-1": true,
+            "fi-1": true
+          },
+          "doneOn": {
+            "ret-1": "2026-10-01",
+            "fi-1": "2026-10-02"
+          },
+          "bauDone": {},
+          "fundsDone": 5,
+          "flash": {
+            "manco": false
+          },
+          "moved": {
+            "manco": null
+          }
+        }
+      ]
+    },
+    {
+      "id": "toggle-task-ret-2",
+      "about": "Tick a Now task on Today",
+      "before": {
+        "projects": [
+          {
+            "id": "ret",
+            "forecast": "2026-12-02",
+            "prev": "2026-11-27",
+            "target": "2026-11-27",
+            "delta": 3,
+            "deltaLabel": "+3 BD",
+            "status": "risk",
+            "rate": 3.5,
+            "bd3": 0,
+            "bd8": 2,
+            "rateAfter": 0,
+            "confidence": 3,
+            "checkin": "2026-10-03",
+            "since": 2,
+            "stale": false,
+            "added": 10,
+            "growth": 17,
+            "lastScope": {
+              "date": "2026-10-03",
+              "what": "Security-level attribution",
+              "h": 10,
+              "bd": 3,
+              "from": "27 Nov",
+              "to": "2 Dec"
+            },
+            "lastCheckin": {
+              "date": "2026-10-03",
+              "note": "Security-level attribution added to scope, +10h.",
+              "forecast": "2026-12-02",
+              "conf": 3,
+              "ms": [
+                {
+                  "name": "Fund-level engine reconciles",
+                  "date": "2026-10-16"
+                },
+                {
+                  "name": "Parallel run on November BD3",
+                  "date": "2026-11-04"
+                },
+                {
+                  "name": "Security-level attribution",
+                  "date": "2026-11-20"
+                }
+              ]
+            },
+            "nowTasks": [
+              "ret-1",
+              "ret-2",
+              "ret-3",
+              "ret-4",
+              "ret-5"
+            ]
+          },
+          {
+            "id": "manco",
+            "forecast": "2026-12-11",
+            "prev": null,
+            "target": "2026-12-11",
+            "delta": 0,
+            "deltaLabel": "On target",
+            "status": "on",
+            "rate": 1.5,
+            "bd3": 2,
+            "bd8": 1.5,
+            "rateAfter": 0,
+            "confidence": 4,
+            "checkin": "2026-09-26",
+            "since": 9,
+            "stale": true,
+            "added": 0,
+            "growth": 0,
+            "lastScope": null,
+            "lastCheckin": {
+              "date": "2026-09-26",
+              "note": "Pack inventoried: 14 of 22 charts come straight from source.",
+              "forecast": "2026-12-11",
+              "conf": 4
+            },
+            "nowTasks": [
+              "man-0",
+              "man-1",
+              "man-2",
+              "man-3",
+              "man-4"
+            ]
+          },
+          {
+            "id": "play",
+            "forecast": "2026-12-18",
+            "prev": null,
+            "target": "2026-12-18",
+            "delta": 0,
+            "deltaLabel": "On target",
+            "status": "on",
+            "rate": 1,
+            "bd3": 0,
+            "bd8": 0.5,
+            "rateAfter": 0,
+            "confidence": 4,
+            "checkin": "2026-10-02",
+            "since": 3,
+            "stale": false,
+            "added": 0,
+            "growth": 0,
+            "lastScope": null,
+            "lastCheckin": {
+              "date": "2026-10-02",
+              "note": "Recorded the September BD3 run as raw notes.",
+              "forecast": "2026-12-18",
+              "conf": 4
+            },
+            "nowTasks": [
+              "pl-1",
+              "pl-2"
+            ]
+          },
+          {
+            "id": "fion",
+            "forecast": "2027-01-04",
+            "prev": null,
+            "target": "2027-01-04",
+            "delta": 0,
+            "deltaLabel": "On target",
+            "status": "on",
+            "rate": 1,
+            "bd3": 0,
+            "bd8": 0,
+            "rateAfter": 1,
+            "confidence": 4,
+            "checkin": "2026-09-30",
+            "since": 5,
+            "stale": false,
+            "added": 0,
+            "growth": 0,
+            "lastScope": null,
+            "lastCheckin": {
+              "date": "2026-09-30",
+              "note": "Market data entitlements approved; feeds pending.",
+              "forecast": "2027-01-04",
+              "conf": 4
+            },
+            "nowTasks": [
+              "fi-1",
+              "fi-2"
+            ]
+          },
+          {
+            "id": "alpha",
+            "forecast": null,
+            "prev": null,
+            "target": "2027-03-25",
+            "delta": null,
+            "deltaLabel": "No forecast",
+            "status": "define",
+            "rate": 2,
+            "bd3": 0,
+            "bd8": 0,
+            "rateAfter": 3,
+            "confidence": null,
+            "checkin": null,
+            "since": null,
+            "stale": false,
+            "added": 0,
+            "growth": 0,
+            "lastScope": null,
+            "lastCheckin": null,
+            "nowTasks": []
+          }
+        ],
+        "verdict": {
+          "word": "Move on track, narrowly",
+          "buffer": 8,
+          "toRun": 1
+        },
+        "upcoming": [
+          {
+            "iso": "2026-11-04",
+            "s": "Wed 4 Nov",
+            "bdm": 3,
+            "total": 9.5
+          }
+        ],
+        "attention": [
+          "a-ret",
+          "o-2026-11-04",
+          "s-manco"
+        ],
+        "feedHead": [
+          {
+            "id": "f1",
+            "pid": "ret",
+            "kind": "scope",
+            "title": "Returns pipeline",
+            "body": "Scope added (security-level attribution, +10h). Forecast moved 27 Nov → 2 Dec.",
+            "delta": "+3 BD",
+            "tone": "risk",
+            "when": "Sat 3 Oct"
+          },
+          {
+            "id": "f2",
+            "pid": "manco",
+            "kind": "stale",
+            "title": "ManCo pack automation",
+            "body": "No check-in for 9 days.",
+            "delta": "9 days",
+            "tone": "quiet",
+            "when": "Today"
+          }
+        ],
+        "tasks": {
+          "ret-1": true,
+          "fi-1": true
+        },
+        "doneOn": {
+          "ret-1": "2026-10-01",
+          "fi-1": "2026-10-02"
+        },
+        "bauDone": {},
+        "fundsDone": 5,
+        "flash": {},
+        "moved": {}
+      },
+      "after": [
+        {
+          "projects": [
+            {
+              "id": "ret",
+              "forecast": "2026-12-02",
+              "prev": "2026-11-27",
+              "target": "2026-11-27",
+              "delta": 3,
+              "deltaLabel": "+3 BD",
+              "status": "risk",
+              "rate": 3.5,
+              "bd3": 0,
+              "bd8": 2,
+              "rateAfter": 0,
+              "confidence": 3,
+              "checkin": "2026-10-03",
+              "since": 2,
+              "stale": false,
+              "added": 10,
+              "growth": 17,
+              "lastScope": {
+                "date": "2026-10-03",
+                "what": "Security-level attribution",
+                "h": 10,
+                "bd": 3,
+                "from": "27 Nov",
+                "to": "2 Dec"
+              },
+              "lastCheckin": {
+                "date": "2026-10-03",
+                "note": "Security-level attribution added to scope, +10h.",
+                "forecast": "2026-12-02",
+                "conf": 3,
+                "ms": [
+                  {
+                    "name": "Fund-level engine reconciles",
+                    "date": "2026-10-16"
+                  },
+                  {
+                    "name": "Parallel run on November BD3",
+                    "date": "2026-11-04"
+                  },
+                  {
+                    "name": "Security-level attribution",
+                    "date": "2026-11-20"
+                  }
+                ]
+              },
+              "nowTasks": [
+                "ret-1",
+                "ret-2",
+                "ret-3",
+                "ret-4",
+                "ret-5"
+              ]
+            },
+            {
+              "id": "manco",
+              "forecast": "2026-12-11",
+              "prev": null,
+              "target": "2026-12-11",
+              "delta": 0,
+              "deltaLabel": "On target",
+              "status": "on",
+              "rate": 1.5,
+              "bd3": 2,
+              "bd8": 1.5,
+              "rateAfter": 0,
+              "confidence": 4,
+              "checkin": "2026-09-26",
+              "since": 9,
+              "stale": true,
+              "added": 0,
+              "growth": 0,
+              "lastScope": null,
+              "lastCheckin": {
+                "date": "2026-09-26",
+                "note": "Pack inventoried: 14 of 22 charts come straight from source.",
+                "forecast": "2026-12-11",
+                "conf": 4
+              },
+              "nowTasks": [
+                "man-0",
+                "man-1",
+                "man-2",
+                "man-3",
+                "man-4"
+              ]
+            },
+            {
+              "id": "play",
+              "forecast": "2026-12-18",
+              "prev": null,
+              "target": "2026-12-18",
+              "delta": 0,
+              "deltaLabel": "On target",
+              "status": "on",
+              "rate": 1,
+              "bd3": 0,
+              "bd8": 0.5,
+              "rateAfter": 0,
+              "confidence": 4,
+              "checkin": "2026-10-02",
+              "since": 3,
+              "stale": false,
+              "added": 0,
+              "growth": 0,
+              "lastScope": null,
+              "lastCheckin": {
+                "date": "2026-10-02",
+                "note": "Recorded the September BD3 run as raw notes.",
+                "forecast": "2026-12-18",
+                "conf": 4
+              },
+              "nowTasks": [
+                "pl-1",
+                "pl-2"
+              ]
+            },
+            {
+              "id": "fion",
+              "forecast": "2027-01-04",
+              "prev": null,
+              "target": "2027-01-04",
+              "delta": 0,
+              "deltaLabel": "On target",
+              "status": "on",
+              "rate": 1,
+              "bd3": 0,
+              "bd8": 0,
+              "rateAfter": 1,
+              "confidence": 4,
+              "checkin": "2026-09-30",
+              "since": 5,
+              "stale": false,
+              "added": 0,
+              "growth": 0,
+              "lastScope": null,
+              "lastCheckin": {
+                "date": "2026-09-30",
+                "note": "Market data entitlements approved; feeds pending.",
+                "forecast": "2027-01-04",
+                "conf": 4
+              },
+              "nowTasks": [
+                "fi-1",
+                "fi-2"
+              ]
+            },
+            {
+              "id": "alpha",
+              "forecast": null,
+              "prev": null,
+              "target": "2027-03-25",
+              "delta": null,
+              "deltaLabel": "No forecast",
+              "status": "define",
+              "rate": 2,
+              "bd3": 0,
+              "bd8": 0,
+              "rateAfter": 3,
+              "confidence": null,
+              "checkin": null,
+              "since": null,
+              "stale": false,
+              "added": 0,
+              "growth": 0,
+              "lastScope": null,
+              "lastCheckin": null,
+              "nowTasks": []
+            }
+          ],
+          "verdict": {
+            "word": "Move on track, narrowly",
+            "buffer": 8,
+            "toRun": 1
+          },
+          "upcoming": [
+            {
+              "iso": "2026-11-04",
+              "s": "Wed 4 Nov",
+              "bdm": 3,
+              "total": 9.5
+            }
+          ],
+          "attention": [
+            "a-ret",
+            "o-2026-11-04",
+            "s-manco"
+          ],
+          "feedHead": [
+            {
+              "id": "f1",
+              "pid": "ret",
+              "kind": "scope",
+              "title": "Returns pipeline",
+              "body": "Scope added (security-level attribution, +10h). Forecast moved 27 Nov → 2 Dec.",
+              "delta": "+3 BD",
+              "tone": "risk",
+              "when": "Sat 3 Oct"
+            },
+            {
+              "id": "f2",
+              "pid": "manco",
+              "kind": "stale",
+              "title": "ManCo pack automation",
+              "body": "No check-in for 9 days.",
+              "delta": "9 days",
+              "tone": "quiet",
+              "when": "Today"
+            }
+          ],
+          "tasks": {
+            "ret-1": true,
+            "fi-1": true,
+            "ret-2": true
+          },
+          "doneOn": {
+            "ret-1": "2026-10-01",
+            "fi-1": "2026-10-02",
+            "ret-2": "2026-10-05"
+          },
+          "bauDone": {},
+          "fundsDone": 5,
+          "flash": {},
+          "moved": {}
+        }
+      ]
+    },
+    {
+      "id": "routine-r-man-bd10",
+      "about": "Move the ManCo pack routine from BD8 to BD10",
+      "before": {
+        "projects": [
+          {
+            "id": "ret",
+            "forecast": "2026-12-02",
+            "prev": "2026-11-27",
+            "target": "2026-11-27",
+            "delta": 3,
+            "deltaLabel": "+3 BD",
+            "status": "risk",
+            "rate": 3.5,
+            "bd3": 0,
+            "bd8": 2,
+            "rateAfter": 0,
+            "confidence": 3,
+            "checkin": "2026-10-03",
+            "since": 2,
+            "stale": false,
+            "added": 10,
+            "growth": 17,
+            "lastScope": {
+              "date": "2026-10-03",
+              "what": "Security-level attribution",
+              "h": 10,
+              "bd": 3,
+              "from": "27 Nov",
+              "to": "2 Dec"
+            },
+            "lastCheckin": {
+              "date": "2026-10-03",
+              "note": "Security-level attribution added to scope, +10h.",
+              "forecast": "2026-12-02",
+              "conf": 3,
+              "ms": [
+                {
+                  "name": "Fund-level engine reconciles",
+                  "date": "2026-10-16"
+                },
+                {
+                  "name": "Parallel run on November BD3",
+                  "date": "2026-11-04"
+                },
+                {
+                  "name": "Security-level attribution",
+                  "date": "2026-11-20"
+                }
+              ]
+            },
+            "nowTasks": [
+              "ret-1",
+              "ret-2",
+              "ret-3",
+              "ret-4",
+              "ret-5"
+            ]
+          },
+          {
+            "id": "manco",
+            "forecast": "2026-12-11",
+            "prev": null,
+            "target": "2026-12-11",
+            "delta": 0,
+            "deltaLabel": "On target",
+            "status": "on",
+            "rate": 1.5,
+            "bd3": 2,
+            "bd8": 1.5,
+            "rateAfter": 0,
+            "confidence": 4,
+            "checkin": "2026-09-26",
+            "since": 9,
+            "stale": true,
+            "added": 0,
+            "growth": 0,
+            "lastScope": null,
+            "lastCheckin": {
+              "date": "2026-09-26",
+              "note": "Pack inventoried: 14 of 22 charts come straight from source.",
+              "forecast": "2026-12-11",
+              "conf": 4
+            },
+            "nowTasks": [
+              "man-0",
+              "man-1",
+              "man-2",
+              "man-3",
+              "man-4"
+            ]
+          },
+          {
+            "id": "play",
+            "forecast": "2026-12-18",
+            "prev": null,
+            "target": "2026-12-18",
+            "delta": 0,
+            "deltaLabel": "On target",
+            "status": "on",
+            "rate": 1,
+            "bd3": 0,
+            "bd8": 0.5,
+            "rateAfter": 0,
+            "confidence": 4,
+            "checkin": "2026-10-02",
+            "since": 3,
+            "stale": false,
+            "added": 0,
+            "growth": 0,
+            "lastScope": null,
+            "lastCheckin": {
+              "date": "2026-10-02",
+              "note": "Recorded the September BD3 run as raw notes.",
+              "forecast": "2026-12-18",
+              "conf": 4
+            },
+            "nowTasks": [
+              "pl-1",
+              "pl-2"
+            ]
+          },
+          {
+            "id": "fion",
+            "forecast": "2027-01-04",
+            "prev": null,
+            "target": "2027-01-04",
+            "delta": 0,
+            "deltaLabel": "On target",
+            "status": "on",
+            "rate": 1,
+            "bd3": 0,
+            "bd8": 0,
+            "rateAfter": 1,
+            "confidence": 4,
+            "checkin": "2026-09-30",
+            "since": 5,
+            "stale": false,
+            "added": 0,
+            "growth": 0,
+            "lastScope": null,
+            "lastCheckin": {
+              "date": "2026-09-30",
+              "note": "Market data entitlements approved; feeds pending.",
+              "forecast": "2027-01-04",
+              "conf": 4
+            },
+            "nowTasks": [
+              "fi-1",
+              "fi-2"
+            ]
+          },
+          {
+            "id": "alpha",
+            "forecast": null,
+            "prev": null,
+            "target": "2027-03-25",
+            "delta": null,
+            "deltaLabel": "No forecast",
+            "status": "define",
+            "rate": 2,
+            "bd3": 0,
+            "bd8": 0,
+            "rateAfter": 3,
+            "confidence": null,
+            "checkin": null,
+            "since": null,
+            "stale": false,
+            "added": 0,
+            "growth": 0,
+            "lastScope": null,
+            "lastCheckin": null,
+            "nowTasks": []
+          }
+        ],
+        "verdict": {
+          "word": "Move on track, narrowly",
+          "buffer": 8,
+          "toRun": 1
+        },
+        "upcoming": [
+          {
+            "iso": "2026-11-04",
+            "s": "Wed 4 Nov",
+            "bdm": 3,
+            "total": 9.5
+          }
+        ],
+        "attention": [
+          "a-ret",
+          "o-2026-11-04",
+          "s-manco"
+        ],
+        "feedHead": [
+          {
+            "id": "f1",
+            "pid": "ret",
+            "kind": "scope",
+            "title": "Returns pipeline",
+            "body": "Scope added (security-level attribution, +10h). Forecast moved 27 Nov → 2 Dec.",
+            "delta": "+3 BD",
+            "tone": "risk",
+            "when": "Sat 3 Oct"
+          },
+          {
+            "id": "f2",
+            "pid": "manco",
+            "kind": "stale",
+            "title": "ManCo pack automation",
+            "body": "No check-in for 9 days.",
+            "delta": "9 days",
+            "tone": "quiet",
+            "when": "Today"
+          }
+        ],
+        "tasks": {
+          "ret-1": true,
+          "fi-1": true
+        },
+        "doneOn": {
+          "ret-1": "2026-10-01",
+          "fi-1": "2026-10-02"
+        },
+        "bauDone": {},
+        "fundsDone": 5,
+        "flash": {},
+        "moved": {}
+      },
+      "after": [
+        {
+          "projects": [
+            {
+              "id": "ret",
+              "forecast": "2026-12-02",
+              "prev": "2026-11-27",
+              "target": "2026-11-27",
+              "delta": 3,
+              "deltaLabel": "+3 BD",
+              "status": "risk",
+              "rate": 3.5,
+              "bd3": 0,
+              "bd8": 2,
+              "rateAfter": 0,
+              "confidence": 3,
+              "checkin": "2026-10-03",
+              "since": 2,
+              "stale": false,
+              "added": 10,
+              "growth": 17,
+              "lastScope": {
+                "date": "2026-10-03",
+                "what": "Security-level attribution",
+                "h": 10,
+                "bd": 3,
+                "from": "27 Nov",
+                "to": "2 Dec"
+              },
+              "lastCheckin": {
+                "date": "2026-10-03",
+                "note": "Security-level attribution added to scope, +10h.",
+                "forecast": "2026-12-02",
+                "conf": 3,
+                "ms": [
+                  {
+                    "name": "Fund-level engine reconciles",
+                    "date": "2026-10-16"
+                  },
+                  {
+                    "name": "Parallel run on November BD3",
+                    "date": "2026-11-04"
+                  },
+                  {
+                    "name": "Security-level attribution",
+                    "date": "2026-11-20"
+                  }
+                ]
+              },
+              "nowTasks": [
+                "ret-1",
+                "ret-2",
+                "ret-3",
+                "ret-4",
+                "ret-5"
+              ]
+            },
+            {
+              "id": "manco",
+              "forecast": "2026-12-11",
+              "prev": null,
+              "target": "2026-12-11",
+              "delta": 0,
+              "deltaLabel": "On target",
+              "status": "on",
+              "rate": 1.5,
+              "bd3": 2,
+              "bd8": 1.5,
+              "rateAfter": 0,
+              "confidence": 4,
+              "checkin": "2026-09-26",
+              "since": 9,
+              "stale": true,
+              "added": 0,
+              "growth": 0,
+              "lastScope": null,
+              "lastCheckin": {
+                "date": "2026-09-26",
+                "note": "Pack inventoried: 14 of 22 charts come straight from source.",
+                "forecast": "2026-12-11",
+                "conf": 4
+              },
+              "nowTasks": [
+                "man-0",
+                "man-1",
+                "man-2",
+                "man-3",
+                "man-4"
+              ]
+            },
+            {
+              "id": "play",
+              "forecast": "2026-12-18",
+              "prev": null,
+              "target": "2026-12-18",
+              "delta": 0,
+              "deltaLabel": "On target",
+              "status": "on",
+              "rate": 1,
+              "bd3": 0,
+              "bd8": 0.5,
+              "rateAfter": 0,
+              "confidence": 4,
+              "checkin": "2026-10-02",
+              "since": 3,
+              "stale": false,
+              "added": 0,
+              "growth": 0,
+              "lastScope": null,
+              "lastCheckin": {
+                "date": "2026-10-02",
+                "note": "Recorded the September BD3 run as raw notes.",
+                "forecast": "2026-12-18",
+                "conf": 4
+              },
+              "nowTasks": [
+                "pl-1",
+                "pl-2"
+              ]
+            },
+            {
+              "id": "fion",
+              "forecast": "2027-01-04",
+              "prev": null,
+              "target": "2027-01-04",
+              "delta": 0,
+              "deltaLabel": "On target",
+              "status": "on",
+              "rate": 1,
+              "bd3": 0,
+              "bd8": 0,
+              "rateAfter": 1,
+              "confidence": 4,
+              "checkin": "2026-09-30",
+              "since": 5,
+              "stale": false,
+              "added": 0,
+              "growth": 0,
+              "lastScope": null,
+              "lastCheckin": {
+                "date": "2026-09-30",
+                "note": "Market data entitlements approved; feeds pending.",
+                "forecast": "2027-01-04",
+                "conf": 4
+              },
+              "nowTasks": [
+                "fi-1",
+                "fi-2"
+              ]
+            },
+            {
+              "id": "alpha",
+              "forecast": null,
+              "prev": null,
+              "target": "2027-03-25",
+              "delta": null,
+              "deltaLabel": "No forecast",
+              "status": "define",
+              "rate": 2,
+              "bd3": 0,
+              "bd8": 0,
+              "rateAfter": 3,
+              "confidence": null,
+              "checkin": null,
+              "since": null,
+              "stale": false,
+              "added": 0,
+              "growth": 0,
+              "lastScope": null,
+              "lastCheckin": null,
+              "nowTasks": []
+            }
+          ],
+          "verdict": {
+            "word": "Move on track, narrowly",
+            "buffer": 8,
+            "toRun": 1
+          },
+          "upcoming": [
+            {
+              "iso": "2026-10-14",
+              "s": "Wed 14 Oct",
+              "bdm": 10,
+              "total": 11
+            },
+            {
+              "iso": "2026-11-04",
+              "s": "Wed 4 Nov",
+              "bdm": 3,
+              "total": 9.5
+            },
+            {
+              "iso": "2026-11-13",
+              "s": "Fri 13 Nov",
+              "bdm": 10,
+              "total": 11
+            }
+          ],
+          "attention": [
+            "a-ret",
+            "o-2026-10-14",
+            "o-2026-11-04",
+            "o-2026-11-13",
+            "s-manco"
+          ],
+          "feedHead": [
+            {
+              "id": "f1",
+              "pid": "ret",
+              "kind": "scope",
+              "title": "Returns pipeline",
+              "body": "Scope added (security-level attribution, +10h). Forecast moved 27 Nov → 2 Dec.",
+              "delta": "+3 BD",
+              "tone": "risk",
+              "when": "Sat 3 Oct"
+            },
+            {
+              "id": "f2",
+              "pid": "manco",
+              "kind": "stale",
+              "title": "ManCo pack automation",
+              "body": "No check-in for 9 days.",
+              "delta": "9 days",
+              "tone": "quiet",
+              "when": "Today"
+            }
+          ],
+          "tasks": {
+            "ret-1": true,
+            "fi-1": true
+          },
+          "doneOn": {
+            "ret-1": "2026-10-01",
+            "fi-1": "2026-10-02"
+          },
+          "bauDone": {},
+          "fundsDone": 5,
+          "flash": {},
+          "moved": {}
+        }
+      ]
+    },
+    {
+      "id": "checkin-manco-scope-40h",
+      "about": "40h of new ManCo scope pushes a PC exit past the move (Off track)",
+      "before": {
+        "projects": [
+          {
+            "id": "ret",
+            "forecast": "2026-12-02",
+            "prev": "2026-11-27",
+            "target": "2026-11-27",
+            "delta": 3,
+            "deltaLabel": "+3 BD",
+            "status": "risk",
+            "rate": 3.5,
+            "bd3": 0,
+            "bd8": 2,
+            "rateAfter": 0,
+            "confidence": 3,
+            "checkin": "2026-10-03",
+            "since": 2,
+            "stale": false,
+            "added": 10,
+            "growth": 17,
+            "lastScope": {
+              "date": "2026-10-03",
+              "what": "Security-level attribution",
+              "h": 10,
+              "bd": 3,
+              "from": "27 Nov",
+              "to": "2 Dec"
+            },
+            "lastCheckin": {
+              "date": "2026-10-03",
+              "note": "Security-level attribution added to scope, +10h.",
+              "forecast": "2026-12-02",
+              "conf": 3,
+              "ms": [
+                {
+                  "name": "Fund-level engine reconciles",
+                  "date": "2026-10-16"
+                },
+                {
+                  "name": "Parallel run on November BD3",
+                  "date": "2026-11-04"
+                },
+                {
+                  "name": "Security-level attribution",
+                  "date": "2026-11-20"
+                }
+              ]
+            },
+            "nowTasks": [
+              "ret-1",
+              "ret-2",
+              "ret-3",
+              "ret-4",
+              "ret-5"
+            ]
+          },
+          {
+            "id": "manco",
+            "forecast": "2026-12-11",
+            "prev": null,
+            "target": "2026-12-11",
+            "delta": 0,
+            "deltaLabel": "On target",
+            "status": "on",
+            "rate": 1.5,
+            "bd3": 2,
+            "bd8": 1.5,
+            "rateAfter": 0,
+            "confidence": 4,
+            "checkin": "2026-09-26",
+            "since": 9,
+            "stale": true,
+            "added": 0,
+            "growth": 0,
+            "lastScope": null,
+            "lastCheckin": {
+              "date": "2026-09-26",
+              "note": "Pack inventoried: 14 of 22 charts come straight from source.",
+              "forecast": "2026-12-11",
+              "conf": 4
+            },
+            "nowTasks": [
+              "man-0",
+              "man-1",
+              "man-2",
+              "man-3",
+              "man-4"
+            ]
+          },
+          {
+            "id": "play",
+            "forecast": "2026-12-18",
+            "prev": null,
+            "target": "2026-12-18",
+            "delta": 0,
+            "deltaLabel": "On target",
+            "status": "on",
+            "rate": 1,
+            "bd3": 0,
+            "bd8": 0.5,
+            "rateAfter": 0,
+            "confidence": 4,
+            "checkin": "2026-10-02",
+            "since": 3,
+            "stale": false,
+            "added": 0,
+            "growth": 0,
+            "lastScope": null,
+            "lastCheckin": {
+              "date": "2026-10-02",
+              "note": "Recorded the September BD3 run as raw notes.",
+              "forecast": "2026-12-18",
+              "conf": 4
+            },
+            "nowTasks": [
+              "pl-1",
+              "pl-2"
+            ]
+          },
+          {
+            "id": "fion",
+            "forecast": "2027-01-04",
+            "prev": null,
+            "target": "2027-01-04",
+            "delta": 0,
+            "deltaLabel": "On target",
+            "status": "on",
+            "rate": 1,
+            "bd3": 0,
+            "bd8": 0,
+            "rateAfter": 1,
+            "confidence": 4,
+            "checkin": "2026-09-30",
+            "since": 5,
+            "stale": false,
+            "added": 0,
+            "growth": 0,
+            "lastScope": null,
+            "lastCheckin": {
+              "date": "2026-09-30",
+              "note": "Market data entitlements approved; feeds pending.",
+              "forecast": "2027-01-04",
+              "conf": 4
+            },
+            "nowTasks": [
+              "fi-1",
+              "fi-2"
+            ]
+          },
+          {
+            "id": "alpha",
+            "forecast": null,
+            "prev": null,
+            "target": "2027-03-25",
+            "delta": null,
+            "deltaLabel": "No forecast",
+            "status": "define",
+            "rate": 2,
+            "bd3": 0,
+            "bd8": 0,
+            "rateAfter": 3,
+            "confidence": null,
+            "checkin": null,
+            "since": null,
+            "stale": false,
+            "added": 0,
+            "growth": 0,
+            "lastScope": null,
+            "lastCheckin": null,
+            "nowTasks": []
+          }
+        ],
+        "verdict": {
+          "word": "Move on track, narrowly",
+          "buffer": 8,
+          "toRun": 1
+        },
+        "upcoming": [
+          {
+            "iso": "2026-11-04",
+            "s": "Wed 4 Nov",
+            "bdm": 3,
+            "total": 9.5
+          }
+        ],
+        "attention": [
+          "a-ret",
+          "o-2026-11-04",
+          "s-manco"
+        ],
+        "feedHead": [
+          {
+            "id": "f1",
+            "pid": "ret",
+            "kind": "scope",
+            "title": "Returns pipeline",
+            "body": "Scope added (security-level attribution, +10h). Forecast moved 27 Nov → 2 Dec.",
+            "delta": "+3 BD",
+            "tone": "risk",
+            "when": "Sat 3 Oct"
+          },
+          {
+            "id": "f2",
+            "pid": "manco",
+            "kind": "stale",
+            "title": "ManCo pack automation",
+            "body": "No check-in for 9 days.",
+            "delta": "9 days",
+            "tone": "quiet",
+            "when": "Today"
+          }
+        ],
+        "tasks": {
+          "ret-1": true,
+          "fi-1": true
+        },
+        "doneOn": {
+          "ret-1": "2026-10-01",
+          "fi-1": "2026-10-02"
+        },
+        "bauDone": {},
+        "fundsDone": 5,
+        "flash": {},
+        "moved": {}
+      },
+      "after": [
+        {
+          "projects": [
+            {
+              "id": "ret",
+              "forecast": "2026-12-02",
+              "prev": "2026-11-27",
+              "target": "2026-11-27",
+              "delta": 3,
+              "deltaLabel": "+3 BD",
+              "status": "risk",
+              "rate": 3.5,
+              "bd3": 0,
+              "bd8": 2,
+              "rateAfter": 0,
+              "confidence": 3,
+              "checkin": "2026-10-03",
+              "since": 2,
+              "stale": false,
+              "added": 10,
+              "growth": 17,
+              "lastScope": {
+                "date": "2026-10-03",
+                "what": "Security-level attribution",
+                "h": 10,
+                "bd": 3,
+                "from": "27 Nov",
+                "to": "2 Dec"
+              },
+              "lastCheckin": {
+                "date": "2026-10-03",
+                "note": "Security-level attribution added to scope, +10h.",
+                "forecast": "2026-12-02",
+                "conf": 3,
+                "ms": [
+                  {
+                    "name": "Fund-level engine reconciles",
+                    "date": "2026-10-16"
+                  },
+                  {
+                    "name": "Parallel run on November BD3",
+                    "date": "2026-11-04"
+                  },
+                  {
+                    "name": "Security-level attribution",
+                    "date": "2026-11-20"
+                  }
+                ]
+              },
+              "nowTasks": [
+                "ret-1",
+                "ret-2",
+                "ret-3",
+                "ret-4",
+                "ret-5"
+              ]
+            },
+            {
+              "id": "manco",
+              "forecast": "2027-01-22",
+              "prev": "2026-12-11",
+              "target": "2026-12-11",
+              "delta": 27,
+              "deltaLabel": "+27 BD",
+              "status": "risk",
+              "rate": 1.5,
+              "bd3": 2,
+              "bd8": 1.5,
+              "rateAfter": 0,
+              "confidence": 4,
+              "checkin": "2026-10-05",
+              "since": 0,
+              "stale": false,
+              "added": 40,
+              "growth": 100,
+              "blocker": null,
+              "lastScope": {
+                "date": "2026-10-05",
+                "what": "Board pack",
+                "h": 40,
+                "bd": 27,
+                "from": "11 Dec",
+                "to": "22 Jan"
+              },
+              "lastCheckin": {
+                "date": "2026-10-05",
+                "note": "Board pack added, +40h",
+                "forecast": "2027-01-22",
+                "conf": 4
+              },
+              "nowTasks": [
+                "man-0",
+                "man-1",
+                "man-2",
+                "man-3",
+                "man-4"
+              ]
+            },
+            {
+              "id": "play",
+              "forecast": "2026-12-18",
+              "prev": null,
+              "target": "2026-12-18",
+              "delta": 0,
+              "deltaLabel": "On target",
+              "status": "on",
+              "rate": 1,
+              "bd3": 0,
+              "bd8": 0.5,
+              "rateAfter": 0,
+              "confidence": 4,
+              "checkin": "2026-10-02",
+              "since": 3,
+              "stale": false,
+              "added": 0,
+              "growth": 0,
+              "lastScope": null,
+              "lastCheckin": {
+                "date": "2026-10-02",
+                "note": "Recorded the September BD3 run as raw notes.",
+                "forecast": "2026-12-18",
+                "conf": 4
+              },
+              "nowTasks": [
+                "pl-1",
+                "pl-2"
+              ]
+            },
+            {
+              "id": "fion",
+              "forecast": "2027-01-04",
+              "prev": null,
+              "target": "2027-01-04",
+              "delta": 0,
+              "deltaLabel": "On target",
+              "status": "on",
+              "rate": 1,
+              "bd3": 0,
+              "bd8": 0,
+              "rateAfter": 1,
+              "confidence": 4,
+              "checkin": "2026-09-30",
+              "since": 5,
+              "stale": false,
+              "added": 0,
+              "growth": 0,
+              "lastScope": null,
+              "lastCheckin": {
+                "date": "2026-09-30",
+                "note": "Market data entitlements approved; feeds pending.",
+                "forecast": "2027-01-04",
+                "conf": 4
+              },
+              "nowTasks": [
+                "fi-1",
+                "fi-2"
+              ]
+            },
+            {
+              "id": "alpha",
+              "forecast": null,
+              "prev": null,
+              "target": "2027-03-25",
+              "delta": null,
+              "deltaLabel": "No forecast",
+              "status": "define",
+              "rate": 2,
+              "bd3": 0,
+              "bd8": 0,
+              "rateAfter": 3,
+              "confidence": null,
+              "checkin": null,
+              "since": null,
+              "stale": false,
+              "added": 0,
+              "growth": 0,
+              "lastScope": null,
+              "lastCheckin": null,
+              "nowTasks": []
+            }
+          ],
+          "verdict": {
+            "word": "Off track for the move",
+            "buffer": -14,
+            "toRun": 1
+          },
+          "upcoming": [
+            {
+              "iso": "2026-11-04",
+              "s": "Wed 4 Nov",
+              "bdm": 3,
+              "total": 9.5
+            }
+          ],
+          "attention": [
+            "a-ret",
+            "a-manco",
+            "o-2026-11-04"
+          ],
+          "feedHead": [
+            {
+              "id": "f1791189000000",
+              "pid": "manco",
+              "kind": "scope",
+              "title": "ManCo automation",
+              "body": "Scope added (board pack, +40h). Forecast moved 11 Dec → 22 Jan.",
+              "delta": "+27 BD",
+              "tone": "risk",
+              "when": "Just now"
+            },
+            {
+              "id": "f1",
+              "pid": "ret",
+              "kind": "scope",
+              "title": "Returns pipeline",
+              "body": "Scope added (security-level attribution, +10h). Forecast moved 27 Nov → 2 Dec.",
+              "delta": "+3 BD",
+              "tone": "risk",
+              "when": "Sat 3 Oct"
+            }
+          ],
+          "tasks": {
+            "ret-1": true,
+            "fi-1": true
+          },
+          "doneOn": {
+            "ret-1": "2026-10-01",
+            "fi-1": "2026-10-02"
+          },
+          "bauDone": {},
+          "fundsDone": 5,
+          "flash": {
+            "manco": true
+          },
+          "moved": {
+            "manco": {
+              "delta": 27,
+              "label": "+27 BD",
+              "at": 1791189000000
+            }
+          }
+        }
+      ]
+    },
+    {
+      "id": "bau-done-returns",
+      "about": "bau_done for r-ret on its occurrence day ticks all 12 funds (setAllFunds)",
+      "before": {
+        "projects": [
+          {
+            "id": "ret",
+            "forecast": "2026-12-02",
+            "prev": "2026-11-27",
+            "target": "2026-11-27",
+            "delta": 3,
+            "deltaLabel": "+3 BD",
+            "status": "risk",
+            "rate": 3.5,
+            "bd3": 0,
+            "bd8": 2,
+            "rateAfter": 0,
+            "confidence": 3,
+            "checkin": "2026-10-03",
+            "since": 2,
+            "stale": false,
+            "added": 10,
+            "growth": 17,
+            "lastScope": {
+              "date": "2026-10-03",
+              "what": "Security-level attribution",
+              "h": 10,
+              "bd": 3,
+              "from": "27 Nov",
+              "to": "2 Dec"
+            },
+            "lastCheckin": {
+              "date": "2026-10-03",
+              "note": "Security-level attribution added to scope, +10h.",
+              "forecast": "2026-12-02",
+              "conf": 3,
+              "ms": [
+                {
+                  "name": "Fund-level engine reconciles",
+                  "date": "2026-10-16"
+                },
+                {
+                  "name": "Parallel run on November BD3",
+                  "date": "2026-11-04"
+                },
+                {
+                  "name": "Security-level attribution",
+                  "date": "2026-11-20"
+                }
+              ]
+            },
+            "nowTasks": [
+              "ret-1",
+              "ret-2",
+              "ret-3",
+              "ret-4",
+              "ret-5"
+            ]
+          },
+          {
+            "id": "manco",
+            "forecast": "2026-12-11",
+            "prev": null,
+            "target": "2026-12-11",
+            "delta": 0,
+            "deltaLabel": "On target",
+            "status": "on",
+            "rate": 1.5,
+            "bd3": 2,
+            "bd8": 1.5,
+            "rateAfter": 0,
+            "confidence": 4,
+            "checkin": "2026-09-26",
+            "since": 9,
+            "stale": true,
+            "added": 0,
+            "growth": 0,
+            "lastScope": null,
+            "lastCheckin": {
+              "date": "2026-09-26",
+              "note": "Pack inventoried: 14 of 22 charts come straight from source.",
+              "forecast": "2026-12-11",
+              "conf": 4
+            },
+            "nowTasks": [
+              "man-0",
+              "man-1",
+              "man-2",
+              "man-3",
+              "man-4"
+            ]
+          },
+          {
+            "id": "play",
+            "forecast": "2026-12-18",
+            "prev": null,
+            "target": "2026-12-18",
+            "delta": 0,
+            "deltaLabel": "On target",
+            "status": "on",
+            "rate": 1,
+            "bd3": 0,
+            "bd8": 0.5,
+            "rateAfter": 0,
+            "confidence": 4,
+            "checkin": "2026-10-02",
+            "since": 3,
+            "stale": false,
+            "added": 0,
+            "growth": 0,
+            "lastScope": null,
+            "lastCheckin": {
+              "date": "2026-10-02",
+              "note": "Recorded the September BD3 run as raw notes.",
+              "forecast": "2026-12-18",
+              "conf": 4
+            },
+            "nowTasks": [
+              "pl-1",
+              "pl-2"
+            ]
+          },
+          {
+            "id": "fion",
+            "forecast": "2027-01-04",
+            "prev": null,
+            "target": "2027-01-04",
+            "delta": 0,
+            "deltaLabel": "On target",
+            "status": "on",
+            "rate": 1,
+            "bd3": 0,
+            "bd8": 0,
+            "rateAfter": 1,
+            "confidence": 4,
+            "checkin": "2026-09-30",
+            "since": 5,
+            "stale": false,
+            "added": 0,
+            "growth": 0,
+            "lastScope": null,
+            "lastCheckin": {
+              "date": "2026-09-30",
+              "note": "Market data entitlements approved; feeds pending.",
+              "forecast": "2027-01-04",
+              "conf": 4
+            },
+            "nowTasks": [
+              "fi-1",
+              "fi-2"
+            ]
+          },
+          {
+            "id": "alpha",
+            "forecast": null,
+            "prev": null,
+            "target": "2027-03-25",
+            "delta": null,
+            "deltaLabel": "No forecast",
+            "status": "define",
+            "rate": 2,
+            "bd3": 0,
+            "bd8": 0,
+            "rateAfter": 3,
+            "confidence": null,
+            "checkin": null,
+            "since": null,
+            "stale": false,
+            "added": 0,
+            "growth": 0,
+            "lastScope": null,
+            "lastCheckin": null,
+            "nowTasks": []
+          }
+        ],
+        "verdict": {
+          "word": "Move on track, narrowly",
+          "buffer": 8,
+          "toRun": 1
+        },
+        "upcoming": [
+          {
+            "iso": "2026-11-04",
+            "s": "Wed 4 Nov",
+            "bdm": 3,
+            "total": 9.5
+          }
+        ],
+        "attention": [
+          "a-ret",
+          "o-2026-11-04",
+          "s-manco"
+        ],
+        "feedHead": [
+          {
+            "id": "f1",
+            "pid": "ret",
+            "kind": "scope",
+            "title": "Returns pipeline",
+            "body": "Scope added (security-level attribution, +10h). Forecast moved 27 Nov → 2 Dec.",
+            "delta": "+3 BD",
+            "tone": "risk",
+            "when": "Sat 3 Oct"
+          },
+          {
+            "id": "f2",
+            "pid": "manco",
+            "kind": "stale",
+            "title": "ManCo pack automation",
+            "body": "No check-in for 9 days.",
+            "delta": "9 days",
+            "tone": "quiet",
+            "when": "Today"
+          }
+        ],
+        "tasks": {
+          "ret-1": true,
+          "fi-1": true
+        },
+        "doneOn": {
+          "ret-1": "2026-10-01",
+          "fi-1": "2026-10-02"
+        },
+        "bauDone": {},
+        "fundsDone": 5,
+        "flash": {},
+        "moved": {}
+      },
+      "after": [
+        {
+          "projects": [
+            {
+              "id": "ret",
+              "forecast": "2026-12-02",
+              "prev": "2026-11-27",
+              "target": "2026-11-27",
+              "delta": 3,
+              "deltaLabel": "+3 BD",
+              "status": "risk",
+              "rate": 3.5,
+              "bd3": 0,
+              "bd8": 2,
+              "rateAfter": 0,
+              "confidence": 3,
+              "checkin": "2026-10-03",
+              "since": 2,
+              "stale": false,
+              "added": 10,
+              "growth": 17,
+              "lastScope": {
+                "date": "2026-10-03",
+                "what": "Security-level attribution",
+                "h": 10,
+                "bd": 3,
+                "from": "27 Nov",
+                "to": "2 Dec"
+              },
+              "lastCheckin": {
+                "date": "2026-10-03",
+                "note": "Security-level attribution added to scope, +10h.",
+                "forecast": "2026-12-02",
+                "conf": 3,
+                "ms": [
+                  {
+                    "name": "Fund-level engine reconciles",
+                    "date": "2026-10-16"
+                  },
+                  {
+                    "name": "Parallel run on November BD3",
+                    "date": "2026-11-04"
+                  },
+                  {
+                    "name": "Security-level attribution",
+                    "date": "2026-11-20"
+                  }
+                ]
+              },
+              "nowTasks": [
+                "ret-1",
+                "ret-2",
+                "ret-3",
+                "ret-4",
+                "ret-5"
+              ]
+            },
+            {
+              "id": "manco",
+              "forecast": "2026-12-11",
+              "prev": null,
+              "target": "2026-12-11",
+              "delta": 0,
+              "deltaLabel": "On target",
+              "status": "on",
+              "rate": 1.5,
+              "bd3": 2,
+              "bd8": 1.5,
+              "rateAfter": 0,
+              "confidence": 4,
+              "checkin": "2026-09-26",
+              "since": 9,
+              "stale": true,
+              "added": 0,
+              "growth": 0,
+              "lastScope": null,
+              "lastCheckin": {
+                "date": "2026-09-26",
+                "note": "Pack inventoried: 14 of 22 charts come straight from source.",
+                "forecast": "2026-12-11",
+                "conf": 4
+              },
+              "nowTasks": [
+                "man-0",
+                "man-1",
+                "man-2",
+                "man-3",
+                "man-4"
+              ]
+            },
+            {
+              "id": "play",
+              "forecast": "2026-12-18",
+              "prev": null,
+              "target": "2026-12-18",
+              "delta": 0,
+              "deltaLabel": "On target",
+              "status": "on",
+              "rate": 1,
+              "bd3": 0,
+              "bd8": 0.5,
+              "rateAfter": 0,
+              "confidence": 4,
+              "checkin": "2026-10-02",
+              "since": 3,
+              "stale": false,
+              "added": 0,
+              "growth": 0,
+              "lastScope": null,
+              "lastCheckin": {
+                "date": "2026-10-02",
+                "note": "Recorded the September BD3 run as raw notes.",
+                "forecast": "2026-12-18",
+                "conf": 4
+              },
+              "nowTasks": [
+                "pl-1",
+                "pl-2"
+              ]
+            },
+            {
+              "id": "fion",
+              "forecast": "2027-01-04",
+              "prev": null,
+              "target": "2027-01-04",
+              "delta": 0,
+              "deltaLabel": "On target",
+              "status": "on",
+              "rate": 1,
+              "bd3": 0,
+              "bd8": 0,
+              "rateAfter": 1,
+              "confidence": 4,
+              "checkin": "2026-09-30",
+              "since": 5,
+              "stale": false,
+              "added": 0,
+              "growth": 0,
+              "lastScope": null,
+              "lastCheckin": {
+                "date": "2026-09-30",
+                "note": "Market data entitlements approved; feeds pending.",
+                "forecast": "2027-01-04",
+                "conf": 4
+              },
+              "nowTasks": [
+                "fi-1",
+                "fi-2"
+              ]
+            },
+            {
+              "id": "alpha",
+              "forecast": null,
+              "prev": null,
+              "target": "2027-03-25",
+              "delta": null,
+              "deltaLabel": "No forecast",
+              "status": "define",
+              "rate": 2,
+              "bd3": 0,
+              "bd8": 0,
+              "rateAfter": 3,
+              "confidence": null,
+              "checkin": null,
+              "since": null,
+              "stale": false,
+              "added": 0,
+              "growth": 0,
+              "lastScope": null,
+              "lastCheckin": null,
+              "nowTasks": []
+            }
+          ],
+          "verdict": {
+            "word": "Move on track, narrowly",
+            "buffer": 8,
+            "toRun": 1
+          },
+          "upcoming": [
+            {
+              "iso": "2026-11-04",
+              "s": "Wed 4 Nov",
+              "bdm": 3,
+              "total": 9.5
+            }
+          ],
+          "attention": [
+            "a-ret",
+            "o-2026-11-04",
+            "s-manco"
+          ],
+          "feedHead": [
+            {
+              "id": "f1",
+              "pid": "ret",
+              "kind": "scope",
+              "title": "Returns pipeline",
+              "body": "Scope added (security-level attribution, +10h). Forecast moved 27 Nov → 2 Dec.",
+              "delta": "+3 BD",
+              "tone": "risk",
+              "when": "Sat 3 Oct"
+            },
+            {
+              "id": "f2",
+              "pid": "manco",
+              "kind": "stale",
+              "title": "ManCo pack automation",
+              "body": "No check-in for 9 days.",
+              "delta": "9 days",
+              "tone": "quiet",
+              "when": "Today"
+            }
+          ],
+          "tasks": {
+            "ret-1": true,
+            "fi-1": true
+          },
+          "doneOn": {
+            "ret-1": "2026-10-01",
+            "fi-1": "2026-10-02"
+          },
+          "bauDone": {},
+          "fundsDone": 12,
+          "flash": {},
+          "moved": {}
+        }
+      ]
+    },
+    {
+      "id": "claude-fixture-apply",
+      "about": "Apply every change in golden/claude-fixture.mjs (the drawer-review-claude state)",
+      "before": {
+        "projects": [
+          {
+            "id": "ret",
+            "forecast": "2026-12-02",
+            "prev": "2026-11-27",
+            "target": "2026-11-27",
+            "delta": 3,
+            "deltaLabel": "+3 BD",
+            "status": "risk",
+            "rate": 3.5,
+            "bd3": 0,
+            "bd8": 2,
+            "rateAfter": 0,
+            "confidence": 3,
+            "checkin": "2026-10-03",
+            "since": 2,
+            "stale": false,
+            "added": 10,
+            "growth": 17,
+            "lastScope": {
+              "date": "2026-10-03",
+              "what": "Security-level attribution",
+              "h": 10,
+              "bd": 3,
+              "from": "27 Nov",
+              "to": "2 Dec"
+            },
+            "lastCheckin": {
+              "date": "2026-10-03",
+              "note": "Security-level attribution added to scope, +10h.",
+              "forecast": "2026-12-02",
+              "conf": 3,
+              "ms": [
+                {
+                  "name": "Fund-level engine reconciles",
+                  "date": "2026-10-16"
+                },
+                {
+                  "name": "Parallel run on November BD3",
+                  "date": "2026-11-04"
+                },
+                {
+                  "name": "Security-level attribution",
+                  "date": "2026-11-20"
+                }
+              ]
+            },
+            "nowTasks": [
+              "ret-1",
+              "ret-2",
+              "ret-3",
+              "ret-4",
+              "ret-5"
+            ]
+          },
+          {
+            "id": "manco",
+            "forecast": "2026-12-11",
+            "prev": null,
+            "target": "2026-12-11",
+            "delta": 0,
+            "deltaLabel": "On target",
+            "status": "on",
+            "rate": 1.5,
+            "bd3": 2,
+            "bd8": 1.5,
+            "rateAfter": 0,
+            "confidence": 4,
+            "checkin": "2026-09-26",
+            "since": 9,
+            "stale": true,
+            "added": 0,
+            "growth": 0,
+            "lastScope": null,
+            "lastCheckin": {
+              "date": "2026-09-26",
+              "note": "Pack inventoried: 14 of 22 charts come straight from source.",
+              "forecast": "2026-12-11",
+              "conf": 4
+            },
+            "nowTasks": [
+              "man-0",
+              "man-1",
+              "man-2",
+              "man-3",
+              "man-4"
+            ]
+          },
+          {
+            "id": "play",
+            "forecast": "2026-12-18",
+            "prev": null,
+            "target": "2026-12-18",
+            "delta": 0,
+            "deltaLabel": "On target",
+            "status": "on",
+            "rate": 1,
+            "bd3": 0,
+            "bd8": 0.5,
+            "rateAfter": 0,
+            "confidence": 4,
+            "checkin": "2026-10-02",
+            "since": 3,
+            "stale": false,
+            "added": 0,
+            "growth": 0,
+            "lastScope": null,
+            "lastCheckin": {
+              "date": "2026-10-02",
+              "note": "Recorded the September BD3 run as raw notes.",
+              "forecast": "2026-12-18",
+              "conf": 4
+            },
+            "nowTasks": [
+              "pl-1",
+              "pl-2"
+            ]
+          },
+          {
+            "id": "fion",
+            "forecast": "2027-01-04",
+            "prev": null,
+            "target": "2027-01-04",
+            "delta": 0,
+            "deltaLabel": "On target",
+            "status": "on",
+            "rate": 1,
+            "bd3": 0,
+            "bd8": 0,
+            "rateAfter": 1,
+            "confidence": 4,
+            "checkin": "2026-09-30",
+            "since": 5,
+            "stale": false,
+            "added": 0,
+            "growth": 0,
+            "lastScope": null,
+            "lastCheckin": {
+              "date": "2026-09-30",
+              "note": "Market data entitlements approved; feeds pending.",
+              "forecast": "2027-01-04",
+              "conf": 4
+            },
+            "nowTasks": [
+              "fi-1",
+              "fi-2"
+            ]
+          },
+          {
+            "id": "alpha",
+            "forecast": null,
+            "prev": null,
+            "target": "2027-03-25",
+            "delta": null,
+            "deltaLabel": "No forecast",
+            "status": "define",
+            "rate": 2,
+            "bd3": 0,
+            "bd8": 0,
+            "rateAfter": 3,
+            "confidence": null,
+            "checkin": null,
+            "since": null,
+            "stale": false,
+            "added": 0,
+            "growth": 0,
+            "lastScope": null,
+            "lastCheckin": null,
+            "nowTasks": []
+          }
+        ],
+        "verdict": {
+          "word": "Move on track, narrowly",
+          "buffer": 8,
+          "toRun": 1
+        },
+        "upcoming": [
+          {
+            "iso": "2026-11-04",
+            "s": "Wed 4 Nov",
+            "bdm": 3,
+            "total": 9.5
+          }
+        ],
+        "attention": [
+          "a-ret",
+          "o-2026-11-04",
+          "s-manco"
+        ],
+        "feedHead": [
+          {
+            "id": "f1",
+            "pid": "ret",
+            "kind": "scope",
+            "title": "Returns pipeline",
+            "body": "Scope added (security-level attribution, +10h). Forecast moved 27 Nov → 2 Dec.",
+            "delta": "+3 BD",
+            "tone": "risk",
+            "when": "Sat 3 Oct"
+          },
+          {
+            "id": "f2",
+            "pid": "manco",
+            "kind": "stale",
+            "title": "ManCo pack automation",
+            "body": "No check-in for 9 days.",
+            "delta": "9 days",
+            "tone": "quiet",
+            "when": "Today"
+          }
+        ],
+        "tasks": {
+          "ret-1": true,
+          "fi-1": true
+        },
+        "doneOn": {
+          "ret-1": "2026-10-01",
+          "fi-1": "2026-10-02"
+        },
+        "bauDone": {},
+        "fundsDone": 5,
+        "flash": {},
+        "moved": {}
+      },
+      "after": [
+        {
+          "projects": [
+            {
+              "id": "ret",
+              "forecast": "2026-12-04",
+              "prev": "2026-12-02",
+              "target": "2026-11-27",
+              "delta": 5,
+              "deltaLabel": "+5 BD",
+              "status": "risk",
+              "rate": 3.5,
+              "bd3": 0,
+              "bd8": 2,
+              "rateAfter": 0,
+              "confidence": 2,
+              "checkin": "2026-10-05",
+              "since": 0,
+              "stale": false,
+              "added": 16,
+              "growth": 27,
+              "blocker": "Administrator files for the last 4 funds",
+              "lastScope": {
+                "date": "2026-10-05",
+                "what": "FX attribution",
+                "h": 6,
+                "bd": 2,
+                "from": "2 Dec",
+                "to": "4 Dec"
+              },
+              "lastCheckin": {
+                "date": "2026-10-05",
+                "note": "FX attribution added, +6h. Blocked: Administrator files for the last 4 funds",
+                "forecast": "2026-12-04",
+                "conf": 2
+              },
+              "nowTasks": [
+                "ret-1",
+                "ret-2",
+                "ret-3",
+                "ret-4",
+                "ret-5"
+              ]
+            },
+            {
+              "id": "manco",
+              "forecast": "2026-11-25",
+              "prev": "2026-12-11",
+              "target": "2026-12-11",
+              "delta": -12,
+              "deltaLabel": "−12 BD",
+              "status": "on",
+              "rate": 2,
+              "bd3": 2.6666666666666665,
+              "bd8": 2,
+              "rateAfter": 0,
+              "confidence": 4,
+              "checkin": "2026-10-05",
+              "since": 0,
+              "stale": false,
+              "added": 0,
+              "growth": 0,
+              "blocker": null,
+              "lastScope": null,
+              "lastCheckin": {
+                "date": "2026-10-05",
+                "note": "Moving to 2h a day to protect the November pack",
+                "forecast": "2026-11-25",
+                "conf": 4
+              },
+              "nowTasks": [
+                "man-0",
+                "man-1",
+                "man-2",
+                "man-3",
+                "man-4"
+              ]
+            },
+            {
+              "id": "play",
+              "forecast": "2026-12-18",
+              "prev": null,
+              "target": "2027-01-08",
+              "delta": -12,
+              "deltaLabel": "−12 BD",
+              "status": "on",
+              "rate": 1,
+              "bd3": 0,
+              "bd8": 0.5,
+              "rateAfter": 0,
+              "confidence": 4,
+              "checkin": "2026-10-05",
+              "since": 0,
+              "stale": false,
+              "added": 0,
+              "growth": 0,
+              "blocker": null,
+              "lastScope": null,
+              "lastCheckin": {
+                "date": "2026-10-05",
+                "note": "Plan confirmed.",
+                "forecast": "2026-12-18",
+                "conf": 4
+              },
+              "nowTasks": [
+                "pl-1",
+                "pl-2"
+              ]
+            },
+            {
+              "id": "fion",
+              "forecast": "2027-01-04",
+              "prev": null,
+              "target": "2027-01-04",
+              "delta": 0,
+              "deltaLabel": "On target",
+              "status": "on",
+              "rate": 1,
+              "bd3": 0,
+              "bd8": 0,
+              "rateAfter": 1,
+              "confidence": 4,
+              "checkin": "2026-09-30",
+              "since": 5,
+              "stale": false,
+              "added": 0,
+              "growth": 0,
+              "lastScope": null,
+              "lastCheckin": {
+                "date": "2026-09-30",
+                "note": "Market data entitlements approved; feeds pending.",
+                "forecast": "2027-01-04",
+                "conf": 4
+              },
+              "nowTasks": [
+                "fi-1",
+                "fi-2"
+              ]
+            },
+            {
+              "id": "alpha",
+              "forecast": null,
+              "prev": null,
+              "target": "2027-03-25",
+              "delta": null,
+              "deltaLabel": "No forecast",
+              "status": "define",
+              "rate": 2,
+              "bd3": 0,
+              "bd8": 0,
+              "rateAfter": 3,
+              "confidence": null,
+              "checkin": null,
+              "since": null,
+              "stale": false,
+              "added": 0,
+              "growth": 0,
+              "lastScope": null,
+              "lastCheckin": null,
+              "nowTasks": []
+            }
+          ],
+          "verdict": {
+            "word": "Move at risk",
+            "buffer": 8,
+            "toRun": -1
+          },
+          "upcoming": [
+            {
+              "iso": "2026-10-05",
+              "s": "Mon 5 Oct",
+              "bdm": 3,
+              "total": 8.666666666666666
+            },
+            {
+              "iso": "2026-10-12",
+              "s": "Mon 12 Oct",
+              "bdm": 8,
+              "total": 8.5
+            },
+            {
+              "iso": "2026-11-04",
+              "s": "Wed 4 Nov",
+              "bdm": 3,
+              "total": 9.5
+            },
+            {
+              "iso": "2026-11-11",
+              "s": "Wed 11 Nov",
+              "bdm": 8,
+              "total": 8.5
+            }
+          ],
+          "attention": [
+            "a-ret",
+            "o-2026-10-05",
+            "o-2026-10-12",
+            "o-2026-11-04",
+            "o-2026-11-11"
+          ],
+          "feedHead": [
+            {
+              "id": "f1791189000000",
+              "pid": "play",
+              "kind": "checkin",
+              "title": "Handover playbook",
+              "body": "Checked in. Forecast holds at 18 Dec.",
+              "delta": "±0 BD",
+              "tone": "quiet",
+              "when": "Just now"
+            },
+            {
+              "id": "f1791189000000",
+              "pid": "manco",
+              "kind": "checkin",
+              "title": "ManCo automation",
+              "body": "Checked in. Moving to 2h a day to protect the November pack. Forecast holds at 25 Nov.",
+              "delta": "±0 BD",
+              "tone": "quiet",
+              "when": "Just now"
+            }
+          ],
+          "tasks": {
+            "ret-1": true,
+            "fi-1": true,
+            "ret-2": true
+          },
+          "doneOn": {
+            "ret-1": "2026-10-01",
+            "fi-1": "2026-10-02"
+          },
+          "bauDone": {},
+          "fundsDone": 12,
+          "flash": {
+            "ret": true,
+            "manco": false,
+            "play": false
+          },
+          "moved": {
+            "ret": {
+              "delta": 2,
+              "label": "+2 BD",
+              "at": 1791189000000
+            },
+            "manco": null,
+            "play": null
+          }
+        }
+      ]
+    }
+  ]
+}

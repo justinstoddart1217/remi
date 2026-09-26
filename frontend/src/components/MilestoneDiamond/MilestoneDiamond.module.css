@@ -1,0 +1,8 @@
+/* Remi Foundations.dc.html:216-217; Timeline.dc.html:142; Workspace.dc.html:174. */
+.diamond {
+  flex: none;
+  display: block;
+  box-sizing: border-box;
+  border: 1.5px solid;
+  transform: rotate(45deg);
+}

@@ -1,0 +1,5 @@
+# Written by every Remi run (make parity / behaviour / egress); regenerate rather than commit.
+.remi-run/
+report/
+baselines/remi/
+# Human-approved Remi-only baselines (baselines/remi-approved/) ARE committed.

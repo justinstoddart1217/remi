@@ -1,0 +1,32 @@
+/*
+ * Today.dc.html:205; Transition.dc.html:74; CheckIn.dc.html:59. Ninety One redesign: the dark fill
+ * is --brand-deep (Today funds, the drawer's thinking rule); `ink` is its old name.
+ */
+.track {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1px;
+  background: var(--hairline);
+}
+.fill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+}
+.pc {
+  background: var(--pc-accent);
+}
+.fi {
+  background: var(--fi-accent);
+}
+.ink,
+.brand {
+  background: var(--brand-deep);
+}
+.spring {
+  transition: width var(--dur-slow) var(--spring-soft);
+}
+.thinking {
+  transition: width 2600ms cubic-bezier(0.2, 0.7, 0.3, 1);
+}

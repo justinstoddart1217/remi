@@ -1,0 +1,42 @@
+{
+  "attention": [
+    {
+      "id": "a-ret",
+      "pid": "ret",
+      "kind": "At risk",
+      "title": "Returns pipeline automation",
+      "body": "Forecast Wed 2 Dec, target Fri 27 Nov",
+      "chip": "+3 BD",
+      "tone": "risk"
+    },
+    {
+      "id": "o-2026-11-04",
+      "pid": null,
+      "day": "2026-11-04",
+      "kind": "Overload",
+      "title": "Wed 4 Nov (BD3)",
+      "body": "9.5h of an 8h day",
+      "chip": "+1.5h",
+      "tone": "overload"
+    },
+    {
+      "id": "s-manco",
+      "pid": "manco",
+      "kind": "Stale",
+      "title": "ManCo pack automation",
+      "body": "No check-in for 9 days",
+      "chip": "9d",
+      "tone": "quiet"
+    }
+  ],
+  "upcoming": [
+    {
+      "iso": "2026-11-04",
+      "s": "Wed 4 Nov",
+      "bdm": 3,
+      "total": 9.5
+    }
+  ],
+  "prompt": "manco",
+  "nextDue": "manco"
+}

@@ -1,0 +1,689 @@
+/*
+ * Timeline.dc.html, with the prototype's exact px values. Positions and widths computed from
+ * the layout are inline styles; everything static lives here. Every positioned chart element
+ * glides on --spring-soft (440ms), which reduced motion turns into a jump (tokens.css).
+ */
+
+/*
+ * ------------------------------------------------------------------ frame (:10)
+ * `height: 100%` in the prototype resolves against a host that sizes to its content, so the
+ * frame (and the side panel, which spans it) ends below the footnote. Here the frame is
+ * content-height too, capped at the section so the lanes scroll on a short screen.
+ */
+.wrap {
+  position: relative;
+  box-sizing: border-box;
+  max-height: 100%;
+  padding: 28px 48px 24px;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow: hidden;
+}
+
+/* ------------------------------------------------------------------ top bar (:12-40) */
+.top {
+  display: flex;
+  align-items: flex-end;
+  gap: 40px;
+  padding-bottom: 22px;
+}
+.titleBlock {
+  min-width: 0;
+}
+.eyebrow {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--brand-dark);
+}
+.titleRow {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin-top: 8px;
+}
+/* The section heading: display face, 21/400 brand-deep, after a 3×18 teal accent bar. */
+.title {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-size: 21px;
+  font-weight: 400;
+  line-height: normal;
+  color: var(--brand-deep);
+}
+.title::before {
+  content: '';
+  flex: none;
+  width: 3px;
+  height: 18px;
+  border-radius: 999px;
+  background: var(--brand-teal, #009d80);
+}
+.title:focus {
+  outline: none;
+}
+.subtitle {
+  font-family: var(--font-numeric);
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+.spacer {
+  flex: 1;
+}
+
+.legend {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.swBau {
+  width: 4px;
+  height: 14px;
+  border-radius: 1px;
+  background: var(--pc-accent);
+}
+.swProject {
+  width: 22px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--pc-accent);
+}
+.swPast {
+  width: 22px;
+  height: 8px;
+  border-radius: 2px;
+  background: var(--risk);
+}
+.swPrev {
+  width: 22px;
+  height: 6px;
+  box-sizing: border-box;
+  border: 1px dashed var(--ink-faint);
+  border-radius: 2px;
+}
+.swMilestone {
+  width: 8px;
+  height: 8px;
+  box-sizing: border-box;
+  transform: rotate(45deg);
+  border: 1.5px solid var(--ink-muted);
+  background: var(--paper);
+}
+.swTarget {
+  position: relative;
+  width: 7px;
+  height: 14px;
+}
+.swTargetUp {
+  position: absolute;
+  left: 3px;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--brand-deep);
+}
+.swTargetBar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 7px;
+  height: 1px;
+  background: var(--brand-deep);
+}
+.swOverload {
+  width: 8px;
+  height: 14px;
+  border-radius: 1px;
+  background: var(--overload);
+}
+
+.pan {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: opacity var(--dur-base) var(--ease-out);
+}
+.pan[data-shown='false'] {
+  opacity: 0;
+  pointer-events: none;
+}
+
+/*
+ * ------------------------------------------------------------------ chart (:42)
+ * The prototype's host sizes to its content, so the chart ends right after the lanes and the
+ * footnote follows them. Here the chart and the lanes may shrink (and the lanes scroll) when
+ * the screen is short, but never grow past their content.
+ */
+.chart {
+  position: relative;
+  flex: 0 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Layers over the chart column (bands behind, lines on top at z 3). */
+.layer {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 280px;
+  right: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+.band {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: var(--weekend-band);
+  transition:
+    left var(--dur-slow) var(--spring-soft),
+    width var(--dur-slow) var(--spring-soft);
+}
+.band[data-holiday='true'] {
+  background: var(--holiday-band);
+}
+/* An empty plan: the slivers end above the footnote, level with the today and move lines. */
+.chart[data-empty] > .layer:not(.lines) {
+  bottom: 28px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 280px minmax(0, 1fr);
+  flex: none;
+}
+
+/* Date header (:49-67) */
+.dateHeader {
+  height: 80px;
+  border-bottom: 1px solid var(--hairline);
+}
+.dateHeaderLabel {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 6px;
+  padding-bottom: 6px;
+  font-size: 11px;
+  color: var(--ink-muted);
+}
+.area {
+  position: relative;
+  overflow: hidden;
+}
+.month {
+  position: absolute;
+  top: 0;
+  height: 20px;
+  box-sizing: border-box;
+  padding-left: 6px;
+  border-left: 1px solid transparent;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  opacity: 0;
+  transition:
+    left var(--dur-slow) var(--spring-soft),
+    width var(--dur-slow) var(--spring-soft),
+    opacity var(--dur-base) var(--ease-out);
+}
+.month[data-shown='true'] {
+  opacity: 1;
+}
+.month[data-border='true'] {
+  border-left-color: var(--hairline);
+}
+.week {
+  position: absolute;
+  top: 24px;
+  padding-left: 6px;
+  font-family: var(--font-numeric);
+  font-size: 10px;
+  color: var(--ink-muted);
+  white-space: nowrap;
+  transition: left var(--dur-slow) var(--spring-soft);
+}
+.day {
+  position: absolute;
+  top: 42px;
+  height: 18px;
+  display: flex;
+  justify-content: center;
+  transition:
+    left var(--dur-slow) var(--spring-soft),
+    width var(--dur-slow) var(--spring-soft);
+}
+.dayPill {
+  display: inline-flex;
+  align-items: center;
+  height: 18px;
+  padding: 0 3px;
+  border-radius: var(--radius-s);
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--font-numeric);
+  font-size: 11px;
+  white-space: nowrap;
+}
+.dayPill[data-today='true'] {
+  background: var(--ink);
+  color: var(--paper);
+}
+.bd {
+  position: absolute;
+  top: 62px;
+  text-align: center;
+  font-family: var(--font-numeric);
+  font-size: 9px;
+  color: var(--ink-muted);
+  white-space: nowrap;
+  transition:
+    left var(--dur-slow) var(--spring-soft),
+    width var(--dur-slow) var(--spring-soft);
+}
+.bd[data-first='true'] {
+  color: var(--ink);
+}
+
+/* Capacity (:69-87) */
+.capacity {
+  height: 76px;
+  border-bottom: 1px solid var(--hairline);
+}
+.capacityLabel {
+  padding-top: 14px;
+}
+.capacityCaption {
+  margin-top: 6px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: var(--ink-muted);
+}
+.capacityLine {
+  position: absolute;
+  left: 0;
+  right: 0;
+  border-top: 1px dashed var(--hairline);
+}
+.capCol {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  padding-bottom: 10px;
+  box-sizing: border-box;
+  transition:
+    left var(--dur-slow) var(--spring-soft),
+    width var(--dur-slow) var(--spring-soft);
+}
+.moveTag {
+  position: absolute;
+  top: 4px;
+  padding: 0 6px;
+  background: var(--paper);
+  color: var(--fi-accent);
+  font-size: 11px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: left var(--dur-slow) var(--spring-soft);
+}
+
+/* Lanes (:89-159) */
+.lanes {
+  flex: 0 1 auto;
+  min-height: 0;
+  overflow-x: hidden;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+}
+.lanesEnd {
+  flex: 1;
+}
+.groupHead {
+  height: 40px;
+  align-items: end;
+  border-bottom: 1px solid var(--hairline);
+}
+.groupLabel {
+  margin: 0;
+  padding-bottom: 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.groupLabel[data-domain='pc'] {
+  color: var(--pc-accent);
+}
+.groupLabel[data-domain='fi'] {
+  color: var(--fi-accent);
+}
+
+/* Lane rows: dimmed by the linked highlight (0.28). */
+.lane {
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+.lane[data-dim='true'] {
+  opacity: var(--linked-dim);
+}
+.lane:focus-visible {
+  outline: 1.5px solid var(--focus);
+  outline-offset: -1.5px;
+}
+.laneLabel {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding-right: 24px;
+  min-width: 0;
+}
+.laneName {
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.laneSub {
+  font-family: var(--font-numeric);
+  font-size: 11px;
+  color: var(--ink-muted);
+  white-space: nowrap;
+}
+.track {
+  position: relative;
+  overflow: hidden;
+}
+
+.routineRow {
+  height: 38px;
+}
+.tick {
+  position: absolute;
+  top: 10px;
+  transition:
+    left var(--dur-slow) var(--spring-soft),
+    width var(--dur-slow) var(--spring-soft);
+}
+
+.rotationRow {
+  height: 48px;
+}
+.rotationNote {
+  position: absolute;
+  top: 16px;
+  font-size: 12px;
+  color: var(--ink-muted);
+  white-space: nowrap;
+  transition: right var(--dur-slow) var(--spring-soft);
+}
+/* A rotation stop, placed on the track (Timeline.dc.html:121); the transition is inline. */
+.segment {
+  position: absolute;
+  top: 11px;
+}
+
+.projectRow {
+  height: 64px;
+  cursor: pointer;
+  background: transparent;
+  transition:
+    opacity var(--dur-fast) var(--ease-out),
+    background var(--dur-fast) var(--ease-out);
+}
+.projectRow[data-hovered='true'] {
+  background: var(--tint-hover-3);
+}
+.projectLabel {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 5px;
+  padding-right: 24px;
+  min-width: 0;
+}
+.projectName {
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.projectMeta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--ink-muted);
+}
+.rollBox {
+  display: inline-flex;
+}
+
+.overrun {
+  position: absolute;
+  top: 26px;
+  height: 10px;
+  border-radius: 0 2px 2px 0;
+  background: var(--risk);
+  transition:
+    left var(--dur-slow) var(--spring-soft),
+    width var(--dur-slow) var(--spring-soft);
+}
+.milestone {
+  position: absolute;
+  top: 26px;
+  z-index: 1;
+  transition:
+    left var(--dur-slow) var(--spring-soft),
+    transform var(--dur-base) var(--ease-out);
+}
+.endDiamond {
+  position: absolute;
+  top: 24px;
+  transition:
+    left var(--dur-slow) var(--spring-soft),
+    transform var(--dur-base) var(--ease-out);
+}
+.target {
+  position: absolute;
+  top: 14px;
+  transition: left var(--dur-slow) var(--spring-soft);
+}
+.ghostEnd {
+  position: absolute;
+  top: 22px;
+}
+.ghostLabel {
+  position: absolute;
+  top: 48px;
+  font-family: var(--font-numeric);
+  font-size: 10px;
+  color: var(--ink-muted);
+  white-space: nowrap;
+}
+/* The ghost "was" marks appear at once while flashing, then fade over 400ms. */
+.ghostEnd,
+.ghostLabel {
+  opacity: 0;
+  transition:
+    opacity 400ms var(--ease-out),
+    left var(--dur-slow) var(--spring-soft);
+}
+.ghostEnd[data-flash='true'],
+.ghostLabel[data-flash='true'] {
+  opacity: 1;
+  transition:
+    opacity 0ms,
+    left var(--dur-slow) var(--spring-soft);
+}
+.moved {
+  position: absolute;
+  top: 6px;
+  display: flex;
+  transition: left var(--dur-slow) var(--spring-soft);
+}
+.offRange {
+  position: absolute;
+  top: 24px;
+  right: 10px;
+  padding: 0 4px;
+  background: var(--paper);
+  font-size: 11px;
+  color: var(--ink-muted);
+  opacity: 0;
+}
+.offRange[data-shown='true'] {
+  opacity: 1;
+}
+
+.emptyRow {
+  height: 38px;
+  align-items: center;
+}
+.emptyText {
+  font-size: 14px;
+  color: var(--ink-muted);
+}
+
+/* Footnote (:160) */
+.footnote {
+  flex: none;
+  padding-top: 12px;
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+
+/* Today and move lines (:162-165) */
+.lines {
+  z-index: 3;
+}
+.todayLine {
+  position: absolute;
+  top: 62px;
+  bottom: 28px;
+  width: 1px;
+  background: var(--brand-deep);
+  transition: left var(--dur-slow) var(--spring-soft);
+}
+.moveLine {
+  position: absolute;
+  top: 80px;
+  bottom: 28px;
+  width: 1.5px;
+  background: var(--fi-accent);
+  transition: left var(--dur-slow) var(--spring-soft);
+}
+
+/* ------------------------------------------------------------------ side panel (:178-209) */
+.panelHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.panelName {
+  margin: 22px 0 0;
+  font-size: 14px;
+  font-weight: 600;
+}
+.panelGoal {
+  margin: 8px 0 0;
+  font-family: var(--font-display);
+  font-size: 24px;
+  line-height: 1.3;
+  letter-spacing: -0.005em;
+  text-wrap: pretty;
+}
+.facts {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 24px;
+  row-gap: 10px;
+  margin: 26px 0 0;
+  padding-top: 18px;
+  border-top: 1px solid var(--hairline);
+  font-size: 14px;
+}
+.facts dt {
+  color: var(--ink-muted);
+}
+.facts dd {
+  margin: 0;
+}
+.factStrong {
+  font-weight: 500;
+}
+.factNumeric {
+  font-family: var(--font-numeric);
+  font-size: 13px;
+}
+.panelEyebrow {
+  margin: 28px 0 0;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--brand-dark);
+}
+.msList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.msRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 38px;
+  border-bottom: 1px solid var(--hairline);
+  font-size: 14px;
+}
+.msName {
+  flex: 1;
+}
+.msDate {
+  font-family: var(--font-numeric);
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+.msEmpty {
+  margin-top: 10px;
+}
+.panelActions {
+  display: flex;
+  gap: 10px;
+}
+.panelButton {
+  flex: 1;
+}
+.panelSecondary {
+  flex: 1;
+  font-weight: 500;
+}
+
+/* ------------------------------------------------------------------ states */
+.status {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 12px;
+  padding-top: 28px;
+}

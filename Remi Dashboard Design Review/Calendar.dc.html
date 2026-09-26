@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<div style="position:relative; box-sizing:border-box; height:100%; min-height:880px; padding:28px 48px 32px; display:flex; flex-direction:column;">
+  <div style="display:flex; align-items:flex-end; gap:24px; padding-bottom:18px;">
+    <div>
+      <div style="font-size:11px; font-weight:500; letter-spacing:0.09em; text-transform:uppercase; color:var(--brand-dark);">Calendar</div>
+      <div style="display:flex; align-items:baseline; gap:14px; margin-top:8px;">
+        <span style="font-family:var(--font-display); font-size:28px; line-height:1.1; letter-spacing:-0.01em;">{{ monthLabel }}</span>
+        <span style="font-family:var(--font-numeric); font-size:12px; color:var(--ink-muted);">{{ monthSub }}</span>
+      </div>
+    </div>
+    <div style="flex:1;"></div>
+    <div style="display:flex; align-items:center; gap:16px; font-size:12px; color:var(--ink-muted);">
+      <span style="display:flex; align-items:center; gap:6px;"><span style="display:inline-flex; align-items:center; gap:4px; height:18px; padding:0 6px; border-radius:var(--radius-s); background:var(--pc-accent-soft); color:var(--ink); font-size:10px; font-weight:500;"><span style="width:3px; height:9px; background:var(--pc-accent); border-radius:1px;"></span>BAU</span>chip</span>
+      <span style="display:flex; align-items:center; gap:6px;"><span style="width:28px; height:4px; border-radius:1px; background:var(--pc-accent);"></span>project hours</span>
+      <span style="display:flex; align-items:center; gap:6px;"><span style="width:8px; height:8px; transform:rotate(45deg); border:1.5px solid var(--ink-muted); box-sizing:border-box;"></span>milestone</span>
+    </div>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <button onClick="{{ prev }}" style="width:32px; height:32px; display:grid; place-items:center; border:1px solid var(--hairline); border-radius:var(--radius-m); background:var(--paper-raised); cursor:pointer; opacity:{{ prevO }};"><span style="font-family:'Material Symbols Outlined'; font-size:18px;">chevron_left</span></button>
+      <button onClick="{{ toToday }}" style="height:32px; padding:0 12px; border:1px solid var(--hairline); border-radius:var(--radius-m); background:var(--paper-raised); cursor:pointer; font-size:13px;">This month</button>
+      <button onClick="{{ next }}" style="width:32px; height:32px; display:grid; place-items:center; border:1px solid var(--hairline); border-radius:var(--radius-m); background:var(--paper-raised); cursor:pointer; opacity:{{ nextO }};"><span style="font-family:'Material Symbols Outlined'; font-size:18px;">chevron_right</span></button>
+    </div>
+  </div>
+
+  <div style="display:grid; grid-template-columns:repeat(5, minmax(0,1fr)) 64px 64px; border-bottom:1px solid var(--brand-deep);">
+    <sc-for list="{{ heads }}" as="h" hint-placeholder-count="7">
+      <div style="padding:0 10px 8px; font-size:11px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:{{ h.fg }};">{{ h.label }}</div>
+    </sc-for>
+  </div>
+
+  <div style="flex:1; min-height:0; display:grid; grid-template-columns:repeat(5, minmax(0,1fr)) 64px 64px; grid-auto-rows:minmax(0,1fr); opacity:{{ gridO }}; transform:{{ gridT }}; transition:opacity var(--dur-fast) var(--ease-out), transform var(--dur-base) var(--spring-soft);">
+    <sc-for list="{{ cells }}" as="c" hint-placeholder-count="35">
+      <div onClick="{{ c.pick }}" style="position:relative; min-width:0; min-height:0; overflow:hidden; box-sizing:border-box; padding:8px 10px 10px; border-bottom:1px solid var(--hairline); border-right:1px solid {{ c.br }}; background:{{ c.bg }}; opacity:{{ c.o }}; display:flex; flex-direction:column; gap:6px; cursor:{{ c.cur }}; box-shadow:inset 0 0 0 {{ c.ring }} var(--ink); transition:box-shadow var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out);" style-hover="background:color-mix(in oklch, var(--ink) 3%, var(--paper))">
+        <div style="display:flex; align-items:center; justify-content:space-between; gap:6px;">
+          <span style="display:inline-flex; align-items:center; justify-content:center; min-width:24px; height:24px; padding:0 4px; box-sizing:border-box; border-radius:var(--radius-s); background:{{ c.numBg }}; color:{{ c.numFg }}; font-size:14px; font-weight:{{ c.fw }};">{{ c.d }}</span>
+          <span style="font-family:var(--font-numeric); font-size:11px; color:var(--ink-muted);">{{ c.bd }}</span>
+        </div>
+        <sc-if value="{{ c.hol }}"><span style="font-size:11px; color:var(--ink-muted); line-height:1.3;">{{ c.hol }}</span></sc-if>
+        <sc-for list="{{ c.chips }}" as="ch" hint-placeholder-count="0">
+          <span onMouseEnter="{{ ch.enter }}" onMouseLeave="{{ unhover }}" style="align-self:flex-start; display:inline-flex; align-items:center; gap:5px; height:20px; padding:0 7px; border-radius:var(--radius-s); background:{{ ch.bg }}; box-shadow:inset 0 0 0 1px {{ ch.line }}; font-size:11px; font-weight:500; white-space:nowrap; opacity:{{ ch.op }}; transition:opacity var(--dur-fast) var(--ease-out);"><span style="width:3px; height:10px; background:{{ ch.accent }}; border-radius:1px;"></span>{{ ch.label }}</span>
+        </sc-for>
+        <sc-for list="{{ c.ms }}" as="x" hint-placeholder-count="0">
+          <span onMouseEnter="{{ x.enter }}" onMouseLeave="{{ unhover }}" style="display:flex; align-items:center; gap:6px; font-size:11px; line-height:1.3; opacity:{{ x.op }}; transition:opacity var(--dur-fast) var(--ease-out);"><span style="flex:none; width:7px; height:7px; box-sizing:border-box; transform:rotate(45deg); border:1.5px solid {{ x.accent }}; background:{{ x.fill }};"></span><span style="white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ x.name }}</span></span>
+        </sc-for>
+        <div style="display:flex; flex-direction:column; gap:3px; margin-top:auto;">
+          <sc-for list="{{ c.bars }}" as="b" hint-placeholder-count="0">
+            <div onMouseEnter="{{ b.enter }}" onMouseLeave="{{ unhover }}" title="{{ b.title }}" style="display:flex; align-items:center; gap:6px; opacity:{{ b.op }}; transition:opacity var(--dur-fast) var(--ease-out);">
+              <span style="flex:none; height:4px; width:{{ b.w }}; background:{{ b.accent }}; border-radius:1px;"></span>
+              <span style="font-size:10px; color:var(--ink-muted); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ b.label }}</span>
+            </div>
+          </sc-for>
+          <sc-if value="{{ c.load }}">
+            <div style="display:flex; align-items:center; gap:6px; margin-top:4px;">
+              <div style="flex:1; display:flex; gap:1px; height:5px; border-radius:1px; animation:{{ c.load.anim }};">
+                <sc-for list="{{ c.load.segs }}" as="s" hint-placeholder-count="0"><span style="width:{{ s.w }}; background:{{ s.bg }}; box-shadow:inset 0 0 0 1px {{ s.line }}; border-radius:1px;"></span></sc-for>
+              </div>
+              <span style="font-family:var(--font-numeric); font-size:10px; color:{{ c.load.fg }}; min-width:30px; text-align:right;">{{ c.load.label }}</span>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+
+  <div style="position:absolute; top:0; right:0; bottom:0; width:440px; z-index:5; box-sizing:border-box; padding:28px 32px; background:var(--paper); border-left:1px solid var(--hairline); box-shadow:-24px 0 48px -36px color-mix(in oklch, var(--ink) 35%, transparent); display:flex; flex-direction:column; overflow:auto; transform:{{ pn.t }}; opacity:{{ pn.o }}; pointer-events:{{ pn.pe }}; transition:transform var(--dur-slow) var(--spring-soft), opacity var(--dur-base) var(--ease-out);">
+    <sc-if value="{{ pn.on }}">
+      <div style="display:flex; align-items:center; gap:10px;">
+        <span style="font-size:11px; font-weight:500; letter-spacing:0.09em; text-transform:uppercase; color:var(--brand-dark);">{{ pn.kicker }}</span>
+        <div style="flex:1;"></div>
+        <button onClick="{{ pn.prev }}" title="Previous day" style="width:30px; height:30px; display:grid; place-items:center; border:1px solid var(--hairline); border-radius:var(--radius-m); background:var(--paper-raised); cursor:pointer;"><span style="font-family:'Material Symbols Outlined'; font-size:18px;">chevron_left</span></button>
+        <button onClick="{{ pn.next }}" title="Next day" style="width:30px; height:30px; display:grid; place-items:center; border:1px solid var(--hairline); border-radius:var(--radius-m); background:var(--paper-raised); cursor:pointer;"><span style="font-family:'Material Symbols Outlined'; font-size:18px;">chevron_right</span></button>
+        <button onClick="{{ close }}" title="Close" style="width:30px; height:30px; display:grid; place-items:center; border:0; background:transparent; cursor:pointer; color:var(--ink-muted);"><span style="font-family:'Material Symbols Outlined'; font-size:20px;">close</span></button>
+      </div>
+      <div style="font-family:var(--font-display); font-size:32px; line-height:1.15; letter-spacing:-0.01em; margin-top:14px;">{{ pn.title }}</div>
+      <div style="font-family:var(--font-numeric); font-size:12px; color:var(--ink-muted); margin-top:8px;">{{ pn.sub }}</div>
+
+      <sc-if value="{{ pn.load }}">
+        <div style="margin-top:24px;">
+          <div style="display:flex; align-items:baseline; justify-content:space-between; margin-bottom:10px;"><span style="font-size:11px; font-weight:500; letter-spacing:0.09em; text-transform:uppercase; color:var(--brand-dark);">Capacity</span><span style="font-size:13px; color:{{ pn.load.fg }};">{{ pn.load.label }}</span></div>
+          <div style="position:relative; display:flex; gap:2px; height:12px; animation:{{ pn.load.anim }}; border-radius:var(--radius-s);">
+            <sc-for list="{{ pn.load.segs }}" as="s" hint-placeholder-count="0">
+              <div onMouseEnter="{{ s.enter }}" onMouseLeave="{{ unhover }}" style="width:{{ s.w }}; flex:none; display:flex; gap:2px; border-radius:2px; background:{{ s.bg }}; box-shadow:inset 0 0 0 1px {{ s.line }}; overflow:hidden; opacity:{{ s.op }}; transition:width var(--dur-slow) var(--spring-soft), opacity var(--dur-fast) var(--ease-out);">
+                <sc-for list="{{ s.cells }}" as="k" hint-placeholder-count="0"><div style="flex:1; background:{{ k }}; border-radius:1.5px;"></div></sc-for>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+        <div style="margin-top:22px; border-top:1px solid var(--brand-deep);">
+          <sc-for list="{{ pn.rows }}" as="r" hint-placeholder-count="0">
+            <div onMouseEnter="{{ r.enter }}" onMouseLeave="{{ unhover }}" onClick="{{ r.open }}" style="display:grid; grid-template-columns:48px minmax(0,1fr); column-gap:12px; padding:12px 0; border-bottom:1px solid var(--hairline); cursor:{{ r.cur }}; opacity:{{ r.op }}; transition:opacity var(--dur-fast) var(--ease-out);">
+              <span style="font-size:17px; font-weight:500;">{{ r.h }}</span>
+              <div style="min-width:0;">
+                <div style="font-size:11px; font-weight:600; letter-spacing:0.08em; text-transform:uppercase; color:{{ r.accent }};">{{ r.kind }}</div>
+                <div style="font-size:15px; font-weight:500; margin-top:3px;">{{ r.name }}</div>
+                <sc-for list="{{ r.tasks }}" as="t" hint-placeholder-count="0">
+                  <div style="display:flex; justify-content:space-between; gap:10px; font-size:13px; color:var(--ink-muted); margin-top:5px;"><span>{{ t.t }}</span><span style="font-family:var(--font-numeric); font-size:11px;">{{ t.hl }}</span></div>
+                </sc-for>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </sc-if>
+      <sc-if value="{{ pn.ms.length }}">
+        <div style="margin-top:22px;">
+          <div style="font-size:11px; font-weight:500; letter-spacing:0.09em; text-transform:uppercase; color:var(--brand-dark);">Due this day</div>
+          <sc-for list="{{ pn.ms }}" as="x" hint-placeholder-count="0">
+            <div style="display:flex; align-items:center; gap:10px; min-height:36px; border-bottom:1px solid var(--hairline); font-size:14px;"><span style="flex:none; width:8px; height:8px; box-sizing:border-box; transform:rotate(45deg); border:1.5px solid {{ x.accent }}; background:{{ x.fill }};"></span><span>{{ x.name }}</span></div>
+          </sc-for>
+        </div>
+      </sc-if>
+      <sc-if value="{{ pn.empty }}"><div style="margin-top:24px; font-size:15px; line-height:1.55; color:var(--ink-muted);">{{ pn.empty }}</div></sc-if>
+      <div style="flex:1; min-height:24px;"></div>
+      <sc-if value="{{ pn.canOpen }}"><button onClick="{{ pn.openDay }}" style="height:40px; border:0; border-radius:var(--radius-m); background:var(--brand-deep); color:var(--paper); font-size:14px; font-weight:600; cursor:pointer;">Open the day’s plan in Today</button></sc-if>
+    </sc-if>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const MOL = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
+const MONTHS = [[2026, 9], [2026, 10], [2026, 11], [2027, 0]];
+
+class Component extends DCLogic {
+  state = { mi: 0, fade: false, sel: null };
+  componentDidMount() { this.onKey = e => { if (e.key === 'Escape' && this.state.sel != null && this.props.model && this.props.model.screen === 'calendar') this.setState({ sel: null }); }; window.addEventListener('keydown', this.onKey); }
+  componentWillUnmount() { window.removeEventListener('keydown', this.onKey); }
+  go(k) {
+    const mi = Math.max(0, Math.min(MONTHS.length - 1, k));
+    if (mi === this.state.mi) return;
+    this.setState({ fade: true, dir: mi > this.state.mi ? 1 : -1 });
+    setTimeout(() => this.setState({ mi, fade: false }), 130);
+  }
+  renderVals() {
+    const m = this.props.model;
+    if (!m) return {};
+    const { CAL, F, TODAY, loads, pmap, hover, setHover } = m;
+    const [y, mo] = MONTHS[this.state.mi];
+    const first = Math.round(Date.UTC(y, mo, 1) / 86400000);
+    const w0 = (CAL.days[first].w + 6) % 7;
+    const start = first - w0;
+    const lastDay = Math.round(Date.UTC(y, mo + 1, 0) / 86400000);
+    const end = lastDay + (6 - (CAL.days[lastDay].w + 6) % 7);
+    const op = id => hover && hover !== id ? 0.25 : 1;
+    const col = d => d === 'pc' ? 'var(--pc-accent)' : 'var(--fi-accent)';
+    const soft = d => d === 'pc' ? 'var(--pc-accent-soft)' : 'var(--fi-accent-soft)';
+    const cells = [];
+    for (let n = start; n <= end; n++) {
+      const d = CAL.days[n];
+      const inM = d && d.m === mo;
+      const wkend = d.w === 0 || d.w === 6;
+      const today = n === TODAY;
+      const l = d.bd ? loads[n] : null;
+      const cell = { pick: inM ? () => this.setState({ sel: this.state.sel === n ? null : n }) : () => {}, cur: inM ? 'pointer' : 'default', ring: this.state.sel === n ? '1.5px' : '0px', d: String(d.d), bd: d.bd ? 'BD' + d.bdm : '', hol: d.hol || '', o: inM ? 1 : 0.35,
+        bg: wkend || d.hol ? 'color-mix(in oklch, var(--ink) 3.5%, var(--paper))' : 'transparent', br: d.w === 0 ? 'transparent' : 'var(--hairline)',
+        numBg: today ? 'var(--ink)' : 'transparent', numFg: today ? 'var(--paper)' : wkend ? 'var(--ink-muted)' : 'var(--ink)', fw: today ? 700 : 500,
+        chips: [], ms: [], bars: [], load: null };
+      if (l && inM) {
+        l.items.filter(i => i.kind === 'bau').forEach(i => cell.chips.push({ label: i.name + ' · ' + i.h + 'h', accent: col(i.domain), bg: soft(i.domain), line: 'transparent', op: op(i.id), enter: () => setHover(i.id) }));
+        m.P.forEach(p => p.milestones.forEach(x => { if (F.dn(x.date) === n) cell.ms.push({ name: x.name, accent: p.accent, fill: n < TODAY ? p.accent : 'var(--paper)', op: op(p.id), enter: () => setHover(p.id) }); }));
+        m.P.forEach(p => { if (p.forecastN === n) cell.ms.push({ name: p.short + ' · ' + p.endName.toLowerCase(), accent: p.status === 'risk' ? 'var(--risk)' : p.accent, fill: p.status === 'risk' ? 'var(--risk)' : p.accent, op: op(p.id), enter: () => setHover(p.id) }); });
+        l.items.filter(i => i.kind === 'proj').forEach(i => cell.bars.push({ w: (i.h / 8 * 62) + '%', accent: l.over ? 'var(--overload)' : col(i.domain), label: pmap[i.id].short + ' ' + i.h + 'h', title: pmap[i.id].name + ' · ' + i.h + 'h', op: op(i.id), enter: () => setHover(i.id) }));
+        const cap = Math.max(l.total, 8);
+        const segs = l.items.map(i => ({ w: 'calc(' + (i.h / cap * 100) + '% - 1px)', bg: l.over ? 'var(--overload)' : i.kind === 'bau' ? col(i.domain) : soft(i.domain), line: l.over ? 'var(--overload)' : col(i.domain) }));
+        if (l.free > 0) segs.push({ w: 'calc(' + (l.free / cap * 100) + '% - 1px)', bg: 'transparent', line: 'var(--hairline)' });
+        cell.load = { segs, label: l.total + 'h', fg: l.over ? 'var(--overload)' : 'var(--ink-muted)', anim: l.over && !m.reduced ? 'remi-pulse 600ms var(--ease-out) 1 300ms' : 'none' };
+      }
+      cells.push(cell);
+    }
+    const nBD = CAL.bds.filter(n => CAL.days[n].m === mo && CAL.days[n].y === y).length;
+    const overN = CAL.bds.filter(n => CAL.days[n].m === mo && CAL.days[n].y === y && loads[n].over).length;
+    const f = this.state.fade, red = m.reduced;
+    const sel = this.state.sel;
+    let pn = { on: false, t: 'translateX(104%)', o: 0, pe: 'none', ms: [] };
+    if (sel != null && CAL.days[sel]) {
+      const d = CAL.days[sel], l = d.bd ? loads[sel] : null;
+      const ahead = d.bd ? CAL.bdDiff(TODAY, sel) : null;
+      const step = k => { let n = sel + k; while (CAL.days[n] && !CAL.days[n].bd) n += k; if (CAL.days[n]) { const dd = CAL.days[n]; const mi = MONTHS.findIndex(([yy, mm]) => yy === dd.y && mm === dd.m); if (mi >= 0) this.setState({ sel: n, mi }); } };
+      const ms = [];
+      m.P.forEach(p => { p.milestones.forEach(x => { if (F.dn(x.date) === sel) ms.push({ name: x.name + ' · ' + p.short, accent: p.accent, fill: sel < TODAY ? p.accent : 'var(--paper)' }); }); if (p.forecastN === sel) ms.push({ name: p.short + ' · ' + p.endName.toLowerCase() + ' (forecast)', accent: p.status === 'risk' ? 'var(--risk)' : p.accent, fill: p.status === 'risk' ? 'var(--risk)' : p.accent }); if (p.targetN === sel) ms.push({ name: p.short + ' · target', accent: 'var(--ink)', fill: 'var(--paper)' }); });
+      if (sel === m.MOVE) ms.push({ name: 'Move to Fixed Income', accent: 'var(--fi-accent)', fill: 'var(--fi-accent)' });
+      let load = null, rows = [];
+      if (l) {
+        const cap = Math.max(l.total, 8);
+        const segs = l.items.map(i => i.kind === 'bau'
+          ? { w: 'calc(' + (i.h / cap * 100) + '% - 2px)', bg: 'transparent', line: 'transparent', cells: Array(Math.ceil(i.h)).fill(l.over ? 'var(--overload)' : col(i.domain)), op: op(i.id), enter: () => setHover(i.id) }
+          : { w: 'calc(' + (i.h / cap * 100) + '% - 2px)', bg: l.over ? 'color-mix(in oklch, var(--overload) 20%, var(--paper))' : soft(i.domain), line: l.over ? 'var(--overload)' : col(i.domain), cells: [], op: op(i.id), enter: () => setHover(i.id) });
+        if (l.free > 0) segs.push({ w: 'calc(' + (l.free / cap * 100) + '% - 2px)', bg: 'transparent', line: 'var(--hairline)', cells: [], op: 1, enter: () => {} });
+        load = { segs, label: l.over ? l.total + 'h planned · ' + (l.total - 8) + 'h over' : l.total + 'h of 8h · ' + l.free + 'h free', fg: l.over ? 'var(--overload)' : 'var(--ink-muted)', anim: l.over && !red ? 'remi-pulse 600ms var(--ease-out) 1 200ms' : 'none' };
+        rows = l.items.map(i => {
+          const p = i.kind === 'proj' ? pmap[i.id] : null;
+          let tasks = [];
+          if (p && sel >= TODAY) {
+            let off = 0; CAL.bds.filter(n => n >= TODAY && n < sel).forEach(n => { const it = loads[n].items.find(x => x.id === p.id && x.kind === 'proj'); if (it) off += it.h; });
+            let cum = 0; p.now.flatMap(x => x.tasks).filter(t => sel === TODAY || !m.tasks[t.id]).forEach(t => { const a0 = cum, a1 = cum + (+t.h || 0); cum = a1; if (a1 > off + 0.01 && a0 < off + i.h - 0.01) tasks.push({ t: t.t, hl: t.h + 'h' }); });
+          }
+          return { h: i.h + 'h', kind: (i.kind === 'bau' ? 'BAU · ' : 'Project · ') + (i.domain === 'pc' ? 'Private Credit' : 'Fixed Income'), accent: col(i.domain), name: p ? p.name : (m.routines.find(r => r.id === i.id) || { name: i.name }).name,
+            tasks, op: op(i.id), enter: () => setHover(i.id), cur: p ? 'pointer' : 'default', open: p ? () => m.openProject(p.id) : () => {} };
+        });
+      }
+      pn = { on: true, t: 'translateX(0)', o: 1, pe: 'auto', title: F.l(sel),
+        kicker: sel === TODAY ? 'Today' : !d.bd ? (d.hol ? 'Bank holiday' : 'Weekend') : sel < TODAY ? Math.abs(ahead) + ' business day' + (Math.abs(ahead) === 1 ? '' : 's') + ' ago' : ahead === 1 ? 'Tomorrow' : ahead + ' business days ahead',
+        sub: d.bd ? 'BD' + d.bdm + ' of ' + MOL[d.m] + (sel >= m.MOVE ? ' · Fixed Income' : '') : d.hol || 'Not a business day',
+        load, rows, ms, empty: !d.bd ? (d.hol ? d.hol + '. Nothing is planned, and business-day numbers skip it.' : 'Weekend. Nothing is planned.') : l && !l.items.length ? 'Nothing planned. A free day.' : null,
+        canOpen: d.bd && sel >= TODAY, openDay: () => m.previewDay(sel),
+        prev: () => step(-1), next: () => step(1) };
+    }
+    return {
+      monthLabel: MOL[mo] + ' ' + y, monthSub: nBD + ' business days' + (overN ? ' · ' + overN + ' overloaded' : ''),
+      heads: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((label, k) => ({ label, fg: k > 4 ? 'var(--ink-faint)' : 'var(--ink-muted)' })),
+      pn, close: () => this.setState({ sel: null }), cells, gridO: f ? 0 : 1, gridT: f && !red ? 'translateX(' + (this.state.dir * -10) + 'px)' : 'none',
+      prev: () => this.go(this.state.mi - 1), next: () => this.go(this.state.mi + 1), toToday: () => this.go(0),
+      prevO: this.state.mi === 0 ? 0.35 : 1, nextO: this.state.mi === MONTHS.length - 1 ? 0.35 : 1,
+      unhover: () => setHover(null)
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+/* Remi Foundations.dc.html:249-251, :416. */
+.group {
+  display: grid;
+  grid-template-columns: repeat(5, 52px);
+  gap: 4px;
+}
+.option {
+  height: 40px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-s);
+  background: var(--paper-raised);
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+.option[aria-checked='true'] {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+}
+.option:focus-visible {
+  outline: 1.5px solid var(--focus);
+  outline-offset: 2px;
+}

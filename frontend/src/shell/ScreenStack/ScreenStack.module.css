@@ -1,0 +1,41 @@
+/* Remi.dc.html <main> and its eight sections, with renderVals' `sv` transitions. */
+.main {
+  position: relative;
+  min-height: 0;
+  min-width: 0;
+}
+
+.screen {
+  position: absolute;
+  inset: 0;
+  overflow: auto;
+}
+
+.screen[data-overflow='hidden'] {
+  overflow: hidden;
+}
+
+.screen[data-overflow='y'] {
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.screen[data-state='active'] {
+  opacity: 1;
+  visibility: visible;
+  transition:
+    opacity var(--dur-base) var(--ease-out) 60ms,
+    visibility 0s linear 0s;
+}
+
+.screen[data-state='idle'] {
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity var(--dur-fast) var(--ease-out),
+    visibility 0s linear var(--dur-fast);
+}
+
+.main[data-instant] > .screen {
+  transition: none;
+}

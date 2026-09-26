@@ -1,0 +1,31 @@
+{
+  "name": "remi-parity",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "description": "Visual-parity harness: prototype drivers, offline vendor routes, goldens and baselines.",
+  "engines": {
+    "node": ">=24"
+  },
+  "scripts": {
+    "goldens": "node golden/extract.mjs",
+    "baseline": "playwright test --project=prototype specs/prototype-baseline.spec.ts",
+    "golden-check": "playwright test --project=prototype specs/golden-crosscheck.spec.ts",
+    "typecheck": "tsc --noEmit",
+    "browsers": "playwright install chromium"
+  },
+  "devDependencies": {
+    "@babel/standalone": "7.29.0",
+    "@fontsource-variable/albert-sans": "5.3.0",
+    "@fontsource/jetbrains-mono": "5.3.0",
+    "@fontsource/libre-caslon-text": "5.3.0",
+    "@playwright/test": "1.63.0",
+    "@types/node": "^25.9.8",
+    "katex": "0.16.11",
+    "pixelmatch": "7.2.0",
+    "pngjs": "7.0.0",
+    "react": "18.3.1",
+    "react-dom": "18.3.1",
+    "typescript": "~5.9.3"
+  }
+}

@@ -1,0 +1,41 @@
+.fallback {
+  padding: 28px 0;
+  max-width: 62ch;
+}
+/* In a bare container (a screen section, the drawer, the route error page). */
+.fallback[data-inset] {
+  padding: 40px 48px;
+}
+.title {
+  font-family: var(--font-display);
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--ink);
+}
+.body {
+  margin-top: 4px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ink-muted);
+}
+.action {
+  margin-top: 14px;
+  font-size: 14px;
+}
+.action a {
+  color: var(--ink);
+}
+.retry {
+  height: 32px;
+  padding: 0 14px;
+  border: 1px solid var(--brand-deep);
+  border-radius: var(--radius-m);
+  background: transparent;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.retry:hover {
+  background: var(--brand-deep);
+  color: var(--paper);
+}

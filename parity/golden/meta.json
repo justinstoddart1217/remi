@@ -1,0 +1,55 @@
+{
+  "about": "Provenance of the golden files. Regenerate with `make goldens`.",
+  "generator": "parity/golden/extract.mjs",
+  "fixedNow": "2026-10-05T09:30:00+01:00",
+  "shellProps": {
+    "frame": "1920 × 1080",
+    "motion": "Reduced",
+    "accents": [
+      "#526e2a",
+      "#47619c"
+    ],
+    "serif": true
+  },
+  "previewHours": [
+    0,
+    0.5,
+    1,
+    2,
+    4,
+    6,
+    8,
+    16,
+    40
+  ],
+  "sources": {
+    "support.js": "8fe7df74405f3c55f49b7249c74ea1397e65d07dea2b1bd3b4a489bec2e28cbe",
+    "Remi.dc.html": "d1549dbc7c977cfa3ae21012d8388dc55b7d4e41b23887ac21f22ea24b7115ab",
+    "Today.dc.html": "2e60f1c3f87ff4263605c333521f7472c91beefddb8ddcb0c86bb01d4f7e0dad",
+    "Transition.dc.html": "f71634d640e2874146a837da9fa4c510c7c6edd6b59fc3161c7ab862bda4cb66",
+    "Workspace.dc.html": "41de7b1768b08485a96fc9e032f06522a063ebbb38016f53eec2da584800c352",
+    "CheckIn.dc.html": "d052cdf556594e217846458fa173992e956177e36dc31f1aa4e4c9a1f0454bcf",
+    "Notes.dc.html": "9e74f35cb4e202e2530b33161b8b4d13ad39e73e537e1ecf9839003f2ab388a5",
+    "Remi Textbook.dc.html": "deda30e9a138aec4828b16735381f3c6df83325d26f7cc1853b4c201e8547728",
+    "charts/price-yield.html": "70d8194169e1b962cfdee453882460b0b85bf5ca07b223a69f291712634f5f7d"
+  },
+  "files": [
+    "attention.json",
+    "calendar.json",
+    "loads.json",
+    "month_snapshot.json",
+    "notes_tags.json",
+    "preview_shift.json",
+    "projects.json",
+    "prototype_seed.json",
+    "rotation.json",
+    "routines.json",
+    "scenarios.json",
+    "simple_reader.json",
+    "today_day_plans.json",
+    "transition.json",
+    "verdict.json",
+    "workspace_panels.json",
+    "workspace_refit.json"
+  ]
+}

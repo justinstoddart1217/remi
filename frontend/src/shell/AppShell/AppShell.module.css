@@ -1,0 +1,12 @@
+/* Remi.dc.html "Remi app": a one-column grid; the column is the 66px top bar over <main>. */
+.grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.column {
+  display: grid;
+  grid-template-rows: 66px minmax(0, 1fr);
+  min-width: 0;
+  min-height: 0;
+}

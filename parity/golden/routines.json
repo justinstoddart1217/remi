@@ -1,0 +1,80 @@
+[
+  {
+    "domain": "pc",
+    "kind": "monthly",
+    "bd": 3,
+    "wd": 2,
+    "h": 6,
+    "stage": 1,
+    "statusNote": "Returns pipeline automation replaces the manual run; successor takes over from the December cycle.",
+    "detail": "12 funds",
+    "pid": "ret",
+    "id": "r-ret",
+    "name": "Fund & security-level returns",
+    "short": "Returns",
+    "rule": "3rd business day, monthly",
+    "status": "Automating",
+    "readiness": 0.55,
+    "ruleShort": "BD3",
+    "stageName": "Automating",
+    "next": [
+      {
+        "iso": "2026-10-05",
+        "s": "Mon 5 Oct",
+        "after": false,
+        "today": true
+      },
+      {
+        "iso": "2026-11-04",
+        "s": "Wed 4 Nov",
+        "after": false,
+        "today": false
+      },
+      {
+        "iso": "2026-12-03",
+        "s": "Thu 3 Dec",
+        "after": false,
+        "today": false
+      }
+    ]
+  },
+  {
+    "domain": "pc",
+    "kind": "monthly",
+    "bd": 8,
+    "wd": 2,
+    "h": 4,
+    "stage": 1,
+    "statusNote": "ManCo pack automation builds the pack; commentary stays manual and moves to the successor.",
+    "detail": "Monthly pack",
+    "pid": "manco",
+    "id": "r-man",
+    "name": "Managing Committee pack",
+    "short": "ManCo pack",
+    "rule": "8th business day, monthly",
+    "status": "Automating",
+    "readiness": 0.35,
+    "ruleShort": "BD8",
+    "stageName": "Automating",
+    "next": [
+      {
+        "iso": "2026-10-12",
+        "s": "Mon 12 Oct",
+        "after": false,
+        "today": false
+      },
+      {
+        "iso": "2026-11-11",
+        "s": "Wed 11 Nov",
+        "after": false,
+        "today": false
+      },
+      {
+        "iso": "2026-12-10",
+        "s": "Thu 10 Dec",
+        "after": false,
+        "today": false
+      }
+    ]
+  }
+]

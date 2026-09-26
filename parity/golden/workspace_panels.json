@@ -1,0 +1,214 @@
+[
+  {
+    "id": "ret",
+    "header": {
+      "f": "Wed 2 Dec",
+      "delta": "+3 BD vs target",
+      "confL": "3/5"
+    },
+    "fLabel": "Forecast",
+    "start": {
+      "roll": "Mon 14 Sep",
+      "iso": "2026-09-14",
+      "sub": "15 BD in of 58"
+    },
+    "target": {
+      "roll": "Fri 27 Nov",
+      "iso": "2026-11-27",
+      "sub": "40 BD from today"
+    },
+    "forecastSub": "43 BD of work left",
+    "rate": {
+      "v": "3.5",
+      "sub": "planned focus time"
+    },
+    "workLeft": {
+      "v": "144",
+      "sub": "planned between now and the forecast"
+    },
+    "need": {
+      "v": "3.6",
+      "unit": "h a day",
+      "sub": "0.1h a day more than planned"
+    },
+    "progress": "25.862068965517242%",
+    "sentence": "Lands 3 BD after target. To make Fri 27 Nov, plan 3.6h a day instead of 3.5h, or cut about 10.5h of work. It sits on 1 overloaded day, first Wed 4 Nov.",
+    "planNote": "14h estimated in Now",
+    "scope": {
+      "growth": "+17% since charter",
+      "empty": null,
+      "items": [
+        {
+          "what": "Security-level attribution",
+          "h": 10,
+          "dateS": "Sat 3 Oct",
+          "effect": "+3 BD · 27 Nov → 2 Dec"
+        }
+      ]
+    }
+  },
+  {
+    "id": "manco",
+    "header": {
+      "f": "Fri 11 Dec",
+      "delta": "On target",
+      "confL": "4/5"
+    },
+    "fLabel": "Forecast",
+    "start": {
+      "roll": "Mon 21 Sep",
+      "iso": "2026-09-21",
+      "sub": "10 BD in of 60"
+    },
+    "target": {
+      "roll": "Fri 11 Dec",
+      "iso": "2026-12-11",
+      "sub": "50 BD from today"
+    },
+    "forecastSub": "50 BD of work left",
+    "rate": {
+      "v": "1.5",
+      "sub": "planned focus time"
+    },
+    "workLeft": {
+      "v": "74.5",
+      "sub": "planned between now and the forecast"
+    },
+    "need": {
+      "v": "1.5",
+      "unit": "h a day",
+      "sub": "within your 1.5h a day"
+    },
+    "progress": "16.666666666666664%",
+    "sentence": "No buffer. It lands on the target day, so any new scope pushes it past Fri 11 Dec. Not checked in for 9 days, so treat the forecast as untested.",
+    "planNote": "5.5h estimated in Now",
+    "scope": {
+      "growth": "No growth",
+      "empty": "No scope added since the charter. The plan is still the one you wrote.",
+      "items": []
+    }
+  },
+  {
+    "id": "play",
+    "header": {
+      "f": "Fri 18 Dec",
+      "delta": "On target",
+      "confL": "4/5"
+    },
+    "fLabel": "Forecast",
+    "start": {
+      "roll": "Mon 28 Sep",
+      "iso": "2026-09-28",
+      "sub": "5 BD in of 60"
+    },
+    "target": {
+      "roll": "Fri 18 Dec",
+      "iso": "2026-12-18",
+      "sub": "55 BD from today"
+    },
+    "forecastSub": "55 BD of work left",
+    "rate": {
+      "v": "1",
+      "sub": "planned focus time"
+    },
+    "workLeft": {
+      "v": "50.5",
+      "sub": "planned between now and the forecast"
+    },
+    "need": {
+      "v": "0.9",
+      "unit": "h a day",
+      "sub": "within your 1h a day"
+    },
+    "progress": "8.333333333333332%",
+    "sentence": "No buffer. It lands on the target day, so any new scope pushes it past Fri 18 Dec.",
+    "planNote": "3.5h estimated in Now",
+    "scope": {
+      "growth": "No growth",
+      "empty": "No scope added since the charter. The plan is still the one you wrote.",
+      "items": []
+    }
+  },
+  {
+    "id": "fion",
+    "header": {
+      "f": "Mon 4 Jan",
+      "delta": "On target",
+      "confL": "4/5"
+    },
+    "fLabel": "Forecast",
+    "start": {
+      "roll": "Mon 21 Sep",
+      "iso": "2026-09-21",
+      "sub": "10 BD in of 73"
+    },
+    "target": {
+      "roll": "Mon 4 Jan",
+      "iso": "2027-01-04",
+      "sub": "63 BD from today"
+    },
+    "forecastSub": "63 BD of work left",
+    "rate": {
+      "v": "1",
+      "sub": "planned focus time"
+    },
+    "workLeft": {
+      "v": "57",
+      "sub": "planned between now and the forecast"
+    },
+    "need": {
+      "v": "0.9",
+      "unit": "h a day",
+      "sub": "within your 1h a day"
+    },
+    "progress": "13.698630136986301%",
+    "sentence": "No buffer. It lands on the target day, so any new scope pushes it past Mon 4 Jan.",
+    "planNote": "1.5h estimated in Now",
+    "scope": {
+      "growth": "No growth",
+      "empty": "No scope added since the charter. The plan is still the one you wrote.",
+      "items": []
+    }
+  },
+  {
+    "id": "alpha",
+    "header": {
+      "f": "Not yet",
+      "delta": "No forecast",
+      "confL": "—"
+    },
+    "fLabel": "Forecast",
+    "start": {
+      "roll": "Thu 3 Dec",
+      "iso": "2026-12-03",
+      "sub": "starts in 43 BD"
+    },
+    "target": {
+      "roll": "Late Mar 2027",
+      "iso": "2027-03-25",
+      "sub": "78 BD from start"
+    },
+    "forecastSub": "set work left to get one",
+    "rate": {
+      "v": "2",
+      "sub": "planned focus time"
+    },
+    "workLeft": {
+      "v": "",
+      "sub": "your estimate of what remains"
+    },
+    "need": {
+      "v": "—",
+      "unit": "",
+      "sub": "needs a work estimate"
+    },
+    "progress": "0%",
+    "sentence": "No plan yet. Enter the work left and hours a day, and Remi works out when it lands.",
+    "planNote": "Drafted after the charter",
+    "scope": {
+      "growth": "—",
+      "empty": "Scope is measured against a baseline, which the first check-in sets.",
+      "items": []
+    }
+  }
+]

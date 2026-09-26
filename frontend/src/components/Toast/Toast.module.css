@@ -1,0 +1,23 @@
+/* Remi Textbook.dc.html:287 (Ninety One: --brand-deep, was ink). */
+.toast {
+  position: absolute;
+  left: 50%;
+  bottom: 28px;
+  z-index: 30;
+  padding: 10px 16px;
+  border-radius: var(--radius-m);
+  background: var(--brand-deep);
+  color: var(--paper);
+  font-size: 13px;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transform: translateX(-50%) translateY(8px);
+  transition:
+    opacity var(--dur-base) var(--ease-out),
+    transform var(--dur-slow) var(--spring-soft);
+}
+.toast[data-visible='true'] {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}

@@ -1,0 +1,395 @@
+{
+ "key": "textbook",
+ "file": "/Users/justinstoddart/Desktop/Ninety One/remi/Remi Dashboard Design Review/Remi Textbook.dc.html (+ /Users/justinstoddart/Desktop/Ninety One/remi/Remi Dashboard Design Review/charts/price-yield.html)",
+ "purpose": "Remi Textbook is a separate top-level page, opened from the \"02 Textbook\" tile on Remi Home. It is not a screen inside Remi.dc.html and does not read the shared `model`. It is a Notion-style notebook where one analyst keeps numbered study notes. Pages are grouped into user-defined, colour-coded Sections and can nest as sub-pages to any depth. Each page is an ordered list of typed blocks: paragraph, H1/H2/H3 with automatic 1 / 1.1 / 1.1.1 numbering, bullet, callout, KaTeX formula, sub-page link, divider, and \"live chart\". A live chart is a self-contained HTML file (made by Claude) that the user drops or picks, which runs sandboxed inside an iframe and is saved with the page. The whole notebook is one JSON document in localStorage under 'remi.textbook.v1'. charts/price-yield.html is the seeded sample chart: an animated SVG of a 10y 3% bond's price against yield, with a moving duration tangent and the convexity gap shaded. Neither SPEC.md nor CLAUDE_DESIGN_BRIEF.md mentions the Textbook, so it was added during the design phase.",
+ "layout": "STAGE (fixed-canvas scaling, same as the other Remi screens):\n- Outer: position:fixed; inset:0; overflow:hidden; background: color-mix(in oklch, var(--ink) 6%, var(--paper)). This colour fills the letterbox.\n- Stage: position:absolute; width 1920px; height 1080px; transform: scale(s); transform-origin 0 0; background var(--paper); overflow hidden; data-screen-label=\"Textbook\".\n  - s = min(vw/1920, vh/1080); left = round((vw − 1920·s)/2); top = round((vh − 1080·s)/2). Recomputed on window resize.\n  - At 1920×1080: s = 1, no letterbox.\n  - At 2560×1440: s = 1.3333, fills exactly (x = 0, y = 0), so every px value below renders 1.333× larger.\n- Stage is a 3-column CSS grid: grid-template-columns '288px minmax(0,1fr) 264px' with the sidebar open, '56px minmax(0,1fr) 264px' when collapsed; transition: grid-template-columns 440ms var(--spring-soft).\n- At 1920 wide the main column is 1920−288−264 = 1368px (open) or 1600px (collapsed).\n\nCOLUMN 1 — ASIDE (sidebar): position relative; min-height/min-width 0; overflow hidden; border-right 1px solid var(--hairline). It holds two absolutely-positioned layers that cross-fade.\n(a) Collapsed rail:\n- Box: left 0, top 0, bottom 0; width 56px; flex column; align-items center; gap 6px; padding-top 18px.\n- opacity 1 when closed / 0 when open; pointer-events follow; transition opacity 240ms var(--ease-out).\n- Three 36×36 buttons, radius 6px, transparent, colour var(--ink-muted); hover bg color-mix(ink 6%, transparent) and colour ink. Material Symbols 20px icons, in order:\n  - left_panel_open (title 'Show sidebar (⌘\\)')\n  - home (title 'Textbook home'; bg = active-highlight colour while on Home)\n  - search (title 'Search'; it only opens the sidebar)\n(b) Expanded panel:\n- Box: left 0, top 0, bottom 0; width 288px; flex column.\n- opacity 1/0; transform none / translateX(-24px); transition opacity 240ms ease-out, transform 440ms spring-soft.\n- Header row: flex, align center, gap 12px, padding 20px 14px 14px 20px.\n  - Brand button: flex, baseline, gap 8px, padding 6px 8px, margin-left −8px, radius 6px; hover bg ink 5%.\n    - 'Remi' in Libre Caslon Text 22px, line-height 1, letter-spacing −0.01em.\n    - '‹ Home' 11px ink-muted.\n  - Flex spacer.\n  - 'TEXTBOOK' eyebrow: 11px, weight 600, letter-spacing 0.08em, uppercase, ink-muted.\n  - Hide button: 30×30, radius 6px, icon left_panel_close 19px, title 'Hide sidebar (⌘\\)'.\n- Search box:\n  - Wrapper padding 0 16px 10px.\n  - Field: flex, align center, gap 8px, height 34px, padding 0 10px, 1px hairline border, radius 6px, bg var(--paper-raised).\n  - Search icon 17px ink-muted.\n  - Input: flex 1, no border or outline, transparent, 13px, placeholder 'Find a page'.\n- Tree scroller: flex 1; min-height 0; overflow-y auto; overflow-x hidden; padding 4px 12px 16px. Contents:\n  - Home row: width 100%, flex, align center, gap 8px, min-height 34px, padding 0 8px, margin-bottom 4px, radius 6px.\n    - bg color-mix(ink 6%) when on Home, else transparent; hover ink 4%.\n    - Icon 'home' 18px; 'Home' 14px, weight 600 on Home / 500 otherwise; spacer; total page count in JetBrains Mono 11px ink-muted.\n  - For each section, a header row (draggable):\n    - Box: position relative, flex, align center, gap 4px, padding 14px 4px 6px 2px, cursor grab. Hover sets the custom property --sh:1.\n    - Drop indicator: absolute, left 4px, right 4px, top 5px, height 2px, radius 1px, bg var(--fi-accent), opacity 0/1.\n    - Chevron button: 22×22, radius 3px, icon chevron_right 16px, rotated 90deg when open and 0 when collapsed; transition transform 240ms spring-soft.\n    - Accent dot: 6×6 circle, margin-right 4px.\n    - Label: 11px, weight 600, letter-spacing 0.08em, uppercase, ink-muted, nowrap with ellipsis. Double-click renames it.\n    - Rename input replaces the label: height 24px, padding 0 6px, radius 3px, bg paper-raised, box-shadow inset 0 0 0 1px var(--focus), same type styles.\n    - Page count: mono 10px ink-faint, margin-right 2px.\n    - Delete × (close 15px, 22×22): only when the section has 0 pages and there is more than one section; opacity var(--sh) so it shows on hover only.\n    - Add-page + (add 16px, 22×22): opacity calc(var(--sh)·0.6 + 0.4), i.e. 0.4 at rest and 1 on hover.\n  - When the section is open, its page rows follow:\n    - Row: position relative, flex, align center, gap 4px, min-height 32px, padding 0 6px 0 (4 + depth·16)px, radius 6px.\n    - bg ink 6% for the active page; hover ink 4% and sets --row:1; transition background 140ms ease-out.\n    - Tree guide for depth > 0: absolute 1px hairline line at left (14 + (depth−1)·16)px, full row height.\n    - Caret button: 20×20, radius 3px, colour ink-faint; hover bg ink 7%.\n      - Icon is chevron_right (opacity 1; rotated 90deg when expanded) for pages with children, or 'description' (opacity 0.55) for leaves.\n    - Title: 14px, weight 600 when active else 400; colour ink when active or an ancestor of the active page, else ink-muted; ellipsis.\n    - Optional chart badge: 5px fi-accent dot + count, mono 10px ink-muted, gap 3px.\n    - Add-inside +: 22×22; opacity var(--row), revealed on hover; transition 140ms.\n  - Empty-section text: padding 4px 10px 6px 30px, 12px ink-faint.\n  - 'New section' button: width 100%, flex, gap 8px, min-height 32px, margin-top 14px, padding 0 8px, radius 6px, 13px ink-muted; hover ink 6% and colour ink; add icon 17px.\n- Footer: padding 14px 20px 18px; border-top hairline.\n  - 'LIVE CHARTS' eyebrow + total chart count (mono 11px) on the right.\n  - Blurb: 12px, line-height 1.45, ink-muted, margin-top 6px.\n\nCOLUMN 2 — MAIN: position relative; grid-template-rows 56px minmax(0,1fr).\n- Top bar (56px): flex, align center, gap 14px, padding 0 28px, border-bottom hairline.\n  - Breadcrumb: flex, gap 8px, 13px ink-muted, in this order:\n    - 6px accent dot\n    - Section label\n    - For each ancestor page: '/' in ink-faint, then a button (padding 2px 4px, margin 0 −2px, radius 3px, max-width 200px, ellipsis; hover bg ink 5% and colour ink)\n    - '/' then the current title in ink (max-width 420px, ellipsis)\n  - Flex spacer.\n  - Save status: 12px ink-muted.\n  - Pages only (hidden on Home):\n    - Hidden <input type=file accept='.html,.htm,text/html'>.\n    - 'Add live chart' button: height 32px, padding 0 12px 0 10px, 1px hairline border, radius 6px, bg paper-raised, 13px weight 500, gap 8px, icon upload_file 17px; hover border ink-faint.\n    - 'Delete' text button: height 32px, padding 0 10px, 13px, colour ink-muted or overload when confirming; hover bg ink 5%.\n- Scroll region: position relative; min-height 0; overflow-y auto; overflow-x hidden. The drag and drop handlers sit here.\n  - HOME VIEW:\n    - Container: max-width 1120px, centred, padding 48px 56px 120px.\n    - Eyebrow 'TEXTBOOK'.\n    - H1: Libre Caslon 400, 48px, line-height 1.1, letter-spacing −0.015em, margin-top 12px.\n    - Stats line: 15px ink-muted, margin-top 14px.\n    - 'Sections' header row: margin-top 40px, padding-bottom 10px, border-bottom 1px solid var(--ink).\n      - Title 20px, weight 600, letter-spacing −0.01em.\n      - 'New section' ghost button on the right: height 28px, padding 0 10px, hairline border, radius 3px, 13px.\n    - Section card grid: repeat(3, minmax(0,1fr)), gap 16px, margin-top 18px.\n    - Below it, a 2-column grid (minmax(0,1fr) ×2), column-gap 48px, margin-top 44px, align-items start.\n      - Left: 'Recently edited' list.\n      - Right: 'Live charts' list, one column, gap 14px, margin-top 14px.\n  - PAGE VIEW:\n    - Container: max-width 840px, centred, padding 52px 64px 200px 40px.\n    - Title block: padding-left 44px, so it lines up with the block gutter.\n    - Blocks list: margin-top 18px.\n    - Every block row is a grid of '44px minmax(0,1fr)': a 44px hover gutter, then the content.\n    - A trailing 64px-tall click target sits at the end.\n  - Toast: sticky wrapper at bottom 0, height 0; the toast is centred 28px above the bottom.\n- Drop overlay: absolute, left 0, right 0, top 56px, bottom 0; pointer-events none.\n- Slash menu: absolute, z-index 30, 300px wide, positioned in stage coordinates.\n- Full-screen chart overlay: absolute, inset 0, z-index 40. It covers the MAIN column only; the sidebar and outline stay visible.\n\nCOLUMN 3 — NAV (outline, 264px): min-height 0; overflow-y auto; border-left hairline; padding 28px 24px.\n- 'ON THIS PAGE' eyebrow.\n- Outline list: margin-top 12px, flex column, gap 2px.\n- 'SHORTCUTS' eyebrow (margin-top 32px), then a 2-column grid (auto 1fr), column-gap 12px, row-gap 8px, 12px ink-muted, with keys in mono ink.\n\nNo responsive reflow: the whole 1920×1080 canvas is uniformly scaled.",
+ "components": [
+  {
+   "name": "Design tokens / global CSS (helmet)",
+   "description": "FONTS (Google Fonts):\n- Albert Sans: ital,wght 0,300..700 and 1,400..600\n- JetBrains Mono: 400;500\n- Libre Caslon Text: 0,400; 0,700; 1,400\n- Material Symbols Outlined: opsz 20..24, wght 300, FILL 0..1, GRAD 0, display=block, subset icon_names = add, chevron_left, chevron_right, close, delete, description, drag_indicator, functions, home, horizontal_rule, insert_chart, left_panel_close, left_panel_open, notes, open_in_full, search, title, upload_file\n- KaTeX 0.16.11 CSS and JS from cdn.jsdelivr.net\n\nTOKENS:\n- Surfaces and ink: --paper oklch(0.975 0.007 85); --paper-raised oklch(0.99 0.004 85); --ink oklch(0.23 0.012 70); --ink-muted oklch(0.47 0.012 70); --ink-faint oklch(0.58 0.01 75); --hairline oklch(0.9 0.008 80)\n- Business-line accents: --pc-accent oklch(0.5 0.1 128); --pc-accent-soft color-mix(in oklch, pc 13%, paper); --fi-accent oklch(0.5 0.1 265); --fi-accent-soft likewise\n- Status: --risk oklch(0.7 0.13 70); --overload oklch(0.56 0.17 28); --done oklch(0.74 0.008 85); --focus oklch(0.35 0.02 80)\n- Type: --font-ui Albert Sans; --font-display Libre Caslon Text, Georgia, serif; --font-numeric JetBrains Mono\n- Radii: --radius-s 3px; --radius-m 6px\n- Durations: --dur-fast 140ms; --dur-base 240ms; --dur-slow 440ms\n- Easing: --ease-out cubic-bezier(0.23,1,0.32,1); --spring-soft linear(0, 0.049 5%, 0.156 10%, 0.283 15%, 0.408 20%, 0.522 25%, 0.62 30%, 0.702 35%, 0.769 40%, 0.864 50%, 0.922 60%, 0.956 70%, 0.976 80%, 0.987 90%, 1)\n- Reduced motion: @media (prefers-reduced-motion: reduce) sets --spring-soft to steps(1, jump-start)\n\nGLOBAL RULES:\n- html, body: margin 0; height 100%; bg paper; colour ink; font-ui; tabular-nums; -webkit-font-smoothing antialiased\n- button, input, textarea: font and colour inherit\n- Placeholders: color-mix(in oklch, var(--ink-faint) 70%, var(--paper)), opacity 1\n- Links: ink, underline colour hairline, offset 3px; hover fi-accent\n- .katex: font-size 1.3em\n- Hover styles in the template use style-hover=\"...\". The dc runtime turns these into generated .scpN:hover{... !important} classes.\n- Hover-reveal pattern: a parent's hover sets a CSS custom property (--sh, --row or --hov) to 1, and children use opacity: calc(var(--x, 0) * n)."
+  },
+  {
+   "name": "SidebarCollapsedRail",
+   "description": "56px icon rail shown when the sidebar is collapsed.\n- Three 36×36 ghost icon buttons: left_panel_open, home, search. Details are in the layout section.\n- Home button bg = color-mix(ink 6%) while on Textbook Home.\n- The Search button only toggles the sidebar open; it does not focus the search input.",
+   "states": [
+    "visible (sidebar closed): opacity 1, pointer-events auto",
+    "hidden (sidebar open): opacity 0, pointer-events none"
+   ]
+  },
+  {
+   "name": "SidebarPanel",
+   "description": "288px panel. Parts:\n- Header: 'Remi ‹ Home' brand button, which leaves to Remi Home; 'TEXTBOOK' eyebrow; hide button.\n- Search field.\n- Scrollable section/page tree.\n- 'New section' button.\n- Footer explaining live charts, with the total count of chart blocks (html OR src) across all pages.",
+   "states": [
+    "open: opacity 1, transform none",
+    "closed: opacity 0, translateX(-24px), pointer-events none"
+   ]
+  },
+  {
+   "name": "SectionHeaderRow",
+   "description": "Draggable header for one section; styles are in the layout section.\n- Chevron toggles collapse. Collapse state is persisted in data.secCollapsed.\n- Accent dot uses section.accent.\n- Uppercase label, or 'Untitled section' when the label is empty.\n- Page count counts all pages in the section, including nested ones.\n- Hover-revealed delete ×: only when the section is empty and more than one section exists.\n- '+' creates a new page in the section.\n- Double-click the label to enter rename mode: an input with placeholder 'Section name', auto-focused and text selected.\n- Drag and drop reorders sections; a 2px fi-accent line shows the drop target.\n- The row is not draggable while renaming.",
+   "states": [
+    "open (chevron 90deg) / collapsed (0deg)",
+    "hover (--sh:1 reveals × and full-opacity +)",
+    "editing (input with focus ring inset 0 0 0 1px var(--focus))",
+    "drop-target (2px accent line at top:5px)",
+    "search active: forced open"
+   ]
+  },
+  {
+   "name": "PageTreeRow",
+   "description": "One page in the sidebar tree.\n- Indented 16px per depth level, with 1px hairline guides for nested rows.\n- Caret button: chevron (expand/collapse) if the page has children; otherwise a faded 'description' icon, and clicking it opens the page.\n- Title, or 'Untitled' when empty.\n- Optional live-chart badge (dot + count of chart blocks with html or src; title 'Live charts').\n- Hover-revealed '+' ('Add a page inside') creates a sub-page.\n- Click the row to open the page.\n- While searching: rows are flat (depth 0) with no guides.",
+   "states": [
+    "active: bg color-mix(ink 6%), weight 600, colour ink",
+    "ancestor of active: colour ink, weight 400",
+    "default: colour ink-muted",
+    "hover: bg ink 4%, reveals +",
+    "expanded / collapsed (chevron rotation, local non-persisted state)"
+   ]
+  },
+  {
+   "name": "TopBar / Breadcrumb",
+   "description": "56px bar.\n- Breadcrumb: accent dot, section label, clickable ancestor page buttons, then the current title.\n- On Home it reads: ink-coloured dot, 'Textbook / Home'.\n- Right side: save status text.\n- On pages only: 'Add live chart' (opens the file picker; a chosen file is appended at the end of the page) and the two-step 'Delete' button.",
+   "states": [
+    "home: no Add/Delete buttons",
+    "page: Delete idle ('Delete', ink-muted)",
+    "page: Delete armed ('Click again to delete' or 'Click again to delete with N inside', colour var(--overload)); auto-disarms after 3500ms"
+   ]
+  },
+  {
+   "name": "TextbookHome",
+   "description": "Landing view; the app always opens here on mount.\n- Eyebrow 'TEXTBOOK'.\n- H1 'Everything you have written down'.\n- Stats line: '{pages} pages · {sections} sections · {charts} live chart(s) · {words} words'. Words use en-GB locale formatting; charts counts only blocks with html.\n- 'Sections' header with a 'New section' button.\n\nSECTION CARDS (3-column grid):\n- Card: min-height 220px; padding 18px 20px 16px; radius 6px; bg paper-raised; box-shadow inset 0 0 0 1px hairline, inset 0 2px 0 0 {accent}, which draws a 2px accent strip on top.\n- Header: label 17px weight 600; 'N page(s)' in mono 11px on the right.\n- Up to 5 top-level pages, each a 30px row:\n  - Icon 'description' 15px ink-faint\n  - Title 14px\n  - Meta in mono 10px: '{k} inside · {n} chart(s)'\n- '+ N more' in 12px when there are more than 5; 'No pages yet.' in 13px ink-faint when empty.\n- Bottom-aligned '+ New page' link.\n\nRECENTLY EDITED (6 rows):\n- Row: padding 12px 0, border-bottom hairline, hover bg ink 2.5%.\n- Line 1: accent dot, title 15px weight 600, and the 'when' label in mono 11px.\n- Line 2: path in 12px ink-muted, indented 16px.\n- Line 3: snippet in Libre Caslon 14px, line-height 1.45, ink-muted, single line with ellipsis, indented 16px.\n\nLIVE CHARTS:\n- Heading with the total count (html OR src).\n- Up to 3 preview cards:\n  - Live iframe srcDoc, sandbox='allow-scripts', tabIndex -1, height 220px, pointer-events none\n  - Footer (padding 10px 14px, border-top hairline): fi-accent dot, filename in mono 11px, page title 12px on the right\n  - Hover: box-shadow inset ink-faint\n  - Click opens the page\n- Empty copy: 'No live charts yet. Drop an HTML chart from Claude onto any page.'",
+   "states": [
+    "entering: cards opacity 0, translateY(6px), staggered 50ms per card",
+    "settled",
+    "no charts (empty copy)",
+    "section with >5 top pages ('+ N more')",
+    "empty section ('No pages yet.')"
+   ]
+  },
+  {
+   "name": "PageHeader (title + meta)",
+   "description": "TITLE:\n- Auto-growing textarea (field-sizing: content, rows 1, resize none, overflow hidden), data-bid='__title'.\n- Libre Caslon 400, 48px, line-height 1.12, letter-spacing −0.015em.\n- Placeholder 'Untitled'. Newlines are stripped.\n\nMETA LINE:\n- 13px ink-muted, margin-top 14px, padding-bottom 22px, border-bottom hairline.\n- Text: '{h1 count} section(s) · {n} live chart(s) · {words} words · edited {d MMM}', e.g. '1 section · 1 live chart · 108 words · edited 24 Sept'.\n- Word count covers text-type blocks only; the chart count covers blocks with html."
+  },
+  {
+   "name": "BlockRow (shared chrome)",
+   "description": "Grid of 44px gutter + content. data-row={index} is used for drop hit-testing.\n\nROW PADDING BY TYPE:\n- h1: 26px 0 6px\n- h2: 20px 0 4px\n- h3: 14px 0 2px\n- chart: 10px 0\n- callout / formula: 8px 0\n- others: 3px 0\n\nGUTTER:\n- Revealed on row hover (opacity var(--hov); 140ms ease-out); right-aligned; padding-right 6px.\n- padding-top by type: h1 10px; h2/h3 4px; chart 14px; callout 14px; page 11px; others 4px.\n- Contains:\n  - '+' button: 20×22, radius 3px, icon add 17px ink-faint, title 'Add a block below'. Inserts an empty paragraph below.\n  - Drag handle: 18×22, draggable, cursor grab, icon drag_indicator 16px, title 'Drag to move'.\n\nDROP INDICATOR:\n- Absolute, left 44px, right 0, top −2px, height 2px, radius 1px, bg fi-accent.\n- Opacity 1 when the computed drop index equals this row; transition opacity 100ms linear.",
+   "states": [
+    "hover (gutter visible)",
+    "just-inserted (opacity 0, translateY(4px) for 60ms, then animates in)",
+    "drop target (accent line)"
+   ]
+  },
+  {
+   "name": "HeadingBlock (h1/h2/h3)",
+   "description": "Grid of [number column, textarea], baseline aligned. The number is in JetBrains Mono, ink-muted; the textarea has line-height 1.25 and colour ink.\n\nPER LEVEL:\n- h1: text 32px Libre Caslon 400, letter-spacing −0.01em; number 14px; number column 44px\n- h2: text 22px Albert Sans 600, letter-spacing −0.005em; number 13px; number column 52px\n- h3: text 18px Albert Sans 600, letter-spacing 0; number 12px; number column 60px\n\nPlaceholder 'Heading'. The number (e.g. '1', '1.1', '1.1.1') is computed automatically; see algorithms."
+  },
+  {
+   "name": "TextBlock (p / bullet)",
+   "description": "Grid of [bullet column, textarea].\n- Bullet column is 22px wide for bullets (showing '•', 17px ink-muted, line-height 1.65) and 0 for paragraphs.\n- Textarea: Albert Sans 17px, line-height 1.65, text-wrap pretty, auto-height.\n- Placeholders: bullet 'List item'; paragraph 'Type / for blocks' (set when it is the last block or empty; placeholders only show when empty anyway).\n- Shift+Enter inserts a literal newline, so blocks can be multi-line."
+  },
+  {
+   "name": "CalloutBlock",
+   "description": "Box:\n- Grid 22px + 1fr, column-gap 8px.\n- padding 16px 18px, radius 6px, bg paper-raised, box-shadow inset 0 0 0 1px hairline.\n\nMarker: 8×8 square rotated 45deg (a diamond), bg var(--risk), margin-top 9px.\n\nTextarea: Libre Caslon italic 17px, line-height 1.6. Placeholder 'A note worth remembering'."
+  },
+  {
+   "name": "FormulaBlock (KaTeX)",
+   "description": "Outer padding 10px 0.\n\nVIEW MODE:\n- Clickable div (title 'Click to edit'): min-height 40px, padding 10px 12px, radius 6px, cursor text, centred.\n- Hover bg ink 3% (transition 140ms).\n- Renders the KaTeX display-mode HTML.\n\nEDIT MODE (state.editF === block.id):\n- Box: padding 12px 14px, radius 6px, bg paper-raised, box-shadow inset 0 0 0 1px var(--focus).\n- Textarea: JetBrains Mono 14px, line-height 1.6. Placeholder 'LaTeX, e.g. \\frac{\\Delta P}{P} \\approx -D \\times \\Delta y'.\n- Live preview below: margin-top 10px, padding-top 10px, border-top hairline, centred.\n- Leaving edit mode: blur, Enter without Shift, or navigating away.\n- Before KaTeX has loaded, the raw LaTeX shows in mono.",
+   "states": [
+    "view (rendered)",
+    "view hover",
+    "editing (source + live preview)",
+    "KaTeX not yet loaded (mono fallback)"
+   ]
+  },
+  {
+   "name": "PageLinkBlock (sub-page)",
+   "description": "Full-width button:\n- flex, gap 12px, padding 9px 10px, margin 2px 0, radius 6px.\n- Hover ink 4% (transition 140ms).\n\nContents, in order:\n- Icon 'description' 20px ink-muted\n- Target page title (or 'Untitled'): 17px weight 500, underline in hairline colour, offset 4px\n- Meta 12px ink-muted: 'N page(s) inside', empty, or 'missing' if the target page is gone\n- Spacer\n- chevron_right 18px ink-faint\n\nClick opens the target page if it exists.",
+   "states": [
+    "normal",
+    "target has children (meta 'N pages inside')",
+    "dangling target ('missing', click does nothing)"
+   ]
+  },
+  {
+   "name": "DividerBlock",
+   "description": "Wrapper with padding 14px 0, containing a 1px line in var(--hairline). Clicking it only closes any open slash menu for another block. Not editable."
+  },
+  {
+   "name": "LiveChartBlock (with HTML)",
+   "description": "Outer padding 8px 0 6px.\n\nFRAME:\n- position relative; radius 6px; bg paper-raised; box-shadow inset 0 0 0 1px var(--hairline); overflow hidden; transition box-shadow 240ms.\n\nHEADER STRIP:\n- Height 38px; flex, align center, gap 10px; padding 0 8px 0 14px; border-bottom hairline.\n- Contents, in order:\n  - 6px fi-accent dot\n  - 'LIVE': 11px, weight 600, letter-spacing 0.08em, uppercase, colour fi-accent\n  - Filename: mono 11px ink-muted, flex 1, ellipsis\n  - Size segmented control: 2px padding, hairline border, radius 3px, gap 2px. Buttons S / M / L: height 22px, padding 0 8px, radius 2px, 11px weight 600. Active = bg ink, colour paper; inactive = transparent, ink-muted. Heights: S = 280, M = 380, L = 560.\n  - 'Replay' text button: height 26px, padding 0 8px, 12px ink-muted; hover bg ink 5%.\n  - 'Replace' text button (title 'Replace with another file'), same style.\n  - Full-screen icon button: open_in_full 16px, 28×26.\n  - Remove icon button: delete 16px, 28×26, title 'Remove chart'; hover bg color-mix(overload 10%), colour overload.\n\nIFRAME:\n- srcDoc = block.html; sandbox='allow-scripts' (no allow-same-origin).\n- React key = `${id}:${replayCounter}`.\n- width 100%; height block.h px (default 380); border 0; transparent bg.\n- pointer-events none while a drag or resize is in progress.\n- transition height 440ms spring-soft.\n\nRESIZE HANDLE:\n- Height 12px, border-top hairline, cursor ns-resize, touch-action none.\n- Centred grip: 36×3, radius 2px, bg hairline.\n- Uses pointer capture. Height is clamped to 200–900 px.\n\nCAPTION (below the frame):\n- Textarea data-bid='{id}:cap', margin-top 10px.\n- Libre Caslon italic 15px, line-height 1.5, ink-muted, centred.\n- Placeholder 'Add a caption: what should the reader notice?'.",
+   "states": [
+    "S/M/L active segment",
+    "resizing (iframe pointer-events none)",
+    "replaying (iframe remount)",
+    "hover on remove (red tint)"
+   ]
+  },
+  {
+   "name": "LiveChartPlaceholder (chart block without HTML)",
+   "description": "Created by '/Live chart' before a file is chosen.\n\nBUTTON:\n- width 100%; height 180px; flex column, centred; gap 10px; radius 6px.\n- bg repeating-linear-gradient(135deg, transparent 0 8px, color-mix(in oklch, var(--ink) 3%, transparent) 8px 9px).\n- box-shadow inset 0 0 0 1.5px {phLine}: fi-accent while any drag-over is active, hairline otherwise.\n- transition box-shadow 140ms.\n\nCONTENTS:\n- Icon insert_chart 28px ink-muted.\n- 'Drop an HTML chart here' 15px weight 600.\n- 'or click to browse · made in Claude Design or Claude Code' 13px ink-muted.\n\nClick opens the file picker to fill this block. Dropping a file with this row as the drop index also fills it.",
+   "states": [
+    "idle (hairline outline)",
+    "drag in progress (accent outline)"
+   ]
+  },
+  {
+   "name": "EndOfPageAddRow",
+   "description": "Row with data-row = blocks.length and padding-left 44px.\n- Drop indicator line.\n- Invisible full-width button: height 64px, cursor text, aria-label 'Add a block', no visible text.\n- Click: if the last block is an empty paragraph, focus it; otherwise append a new paragraph and focus it."
+  },
+  {
+   "name": "SlashMenu",
+   "description": "Absolutely positioned popover.\n- Box: z-index 30; width 300px; padding 6px; bg paper-raised; 1px hairline border; radius 6px; box-shadow 0 18px 40px -24px color-mix(in oklch, var(--ink) 45%, transparent).\n- Eyebrow 'BLOCKS': padding 6px 10px.\n\nITEM:\n- Grid 32px + 1fr, column-gap 10px, padding 6px 8px, radius 3px.\n- bg color-mix(ink 6%) when highlighted.\n- Icon tile: 32×32, radius 3px, inset hairline, bg paper, weight 600, per-item font and size.\n- Label 14px weight 500; hint 12px ink-muted, ellipsis.\n\nITEMS (label / hint / icon / icon font / icon size):\n1. Heading 1 / 'Numbered section, 1' / '1' / mono / 13px\n2. Heading 2 / 'Subsection, 1.1' / '1.1' / mono / 11px\n3. Heading 3 / 'Concept, 1.1.1' / '1.1.1' / mono / 9px\n4. Text / 'Plain paragraph' / 'Aa' / ui / 13px\n5. Bullet / 'A simple list item' / '•' / ui / 18px\n6. Callout / 'A note to remember' / '◆' / ui / 12px\n7. Formula / 'LaTeX, rendered' / 'Σ' / display / 17px\n8. Page inside / 'A sub-page nested under this one' / '▤' / ui / 16px\n9. Live chart / 'Drop or browse an HTML file' / '▦' / ui / 16px\n10. Divider / 'A quiet rule' / '—' / ui / 14px\n\nEmpty result: 'No block called that.' (padding 10px, 13px ink-muted).\nItems use onMouseDown with preventDefault so the textarea keeps focus. Hover sets the highlighted index.",
+   "states": [
+    "open with highlighted index",
+    "filtered",
+    "no matches"
+   ]
+  },
+  {
+   "name": "FileDropOverlay",
+   "description": "Covers the main column below the top bar. pointer-events none. Opacity 1 only while FILES are dragged over a page (not while dragging blocks); transition 140ms ease-out.\n- Inner frame: inset 14px; radius 6px; box-shadow inset 0 0 0 1.5px color-mix(fi-accent 60%, transparent); bg color-mix(fi-accent 3%, transparent).\n- Pill: top 28px, centred; height 36px; padding 0 14px; radius 6px; bg fi-accent; colour paper; 13px weight 600; gap 10px. Contents: insert_chart 18px + 'Drop to add a live chart here'."
+  },
+  {
+   "name": "FullScreenChart",
+   "description": "Overlay: absolute, inset 0 within main; z-index 40; bg paper; grid rows 56px / 1fr / auto. No enter or exit animation.\n\nHEADER:\n- flex, gap 12px, padding 0 24px, border-bottom hairline.\n- Contents: fi-accent dot; chart name 14px weight 600; spacer; 'Close' button (height 32px, padding 0 12px, hairline border, radius 6px, paper-raised, 13px, close icon 16px).\n\nBODY: iframe (srcDoc, sandbox='allow-scripts') filling the row. It is a fresh instance, so the chart restarts.\n\nCAPTION: shown if present; padding 14px 24px 20px; centred; Libre Caslon italic 16px ink-muted.\n\nEscape closes it.",
+   "states": [
+    "open",
+    "closed"
+   ]
+  },
+  {
+   "name": "Toast",
+   "description": "Dark pill at the bottom centre of the scroll area.\n- Wrapper: sticky, bottom 0, height 0.\n- Pill: bottom 28px; transform translateX(-50%) translateY(0 | 8px); padding 10px 16px; radius 6px; bg ink; colour paper; 13px; nowrap.\n- Transitions: opacity 240ms ease-out; transform 440ms spring-soft.\n- Auto-hides after 3200ms. A new toast resets the timer.",
+   "states": [
+    "hidden (opacity 0, translateY(8px))",
+    "shown"
+   ]
+  },
+  {
+   "name": "OutlineNav (On this page + Shortcuts)",
+   "description": "ON THIS PAGE:\n- One button per heading: grid [number column 22px (h1) / 30px (h2) / 40px (h3)] + 1fr; column-gap 6px; padding 5px 8px; margin-left −8px; radius 3px; hover ink 4%.\n- Number: mono 11px ink-muted.\n- Text: 13px, line-height 1.35; h1 = weight 600, colour ink; h2/h3 = weight 400, ink-muted; fallback 'Untitled'.\n- Click smooth-scrolls the heading to 40px below the top of the scroll area and focuses its textarea.\n- Empty text (13px, line-height 1.5, ink-faint): 'Open a page to see its numbered outline.' on Home; 'Headings appear here, numbered.' on a page with no headings.\n\nSHORTCUTS legend: static key/description pairs."
+  },
+  {
+   "name": "Sample chart: charts/price-yield.html",
+   "description": "Standalone HTML with a transparent background, rendered as a full-size <svg id='s'> (display block, 100% × 100%).\n- Fonts: Albert Sans 400/600 and JetBrains Mono from Google Fonts. Body font Albert Sans; colour #211c17.\n- Redraws the whole SVG through innerHTML on every requestAnimationFrame, forever.\n- Draws a 10-year 3%-coupon bond's price/yield curve, a duration tangent at a moving marker, and the convexity gap. Full maths is in algorithms.\n- Hex colours hand-matched to the tokens: #211c17 ink; #5f5a54 muted; #e1ddd8 gridlines; #47619c FI blue curve; #d18e35 amber tangent and convexity; #fdfcf9 marker fill.\n- A byte-identical copy is embedded in the Textbook as the SAMPLE_CHART string (3,660 chars). The prototype never fetches the file on disk; 'src' is only a marker.",
+   "states": [
+    "draw-on (0–1400ms): curve grows",
+    "settled: tangent, gap, marker and label appear, and the marker oscillates"
+   ]
+  }
+ ],
+ "dataConsumed": [
+  "Consumes NO Remi.dc.html model. It is a standalone page with its own localStorage document.",
+  "TextbookData (localStorage 'remi.textbook.v1'): { cur: string ('__home' or page id), pages: Page[], sections: Section[], secCollapsed?: Record<sectionId, boolean> }",
+  "Section: { id: string ('fi' | 'pc' | 'gen' | 'sec'+base36 timestamp), label: string ('' allowed, displayed as 'Untitled section'), accent: CSS colour string (e.g. 'var(--fi-accent)' or 'oklch(0.5 0.1 200)') }",
+  "Page: { id: string ('fi-rates' | 'fi-rot' | 'pc-ret' | 'gen-how' | 'pg'+Date.now().toString(36)), section: sectionId, parent?: pageId (a sub-page inherits the parent's section), title: string, updated: epoch ms (bumped on every setPage), blocks: Block[] }",
+  "Block: { id: 'b'+Date.now().toString(36)+4 random base36 chars, type: 'p'|'h1'|'h2'|'h3'|'bullet'|'callout'|'formula'|'page'|'chart'|'divider', text: string (LaTeX for formula; '' for page, chart and divider), pid?: pageId (type 'page'), html?: string|null (chart source HTML), src?: string|null (seed marker 'charts/price-yield.html'), name?: string (filename), h?: number (iframe height px, default 380, clamp 200–900), cap?: string (caption) }",
+  "TEXT_TYPES = ['p','h1','h2','h3','bullet','callout']. These count for words, arrow-key navigation, merging and slash eligibility.",
+  "Derived (whole notebook): total page count; per-section page count; chart count A (blocks where type 'chart' and (html || src)) for the sidebar footer, page badges, the home 'Live charts' heading and Remi Home; chart count B (html only) for the home stats line, card meta and page meta line; total words; the 6 most recently updated pages; the first 3 charts in page order.",
+  "Derived (per page): heading numbers and outline; h1 count ('sections'); word count; chart count (html); ancestors (breadcrumb, cycle-guarded with a Set); kids and descendants (tree, delete cascade, '{k} inside').",
+  "Remi Home.dc.html (line 157) also reads 'remi.textbook.v1' to show '{pages} pages · {charts} live chart(s)' on its Textbook tile. It counts charts with html||src and falls back to '4 pages · 1 live chart' when nothing is stored."
+ ],
+ "interactions": [
+  "GLOBAL KEYS: Cmd/Ctrl+\\ toggles the sidebar (preventDefault; also works while typing). Escape closes full-screen if open, otherwise closes the slash menu.",
+  "SIDEBAR:\n- Hide button, the rail 'Show sidebar' button, and the rail 'Search' button all toggle the sidebar open/closed.\n- 'Remi ‹ Home' fades the stage to opacity 0 over 180ms ease-out, then navigates window.location to 'Remi%20Home.dc.html'.\n- The 'Home' row and the rail home button open Textbook Home (120ms fade swap).",
+  "SIDEBAR SEARCH (text input):\n- Live filter, case-insensitive substring match on a page's title or any block's .text (so LaTeX source counts; captions and filenames do not).\n- While active, every section is forced open, matching pages list flat at depth 0, and empty sections show 'No matches'.",
+  "SECTION HEADER:\n- Chevron toggles collapse (persisted).\n- Double-click the label to rename; the input is auto-focused with text selected.\n  - Enter blurs and commits.\n  - Escape reverts the draft to the old label, then blurs (stopPropagation, so the global Escape doesn't fire).\n  - Blur commits the trimmed draft. An empty draft on a section that has an empty label and no pages deletes the section. A non-empty, changed draft renames it.\n- Hover reveals × (delete; empty sections only, and only when more than one section exists; no confirm) and '+' (new page in the section).\n- Drag a header onto another header to reorder (dataTransfer type 'text/x-remi-sec'). A 2px accent line shows on the target. The dragged section is inserted BEFORE the target.",
+  "PAGE ROW:\n- Click opens the page.\n- Caret: toggles the subtree if the page has children (local state, stopPropagation); on a leaf it opens the page.\n- Hover '+' creates a sub-page inside that page.",
+  "'New section' (sidebar, or Home 'New section'):\n- Appends a section with an empty label and the next accent from the palette.\n- Opens the sidebar and enters rename mode focused.",
+  "Home section card:\n- Click a page to open it.\n- '+ New page' calls newPageIn(section): creates an empty page, expands the section, opens it after 20ms and focuses the title.",
+  "Home 'Recently edited' row, and a Home live-chart preview card: click opens that page.",
+  "BREADCRUMB: an ancestor button opens that page.",
+  "'Add live chart' button:\n- Clears replaceBid, sets dropAt = blocks.length, and clicks the hidden file input.\n- The chosen file(s) are appended at the end of the page.\n- The input value resets afterwards, so the same file can be chosen again.",
+  "DELETE PAGE (two-step):\n- First click arms it: the label changes to 'Click again to delete' or 'Click again to delete with N inside' (N = descendant count), colour overload. It disarms after 3500ms.\n- Second click deletes the page and all its descendants, and strips page-link blocks that pointed at any deleted page.\n- If no pages remain, the notebook reseeds with a fresh copy of the 'How the Textbook works' page.\n- Navigates to the deleted page's parent if it still exists, otherwise to the first page. Immediate, no fade. No undo.",
+  "TITLE textarea:\n- Typing updates the title (newlines stripped).\n- Enter or ArrowDown focuses the first text-type block at position 0, or inserts a paragraph at index 0 if none exists.",
+  "MARKDOWN SHORTCUTS (paragraph blocks only):\n- The trigger is the WHOLE value of the paragraph exactly equalling one of these (i.e. typed into an empty paragraph):\n  - '# ' → h1\n  - '## ' → h2\n  - '### ' → h3\n  - '- ' or '* ' → bullet\n  - '> ' → callout\n  - '$$ ' → formula (enters edit mode)\n  - '---' → divider, plus a new paragraph after it, focused\n- The block's text is cleared and focus stays at position 0.",
+  "SLASH MENU:\n- Opens when a text-type block's value starts with '/' and contains no space. The query is the text after '/'. Any other change to that block closes it.\n- ArrowUp/ArrowDown move the highlight (clamped); Enter applies the highlighted item; Escape closes; mouse hover highlights; mousedown picks.\n- Focusing a different block closes it.",
+  "APPLYING A SLASH ITEM:\n- Text types (p, h1–h3, bullet, callout): converts the block type, clears the text, keeps focus.\n- Formula: converts, clears, enters edit mode.\n- Divider: converts, inserts a new paragraph after it and focuses it.\n- Live chart: converts to an empty chart placeholder (h 380, cap '', html null), sets replaceBid, and opens the file picker after 30ms.\n- Page inside: creates a sub-page, turns this block into a link to it, and navigates into the new sub-page with its title focused.",
+  "ENTER (no Shift) in a text block:\n- Empty bullet or empty callout: converts to a paragraph (exits the list).\n- Otherwise splits at the caret: the current block keeps the text before the caret; a new block (a bullet if the current block is a bullet, else a paragraph) gets the text after the caret, is inserted next and focused at 0.\n- Headings and callouts therefore spawn plain paragraphs.\n- Shift+Enter inserts a newline.",
+  "BACKSPACE at caret 0 with no selection:\n- Heading, bullet or callout: converts to a paragraph.\n- Empty paragraph: deletes the block and focuses the end of the previous block if it is a text or formula block, otherwise the end of the title.\n- Non-empty paragraph whose previous block is a text type: merges into the previous block and puts the caret at the join.",
+  "ARROW NAVIGATION:\n- ArrowUp with selectionStart 0 moves to the end of the previous text-type block, or to the title.\n- ArrowDown with the caret at the end moves to the start of the next text-type block (non-text blocks are skipped).",
+  "FORMULA:\n- Click the rendered maths to edit (caret at end).\n- In edit mode: Enter (no Shift) exits and focuses the next text block, or inserts a paragraph after it if the next block is not text. Shift+Enter adds a newline. Blur exits edit mode.",
+  "BLOCK GUTTER (on row hover):\n- '+' inserts an empty paragraph below and focuses it.\n- Drag handle (HTML5 drag):\n  - dragStart sets dragBid, effectAllowed 'move', data text/plain = id, and uses the row as the drag image at offset (20, 20).\n  - Dragging over the scroll area computes the drop index and shows a 2px accent line at the top of the target row.\n  - Drop moves the block: remove it at 'from', insert at idx > from ? idx − 1 : idx.\n  - dragEnd clears state.",
+  "FILE DRAG & DROP onto a page (the scroll area; ignored on Home):\n- dragover with Files sets dropEffect 'copy', shows the overlay 'Drop to add a live chart here' and the drop-index line.\n- Drop:\n  - If the block at the drop index is an empty chart placeholder, the first file fills it.\n  - Otherwise charts are inserted at the drop index (files k = 0..n at idx + k).\n  - Non-HTML files → toast 'Only HTML files become live charts.'; nothing at all → 'Nothing to add.'; any file over 4,000,000 bytes → warning toast, but the file is still inserted.\n- dragleave clears only when the pointer actually leaves the scroll container's rectangle.",
+  "LIVE CHART HEADER:\n- S/M/L set block.h to 280/380/560.\n- Replay increments a per-block key, which remounts the iframe and restarts the chart.\n- Replace opens the file picker to swap the html and name. src is set to null and the caption is kept; toast 'Replaced with {name}.'.\n- Full-screen icon opens the overlay.\n- Trash removes the block immediately; toast 'Chart removed.'.",
+  "CHART RESIZE HANDLE:\n- pointerdown captures the pointer and records y0 and h0.\n- pointermove sets h = clamp(200, 900, round(h0 + (clientY − y0) / stageScale)), written through on every move (debounced save).\n- pointerup or pointercancel ends the resize.\n- All iframes get pointer-events none while resizing or dragging.",
+  "CAPTION textarea: edits block.cap.",
+  "CHART PLACEHOLDER click: opens the file picker to fill that block.",
+  "EMPTY END AREA (64px) click: focuses the trailing empty paragraph, or appends a new one.",
+  "DIVIDER click: only closes a slash menu belonging to another block.",
+  "OUTLINE ITEM click: smooth-scrolls the heading into view (40px top offset, corrected for stage scale) and focuses it.",
+  "FULL-SCREEN: the 'Close' button or Escape closes it."
+ ],
+ "motion": [
+  "Sidebar open/close:\n- Stage grid-template-columns: 288px ↔ 56px, 440ms var(--spring-soft).\n- Expanded panel: opacity 1↔0 over 240ms var(--ease-out) and transform none ↔ translateX(-24px) over 440ms spring-soft.\n- Collapsed rail: opacity 0↔1 over 240ms ease-out.",
+  "Section and page chevrons rotate 0 ↔ 90deg: transform 240ms spring-soft.",
+  "Sidebar page row background: 140ms ease-out.\nHover-revealed '+' on page rows: opacity 140ms ease-out.\nSection header × and +: opacity driven by --sh, no transition, so they snap.",
+  "Page switch (openPage or openHome):\n- Set fade = true: the content container goes to opacity 0 and translateY(6px). Transitions: opacity 140ms ease-out, transform 240ms spring-soft.\n- After 120ms: swap cur, set fade = false (content animates back to opacity 1 and none), and reset scrollTop to 0.",
+  "Home section cards:\n- Hidden state (used while fading): opacity 0, translateY(6px).\n- Transitions: opacity 220ms ease-out and transform 320ms spring-soft, each delayed i×50ms (stagger across the 3+ cards).\n- They re-animate each time Home is re-entered through the fade.",
+  "New block entrance:\n- The inserted block renders at opacity 0 and translateY(4px) for 60ms (justAdded), then transitions to opacity 1 and none.\n- Opacity 220ms ease-out; transform 320ms spring-soft.",
+  "Block gutter (+ and drag handle) reveal on row hover: opacity 140ms ease-out.",
+  "Drop-target line (blocks): opacity 100ms linear.\nSection drop line: no transition.",
+  "Live chart frame box-shadow: 240ms ease-out (its colour is effectively constant).\nIframe height (S/M/L change and drag-resize): 440ms spring-soft. The transition also runs during drag, which makes resizing feel springy and lagged.",
+  "Chart placeholder outline colour change: box-shadow 140ms ease-out.\nFormula view hover: background 140ms ease-out.\nPage-link block hover: background 140ms ease-out.",
+  "File drop overlay: opacity 0↔1 over 140ms ease-out.",
+  "Toast:\n- Transitions: opacity 240ms ease-out; transform translateX(-50%) translateY(8px → 0) 440ms spring-soft.\n- Visible for 3200ms, then reverses.",
+  "Leaving to Remi Home: inline style on the stage, opacity 1 → 0 over 180ms var(--ease-out), then window.location change. Arrival from Remi Home uses Home's tile 'expand' transition, which is defined in Remi Home.dc.html.",
+  "Full-screen overlay and slash menu: appear and disappear instantly, no transition.",
+  "Outline click: native scrollTo({behavior:'smooth'}).",
+  "Reduced motion: --spring-soft becomes steps(1, jump-start), so every spring transition is instant. --ease-out transitions (opacity fades, 140–240ms) are NOT reduced, and the in-iframe chart animation ignores prefers-reduced-motion.",
+  "Sample chart (inside the iframe), driven by requestAnimationFrame:\n- Draw-on: curve reveal over 1400ms, progress e = 1 − (1 − k)^3 (ease-out cubic), k = min(1, elapsed/1400).\n- After that, tangent, gap, marker and label appear abruptly at k = 1.\n- The marker drifts continuously: yield = 3.2% + 1.8%·sin(elapsed/2800 ms), a period of about 17.6s.\n- The label flips from right-anchored to left-anchored when it would come within 300px of the right edge.\n- Replay (iframe remount) restarts t0."
+ ],
+ "algorithms": [
+  "STAGE SCALE: s = min(innerWidth/1920, innerHeight/1080); x = round((innerWidth − 1920s)/2); y = round((innerHeight − 1080s)/2).\nStage-coordinate conversion rel(el): k = stage.offsetWidth / stage.getBoundingClientRect().width; x = (elRect.left − stageRect.left)·k; y likewise; h = elRect.height·k.",
+  "HEADING NUMBERING (one pass over page blocks in order; c1 = c2 = c3 = 0):\n- h1: c1++, c2 = c3 = 0, num = `${c1}`\n- h2: c2++, c3 = 0, num = `${c1}.${c2}`\n- h3: c3++, num = `${c1}.${c2}.${c3}`\nAn h2 before any h1 therefore numbers as '0.1'.\nEvery heading goes into the outline. The meta 'sections' count = number of outline entries whose num has no '.' (i.e. h1 count).",
+  "WORD COUNT: sum over blocks with type in TEXT_TYPES and non-empty text of text.trim().split(/\\s+/).length. Formula text, captions and chart names are excluded.\nHome total = the same sum over all pages, formatted toLocaleString('en-GB').",
+  "TREE:\n- Top-level pages of a section: pages where page.section === id AND (no parent OR the parent id is not in the page set). Orphans are promoted to the top.\n- Depth-first walk in the pages array order; children = pages where parent === id. Each page's children are skipped if collapsed[page.id] (local state).\n- Row indent padding-left = 4 + depth·16 px; guide x = 14 + (depth − 1)·16 px.\n- ancestors(p): follow parent links, guarded by a Set against cycles, unshifted so the list reads root-first.\n- descendants(id): recursive DFS over kids.\n- openPage expands (removes from collapsed) all ancestors of the target.",
+  "SEARCH FILTER: q = input.trim().toLowerCase(). Match if (title || '').toLowerCase().includes(q) OR any block's (text || '').toLowerCase().includes(q). Results are flat at depth 0 and sections are forced open.",
+  "SLASH FILTER: l = q.toLowerCase(). Keep an item if !l OR label.toLowerCase().includes(l) OR typeId.includes(l). Examples: '/h2' matches Heading 2 via type id 'h2'; '/p' matches 'Text' (type 'p') and 'Page inside'.",
+  "SLASH MENU POSITION: r = rel(textarea); x = max(0, r.x − 288); y = r.y + r.h + 6, in stage px, inside main. The 288 is hard-coded as the open sidebar width.",
+  "DROP INDEX: querySelectorAll('[data-row]') in DOM order. Return the first row whose (rect.top + rect.height/2) > clientY; otherwise the last row's index. The end row has index = blocks.length.",
+  "BLOCK MOVE: take the block out of index `from` (bl.splice(from, 1)), then re-insert it at (idx > from ? idx − 1 : idx).",
+  "SECTION REORDER: remove `from` from the array, find the target's index in the reduced array, and splice the section in at that index. It always lands before the target.",
+  "NEW SECTION ACCENT: NEW_ACCENTS[(sections.length − 3 + 50) % 5], where NEW_ACCENTS = ['oklch(0.5 0.1 200)', 'oklch(0.5 0.1 320)', 'oklch(0.5 0.1 170)', 'oklch(0.5 0.1 300)', 'oklch(0.5 0.1 230)']. With the 3 default sections, the 4th section gets hue 200, the 5th 320, and so on, cycling.",
+  "CHART RESIZE: h = clamp(200, 900, round(h0 + (clientY − y0)·(1/stageScale))). Preset sizes S = 280, M = 380, L = 560; default 380. The active preset is highlighted only on an exact match.",
+  "FILE ACCEPTANCE:\n- Keep files where /\\.html?$/i matches the name OR type === 'text/html'.\n- Warn when size > 4e6 bytes (4,000,000), but still insert.\n- Read each with FileReader.readAsText.",
+  "RELATIVE DATE (Home 'Recently edited'):\n- days = floor((now − updated)/86,400,000)\n- days ≤ 0 → 'today'; days === 1 → 'yesterday'; otherwise toLocaleDateString('en-GB', {day:'numeric', month:'short'}), e.g. '24 Sept'.\n- These are elapsed 24h periods, not calendar days.\nThe page meta line always shows 'edited ' + that en-GB day/month format.",
+  "RECENT LIST: sort pages by updated desc (missing = 0), take 6.\n- path = [section label, ...ancestor titles (fallback 'Untitled')].join(' / ')\n- snippet = text of the first block whose type is 'p' or 'callout' and whose text.trim() is non-empty.",
+  "HOME SECTION CARD:\n- count = all pages in the section, shown as 'N page(s)'.\n- Lists the first 5 top-level pages; meta = ['{descendants.length} inside' if > 0, '{n} chart(s)' if n > 0].join(' · '), where n = chart blocks with html.\n- more = '+ {top.length − 5} more'.",
+  "HOME STATS: `${pages.length} pages · ${sections.length} sections · ${charts} live chart(s) · ${words} words`. Charts = chart blocks with html across all pages. The home preview shows the first 3 in page, then block, order.",
+  "SAVED LABEL: ago = round((now − lastSaveTs)/1000). null → 'Saved in this browser'; < 5 → 'Saved'; otherwise 'Saved in this browser'. It is recomputed only on re-render; there is no timer.",
+  "KATEX RENDER: katex.renderToString(tex || '\\\\;', {throwOnError:false, displayMode:true}), wrapped in a div keyed 'm' + mathV.\n- On an exception it returns the raw tex as HTML.\n- If window.katex is missing, it returns a mono <span> with '<' escaped.\n- componentDidMount polls window.katex every 200ms; once found it increments mathV to force a re-render.",
+  "DELETE CASCADE:\n- gone = {page, ...descendants}.\n- remaining pages = those not in gone. In each, page-link blocks whose pid is in gone are removed.\n- If none remain, use SEED().pages.slice(-1) (the fresh 'How the Textbook works' page).\n- Go to the parent if it survives, else remaining[0].",
+  "SUB-PAGE CREATION (createSub):\n- New page = {id 'pg'+base36(now), section: parent.section, parent: parentId, title '', updated now, blocks [p]}.\n- The parent gets a link block {type 'page', pid}:\n  - replacing the slash block if replaceBid is given;\n  - otherwise inserted before a trailing empty paragraph if the last block is an empty 'p';\n  - otherwise pushed at the end.\n- The parent's updated is bumped, the parent is expanded in the tree, and the new page opens after 30ms with its title focused.",
+  "IDS: blocks 'b' + Date.now().toString(36) + Math.random().toString(36).slice(2,6); pages 'pg' + Date.now().toString(36); sections 'sec' + Date.now().toString(36).",
+  "SAMPLE CHART MATHS (price-yield.html):\n- Bond: face 100, annual coupon 3, 10 annual periods.\n- price(y) = Σ_{t=1..10} 3/(1+y)^t + 100/(1+y)^10.\n- dur(y) = [Σ_{t=1..10} t·3/(1+y)^(t+1) + 10·100/(1+y)^11] / price(y). This is modified duration, i.e. Macaulay/(1+y).\n- Plot box: L = 58, R = w − 28, T = 30, B = h − 42 (w, h = svg clientWidth/Height, read every frame).\n- Domains: yield 0.005–0.07; price 60–132.\n- X(y) = L + (y − 0.005)/(0.065)·(R − L); Y(p) = B − (p − 60)/72·(B − T).\n- Curve: N = 140 samples, drawn for i = 0..floor(N·e), as a path 'M/L x,y' with coordinates toFixed(1).\n- Marker: yc = 0.032 + 0.018·sin((now − t0)/2800); pc = price(yc); D = dur(yc).\n- Tangent: tl(y) = pc·(1 − D·(y − yc)) for y in [yc − 0.022, yc + 0.022].\n- Convexity polygon: 31 points along the price curve from ta to tb, then 31 points back along the tangent from tb to ta.\n- Gridlines at prices 70/90/110/130; x ticks at 1%, 3%, 5%, 7%. Full SVG output is described in sampleData."
+ ],
+ "actionsInvoked": [
+  "save(data): debounced 350ms, then localStorage.setItem('remi.textbook.v1', JSON.stringify(data)) and state.saved = now. On exception, toast 'This page is too large to save in the browser. It stays until you reload.'",
+  "setData(fn): applies fn to state.data and ALWAYS saves (the 'silent' flag is dead code: `!silent || true`). Every navigation change (cur) is saved too.",
+  "setPage(fn): maps the current page through fn and stamps updated = Date.now(). Every keystroke therefore bumps updated and reorders 'Recently edited'.",
+  "patchBlock(pid, bid, patch) / upd(bid, patch): shallow-merge the patch into a block on a page (upd uses the current page).",
+  "insertAt(i, block, focus = true): splice at the clamped index, set pendingFocus {bid, pos 0}, and set justAdded = id for 60ms (entrance animation).",
+  "removeBlock(bid): filter the block out of the current page.",
+  "openPage(id, focusTitle?): fade, then set cur after 120ms and reset scroll; also expands ancestors.",
+  "openHome(): fade, then set cur = '__home'.",
+  "addSection(): push {id, label '', accent}; set secCollapsed[id] = false; open the sidebar; enter rename mode.",
+  "newPageIn(secId): push a new page; expand the section; openPage after 20ms with the title focused.",
+  "createSub(parentId, {replaceBid?}): new child page plus a link block in the parent; opens it.",
+  "Section rename commit, section delete, section reorder, and section collapse toggle (persisted in data.secCollapsed).",
+  "applySlash(bid, type): converts the block's type (see interactions).",
+  "onChange markdown conversion (upd type).",
+  "Enter split, Backspace merge/convert/delete, arrow focus moves.",
+  "readFiles(files, at): FileReader, then either upd(replaceBid, {html, name, src:null}) and bump the iframe key, or insertAt(at + k, chart block {html, name, h:380, cap:''}, no focus).",
+  "Chart: set h (S/M/L or drag-resize); set cap; replay (state.keys[bid]++); remove.",
+  "Block reorder via drop.",
+  "Page delete (cascade), described in algorithms.",
+  "Title set (setPage with newlines stripped).",
+  "showToast(text): shows the toast and auto-clears it after 3200ms."
+ ],
+ "localState": [
+  "collapsed: Record<pageId, boolean>. Page-subtree collapse in the sidebar. NOT persisted.",
+  "sideOpen: boolean (default true). Sidebar expanded/collapsed. Not persisted.",
+  "secEdit: {id, draft} | null. The section currently being renamed.",
+  "secDrag / secDrop: section id being dragged / hovered target. Drives the drop line.",
+  "data: TextbookData | null. The whole document; it is what gets persisted.",
+  "vw, vh: viewport size, used for stage scale.",
+  "q: sidebar search string.",
+  "slash: {bid, q, i, x, y} | null. Slash menu owner block, query, highlighted index, position.",
+  "editF: block id of the formula in edit mode.",
+  "full: block id shown full-screen.",
+  "drop: number | null. Current drop index; drives drop lines, the placeholder accent, overlay visibility and iframe pointer-events.",
+  "dragBid (instance field, not state): block being dragged. _dFiles (instance): whether the current drag carries Files.",
+  "resizing: {bid, y0, h0} | null.",
+  "toast: string | null.",
+  "saved: timestamp of the last successful save.",
+  "fade: boolean. Page-swap fade.",
+  "delConfirm: boolean. Delete button armed.",
+  "keys: Record<blockId, number>. Iframe remount counters for Replay and Replace.",
+  "justAdded: block id, for the 60ms entrance animation.",
+  "mathV: KaTeX-ready counter used to force math re-render.",
+  "Instance fields: pendingFocus {bid, pos: number | 'end'}, applied in componentDidUpdate by querying [data-bid] and setting the selection range. pendingSec: section id whose rename input should be focused and selected. replaceBid: chart block to fill with the next file read. dropAt: insertion index for the file picker. Timers: svT (save), toT (toast), dcT (delete confirm), jaT (justAdded), kt (KaTeX poll)."
+ ],
+ "persistence": [
+  "Key 'remi.textbook.v1' in localStorage. The value is the entire TextbookData JSON: { cur, pages, sections, secCollapsed }. Chart HTML is embedded inline as strings.",
+  "Load (componentDidMount):\n- JSON.parse; on failure, or when pages is not an array, use SEED().\n- If sections is missing, add the default sections [fi Fixed Income var(--fi-accent), pc Private Credit var(--pc-accent), gen General var(--ink-faint)].\n- Force cur = '__home'; the stored cur is ignored on open.\n- Then hydrate: every chart block with src === 'charts/price-yield.html' gets html = SAMPLE_CHART. It is stored in html:null + src form until the first save; after that the full html is persisted.",
+  "Save: debounced 350ms after every setData call (all mutations, including navigation and each resize pointermove). On quota errors, the error toast shows and the data stays in memory only.",
+  "Not persisted: sidebar open state, page-tree collapse state, search query, and the last-open page (the stored cur is overwritten on load anyway).",
+  "The 4 MB warning exists because of localStorage limits (usually about 5 MB per origin for all data together). One or two charts can exhaust the quota.",
+  "No schema version migration beyond the 'v1' suffix and the sections backfill.",
+  "Remi Home also reads this key, read-only, for its tile summary."
+ ],
+ "externalCalls": [
+  "Google Fonts CSS2:\n- Albert Sans, JetBrains Mono and Libre Caslon Text (weights listed in the tokens component).\n- Material Symbols Outlined, subset by icon_names, display=block.",
+  "KaTeX 0.16.11 from cdn.jsdelivr.net (katex.min.css and katex.min.js). Used via window.katex.renderToString(tex, {throwOnError:false, displayMode:true}).",
+  "User HTML charts run in iframes:\n- <iframe srcDoc={html} sandbox='allow-scripts'>, with NO allow-same-origin. The chart runs in an opaque origin, so it cannot read the parent DOM, localStorage or cookies.\n- It cannot open popups, submit forms, navigate the top window or show modals.\n- It CAN run JS and make network requests (fonts, CDNs, fetch to CORS-open endpoints).\n- Used in three places: the in-page block (height = block.h), Home previews (height 220, pointer-events none, tabIndex -1, at most 3), and the full-screen overlay.\n- The sample chart itself fetches Google Fonts (Albert Sans 400/600, JetBrains Mono).",
+  "FileReader.readAsText on user-selected or dropped local files.",
+  "Navigation: window.location.href = 'Remi%20Home.dc.html'. The page is entered from Remi Home via 'Remi%20Textbook.dc.html'.",
+  "No AI calls (window.claude) and no fetches of the charts/ directory. The file is inlined as the SAMPLE_CHART constant, which is byte-identical to charts/price-yield.html."
+ ],
+ "backendImplications": [
+  "Entities:\n- TextbookSection(id, owner_id, label, accent, sort_order, collapsed pref).\n- TextbookPage(id, section_id, parent_id nullable (self-FK), title, sort_order, created_at, updated_at).\n- TextbookBlock(id, page_id, sort_order, type enum [p, h1, h2, h3, bullet, callout, formula, page, chart, divider], text, target_page_id nullable (type 'page'), chart_asset_id nullable, height int 200–900 default 380, caption).\n- ChartAsset(id, filename, content_hash, size_bytes, html blob/object-storage key, uploaded_at).\n- Store chart HTML outside the page JSON, since localStorage size limits drove the prototype's 4 MB warning.\n- Keep user prefs (sidebar open, collapsed page ids) server-side or in localStorage, as preferred.",
+  "Suggested folder mapping for the requested architecture:\n- schemas/: textbook.py. Pydantic models with a discriminated union on block type; validators for h (200–900), text length and LaTeX length.\n- repositories/: sections_repo, pages_repo, blocks_repo, chart_assets_repo.\n- services/: textbook_service, containing:\n  - tree building and orphan promotion\n  - cascade delete, stripping dangling page-link blocks\n  - block reorder\n  - markdown/slash type conversion (client-side, but validated)\n  - search\n  - home summary\n  - word counts and heading numbering, if server-rendered\n- utils/: word_count, heading_numbering, html_file validation (extension/MIME, size), slug/id generation (use UUIDs, not Date.now base36).\n- core/: config (MAX_CHART_BYTES, e.g. 4,000,000 or larger now that the server stores it), CSP / sandbox-origin settings.\n- api/: textbook endpoints.",
+  "Endpoints:\n- Sections:\n  - GET /textbook: full tree (sections, pages without heavy block html), or split.\n  - POST /textbook/sections; PATCH /sections/{id} (label, accent, collapsed).\n  - DELETE /sections/{id}: allowed only when empty and not the last section.\n  - PUT /sections/order: ordered ids.\n- Pages:\n  - POST /pages: {section_id, parent_id?, title?}. When parent_id is given, also append or replace a page-link block in the parent; accept an optional replace_block_id.\n  - GET /pages/{id}: with blocks.\n  - PATCH /pages/{id}: title.\n  - PUT /pages/{id}/blocks: the whole ordered block list, with optimistic concurrency (updated_at/version). Autosave debounced about 350ms on the client.\n  - DELETE /pages/{id}: cascade descendants and strip link blocks in other pages; return the next page id (parent or first).\n- Charts:\n  - POST /charts: multipart upload of .html/.htm (text/html), with size limit and hash dedupe; returns {asset_id, name}.\n  - GET /charts/{id}/content: serve the raw HTML from a SEPARATE sandbox origin/domain, with a restrictive CSP and Content-Type text/html. Alternatively return the HTML for srcDoc.\n- GET /textbook/search?q=: title and block text, case-insensitive. A server-side full-text index is recommended.\n- GET /textbook/home: counts (pages, sections, charts, words), 6 recent pages (title, section path, snippet, updated), first 3 charts with page titles, and per-section top-5 page lists with descendant and chart counts.",
+  "Validation:\n- The parent page must be in the same section; prevent cycles when re-parenting (the UI has no re-parenting today).\n- Page-link blocks must reference existing pages, or render as 'missing'.\n- Chart height is clamped to 200–900.\n- Only HTML chart files are accepted.\n- Unify the chart-count definition. The prototype mixes html||src (sidebar, Home tile) with html-only (stats, meta).",
+  "Security: user-supplied HTML runs scripts. Keep sandbox='allow-scripts' WITHOUT allow-same-origin, or serve from a distinct origin. Consider a CSP that restricts network (connect-src) for compliance, given the 'stay local' requirement.\nKaTeX: sanitise and fix the error fallback that injects raw tex as HTML.",
+  "Migration: a one-time import of the localStorage 'remi.textbook.v1' JSON. Map the seed ids 'fi', 'pc', 'gen', 'fi-rates' and so on, and move inline chart html strings into ChartAsset rows. The seed sample chart is identified by src 'charts/price-yield.html'.",
+  "Seed data on first run: 3 default sections plus 4 sample pages, including the sample chart asset (price-yield.html). Whether production ships the sample content is a product decision.",
+  "Remi Home's Textbook tile needs a lightweight summary endpoint ({pages, charts}), or can reuse /textbook/home."
+ ],
+ "risksAndQuirks": [
+  "The Textbook is not in SPEC.md or CLAUDE_DESIGN_BRIEF.md. Scope and priority need confirming with the user.",
+  "Fixed 1920×1080 canvas scaled with transform. The production layout should be truly responsive, or reproduce the scaled stage. Because of the scaling, the prototype needs coordinate corrections: rel(), resize divides by scale, and the outline scroll uses k.",
+  "The slash menu x position subtracts a hard-coded 288 (the open sidebar width). With the sidebar collapsed (56px) the menu is misplaced about 232px to the left. The menu is also positioned once and does not follow scrolling (it is absolute in main, outside the scroll container).",
+  "Markdown shortcuts fire only when the entire block value equals the trigger ('# ', '- ', etc.), only on 'p' blocks, and only via onChange. Typing '# ' in a bullet does nothing.",
+  "The rail 'Search' button just opens the sidebar and does not focus the search input.",
+  "setData(fn, silent): 'silent' is ignored (`!silent || true`). Every mutation, including navigation and each pointermove during resize, schedules a localStorage write of the full document.",
+  "The stored 'cur' is always overwritten with '__home' on load, so the last-open page is never restored.",
+  "'Saved' vs 'Saved in this browser' is evaluated only on re-render; there is no timer, so 'Saved' can linger.",
+  "Chart counts are inconsistent. The sidebar footer, page badges, Home 'Live charts' heading and Remi Home tile count html||src. The Home stats line, card meta and page meta line count html only.",
+  "On Home, page() falls back to pages[0], so blocks and outline are computed for the first page (hidden). dOver returns early on Home without preventDefault, so dropping a file on Home may make the browser open the file itself.",
+  "A stale replaceBid: if the user picks '/Live chart' and then cancels the file dialog, replaceBid stays set. A later drag-drop onto a non-placeholder index would still replace the stale placeholder instead of inserting. ('Add live chart' clears it; drop does not.)",
+  "readFiles uses the CURRENT page at FileReader onload time. Navigating before the load finishes inserts the chart into the wrong page. Multi-file drops insert at at + k in async onload order.",
+  "A file over 4 MB triggers a warning toast but is still inserted, and the save then likely fails with the quota toast.",
+  "Backspace into a previous formula block sets pendingFocus to the formula id, but the formula textarea only exists in edit mode. The focus stays pending and may fire later unexpectedly.",
+  "Deleting a page has no fade and no undo. Deleting the last page reseeds 'How the Textbook works' with fresh ids.",
+  "Section reorder always inserts BEFORE the drop target, so a section cannot be dropped into the last position by dropping on the last header.",
+  "Section Escape-cancel on a new, unnamed, empty section deletes it (the commit sees an empty value). Probably intended, but it is implicit.",
+  "Pages cannot be reordered, moved between sections, or re-parented. Order is creation order in the array. Blocks cannot be converted back from chart, page or divider (only deleted).",
+  "No undo/redo, no multi-block selection, and no rich text (plain textareas only). Bullets are flat, with no nesting.",
+  "The textareas rely on CSS `field-sizing: content` for auto-height. It is Chromium-only (Safari and Firefox lack or only partially support it), so production needs JS auto-resize.",
+  "The KaTeX error path `catch (e) { return tex; }` injects raw user tex through dangerouslySetInnerHTML, an XSS vector. The pre-load fallback escapes only '<'.",
+  "KaTeX loads from a CDN and is detected by polling every 200ms. Production should bundle KaTeX.",
+  "Iframes run arbitrary user HTML with scripts. There is no CSP, and charts can make network calls. This matters for the 'stay local' compliance concern; production should serve from an isolated origin or inject a CSP meta tag.",
+  "The sample chart animates forever with requestAnimationFrame, rebuilding SVG innerHTML every frame. Up to 3 Home previews plus in-page and full-screen instances all run at once. It is costly and ignores prefers-reduced-motion. The chart's hex colours are hand-matched approximations of the oklch tokens.",
+  "Iframe height has a 440ms spring transition even during drag-resize, which gives laggy tracking.",
+  "The dead `_unused` function in the section values is an old new-page path.",
+  "The Material Symbols subset includes unused glyphs (chevron_left, functions, horizontal_rule, notes, title).",
+  "IDs use Date.now base36. Page and section ids can collide within the same millisecond; use UUIDs.",
+  "Seed content has hard-coded domain text, e.g. 'starting with Germany on Mon 4 Jan', which matches the placeholder move date of Mon 4 Jan 2027.",
+  "Relative dates use elapsed 24h periods, not calendar days, and are en-GB formatted ('24 Sept').",
+  "Older screenshots (screenshots/01-nest.png) show a visible end-of-page hint 'Click to write, type / for blocks, or drop an HTML chart'. In the current code the end button has no visible text, only aria-label 'Add a block'. In the screenshots the iframes render blank (a screenshot artefact).",
+  "The full-screen overlay covers only the main column; the sidebar and outline stay visible. It has no animation."
+ ],
+ "copyText": [
+  "Page title: 'Remi · Textbook'",
+  "Sidebar: 'Remi', '‹ Home', 'TEXTBOOK', 'Find a page', 'Home', 'New section', 'Untitled section', 'No pages yet', 'No matches'",
+  "Sidebar footer: 'LIVE CHARTS', 'Drop an HTML file from Claude onto any page and it becomes a live chart, saved with the page.'",
+  "Section rename placeholder: 'Section name'",
+  "Tooltips:\n- Sidebar: 'Show sidebar (⌘\\)', 'Hide sidebar (⌘\\)', 'Textbook home', 'Search', 'Back to home'\n- Sections: 'Collapse section' / 'Expand section', 'Double-click to rename', 'Delete empty section', 'New page'\n- Page rows: 'Show pages inside' / 'Hide pages inside', 'Add a page inside', 'Live charts'\n- Page and blocks: 'Delete page', 'Add a block below', 'Drag to move', 'Click to edit'\n- Chart header: 'Replay', 'Replace with another file', 'Full screen', 'Remove chart', 'Drag to resize'",
+  "Top bar: 'Add live chart', 'Delete', 'Click again to delete', 'Click again to delete with {N} inside', 'Saved', 'Saved in this browser'. The breadcrumb reads 'Textbook / Home' on Home.",
+  "Home: 'TEXTBOOK', 'Everything you have written down', '{n} pages · {n} sections · {n} live chart(s) · {n} words', 'Sections', 'New section', '{n} page(s)', '{k} inside', '{n} chart(s)', '+ {n} more', 'No pages yet.', 'New page', 'Recently edited', 'today', 'yesterday', 'Live charts', 'No live charts yet. Drop an HTML chart from Claude onto any page.'",
+  "Page: 'Untitled' (title placeholder and fallback), meta line '{h1} section(s) · {n} live chart(s) · {w} words · edited {d MMM}'",
+  "Block placeholders: 'Heading', 'List item', 'Type / for blocks', 'A note worth remembering', 'LaTeX, e.g. \\frac{\\Delta P}{P} \\approx -D \\times \\Delta y', 'Add a caption: what should the reader notice?'",
+  "Chart: 'LIVE' (eyebrow), 'S', 'M', 'L', 'Replay', 'Replace'. Placeholder: 'Drop an HTML chart here', 'or click to browse · made in Claude Design or Claude Code'. Name fallback 'chart.html'.",
+  "Sub-page link meta: '{n} page(s) inside', 'missing'",
+  "Drop overlay: 'Drop to add a live chart here'",
+  "Slash menu: 'BLOCKS', 'No block called that.' The 10 items (label / hint) are listed in the SlashMenu component.",
+  "Full-screen: 'Close'",
+  "Outline: 'ON THIS PAGE', 'Open a page to see its numbered outline.', 'Headings appear here, numbered.'",
+  "Shortcuts legend: '/' block menu; '# ## ###' numbered headings; '-' bullet; '>' callout; '$$' formula (LaTeX); '---' divider",
+  "Toasts:\n- 'This page is too large to save in the browser. It stays until you reload.'\n- 'Only HTML files become live charts.'\n- 'Nothing to add.'\n- '{name} is over 4 MB; charts that large will not save in the browser.'\n- 'Replaced with {name}.'\n- '{name} is live on this page.'\n- 'Chart removed.'",
+  "Sample chart SVG text: 'PRICE · 10Y, 3% COUPON'; legend '━ price  ╌ duration estimate  ■ convexity'; marker label 'y {x.xx}%  ·  P {xxx.xx}  ·  D {x.xx}'"
+ ],
+ "sampleData": "SEED() creates fresh block ids on every call. It returns { cur: 'fi-rates', pages: [...] }, with the default sections added on load. Default sections: [{id:'fi', label:'Fixed Income', accent:'var(--fi-accent)'}, {id:'pc', label:'Private Credit', accent:'var(--pc-accent)'}, {id:'gen', label:'General', accent:'var(--ink-faint)'}]. All pages have updated = Date.now().\n\n1) 'fi-rates', section 'fi', title 'Rates primer'. Blocks:\n- h1 'Rates and duration'\n- h2 'Price and yield'\n- p 'A bond’s price is the present value of its cash flows. When yields rise, those cash flows are discounted more heavily, so the price falls. The relationship is curved, not straight.'\n- formula '\\frac{\\Delta P}{P} \\approx -D \\times \\Delta y'\n- p 'where D is modified duration and Δy is the change in yield, in decimal.'\n- chart {html:null, src:'charts/price-yield.html', name:'price-yield.html', h:380, cap:'The marker drifts through yields. The dashed tangent is what duration predicts; the shaded gap is what it misses.'}\n- callout 'Duration is a first-order estimate. It is good for small moves and too pessimistic for large ones, which is why convexity matters.'\n- h2 'Convexity'\n- p 'Convexity measures how much the slope itself changes as yields move. For a plain bond it is positive, so prices rise more than duration predicts when yields fall, and fall less when they rise.'\n- formula '\\frac{\\Delta P}{P} \\approx -D\\,\\Delta y + \\tfrac{1}{2}\\,C\\,(\\Delta y)^2'\n\n2) 'fi-rot', section 'fi', title 'Eurozone sovereign rotation'. Blocks:\n- h1 'How the rotation works'\n- p 'Ten countries, one at a time, starting with Germany on Mon 4 Jan. The first pass builds each view from scratch; the return visit refreshes it.'\n- h2 'Germany'\n- bullet 'Curve shape and auction calendar'\n- bullet 'Supply versus ECB reinvestment'\n- h2 'France'\n- p ''\n\n3) 'pc-ret', section 'pc', title 'Returns methodology'. Blocks:\n- h1 'Fund-level returns'\n- p 'Monthly returns use Modified Dietz, which weights each cash flow by how long it was in the fund.'\n- formula 'R = \\frac{V_1 - V_0 - F}{V_0 + \\sum_i w_i F_i}'\n- callout 'Security-level attribution uses the same flows, so the two must reconcile to the administrator NAV.'\n\n4) 'gen-how', section 'gen', title 'How the Textbook works'. Blocks:\n- h1 'Writing'\n- p 'Type / on an empty line for the block menu. Headings number themselves: 1, 1.1, 1.1.1.'\n- h1 'Live charts'\n- p 'Ask Claude for a self-contained HTML chart, save the file, and drop it anywhere on a page. It runs live inside the page and is saved with it.'\n- bullet 'Resize by dragging the bottom edge, or pick S, M or L.'\n- bullet 'Replace swaps in a new version of the file and keeps the caption.'\n\nSAMPLE_CHART is a 3,660-char string, byte-identical to charts/price-yield.html. It renders on a transparent background with Albert Sans text and the SVG layers below:\n- 4 horizontal gridlines (stroke #e1ddd8) with mono 11px #5f5a54 price labels 70/90/110/130.\n- x labels 1%, 3%, 5%, 7%.\n- Price curve #47619c, width 2.5, round cap.\n- After 1.4s:\n  - convexity polygon #d18e35 at opacity 0.14\n  - dashed tangent #d18e35, width 1.6, dash '5 4'\n  - vertical guide #211c17 at opacity 0.2\n  - marker circle r6, fill #fdfcf9, stroke #211c17, width 2\n  - bold 13px readout, e.g. 'y 3.20%  ·  P 97.35  ·  D 8.25'. These values are illustrative; they are computed live.\n- Header 'PRICE · 10Y, 3% COUPON' at (L, 16).\n- Legend right-aligned at (R, 16)."
+}

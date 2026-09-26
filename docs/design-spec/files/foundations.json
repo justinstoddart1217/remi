@@ -1,0 +1,338 @@
+{
+ "key": "foundations",
+ "file": "/Users/justinstoddart/Desktop/Ninety One/remi/Remi Dashboard Design Review/Remi Foundations.dc.html",
+ "purpose": "This is the living design-system spec page for Remi, titled \"Remi · Foundations\". It documents every design token in five numbered sections: 01 Colour, 02 Type, 03 Space/radius/grid, 04 Motion (with an interactive \"plan moves\" signature demo and an interaction-level motion table) and 05 Components (static specimens of every core component under its build name, with states). It is not part of the app and uses no shared `model`. Its stated rule: \"components read tokens only, so the swap touches :root and nothing else\", because the colour and type values are stand-ins until the Ninety One brand values arrive. The production build should turn this page into a tokens module (CSS custom properties) plus a component library. A Storybook-like foundations route is optional.",
+ "layout": "PAGE SHELL: body background var(--paper). Root container: max-width 1480px; margin 0 auto; padding 64px 64px 120px; display flex; flex-direction column; gap 88px between the header and the five sections. The page scrolls; it is not the scaled 1920x1080 app frame.\n\nPAGE HEADER: display grid; grid-template-columns minmax(0,7fr) minmax(0,5fr); column-gap 72px; align-items end; border-bottom 1px solid var(--ink) (a full-ink rule, not a hairline); padding-bottom 28px.\n- Left: eyebrow \"Remi · design foundations\" (11px, weight 600, letter-spacing 0.08em, uppercase, --ink-muted). Then h1 \"A notebook that recalculates itself\" (margin 14px 0 0; --font-display; weight 400; 52px; line-height 1.1; letter-spacing -0.015em).\n- Right: paragraph (margin 0; 15px; line-height 1.55; --ink-muted; text-wrap pretty). It contains an inline \":root\" code span (--font-numeric, 13px, --ink) and a link to Remi.dc.html.\n\nSECTION PATTERN (all 5 sections): section is display flex, column, gap 28px. Section header row: display flex; align-items baseline; gap 16px. It holds three spans:\n- the number (\"01\" to \"05\"): --font-numeric, 12px, --ink-muted\n- the title: 20px, weight 600, letter-spacing -0.01em\n- the subtitle: 14px, --ink-muted\n\n01 COLOUR: one row per colour group. Each row: grid-template-columns 200px minmax(0,1fr); column-gap 32px; padding-top 18px; border-top 1px solid var(--hairline).\n- Left column: group label (15px/600) and note (13px; line-height 1.45; --ink-muted; margin-top 4px; text-wrap pretty).\n- Right column: grid repeat(auto-fill, minmax(200px,1fr)); gap 16px. Each swatch cell is flex column, gap 8px:\n  - swatch block: height 64px; border-radius var(--radius-m); background = the token; box-shadow inset 0 0 0 1px var(--hairline)\n  - token name: --font-numeric, 12px, weight 500\n  - value: --font-numeric, 11px, --ink-muted\n  - role: 13px, line-height 1.4, --ink-muted\n\n02 TYPE:\n- Families strip: grid of 3 equal columns; column-gap 32px; padding 18px 0; hairline border-top and border-bottom. Each column has: token name (numeric 12px/500), a 28px sample in that face (margin-top 8px), and a note (13px muted, margin-top 4px).\n- Scale rows (7): grid-template-columns 200px minmax(0,1fr) 260px; column-gap 32px; align-items baseline; padding 14px 0; border-bottom hairline. Columns: spec (numeric 12px muted), live sample, use note (13px muted).\n\n03 SPACE, RADIUS AND GRID: two columns (1fr 1fr); column-gap 72px; border-top hairline; padding-top 18px.\n- Left column, spacing rows: grid 110px 60px minmax(0,1fr); align center; height 32px; border-bottom hairline. Columns: name (numeric 12px), value (numeric 12px muted), bar (height 10px; width = the value; background --ink; radius 1px).\n- Left column, radius demos below the rows: flex, gap 32px, margin-top 24px. Each demo is a 48x32 box with an inset 1px --ink outline at that radius, labelled \"--radius-s · 3px\" and \"--radius-m · 6px\" (numeric 12px), gap 12px.\n- Right column, grid illustration: position relative; height 220px; border 1px hairline; radius-m; overflow hidden; grid 28px (rail) / 1fr.\n  - The rail column has border-right hairline and background --paper-raised.\n  - The main column is split into rows 20px (header; border-bottom hairline) and 1fr (content; padding 10px 14px).\n  - The content area is a 12-column grid with column-gap 6px. Each column: background color-mix(in oklch, var(--pc-accent) 10%, transparent); box-shadow inset 0 0 0 1px color-mix(in oklch, var(--pc-accent) 25%, transparent).\n- Right column, spec list below the illustration: grid auto/1fr; column-gap 20px; row-gap 8px; margin-top 16px; 14px text; keys in numeric 12px muted:\n  - Frame: 1920 × 1080; checked at 2560 × 1440 (content widens, row heights hold)\n  - Rail · header: 88px rail, 72px persistent header\n  - Content: 48px margins, 12 columns, 24px gutters; 72px between major columns\n  - Rows: 40px list rows, 64px timeline project rows, hairline between\n  - Elevation: None, except drawer, palette and tooltip: one soft shadow each\n\n04 MOTION:\n- Token row: grid repeat(5, minmax(0,1fr)); gap 16px; border-top hairline; padding-top 18px. Each cell is flex column, gap 6px: name (numeric 12px/500), value (17px/500), note (13px; line-height 1.45; muted; pretty).\n- Signature panel: grid minmax(0,1fr) 380px; column-gap 48px; padding 28px 32px; background --paper-raised; border 1px hairline; radius-m. See the SignatureDemo component. The right column holds four numbered explanation lines: flex column, gap 10px, 13px, line-height 1.45, muted; the labels are numeric --ink.\n- Interaction table: border-top hairline.\n  - Header row: grid 220px 260px minmax(0,1fr); column-gap 32px; padding 10px 0; border-bottom 1px solid var(--ink); 11px, weight 600, letter-spacing 0.08em, uppercase, muted. Headings: \"Interaction\", \"Values\", \"Notes\".\n  - Body rows: same grid; padding 14px 0; border-bottom hairline; align baseline. Name 14px/600; values numeric 12px line-height 1.5; notes 14px line-height 1.5 muted pretty.\n\n05 COMPONENTS: grid of 2 equal columns; column-gap 72px; row-gap 0. There are 10 specimen cells (5 rows of 2). Each cell has padding 22px 0 and border-top hairline, with a title in --font-numeric 12px/500 (for example \"CapacityBar · day\").\n\nRESPONSIVE: the page is fluid up to its 1480px max width, and the colour swatch grids use auto-fill with a 200px minimum. The app frame rules it states are:\n- design at 1920×1080 and check at 2560×1440, where content widens but row heights do not change\n- 88px nav rail and 72px header\n- 48px content margins, 12 columns, 24px gutters, 72px between major columns\n- 40px list rows and 64px timeline project rows",
+ "components": [
+  {
+   "name": "Design tokens (:root)",
+   "description": "Exact block, identical in Foundations and Remi.dc.html:\n--paper: oklch(0.975 0.007 85); --paper-raised: oklch(0.99 0.004 85); --ink: oklch(0.23 0.012 70); --ink-muted: oklch(0.47 0.012 70); --ink-faint: oklch(0.58 0.01 75); --hairline: oklch(0.9 0.008 80);\n--pc-accent: oklch(0.5 0.1 128); --pc-accent-soft: color-mix(in oklch, var(--pc-accent) 13%, var(--paper)); --fi-accent: oklch(0.5 0.1 265); --fi-accent-soft: color-mix(in oklch, var(--fi-accent) 13%, var(--paper));\n--risk: oklch(0.7 0.13 70); --overload: oklch(0.56 0.17 28); --done: oklch(0.74 0.008 85); --focus: oklch(0.35 0.02 80);\n--font-ui: \"Albert Sans\", ui-sans-serif, system-ui, sans-serif; --font-display: \"Libre Caslon Text\", Georgia, serif; --font-numeric: \"JetBrains Mono\", ui-monospace, monospace;\n--radius-s: 3px; --radius-m: 6px;\n--space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 24px; --space-6: 32px; --space-7: 48px; --space-8: 64px;\n--dur-fast: 140ms; --dur-base: 240ms; --dur-slow: 440ms;\n--ease-out: cubic-bezier(0.23, 1, 0.32, 1);\n--spring-soft: linear(0, 0.049 5%, 0.156 10%, 0.283 15%, 0.408 20%, 0.522 25%, 0.62 30%, 0.702 35%, 0.769 40%, 0.864 50%, 0.922 60%, 0.956 70%, 0.976 80%, 0.987 90%, 1);\n@media (prefers-reduced-motion: reduce){ :root{ --spring-soft: steps(1, jump-start); } }\nThe app also adds :root[data-motion=\"reduced\"]{ --spring-soft: steps(1, jump-start); } for the in-app Motion tweak.\nGlobal CSS: html,body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font-ui);font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased} (the app adds height:100% and text-rendering:optimizeLegibility). button,input,textarea{font:inherit;color:inherit}. a{color:var(--ink);text-decoration-color:var(--hairline);text-underline-offset:3px} a:hover{color:var(--pc-accent)}. The app adds ::selection{background:color-mix(in oklch, var(--pc-accent) 22%, transparent)}.\nColour roles as documented:\n- --paper: page background\n- --paper-raised: drawer preview, palette, inputs\n- --ink: text, primary buttons, today\n- --ink-muted: secondary text, 6.3:1 on paper\n- --ink-faint: idle checkboxes and separators, not for body text\n- --hairline: rules and outlines\n- --pc-accent: Private Credit; --pc-accent-soft: PC project fills and chips\n- --fi-accent: Fixed Income; --fi-accent-soft: FI project fills and rotation\n- --risk: at risk (overrun past target, stale)\n- --overload: a day over 8h\n- --done: done, shown as a quiet strike-through\n- --focus: focus border on inputs\nGroup notes:\n- Paper and ink: 'Warm off-white paper, near-black ink. Saturation stays under 0.01.'\n- Domains: 'One accent per domain; same lightness and chroma, different hue. Soft tints derive from the accent.'\n- Status: 'Used sparingly. Chip text mixes the status colour into ink so it holds 4.5:1.'",
+   "states": [
+    "default",
+    "prefers-reduced-motion (spring becomes steps(1, jump-start))",
+    "data-motion=reduced (app only)"
+   ]
+  },
+  {
+   "name": "Typography scale",
+   "description": "Families:\n- --font-ui = Albert Sans: 'Refined grotesk for all interface text. Stand-in for the brand face.'\n- --font-display = Libre Caslon Text: 'Goal statements and day headings only. Tweakable off.'\n- --font-numeric = JetBrains Mono: 'Business-day numbers, hours and any column of figures. Body text also sets tabular-nums.'\nGoogle Fonts load: Albert Sans ital,wght@0,300..700;1,400..600; JetBrains Mono wght@400;500; Libre Caslon Text ital,wght@0,400;0,700;1,400; display=swap. Icons use Material Symbols Outlined opsz,wght,FILL,GRAD@20..24,300,0..1,0 with display=block and the subset icon_names=add,arrow_forward,calendar_month,check,chevron_left,chevron_right,close,edit_note,north_east,repeat,search,stacks,today,unfold_more,view_timeline (the app adds 'notes').\nSeven sizes, as spec | family | size | weight | line-height | letter-spacing | transform | sample | use:\n1. '52 / 1.1 · display' | display | 52px | 400 | 1.1 | -0.015em | none | 'Monday 5 October' | Day heading; workspace goal (48). The app's Workspace actually uses 44px/1.12.\n2. '26 / 1.28 · display' | display | 26px | 400 | 1.28 | -0.005em | none | 'The ManCo pack builds itself from source data.' | Goal statements in lists and panels\n3. '20 / 1.3 · 600' | ui | 20px | 600 | 1.3 | -0.01em | none | 'Today’s plan' | Section titles; item titles use weight 500\n4. '15 / 1.5 · 400' | ui | 15px | 400 | 1.5 | 0 | none | 'Every Private Credit exit lands before 4 Jan.' | Body, list rows\n5. '13 / 1.45 · 400' | ui | 13px | 400 | 1.45 | 0 | none | 'No check-in for 9 days.' | Secondary text, legends\n6. '11 / 1.3 · 600 caps' | ui | 11px | 600 | 1.3 | 0.08em | uppercase | 'Private Credit · Projects' | Quiet section labels\n7. '12 · numeric' | numeric | 12px | 400 | 1.4 | 0 | none | 'BD3 · 6h · 27 Nov → 2 Dec' | Dates, hours, business days\nOff-scale sizes that appear in practice: 14px (secondary lines, table notes), 17px/500 (motion token values), 28px (family samples), 16px/500 (RotationTile name), 10px/600 (tile pills), 22px (icons).",
+   "states": [
+    "display serif can be tweaked off (falls back to UI face)"
+   ]
+  },
+  {
+   "name": "Spacing and radius scale",
+   "description": "Space tokens --space-1..8 = 4, 8, 12, 16, 24, 32, 48, 64px. The page renders each as a 10px-high --ink bar of that width with radius 1px, in 32px-high rows. Radii: --radius-s 3px (chips, pills, palette rows, confidence buttons) and --radius-m 6px (cards, panels, inputs, buttons, swatches, tooltip). Timeline bars and rotation segments use a hard-coded radius of 2px, and inner capacity cells use 1.5px. Principle: 'Whitespace and hairlines instead of boxes inside boxes.' Elevation: none, except drawer, palette and tooltip, which get one soft shadow each. The tooltip shadow is 0 12px 28px -18px color-mix(in oklch, var(--ink) 40%, transparent).",
+   "states": []
+  },
+  {
+   "name": "SignatureDemo (the plan moves)",
+   "description": "Interactive specimen in a panel: grid minmax(0,1fr) 380px; column-gap 48px; padding 28px 32px; background --paper-raised; border 1px hairline; radius-m.\n\nHeader row (flex, baseline, space-between):\n- title 'Signature moment: the plan moves' (15px/600)\n- button: height 32px; padding 0 14px; border 0; radius-m; background --ink; colour --paper; 13px/600; cursor pointer. Label is 'Replay' when moved and 'Add +10h scope' when not.\n\nBody: grid 230px / 1fr; column-gap 20px; margin-top 22px; align center.\n- Left column (flex column, gap 5px):\n  - project name 'Returns pipeline automation' (14px/500)\n  - a meta row (flex, center, gap 8px, 13px muted) holding a Roll of the forecast date ('Fri 27 Nov' before, 'Wed 2 Dec' after), then a delta chip containing a Roll of '0 BD' or '+3 BD'\n  - delta chip: inline-flex; height 20px; padding 0 6px; radius-s; numeric 11px/500. Moved: background color-mix(in oklch, var(--risk) 22%, var(--paper)), colour color-mix(in oklch, var(--risk) 40%, var(--ink)), inset line transparent. Not moved: transparent background, --ink-muted text, inset 1px --hairline.\n- Right column: a track, position relative, height 64px. Layers, all position absolute, positions in % of track width, TGT = OLD = 72% and NEW = 78%:\n  1. Baseline: left 0; right 0; top 52px; height 1px; --hairline.\n  2. Ghost track (previous plan): top 41px; height 7px; left 0; width 72%; border-box; border 1.5px dashed --pc-accent; radius 2px. Opacity is 0 before the move, 1 during the flash and 0.55 after. Transition: opacity 400ms var(--ease-out).\n  3. Plan bar: top 26px; height 10px; left 0; width 72% (the target); radius 2px; --pc-accent.\n  4. Overrun: top 26px; height 10px; left 72%; radius 0 2px 2px 0; --risk. Width is 0% before and 6% (NEW − TGT) after. Transition: width var(--dur-slow) var(--spring-soft).\n  5. Forecast-end diamond: top 24px; 14×14 with margin-left -7px; border-box; rotate(45deg); border 2px solid --paper-raised, which acts as a knockout ring. Left is 72% before and 78% after. Background is --pc-accent before and --risk after. Transition: left var(--dur-slow) var(--spring-soft), background var(--dur-base) var(--ease-out).\n  6. Old-end flash diamond: top 22px; left 72%; 18×18 with margin-left -9px; rotate 45deg; border 1.5px dashed --pc-accent. Opacity is 1 during the flash, else 0. Transition is 'opacity 0ms' while the flash is on (so it appears instantly) and 'opacity 400ms var(--ease-out)' when it turns off (fade).\n  7. Target marker: top 14px; height 32px; left 72%; width 7px. It is a 1px --ink vertical line plus a 7px×1px --ink horizontal line at the top, a flag shape.\n  8. Floating delta chip '+3 BD': top 4px; left 78%; margin-left 12px; inline-flex; height 18px; padding 0 6px; radius-s; background color-mix(in oklch, var(--risk) 22%, var(--paper)); colour color-mix(in oklch, var(--risk) 40%, var(--ink)); numeric 11px/600. Opacity is 1 or 0; transform is scale(1) or scale(0.9), with transform-origin left center. Transition: left var(--dur-slow) var(--spring-soft), opacity 180ms var(--ease-out), transform 180ms var(--ease-out).\n\nExplanation lines in the right column (labels are numeric --ink):\n- '1 · glide' Bar end and overrun move on --spring-soft, 440ms. Motion: spring, bounce 0, visualDuration 0.35.\n- '2 · ghost' Old end appears at full strength, holds 1000ms, fades 400ms --ease-out. The dashed track of the previous plan stays, faint.\n- '3 · roll' Dates and counts roll per digit, weekday and month on --spring-soft, 440ms.\n- '4 · delta chip' Fades and scales 0.9 → 1 in 180ms, holds 5s beside the bar, then fades.",
+   "states": [
+    "moved (initial): end 78% risk, overrun 6%, ghost 0.55, no flash, no chip, button 'Replay'",
+    "reset (not moved): end 72% accent, overrun 0, ghost 0, date 'Fri 27 Nov', delta '0 BD' neutral, button 'Add +10h scope'",
+    "firing: moved + flash (old-end diamond and ghost at opacity 1) + chip visible",
+    "post-flash (after 1000ms): ghost 0.55, old-end diamond fades",
+    "chip expired (5000ms after fire): chip fades and scales to 0.9"
+   ]
+  },
+  {
+   "name": "Roll (digit roller, child component Roll.dc.html)",
+   "description": "Used for dates and counts. Outer span: position relative; inline-block; line-height 1.25; vertical-align baseline. Inside it are a visibility:hidden white-space:pre copy of the full text (this sets the width) and an aria-hidden absolute overlay (left 0; top 0; height 1.25em; flex). The overlay holds one column per part. Each column is 1.25em high with overflow hidden, and carries a hidden copy of its current cell for width. Inside each column is a vertical stack of all possible cells (each 1.25em high) moved by transform translateY(-index*1.25em), with transition transform var(--dur-slow) var(--spring-soft). The column widths snap to the new value; they do not animate.",
+   "states": [
+    "date form (weekday/day/month columns)",
+    "number form (sign/digits/decimal/suffix columns)",
+    "static fallback"
+   ]
+  },
+  {
+   "name": "Motion tokens panel",
+   "description": "Five cells:\n- --dur-fast | 140ms | 'Feedback: hover, press, tick fill, linked highlight.'\n- --dur-base | 240ms | 'Fades, cross-fades, segmented pills.'\n- --dur-slow | 440ms | 'Layout: glides, zoom, drawers. Nothing runs longer than 600ms.'\n- --ease-out | cubic-bezier(.23,1,.32,1) | 'Opacity and colour. Kept in reduced motion.'\n- --spring-soft | linear(…) no bounce | 'Critically damped spring. Motion: { type: \"spring\", bounce: 0, visualDuration: 0.35 } ≈ stiffness 180, damping 27.'",
+   "states": []
+  },
+  {
+   "name": "CapacityBar · day",
+   "description": "A horizontal stacked bar: display flex; gap 2px; height 14px. Segment widths are calc(hours/totalHours*100% - 2px). Each segment is display flex, gap 2px, border-radius 2px, box-shadow inset 0 0 0 1px <line>, overflow hidden.\n- BAU segment: transparent background and line. It is filled with Math.ceil(hours) child cells (flex 1; radius 1.5px; background = domain accent), which reads as a notched block, one notch per hour.\n- Project segment: background = domain soft tint; inset line = domain accent. Reads as solid.\n- Free segment: transparent background; inset line --hairline. Reads as an outline.\nDefault example: 6h BAU + 1h project + 1h free of 8h, which gives BAU calc(75% - 2px) with 6 cells, project calc(12.5% - 2px) and free calc(12.5% - 2px). Caption (12px muted, margin-top 6px): 'Default · 6h BAU (notched) · 1h project (solid) · 1h free (outline)'.\nOverload example: 6h BAU + 3.5h project, total 9.5h. The total becomes the denominator, so BAU is calc(63.157…% - 2px) and project calc(36.842…% - 2px). Every BAU cell turns --overload. The project segment gets background color-mix(in oklch, var(--overload) 20%, var(--paper)) and inset line --overload. An 8h capacity marker is drawn at left 8/9.5 = 84.2%: position absolute; top -5px; bottom -5px; width 1px; --ink. Caption in --overload colour: 'Overload · 9.5h of 8h · the whole bar turns red and pulses once'.",
+   "states": [
+    "default (within capacity, domain-coloured)",
+    "overload (all segments --overload, 8h marker line, one pulse)",
+    "free space outline"
+   ]
+  },
+  {
+   "name": "CapacityBar · mini",
+   "description": "Width 160px (demo); display flex; gap 1px; height 6px.\n- BAU span: width calc(75% - 1px); background repeating-linear-gradient(to right, var(--pc-accent) 0 calc(16.66% - 1px), transparent calc(16.66% - 1px) 16.66%), which draws 6 notches.\n- Project span: width calc(25% - 1px); background --pc-accent-soft; box-shadow inset 0 0 0 1px --pc-accent.\n- Label below: '8h of 8h' (numeric 11px muted, margin-top 6px).",
+   "states": [
+    "default"
+   ]
+  },
+  {
+   "name": "CapacityBar · strip (Timeline strip)",
+   "description": "One stacked vertical bar per business day at 5px per hour. Container: display flex; align-items flex-end; gap 4px; height 56px.\nEach day column: width 12px; flex column-reverse, so BAU sits at the bottom; gap 1px.\n- BAU part: height = bauHours*5 px; background repeating-linear-gradient(to top, <c> 0 4px, transparent 4px 5px), i.e. one 4px notch per hour with a 1px gap.\n- Project part: height = projectHours*5 px; background <soft>; inset 1px <c>; radius 1px.\nOn a normal day, c = --pc-accent and soft = --pc-accent-soft. On an overload day, c = --overload and soft = color-mix(in oklch, var(--overload) 22%, var(--paper)).\nSample data [bau, proj]: [6,2], [0,7], [0,7], [4,4], [6,3.5] (overload), [4,3].\nCaption (12px muted, max-width 180px): 'Timeline strip: one stacked bar per business day, 5px per hour.'",
+   "states": [
+    "normal",
+    "overload day"
+   ]
+  },
+  {
+   "name": "TimelineBar",
+   "description": "Each row: grid 90px / 1fr; column-gap 16px; align center. Label is 13px muted. Track: position relative; height 16px.\n- Bar: absolute; left 0; top 3px; height 10px; radius 2px; box-sizing border-box.\n- Overrun: absolute; left = bar width; top 3px; height 10px; radius 0 2px 2px 0; background --risk; sits flush against the bar.\nStates:\n- 'On track': width 70%; --pc-accent.\n- 'At risk': width 62%, plus a 12% --risk overrun. The bar ends at the target and the overrun runs past it.\n- 'Done': width 48%; --done.\n- 'Ghost': width 62%; transparent; border 1.5px dashed --pc-accent (the previous plan).\n- 'No plan yet': width 80%; background repeating-linear-gradient(135deg, var(--fi-accent-soft) 0 4px, transparent 4px 8px); border 1px solid --fi-accent (a hatched placeholder).\nIn the full timeline, project rows are 64px tall. Colour follows the domain accent.",
+   "states": [
+    "on track",
+    "at risk (risk-coloured overrun past target)",
+    "done (--done grey)",
+    "ghost (dashed previous plan)",
+    "no plan yet (hatched outline)"
+   ]
+  },
+  {
+   "name": "MilestoneDiamond · TargetMarker · BauTick · BauChip",
+   "description": "Row: flex; align center; gap 36px; margin-top 18px; wrap. Each specimen has its label beside it (13px muted, gap 10px).\n- MilestoneDiamond, 'Upcoming': 10×10; border-box; rotate(45deg); border 1.5px solid --pc-accent; background --paper (hollow).\n- MilestoneDiamond, 'Passed': the same, with background --pc-accent (filled).\n- 'Forecast end' diamond: 13×13; rotate 45deg; solid --pc-accent. On a bar it is 14px with a 2px --paper-raised border.\n- TargetMarker, 'Target': a 7×20 box holding a 1px --ink vertical line over the full height and a 7×1 --ink top line, a flag shape.\n- BauTick: 4×18; radius 2px; solid --pc-accent.\n- Handed-over tick: 4×18; radius 2px; inset 1px --pc-accent (outline only). Labelled 'Tick, handed-over tick'.\n- BauChip: inline-flex; gap 5px; height 20px; padding 0 7px; radius-s; background --pc-accent-soft; 11px/500. It starts with a 3×10 --pc-accent bar (radius 1px) and reads 'Returns · 6h'.\nPrinciple: 'BAU is a tick or chip; a project is a bar.'",
+   "states": [
+    "milestone upcoming",
+    "milestone passed",
+    "forecast end",
+    "target",
+    "BAU tick owned",
+    "BAU tick handed over",
+    "BAU chip"
+   ]
+  },
+  {
+   "name": "RotationSegment · RotationTile",
+   "description": "RotationSegment: row flex, gap 3px. Segments are 24px high, border-box, radius 2px, 11px/600, flex center, padding-left 6px.\n- Build: border 1px solid --fi-accent; background --fi-accent-soft. Examples: 'DE · Build' at 120px wide, 'FR · Build' at 100px wide.\n- Refresh: border 1px dashed --fi-accent; no fill. Example: 'DE · Refresh' at 60px wide.\n- Width is proportional to duration (a first build takes longer than a refresh).\n\nRotationTile: row flex, gap 12px. Tile: width 200px; border-box; padding 12px 14px; radius-m; flex column; gap 5px.\n- Top row (space-between): index and country code, e.g. '01 · DE' (numeric 11px muted), and a type pill (height 18px; padding 0 6px; radius-s; 10px/600).\n- Build pill: background --fi-accent-soft plus inset 1px --fi-accent. Refresh pill: inset 1px --fi-accent only.\n- Then the country name 'Germany' (16px/500) and a date range with business days (numeric 11px muted): '4 Jan – 11 Jan · 6 BD' / '9 Mar – 11 Mar · 3 BD' (en dash).\n- Current tile: border 1.5px solid --ink. Other tiles: border 1px solid --hairline.",
+   "states": [
+    "build",
+    "refresh",
+    "current/active (ink border 1.5px)",
+    "upcoming (hairline border)"
+   ]
+  },
+  {
+   "name": "DeltaChip",
+   "description": "Shared: inline-flex; align center; height 22px; padding 0 7px; radius-s; --font-numeric 11px/500.\n- Slip, e.g. '+3 BD': background color-mix(in oklch, var(--risk) 22%, var(--paper)); colour color-mix(in oklch, var(--risk) 40%, var(--ink)).\n- Gain, e.g. '−1 BD' (U+2212 minus): neutral, with box-shadow inset 0 0 0 1px --hairline and colour --ink-muted.\n- 'On target': neutral, the same as gain.\n- 'Overload': background color-mix(in oklch, var(--overload) 14%, var(--paper)); colour color-mix(in oklch, var(--overload) 75%, var(--ink)).\nOnly a slip gets colour; an improvement stays neutral, because 'on track is the neutral default'.\nThe FeedItem variant is slightly different: background mix 20% and text mix 45%. The floating chip in the signature demo is 18px high at weight 600.",
+   "states": [
+    "slip (+n BD, risk tint)",
+    "gain (−n BD, neutral outline)",
+    "on target (neutral outline)",
+    "overload (overload tint)"
+   ]
+  },
+  {
+   "name": "DomainTag",
+   "description": "inline-flex; align center; gap 6px; height 22px; padding 0 8px; radius-s; background = domain soft tint; 11px/600; letter-spacing 0.04em. It starts with a 6×6 circle in the domain accent. Labels: 'Private Credit' (--pc-accent-soft with a --pc-accent dot) and 'Fixed Income' (--fi-accent-soft with a --fi-accent dot).",
+   "states": [
+    "Private Credit",
+    "Fixed Income"
+   ]
+  },
+  {
+   "name": "ConfidenceControl",
+   "description": "A segmented 1–5 picker: grid repeat(5, 52px); gap 4px. Each button: height 40px; border 1px solid <line>; radius-s; 15px/600; cursor pointer; transition background var(--dur-fast) var(--ease-out), color var(--dur-fast) var(--ease-out).\n- Selected: background --ink; colour --paper; line --ink.\n- Unselected: background --paper-raised; colour --ink; line --hairline.\nThe demo starts with 3 selected. Clicking a button selects it (single select).",
+   "states": [
+    "unselected",
+    "selected",
+    "(hover not specified here)"
+   ]
+  },
+  {
+   "name": "GoalStatement · ProjectCard",
+   "description": "A list-row style card with no box. margin-top 14px on the first card; padding 18px 0; hairline border-bottom between cards. Grid minmax(0,1fr) auto; column-gap 24px; align-items end.\n- Left: project title (13px/600), then the goal sentence (--font-display; 26px; line-height 1.28; margin-top 8px; text-wrap pretty).\n- Right (text-align right): forecast date (15px/500), then meta (13px muted, margin-top 2px), formatted '<Phase> · <confidence>/5 · <last check-in relative>'.\n\nNormal example: 'PC handover playbook' / 'A successor can run every PC process alone from written runbooks.' / 'Fri 18 Dec' / 'Run · 4/5 · 3 days ago'.\n\nStale example: 'ManCo pack automation'. The title is followed (gap 10px) by a Stale chip: inline-flex; gap 6px; height 20px; padding 0 7px; radius-s; box-shadow inset 0 0 0 1px color-mix(in oklch, var(--risk) 45%, var(--paper)); colour color-mix(in oklch, var(--risk) 45%, var(--ink)); 11px/500; text 'Stale · 9 days'. The goal text turns --ink-muted: 'The ManCo pack builds itself from source data; the analyst only writes commentary.' Right side: 'Fri 11 Dec', with meta '9 days ago' coloured color-mix(in oklch, var(--risk) 45%, var(--ink)).\n\nThe goal sentence is the view-transition shared element when a card opens its workspace.",
+   "states": [
+    "normal",
+    "stale (risk-outlined chip, muted goal, risk-tinted last check-in)"
+   ]
+  },
+  {
+   "name": "FeedItem",
+   "description": "'What changed' row: grid 16px minmax(0,1fr) auto; column-gap 12px; padding 14px 0; border-bottom hairline.\n- Status dot: 8×8 circle; margin-top 6px; background --risk in the example.\n- Middle: title and date in a flex row (gap 10px, baseline), then a body line (14px; line-height 1.45; muted; margin-top 3px).\n- Title: 'Returns pipeline' (15px/600). Date: 'Sat 3 Oct' (numeric 11px muted).\n- Body: 'Scope added (security-level attribution, +10h). Forecast moved 27 Nov → 2 Dec.'\n- Right: a delta chip '+3 BD' (height 22px; padding 0 7px; radius-s; background color-mix(in oklch, var(--risk) 20%, var(--paper)); colour color-mix(in oklch, var(--risk) 45%, var(--ink)); numeric 11px/500).",
+   "states": [
+    "risk dot",
+    "(other dot colours per event type in app)"
+   ]
+  },
+  {
+   "name": "Tooltip",
+   "description": "Width 280px; padding 12px 14px; background --paper-raised; border 1px hairline; radius-m; box-shadow 0 12px 28px -18px color-mix(in oklch, var(--ink) 40%, transparent). This is the single soft elevation shadow.\n- Header (space-between): 'Wed 4 Nov · BD3' (14px/600) and a status 'Overload' (numeric 11px, --overload).\n- Line items (13px; line-height 1.45; muted): 'Returns (BAU) · 6h' (margin-top 4px) and 'Returns pipeline · 3.5h' (margin-top 2px).",
+   "states": [
+    "overload day",
+    "(normal day would omit/neutral status)"
+   ]
+  },
+  {
+   "name": "CheckInField",
+   "description": "Label 'Blockers' (15px/600). Input: margin-top 8px; height 40px; border-box; radius-m; background --paper-raised; padding 0 12px; 14px text; flex center. The focus state shown is border 1px solid var(--focus). The demo renders a caret as a 1×18 --ink span with margin-left 2px after the text 'Waiting on the security-level extract'. Caption (12px muted, margin-top 6px): 'Focus state: 1px --focus border, no glow.' No box-shadow focus ring is used. The resting border colour is not shown here; by convention it is --hairline.",
+   "states": [
+    "focus (1px --focus border, no glow)",
+    "rest (implied hairline)"
+   ]
+  },
+  {
+   "name": "NavRail item",
+   "description": "Demo container: flex column; gap 4px; padding 10px 6px; border 1px hairline; radius-m.\nItem: 64×58 (the app uses 72×62 inside an 88px rail); flex column; centred; gap 5px. Icon: Material Symbols Outlined, 22px, font-variation-settings 'wght' 300. Label: 11px/500.\n- Active: background --paper-raised; box-shadow inset 0 0 0 1px --hairline; radius-m; colour --ink.\n- Inactive: colour --ink-muted; no background.\nExamples: 'today' → 'Today' (active), 'view_timeline' → 'Timeline'.\nIn the app, background, colour and border-colour transition over var(--dur-fast) var(--ease-out).",
+   "states": [
+    "active",
+    "inactive"
+   ]
+  },
+  {
+   "name": "PageHeader",
+   "description": "Demo: flex; center; gap 16px; height 48px (the app header is 72px); padding 0 16px; border 1px hairline; radius-m. Contents in order:\n- 'Mon 5 Oct' (15px/600)\n- '·' in --ink-faint\n- 'BD3' (numeric 12px muted; the business day of the month)\n- a 1×18 hairline divider\n- '61' (15px/600)\n- 'business days to Fixed Income' (14px muted)\n- a flex:1 spacer\n- the primary 'Check in' button: height 30px; padding 0 12px; radius-m; background --ink; colour --paper; 13px/600",
+   "states": [
+    "default"
+   ]
+  },
+  {
+   "name": "CommandPalette",
+   "description": "Box: border 1px hairline; radius-m; background --paper-raised; overflow hidden.\n- Input row: flex; center; gap 10px; height 44px; padding 0 14px; border-bottom hairline; 15px. It holds a 'search' icon (Material Symbols 18px, muted), the typed query '+6h returns' and a 1×16 --ink caret.\n- Results area: padding 6px. The highlighted row is flex; center; gap 10px; height 34px; padding 0 10px; radius-s; background color-mix(in oklch, var(--ink) 6%, var(--paper-raised)); 13px. It holds a 7×7 domain dot (--pc-accent), the action label 'Add 6h of scope to Returns pipeline' (flex 1) and a kind tag 'check-in' (numeric 11px muted).\nIn the app it opens with ⌘K ('Search or add (⌘K)'). It parses quick commands such as '+6h returns' into actions.",
+   "states": [
+    "query typed",
+    "active result row highlighted"
+   ]
+  },
+  {
+   "name": "EmptyState",
+   "description": "Title: 'EmptyState · written with care'. Rows: grid 140px / 1fr; column-gap 20px; 14px; line-height 1.5. The location label is 12px muted with padding-top 2px; the text is muted with text-wrap pretty. The copy is instructive and gentle, never 'No data'. Footer note (13px; line-height 1.5; muted; margin-top 18px): 'Side panel (460px) and check-in drawer (1160px) slide from the right on --spring-soft over an 18% ink scrim; see them live in the app.'",
+   "states": [
+    "scope log empty",
+    "check-in prompt satisfied",
+    "charter in-scope empty",
+    "risks empty"
+   ]
+  },
+  {
+   "name": "Drawer / SidePanel (referenced only)",
+   "description": "Referenced here but not drawn. Side panel is 460px wide and the check-in drawer 1160px wide. Both slide from the right on --spring-soft (440ms) over an 18% ink scrim, color-mix(in oklch, var(--ink) 18%, transparent). They are elevated with one soft shadow.",
+   "states": [
+    "open",
+    "closed"
+   ]
+  }
+ ],
+ "dataConsumed": [
+  "None from the app model. Foundations is self-contained and renders only hard-coded arrays from renderVals().",
+  "props passed to the child Roll component: value (string), either a date like 'Wed 2 Dec' / 'Fri 27 Nov' or a delta like '+3 BD' / '0 BD'",
+  "renderVals outputs: colourGroups[{label, note, items[{name, value, v (CSS var), role}]}]; typeScale[{spec, ff, fs, fw, lh, ls, tt, fst, sample, use}]; spaces[{name, v}]; cols (12 zeros); motionTokens[{name, v, note}]; motionSpec[{name, v, note}]; replay; replayLabel; demo{fS, delta, chipBg, chipFg, chipLine, barW, tgt, overW, end, endBg, ghostW, ghostO, oldEnd, flashO, flashT, chipX, chipO, chipS}; capA/capB[{w, bg, line, cells[]}]; strip[{b, p, c, soft}]; bars[{label, w, ow, bg, border}]; confDemo[{n, bg, fg, line, pick}]; phaseDemo (computed but never rendered); empties[{where, text}]"
+ ],
+ "interactions": [
+  "Replay button in the signature panel. If state.moved is true (the initial state), it clears timers t1/t2/t3 and sets {moved:false, flash:false, chip:false}. The bar glides back to the target on the spring, the overrun collapses, the end diamond goes back to accent, the ghost fades out over 400ms, the Rolls roll back to 'Fri 27 Nov' / '0 BD', and the label becomes 'Add +10h scope'. After 700ms it calls fire(). If state.moved is false, it calls fire() immediately.",
+  "fire() sets {moved:true, flash:true, chip:true, run:run+1}. The end diamond springs to 78% and turns --risk (240ms colour change). The overrun grows to 6%. The old-end dashed diamond appears instantly at opacity 1. The ghost track shows at opacity 1. The floating '+3 BD' chip fades in and scales from 0.9 to 1 over 180ms. The Rolls roll to 'Wed 2 Dec' and '+3 BD'. After 1000ms, flash becomes false: the old-end diamond fades over 400ms and the ghost settles to 0.55. 5000ms after fire, chip becomes false: the chip fades out and scales to 0.9 over 180ms.",
+  "Unmount clears all three timeouts.",
+  "ConfidenceControl buttons 1–5: click sets state.conf = k. The selected button inverts to ink with paper text, with a 140ms ease-out transition on background and colour.",
+  "Link 'Remi.dc.html' in the header navigates to the app. Links hover to --pc-accent.",
+  "Documented in the motion table, not interactive on this page: hovering a project anywhere dims everything that is not that project to opacity 0.28 over 140ms ease-out (linked highlight). ⌘K opens the command palette. Clicking a card animates into its workspace with a view transition. The timeline zooms, and pans by week in the two-week view. Ticking a BAU item plays the press-and-settle."
+ ],
+ "motion": [
+  "Principles (verbatim): 'Alive, never busy. Motion explains a change; nothing loops.' 'Nothing runs longer than 600ms.' Ease-out is used for opacity and colour and is kept in reduced motion. The spring is used for layout and movement and becomes instant under reduced motion.",
+  "Tokens: --dur-fast 140ms (feedback: hover, press, tick fill, linked highlight); --dur-base 240ms (fades, cross-fades, segmented pills); --dur-slow 440ms (layout: glides, zoom, drawers); --ease-out cubic-bezier(0.23, 1, 0.32, 1); --spring-soft linear(0, 0.049 5%, 0.156 10%, 0.283 15%, 0.408 20%, 0.522 25%, 0.62 30%, 0.702 35%, 0.769 40%, 0.864 50%, 0.922 60%, 0.956 70%, 0.976 80%, 0.987 90%, 1). This is a critically damped spring with no overshoot, equivalent to Motion {type:'spring', bounce:0, visualDuration:0.35} ≈ stiffness 180, damping 27. It always runs at 440ms (--dur-slow).",
+  "Reduced motion: --spring-soft becomes steps(1, jump-start), so movement resolves instantly while opacity cross-fades remain. This mirrors prefers-reduced-motion and the in-app Motion tweak (:root[data-motion='reduced']). In the app, reduced mode also sets ::view-transition-group(*) animation-duration to 0s.",
+  "Plan moves (signature): 'glide 440 spring · ghost 1000 hold + 400 fade · roll 440 spring · chip 180'. It runs 220ms after the drawer closes so the eye is back on the plan, and only affected bars move. In the demo: the end diamond animates left (440 spring) and background (240 ease-out); the overrun animates width (440 spring); the ghost track animates opacity (400ms ease-out) from 0 to 1 (flash) to 0.55 (resting faint); the old-end diamond shows instantly (opacity 0ms) and fades over 400ms ease-out after a 1000ms hold; the floating chip animates opacity and transform scale 0.9 → 1 over 180ms ease-out, with left on the 440 spring, and holds for 5s. The replay reset waits 700ms before firing.",
+  "Linked highlight: opacity 140ms ease-out down to 0.28 on everything that is not the hovered project (bars, capacity segments, chips, feed).",
+  "Card → workspace: a view transition. ::view-transition-group(remi-goal) runs 420ms cubic-bezier(0.23,1,0.32,1), and ::view-transition-old/new(root) run 220ms. The goal sentence is the shared element (view-transition-name) and grows from 26px in the list to 48px in the header (the Workspace textarea is actually 44px). The old/new goal snapshots use height 100%, width auto, object-fit none, object-position left top. Reduced motion falls back to a cross-fade.",
+  "Timeline zoom: every x and width animates on the 440 spring. Columns, bars, ticks and header labels re-lay out together with no cut.",
+  "Capacity fill: width/height 440 spring with a 90ms delay, filling from empty on arrival. Overload pulses once: a 600ms ring with a 450ms delay, then holds still. The app implements this as @keyframes remi-pulse{0%{box-shadow:0 0 0 0 color-mix(in oklch, var(--overload) 50%, transparent)}100%{box-shadow:0 0 0 7px color-mix(in oklch, var(--overload) 0%, transparent)}}, used as 'remi-pulse 600ms var(--ease-out) 1 <delay>'. The delay is 450ms in Timeline and 300/400ms in Today, 200/300ms in Calendar.",
+  "Arrival: '140 ease-out per block · 40 stagger · 340 total', first load only. Screens stay mounted, so switching screens is a 240ms cross-fade, not a replay. The app keyframe is @keyframes remi-settle{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}.",
+  "BAU tick: 'fill 140 · check 0.4 → 1, 180 cubic-bezier(.34,1.5,.64,1)', a small press-and-settle with overshoot. The text drops to muted with a --done strike-through and the progress count rolls. The app also defines @keyframes remi-tick{0%{scale(0.6)}60%{scale(1.08)}100%{scale(1)}}; the Today and Workspace screens use cubic-bezier(0.34, 1.5, 0.64, 1).",
+  "Roll: every digit, weekday and month column translates Y over 440ms --spring-soft. Column width snaps and is not animated.",
+  "Drawers: the side panel (460px) and check-in drawer (1160px) slide from the right on --spring-soft over an 18% ink scrim.",
+  "ConfidenceControl: background and colour over 140ms ease-out.",
+  "Nothing on this page loops or auto-plays. The demo loads in its final 'moved' state, without flash or chip."
+ ],
+ "algorithms": [
+  "CapacityBar (day) segment builder, cap(items, over), where items are [kind, hours, totalHours, domain?]:\n- Width for every segment: 'calc(' + hours/total*100 + '% - 2px)'.\n- Accent c = domain==='fi' ? --fi-accent : --pc-accent. Soft = domain==='fi' ? --fi-accent-soft : --pc-accent-soft.\n- kind 'bau': background and line transparent; cells = Array(Math.ceil(hours)) filled with over ? --overload : c. Each cell renders flex:1 with radius 1.5px inside a flex container with a 2px gap.\n- kind 'proj': background = over ? color-mix(in oklch, var(--overload) 20%, var(--paper)) : soft; line = over ? --overload : c; no cells.\n- Any other kind ('free'): background transparent; line --hairline.\n- The denominator is max(capacity, planned). In overload the total becomes the planned hours (9.5), and a 1px ink marker sits at capacity/planned (8/9.5 = 84.2%), extending 5px above and below the bar.",
+  "Timeline strip: 5px per hour, so BAU height = bauH*5 and project height = projH*5. BAU is drawn as a repeating gradient of 4px fill + 1px gap per hour. A day is overloaded when bau+proj > 8 (the example is index 4 at 6+3.5). The 56px container fits about 11.2h.",
+  "Mini capacity bar: 6 notches drawn with repeating-linear-gradient at 16.66% steps; widths are calc(pct - 1px) with a 1px gap.",
+  "Signature demo geometry: positions are percentages of track width. TGT = OLD = 72, NEW = 78. overW = moved ? NEW − TGT : 0; end = moved ? NEW : OLD; ghostO = moved ? (flash ? 1 : 0.55) : 0; flashO = flash ? 1 : 0; flashT = flash ? 'opacity 0ms' : 'opacity 400ms var(--ease-out)' (appear instantly, fade out slowly). chipX = NEW. In production, x = (businessDayIndex / totalDays) * width. The bar fill is capped at the target, and the overrun (--risk) covers target to forecast end when the forecast is later than the target.",
+  "Roll parsing, from the child Roll component:\n- Date regex /^(?:(Mon|Tue|Wed|Thu|Fri|Sat|Sun) )?(\\d{1,2}) (Jan|...|Dec)$/ produces columns: weekday (7 cells), static ' ', tens digit (cells ['', '0'..'9']; '' when the day has one digit), ones digit, static ' ', month (12 cells).\n- Number regex /^([+−-]?)(\\d{1,3})(?:\\.(\\d))?(\\D*)$/ produces: a sign column ['', '+', '−'] (ASCII '-' is normalised to U+2212); 3 digit columns left-padded with '' blanks; a decimal-point column ['', '.']; one decimal digit column; a static suffix such as ' BD'.\n- Anything else renders as static text.\n- Each column's offset is translateY(-indexOf(cur) * 1.25em), with Math.max(0, …) as a guard.",
+  "Delta semantics: a positive delta in business days (the forecast slipped later) uses the risk tint. Zero is 'On target' and neutral. A negative delta (improved) uses the U+2212 minus sign and is neutral, not green. Overload is a separate status chip.",
+  "Colour-mix recipes, to reproduce exactly:\n- soft accent = accent 13% into paper\n- risk chip background = risk 22% into paper (20% in FeedItem); risk chip text = risk 40% into ink (45% in FeedItem and stale)\n- stale outline = risk 45% into paper\n- overload chip background = overload 14% into paper; text = overload 75% into ink\n- overload capacity project fill = overload 20% into paper (strip: 22%)\n- palette active row = ink 6% into paper-raised\n- grid-illustration column = pc-accent 10% into transparent, with a 25% outline\n- tooltip shadow = ink 40% into transparent\n- selection (app) = pc-accent 22% into transparent\n- hover (app rail) = ink 5% into transparent\n- goal hover (app) = ink 3%\n- scrim = ink 18%",
+  "Replay sequencer: reset → 700ms → fire → (1000ms) flash off → (5000ms from fire) chip off. All three timeouts are cancelled on every replay and on unmount."
+ ],
+ "backendImplications": [
+  "None directly, because this is a design-system page. It does confirm the data the backend must provide for the rendering primitives:\n- per business day: planned BAU hours and project hours per domain, against the capacity (8h default), so overload can be computed\n- per project: target date, forecast end date, previous forecast (for the ghost and delta), milestones with passed/upcoming state, phase (Define/Plan/Run/Close), confidence 1–5, last check-in timestamp (for the stale state; the example is 9 days), domain (pc|fi) and status (on track / at risk / done / no plan)\n- rotation schedule: ordered country segments with type build|refresh, dates and business-day counts\n- a change-feed event model: project, date, text, delta in business days, severity\n- business-day indexing (BD3 = the 3rd business day of the month) and 'business days to Fixed Income' countdown math",
+  "Delta and forecast calculations should be computed server-side, or in a shared util, in business days (e.g. '27 Nov → 2 Dec' = +3 BD) so the client animation only interpolates.",
+  "The command palette parses quick-add syntax such as '+6h returns' into an action ('Add 6h of scope to Returns pipeline', kind 'check-in'). The parser and matcher need a defined grammar, which could be handled server-side or in a util.",
+  "Tokens should live in one CSS/TS tokens module (for example core/tokens.css plus a TS mirror for Motion spring configs). The brand swap must touch only :root."
+ ],
+ "risksAndQuirks": [
+  "All colour and type values are placeholders ('stand-ins until the Ninety One values arrive'). The brand swap must be :root-only, so components must never hard-code colours. However, several recipes do hard-code percentages in color-mix (13/14/20/22/25/40/45/75%). Centralise these as derived tokens, for example --risk-chip-bg and --risk-chip-fg.",
+  "Inconsistent chip mixes: DeltaChip uses risk 22% / 40%, FeedItem uses 20% / 45%, and the stale chip uses 45%. The floating signature chip is 18px high at weight 600, versus 22px at 500 for the standard DeltaChip. Pick one canonical recipe per status.",
+  "Type scale inconsistency: the display row says 'workspace goal (48)' and the motion table says the goal grows 26px → 48px, but Workspace.dc.html uses 44px/1.12. The GoalStatement specimen also omits the -0.005em letter-spacing that the type scale specifies (Projects.dc.html applies it).",
+  "The BAU tick spec says 'check 0.4 → 1, 180ms cubic-bezier(.34,1.5,.64,1)', but the app's @keyframes remi-tick goes 0.6 → 1.08 → 1. Reconcile these.",
+  "The overload pulse delay is documented as 450ms but varies by screen in the app (200/300/400/450ms).",
+  "phaseDemo (a Define/Plan/Run/Close stepper: lineW 0/18px; line and ring --ink for i ≤ 2, else --hairline / --ink-faint; fill --ink for i < 2, else --paper; the current phase at index 2 is weight 600 --ink, earlier phases muted, later phases faint) is computed in renderVals but never rendered. It is a hidden component spec for a PhaseStepper: 'Run' is current, 'Define' and 'Plan' are done, 'Close' is upcoming.",
+  "state.run is incremented but never read (dead state). hint-placeholder-count values do not match the data (bars has 5 items with hint 4) and are only authoring hints for the dc runtime.",
+  "The demo component sizes differ from the app: nav item 64×58 here vs 72×62 in the app; page header 48px here vs 72px in the app. Use the app values and the stated grid (88px rail, 72px header).",
+  "The floating chip text is static '+3 BD', and its position is always NEW, even while hidden. In production it should derive from the real delta.",
+  "The mini capacity bar demo is hard-coded (6h BAU, 2h project, '8h of 8h') with 16.66% gradient steps, which only works for 6 BAU hours. Production must compute steps as 100/bauHours.",
+  "The strip's overload colour is hard-coded to index 4. Production computes it as sum > capacity (8h assumed; capacity should be configurable because the working-day length is an open question).",
+  "Material Symbols is loaded as a subset through icon_names. Any new icon must be added to the list, or the font must be self-hosted in full. display=block avoids showing ligature text.",
+  "Google Fonts are loaded from a CDN. A corporate or offline deployment may need to self-host them (compliance and the 'stay local' requirement).",
+  "linear() easing and color-mix(in oklch) require modern browsers (Chrome 113+/Safari 17.2+). The view transitions used for card → workspace need a fallback, which the app already provides via document.startViewTransition feature detection.",
+  "The dates are hard-coded, in the 2026 project calendar (for example Mon 5 Oct BD3, 61 business days to Fixed Income, the 4 Jan move date), and are sample only."
+ ],
+ "copyText": [
+  "Remi · Foundations (document title)",
+  "Remi · design foundations",
+  "A notebook that recalculates itself",
+  "Tokens, type, spacing, motion and the core components. Colour and type values are stand-ins until the Ninety One values arrive; components read tokens only, so the swap touches :root and nothing else. Open Remi.dc.html for the working screens.",
+  "01 Colour — Colour carries meaning and only meaning. On track is the neutral default.",
+  "02 Type — Seven sizes. The serif is reserved for goal statements and day headings.",
+  "03 Space, radius and grid — Whitespace and hairlines instead of boxes inside boxes.",
+  "04 Motion — Alive, never busy. Motion explains a change; nothing loops.",
+  "05 Components — Named as they will be in the build. BAU is a tick or chip; a project is a bar.",
+  "Signature moment: the plan moves",
+  "Replay / Add +10h scope",
+  "Interaction · Values · Notes (table headers)",
+  "Plan moves — Runs 220ms after the drawer closes so the eye is back on the plan. Only affected bars move.",
+  "Linked highlight — Hovering a project anywhere dims everything that is not it: bars, capacity segments, chips, feed.",
+  "Card → workspace — The goal sentence is the shared element; it grows from 26px in the list to 48px in the header. Reduced motion: cross-fade.",
+  "Timeline zoom — Columns, bars, ticks and header labels re-lay out together; no cut. Pan by week in two-week view.",
+  "Capacity fill — Fills from empty on arrival. Overload pulses once (600ms ring, 450ms delay), then holds still.",
+  "Arrival — First load only. Screens stay mounted, so switching screens is a 240ms cross-fade, not a replay.",
+  "BAU tick — A small press-and-settle. Text drops to muted with a --done strike-through; progress count rolls.",
+  "Reduced motion — Movement resolves instantly; opacity cross-fades remain. Mirrors prefers-reduced-motion and the Motion tweak.",
+  "Default · 6h BAU (notched) · 1h project (solid) · 1h free (outline)",
+  "Overload · 9.5h of 8h · the whole bar turns red and pulses once",
+  "8h of 8h",
+  "Timeline strip: one stacked bar per business day, 5px per hour.",
+  "TimelineBar labels: On track / At risk / Done / Ghost / No plan yet",
+  "Upcoming / Passed / Forecast end / Target / Tick, handed-over tick / Returns · 6h",
+  "DE · Build / FR · Build / DE · Refresh; 01 · DE Build Germany 4 Jan – 11 Jan · 6 BD; 11 · DE Refresh Germany 9 Mar – 11 Mar · 3 BD",
+  "+3 BD / −1 BD / On target / Overload / Private Credit / Fixed Income",
+  "PC handover playbook — A successor can run every PC process alone from written runbooks. — Fri 18 Dec — Run · 4/5 · 3 days ago",
+  "ManCo pack automation — Stale · 9 days — The ManCo pack builds itself from source data; the analyst only writes commentary. — Fri 11 Dec — 9 days ago",
+  "Returns pipeline · Sat 3 Oct · Scope added (security-level attribution, +10h). Forecast moved 27 Nov → 2 Dec. · +3 BD",
+  "Tooltip: Wed 4 Nov · BD3 · Overload · Returns (BAU) · 6h · Returns pipeline · 3.5h",
+  "Blockers · Waiting on the security-level extract · Focus state: 1px --focus border, no glow.",
+  "PageHeader: Mon 5 Oct · BD3 | 61 business days to Fixed Income | Check in",
+  "Palette: +6h returns → Add 6h of scope to Returns pipeline · check-in",
+  "Empty — Scope log: No scope added since the charter. The plan is still the one you wrote.",
+  "Empty — Check-in prompt: Every plan has had a check-in this week. Next due: FI onboarding, last checked 5 days ago.",
+  "Empty — Charter, in scope: Not written yet. What must v0 do on its first day?",
+  "Empty — Risks: No premortem yet. Picture January with this project abandoned, and write down the first reason that comes to mind.",
+  "Side panel (460px) and check-in drawer (1160px) slide from the right on --spring-soft over an 18% ink scrim; see them live in the app.",
+  "Frame: 1920 × 1080; checked at 2560 × 1440 (content widens, row heights hold)",
+  "Elevation: None, except drawer, palette and tooltip: one soft shadow each"
+ ],
+ "localState": [
+  "moved: boolean (initially true). Drives whether the signature bar shows the post-move state (end at 78%, risk colour, overrun, Roll values 'Wed 2 Dec' / '+3 BD', filled chip) and the button label ('Replay' vs 'Add +10h scope').",
+  "flash: boolean (initially false). Drives the old-end dashed diamond opacity (1 vs 0), its transition (0ms appear vs 400ms fade) and the ghost opacity (1 vs 0.55).",
+  "chip: boolean (initially false). Drives the floating '+3 BD' chip opacity (1 vs 0) and scale (1 vs 0.9).",
+  "conf: number 1–5 (initially 3). Drives which ConfidenceControl button is selected.",
+  "run: number (initially 0). Incremented on fire and never read.",
+  "Instance fields t1, t2 and t3 hold the timeout handles for the reset delay (700ms), flash off (1000ms) and chip off (5000ms)."
+ ],
+ "externalCalls": [
+  "Google Fonts CSS: https://fonts.googleapis.com/css2?family=Albert+Sans:ital,wght@0,300..700;1,400..600&family=JetBrains+Mono:wght@400;500&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&display=swap",
+  "Material Symbols Outlined (subset): https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..24,300,0..1,0&icon_names=add,arrow_forward,calendar_month,check,chevron_left,chevron_right,close,edit_note,north_east,repeat,search,stacks,today,unfold_more,view_timeline&display=block",
+  "preconnect to fonts.googleapis.com and fonts.gstatic.com (crossorigin)",
+  "./support.js (dc runtime)",
+  "Child component dc-import 'Roll' (Roll.dc.html) with prop value, used twice (hint sizes 72×16 and 40×14)",
+  "No AI calls, fetches or iframes."
+ ],
+ "persistence": [
+  "None. The page uses no localStorage; all state is component-local and resets on reload."
+ ],
+ "sampleData": "All data is hard-coded in renderVals:\n- colourGroups: 3 groups with 6 + 4 + 4 swatches, quoted in full under components.\n- typeScale: 7 rows.\n- spaces: 8 entries (4 to 64px).\n- motionTokens: 5 entries.\n- motionSpec: 8 rows: Plan moves, Linked highlight, Card → workspace, Timeline zoom, Capacity fill, Arrival, BAU tick, Reduced motion.\n- capA = [['bau',6,8],['proj',1,8],['free',1,8]] (not overloaded).\n- capB = [['bau',6,9.5],['proj',3.5,9.5]] (overloaded).\n- strip [bau, proj] = [[6,2],[0,7],[0,7],[4,4],[6,3.5],[4,3]], with index 4 overloaded.\n- bars = On track 70%; At risk 62% + 12% overrun; Done 48%; Ghost 62% dashed; No plan yet 80% hatched FI.\n- confDemo = 1..5, with 3 selected.\n- phaseDemo = Define, Plan, Run (current), Close. Not rendered.\n- Signature demo: 'Returns pipeline automation'; target and old end at 72%, new end at 78%; forecast 'Fri 27 Nov' → 'Wed 2 Dec'; delta '0 BD' → '+3 BD'.\n- empties: 4 rows (Scope log, Check-in prompt, Charter in scope, Risks).\n- Static specimens: projects 'PC handover playbook' (Fri 18 Dec, Run 4/5, 3 days ago) and 'ManCo pack automation' (Fri 11 Dec, stale 9 days); feed event 'Returns pipeline' Sat 3 Oct +10h scope → +3 BD; tooltip Wed 4 Nov BD3 with 6h BAU + 3.5h project = overload; rotation DE/FR build and DE refresh (Germany 4 Jan – 11 Jan · 6 BD; 9 Mar – 11 Mar · 3 BD); header Mon 5 Oct BD3, 61 business days to Fixed Income."
+}

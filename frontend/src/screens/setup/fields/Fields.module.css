@@ -1,0 +1,244 @@
+/*
+ * Setup and Settings fields in Workspace's control-panel language (Workspace.dc.html:24-72):
+ * 26/500 values with a bleeding hover well, a 26px calendar square, 12-13px muted units and
+ * sub-lines. Square corners throughout; a focused field takes the brand focus line.
+ */
+
+/*
+ * The segmented controls (holiday region, provider, and Settings' appearance): Timeline's
+ * zoom in the new language, a brand-deep square pill sliding under the chosen option
+ * (Timeline.dc.html:36).
+ */
+.seg [aria-hidden='true'] {
+  background: var(--brand-deep);
+  border-radius: 0;
+}
+
+/* The move: date button + live countdown */
+.moveLine {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 24px;
+  min-height: 40px;
+  white-space: nowrap;
+}
+/* The line does not wrap its words; the picker's note must. */
+.picker {
+  white-space: normal;
+}
+.dateButton {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 6px;
+  margin-left: -6px;
+  border: 0;
+  border-radius: var(--radius-s);
+  background: transparent;
+  color: var(--ink);
+  font-size: 26px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  cursor: pointer;
+  transition: background var(--dur-fast) var(--ease-out);
+}
+.dateButton:hover:not(:disabled) {
+  background: color-mix(in oklch, var(--ink) 4%, transparent);
+}
+.dateButton:hover:not(:disabled) .calSquare {
+  box-shadow: inset 0 0 0 1px var(--focus);
+  color: var(--brand-dark);
+}
+.dateButton:disabled {
+  cursor: default;
+}
+.dateButton:focus-visible {
+  outline: 1.5px solid var(--focus);
+  outline-offset: 1px;
+}
+.dateEmpty {
+  color: var(--ink-faint);
+}
+.calSquare {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-s);
+  box-shadow: inset 0 0 0 1px var(--hairline);
+  background: var(--paper-raised);
+  color: var(--ink-muted);
+  font-size: 16px;
+  transition:
+    box-shadow var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+.vrule {
+  width: 1px;
+  height: 28px;
+  background: var(--hairline);
+}
+.countdown {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.countNum {
+  display: inline-flex;
+  font-size: 26px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  color: var(--brand-deep);
+}
+.countText {
+  font-size: 15px;
+  color: var(--ink-muted);
+}
+.sub {
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--ink-muted);
+}
+.subRisk {
+  color: var(--risk-text, color-mix(in oklch, var(--risk) 45%, var(--ink)));
+}
+
+/* Hours: '8h a working day' */
+.hours {
+  display: flex;
+  align-items: baseline;
+}
+.hoursInput {
+  margin-left: -6px;
+  padding: 0 2px 0 6px;
+  font-family: var(--font-ui);
+  font-size: 26px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  line-height: 1.25;
+  color: var(--ink);
+}
+.hoursH {
+  font-size: 26px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+.hoursUnit {
+  margin-left: 6px;
+  font-size: 13px;
+  color: var(--ink-muted);
+}
+
+/* Time zone combobox */
+.tz {
+  position: relative;
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+.tzInput {
+  display: block;
+  box-sizing: border-box;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  border-radius: var(--radius-s);
+  color: inherit;
+  transition: background var(--dur-fast) var(--ease-out);
+  min-width: 8ch;
+  max-width: 100%;
+  field-sizing: content;
+  margin-left: -6px;
+  padding: 3px 6px;
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+.tzInput:hover {
+  background: color-mix(in oklch, var(--ink) 4%, transparent);
+}
+.tzInput:focus {
+  background: var(--paper-raised);
+  box-shadow: inset 0 0 0 1px var(--focus);
+}
+.tzOffset {
+  font-family: var(--font-numeric);
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+.tzHint {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--risk-text, color-mix(in oklch, var(--risk) 45%, var(--ink)));
+  text-wrap: pretty;
+}
+.listbox {
+  position: absolute;
+  left: -6px;
+  top: calc(100% + 6px);
+  z-index: 41;
+  width: 340px;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 6px;
+  list-style: none;
+  background: var(--paper-raised);
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-m);
+  box-shadow: var(--shadow-popover, 0 18px 40px -24px color-mix(in oklch, var(--ink) 45%, transparent));
+}
+.option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 34px;
+  padding: 0 10px;
+  border-radius: var(--radius-s);
+  font-size: 13px;
+  cursor: pointer;
+}
+.option[aria-selected='true'] {
+  background: color-mix(in oklch, var(--n1-green, #009d80) 9%, var(--paper-raised));
+}
+.optionMain {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.optionHint {
+  font-family: var(--font-numeric);
+  font-size: 11px;
+  color: var(--ink-muted);
+}
+.optionEmpty {
+  padding: 8px 10px;
+  font-size: 13px;
+  color: var(--ink-muted);
+}
+
+/* Provider */
+.providerNote {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--ink-muted);
+  text-wrap: pretty;
+}
+.providerStatus {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--ink);
+}
+.statusDot {
+  flex: none;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}

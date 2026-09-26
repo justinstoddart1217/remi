@@ -1,0 +1,317 @@
+{
+ "key": "checkin",
+ "file": "/Users/justinstoddart/Desktop/Ninety One/remi/Remi Dashboard Design Review/CheckIn.dc.html",
+ "purpose": "CheckIn.dc.html is the \"Tell Remi\" check-in drawer. The analyst types a free-text update. Remi sends it to an LLM (window.claude.complete) with a JSON context of projects, open tasks, routines and recent notes. It validates the returned change objects and shows them as a per-project review list with checkboxes and a forecast-impact chip. The accepted changes go back to the shell (onSave({changes})), which applies them to the model (forecast, tasks, scope log, check-ins, feed, BAU ticks). If no AI is available, a regex/keyword \"simple reading\" parser takes over. IMPORTANT: this CURRENT file contains ONLY the free-text/AI flow; there is no structured form in it. The structured form (Done / What changed / New scope / Blockers / Confidence plus a live preview) existed in an earlier iteration, visible only in screenshots/02-sig.png. Its apply path, applyCheckIn(d), and its preview helper, model.previewShift(pid,h), still live in Remi.dc.html, and applyUpdate reuses applyCheckIn internally.",
+ "layout": "HOST (Remi.dc.html lines 135-140): a full-app overlay layer at position:absolute; inset:0; z-index:20; pointer-events: auto when open, none when closed. It has two parts: (a) a scrim, absolute inset:0, background color-mix(in oklch, var(--ink) 18%, transparent), opacity 0 or 1, click closes; (b) the panel, data-screen-label=\"Check-in drawer\": absolute top:0; right:0; bottom:0; width:1160px; max-width:calc(100% - 160px); background var(--paper); border-left 1px solid var(--hairline); box-shadow -24px 0 48px -32px color-mix(in oklch, var(--ink) 30%, transparent). CheckIn is mounted inside with position:absolute; inset:0. It stays mounted permanently and is only translated off-screen.\n\nThe app stage is a fixed 1920x1080 or 2560x1440 canvas scaled to the window. The drawer is 1160px wide at BOTH sizes, so it does not grow at 2560.\n\nROOT: div, height:100%; display:grid; grid-template-rows: 84px minmax(0,1fr) 76px. It has onKeyDown for ⌘/Ctrl+Enter.\n\n1) HEADER (84px): display:flex; align-items:center; gap:20px; padding:0 32px 0 40px; border-bottom:1px solid var(--hairline). It holds, in order:\n- A title column (flex-direction:column; gap:4px). Title \"Tell Remi\" is 22px, weight 600, letter-spacing -0.01em. Subtitle is 14px, color var(--ink-muted).\n- A flex:1 spacer.\n- A close button: 36x36; display:grid; place-items:center; border:0; transparent; color ink-muted; title=\"Close (esc)\". Icon: Material Symbols Outlined 'close' at 22px.\n\n2) BODY (1fr): display:grid; grid-template-columns: minmax(0,1fr) 500px; min-height:0.\n\nLEFT COLUMN (660px at a 1160 drawer): min-height:0; display:flex; flex-direction:column; gap:14px; padding:28px 36px 28px 40px; border-right:1px solid var(--hairline). Children:\n- (a) Focus row: display:flex; align-items:center; gap:8px; min-height:28px; flex-wrap:wrap.\n  - With a focus project, a chip: inline-flex, align center, gap 8px, height 28px, padding 0 4px 0 10px, border-radius var(--radius-s)=3px, background = project soft accent (var(--pc-accent-soft) or var(--fi-accent-soft)), font-size 13px. Inside: a 6x6 circle dot in the accent colour; 'About' in ink-muted; the project name at weight 600; a 22x22 transparent close button (icon 'close' 16px, ink-muted, title \"Not just this project\").\n  - Without a focus project: the 13px ink-muted line \"About anything: mention projects or routines by name\".\n- (b) Textarea: flex:1; min-height:0; width:100%; box-sizing:border-box; resize:none; border:1px solid var(--hairline); border-radius:var(--radius-m)=6px; background var(--paper-raised); padding:22px 24px; font-family var(--font-display) (\"Libre Caslon Text\", Georgia, serif); font-size:22px; line-height:1.55; color var(--ink); outline:0.\n  - opacity is 0.6 while thinking, otherwise 1. transition: opacity var(--dur-base) var(--ease-out), border-color var(--dur-fast) var(--ease-out). :focus sets border-color: var(--focus).\n  - The global placeholder style comes from the shell: color color-mix(in oklch, var(--ink-faint) 70%, var(--paper)); opacity 1.\n  - At 1920x1080 it is about 583px wide x 768px tall.\n- (c) Hint row: display:flex; align-items:center; gap:12px. The hint text is 13px ink-muted with flex:1. The Send button shows only in compose: display:flex; gap:10px; height:40px; padding:0 18px; border:0; radius 6px; background var(--ink); color var(--paper); 14px/600; :active transform:scale(0.98). Label \"Send to Remi\" is followed by a \"⌘↵\" span in var(--font-numeric) (JetBrains Mono), 11px, opacity 0.7.\n\nRIGHT COLUMN (500px): position:relative; min-height:0; overflow:auto; background var(--paper-raised). Exactly one of four phase panels shows here.\n- COMPOSE: padding 28px 36px 32px.\n  - Eyebrow \"Remi can\": 11px/600, letter-spacing 0.08em, uppercase, ink-muted.\n  - List: margin-top 14px; border-top 1px hairline. Each of the 6 rows is a grid (140px | minmax(0,1fr)), column-gap 16px, padding 12px 0, border-bottom 1px hairline. The key is 14px/600. The value is display-font italic 15px, line-height 1.45, ink-muted.\n  - Footnote: 13px, line-height 1.5, ink-muted, margin-top 16px.\n- THINKING: padding 28px 36px 32px.\n  - Header row (flex; align-items:baseline; justify-content:space-between): \"Reading your update\" at 15px/600 on the left; \"a few seconds\" in the numeric font, 11px, ink-muted, on the right.\n  - Progress track: height 2px; background hairline; margin-top 14px; border-radius 1px; overflow hidden. The fill is height 100%, width {prog}, background var(--ink).\n  - Echo list: margin-top 22px; flex column; gap 10px. Up to 5 sentence quotes, each display italic 15px/1.45 ink-muted and wrapped in “ ”.\n- REVIEW: padding 26px 32px 32px.\n  - Header row (baseline, space-between, gap 12px): eyebrow \"Remi will change\" (11px/600/0.08em/uppercase/muted) and srcNote (numeric 11px muted).\n  - Summary: a p with margin 10px 0 0; display font 19px, line-height 1.45, ink, text-wrap:pretty.\n  - One block per group, margin-top 22px.\n    - Group header: flex; align center; gap 10px; padding-bottom 8px; border-bottom 1px solid var(--ink). This is a strong rule, not a hairline. It holds: a 7x7 accent dot; the name at 15px/600 with flex:1, min-width 0 and nowrap ellipsis; and the optional effect chip.\n    - Effect chip: inline-flex; gap 6px; height 22px; padding 0 8px; radius 3px; background/color from the effect; box-shadow inset 0 0 0 1px {line}; numeric font 11px, weight 500, nowrap.\n    - Rows are <button>s, width 100%, display:grid, grid-template-columns 26px 104px minmax(0,1fr), column-gap 6px, align-items:start, padding 10px 0, border-bottom 1px hairline, transparent, text-align left, cursor pointer.\n    - Row checkbox: 16x16; margin-top 1px; border-box; radius 3px; border 1.5px solid; grid centre. It contains the Material 'check' glyph at 13px, line-height 1, color var(--paper).\n    - Kind label: 11px/600, letter-spacing 0.06em, uppercase, padding-top 2px.\n    - Text: 14px, line-height 1.45, ink, text-decoration-color var(--ink-faint), text-wrap:pretty.\n  - Optional \"Not sure where these go\" block, margin-top 22px. Eyebrow in the same style as above. Each quote is italic display 15px/1.45 muted, padding 8px 0, border-bottom hairline, wrapped in “ ”. Helper line: 12px muted, margin-top 8px.\n  - Optional nothing-found line: margin-top 18px; 14px/1.5 muted.\n- ERROR: padding 28px 36px 32px.\n  - Title at 15px/600, then the err text at 14px/1.5 muted with margin-top 8px.\n  - Buttons row: flex; gap 8px; margin-top 16px.\n    - \"Try again\": height 34px; padding 0 14px; border 0; radius 6px; background ink; paper text; 13px/600.\n    - \"Use a simple reading\": height 34px; padding 0 14px; 1px hairline border; transparent; 13px.\n\n3) FOOTER (76px): display:flex; align-items:center; gap:12px; padding:0 32px 0 40px; border-top:1px solid var(--hairline). footNote is 13px ink-muted, followed by a flex:1 spacer and then the buttons.\n- Review phase: \"Edit update\" (height 40, padding 0 16px, 1px hairline border, radius 6, transparent, 14px), then the Apply button.\n- Apply button: flex; gap 10px; height 40; padding 0 18px; border 0; radius 6; background {applyBg}; color paper; 14px/600; cursor {applyCur}; :active scale(0.98). It also carries the \"⌘↵\" hint span.\n- Other phases: only \"Cancel\", in the same style as \"Edit update\".\n\nResponsive: nothing inside is responsive. The only responsive rule is the host's max-width calc(100% - 160px). The stage itself is uniformly scaled.",
+ "components": [
+  {
+   "name": "CheckInDrawerHost (in Remi.dc.html)",
+   "description": "Overlay plus a right-hand sliding panel. Closed state: transform translateX(104%), opacity 0, pointer-events none. Open state: translateX(0), opacity 1. The panel transitions transform over var(--dur-slow)=440ms with var(--spring-soft) and opacity over var(--dur-base)=240ms with var(--ease-out). The scrim is color-mix(in oklch, var(--ink) 18%, transparent) and fades opacity over 240ms ease-out; clicking it closes the drawer. Props passed to CheckIn: model, open, pid, session (increments on every open), prefill, onClose=closeDrawer, onSave=saveCheckIn.",
+   "states": [
+    "closed (off-screen, pointer-events none)",
+    "open"
+   ]
+  },
+  {
+   "name": "Header",
+   "description": "Title 'Tell Remi' (22px/600/-0.01em). Subtitle 'Say what happened in your own words. Remi works out what to change and shows you before anything moves.' (14px, ink-muted). A 36x36 close icon button (Material 'close', 22px, title 'Close (esc)') calls props.onClose.",
+   "states": [
+    "static"
+   ]
+  },
+  {
+   "name": "FocusChip",
+   "description": "Shows which project the update is 'About'. It uses the project's soft accent as background, a 6px accent dot, the muted word 'About' and the bold project name. An x button (title 'Not just this project') clears the focus, which sets state.focus = null. With no focus, the row shows the plain 13px muted text 'About anything: mention projects or routines by name'. The focus value is sent to the AI as focus_project, and simple() uses it as the default project.",
+   "states": [
+    "focused (chip)",
+    "unfocused (helper text)"
+   ]
+  },
+  {
+   "name": "Composer textarea",
+   "description": "A large serif (display font) 22px/1.55 textarea that fills the left column. It is controlled (value=state.text) and readOnly while thinking, with opacity dropping to 0.6. Focus turns the border var(--focus). Placeholder: 'e.g. Finished mapping the last four funds and the FX share classes. The administrator now wants FX attribution too, probably 6h. Still waiting on the security-level extract, so confidence is a 3. ManCo: sent the NAV bridge spec to Finance. Returns BAU is done for today.' It autofocuses 380ms after opening, with the caret placed at the end of any prefill. Typing while in review or error drops the phase back to compose.",
+   "states": [
+    "editable",
+    "locked (thinking, opacity 0.6, readOnly)",
+    "focused"
+   ]
+  },
+  {
+   "name": "Hint + Send row",
+   "description": "Hint text: in review, 'Change the text and send again if Remi missed something.'; otherwise '<N> words' when there is text (word count = trimmed text split on /\\s+/, no singular form, so '1 words'); otherwise 'Write it the way you would tell a colleague.'. The 'Send to Remi ⌘↵' button (ink background) renders ONLY in the compose phase.",
+   "states": [
+    "compose (button visible)",
+    "thinking/review/error (button hidden)"
+   ]
+  },
+  {
+   "name": "CapabilitiesPanel (compose phase)",
+   "description": "Eyebrow 'Remi can' above a 6-row two-column list (140px key | italic serif example). The rows come from CAPS: Tick things off / “Finished the FX share classes.”; Log new scope / “They want FX attribution too, about 6h.”; Note blockers / “Still waiting on the admin extract.”; Move dates / “Push the playbook target to 8 Jan.”; Change your time / “I can give ManCo 2h a day now.”; Close BAU runs / “Returns are done for today.”. Footer copy: 'You review every change before it's applied. Nothing is lost if Remi gets it wrong.'",
+   "states": [
+    "compose"
+   ]
+  },
+  {
+   "name": "ThinkingPanel",
+   "description": "Heading 'Reading your update' with the right-aligned mono note 'a few seconds'. A 2px progress bar fills from 0% to 88% over 2600ms with cubic-bezier(0.2, 0.7, 0.3, 1) and never visibly reaches 100%. Below it, the first 5 sentences of the update are echoed back as italic serif quotes (“…”) that fade and rise in with a 180ms stagger.",
+   "states": [
+    "thinking"
+   ]
+  },
+  {
+   "name": "ReviewPanel",
+   "description": "Eyebrow 'Remi will change' plus a mono source note: 'simple reading' when the source is the heuristic, otherwise '<nOn> of <total> selected'. Next comes the serif 19px summary: the AI summary, or else 'Here is what Remi picked out.' when there are changes, or else empty. Then the change groups, the unplaced list and the nothing-found message.",
+   "states": [
+    "review with changes",
+    "review with zero changes (nothing message)",
+    "review with unplaced quotes"
+   ]
+  },
+  {
+   "name": "ChangeGroup",
+   "description": "Changes are grouped by project_id, or under the key 'bau' for bau_done. Group order follows the first appearance in the changes array. Header: accent dot (project accent; the BAU group is hard-coded to var(--pc-accent)), name (project.name, or 'BAU · today') and an optional EffectChip. It sits on a 1px solid var(--ink) bottom rule. Entrance: opacity 0→1 over 220ms ease-out and translateY(6px)→none over 320ms var(--spring-soft), with delay = groupIndex*70ms. With reduced motion the transform is 'none' from the start.",
+   "states": [
+    "hidden (pre-shown)",
+    "shown"
+   ]
+  },
+  {
+   "name": "EffectChip",
+   "description": "Forecast-impact pill for a project group, computed from the currently ACCEPTED changes, so it updates live as rows are toggled. Three variants: (1) the forecast moves and lands after the target (late): text 'D Mon → D Mon · +N BD', background color-mix(in oklch, var(--risk) 22%, var(--paper)), text color color-mix(in oklch, var(--risk) 40%, var(--ink)), inset line transparent. (2) The forecast moves and is not late: same text format, transparent background, ink-muted text, inset 1px var(--hairline). (3) The forecast is unchanged but a target_move is accepted: 'forecast holds', or 'now N BD past target' when late, with transparent background, ink-muted text and hairline. The minus sign is U+2212 '−'. No chip for projects with a null forecast, for the BAU group, or when d=0 and there is no target move.",
+   "states": [
+    "late (risk tint)",
+    "moved on time (outlined)",
+    "forecast holds / past target (outlined)",
+    "none"
+   ]
+  },
+  {
+   "name": "ChangeRow",
+   "description": "A full-width <button> that toggles the change on or off; off-state is kept in state.off[index]. Grid: 26px checkbox | 104px kind label | text. Kind labels (KIND): task_done 'Tick off', task_add 'New task', scope_add 'New scope', blocker 'Blocker', confidence 'Confidence', target_move 'Target', hours_per_day 'Hours a day', note 'Note', bau_done 'BAU done'. The kind colour is color-mix(in oklch, var(--risk) 45%, var(--ink)) for blocker and scope_add, and var(--ink-muted) otherwise. ON: border 1.5px var(--ink), background var(--ink), check opacity 1, no strike, row opacity 1. OFF: border var(--ink-faint), transparent background, check opacity 0, text line-through (decoration colour ink-faint), row opacity 0.55. Transitions: row opacity var(--dur-fast)=140ms ease-out; checkbox background 140ms ease-out; the check glyph has no transition. Every row starts ON.",
+   "states": [
+    "on",
+    "off"
+   ]
+  },
+  {
+   "name": "UnplacedList",
+   "description": "Shown when result.unplaced.length > 0. Eyebrow 'Not sure where these go', then up to 4 italic serif quotes, each followed by 'Name the project in your update and send it again to place these.'",
+   "states": [
+    "visible",
+    "hidden"
+   ]
+  },
+  {
+   "name": "NothingFound",
+   "description": "Shown in review when changes.length === 0: 'Remi didn’t find anything to change. Try naming a project, a task, hours or a date.'",
+   "states": [
+    "visible",
+    "hidden"
+   ]
+  },
+  {
+   "name": "ErrorPanel",
+   "description": "Title 'Remi couldn’t read that just now', then the err message and two buttons: 'Try again' (primary ink; calls send()) and 'Use a simple reading' (outlined; calls offline(), which runs the heuristic parser).",
+   "states": [
+    "error"
+   ]
+  },
+  {
+   "name": "Footer",
+   "description": "Left: footNote copy for the current phase. Right: in review, 'Edit update' (outlined) and Apply (primary, label 'Apply N change'/'Apply N changes', or 'Nothing selected' with an ink-faint background and default cursor when 0 are selected; both show a '⌘↵' hint). In compose, thinking and error, only 'Cancel' (outlined, closes the drawer).",
+   "states": [
+    "compose",
+    "thinking",
+    "review (N>0)",
+    "review (N=0)",
+    "error"
+   ]
+  },
+  {
+   "name": "Legacy structured check-in form (NOT in this file; screenshot-only, screenshots/02-sig.png, low-res, approximate)",
+   "description": "Earlier iteration of the same drawer. Header 'Check in', a project selector pill (e.g. 'Returns pipeline automation'), 'Last check-in 2 days ago', a segmented toggle 'Structured | Tell Remi', and a close X. Left column sections: 'Done' ('Tick what has finished since last time', task checkboxes with hours on the right); 'What changed' (textarea, placeholder 'One or two sentences. What moved, what you learned.'); 'New scope' ('Anything added since the last check-in', a 'What was added' input, a −/0h/+ stepper, quick chips +2h +4h +8h +16h); 'Blockers' (input 'Waiting on anyone or anything?'); 'Confidence' (5 segmented buttons 1 Unlikely, 2 Doubtful, 3 Even, 4 Likely, 5 Certain, caption '3 of 5 · Even'). Right column 'LIVE PREVIEW': 'Forecast 2 Dec → 7 Dec' with a '+3 BD' chip, '6 BD past the target of Fri 27 Nov', and a mini Oct–Dec timeline with an orange extension. Consequence bullets: 'Forecast moves +3 BD' / 'Wed 2 Dec becomes Mon 7 Dec. At 3.5h a day, 10h of new scope needs 3 more business days.'; '2 new overload days' / 'Fri 4 Dec (9h), Mon 7 Dec (9h).'; 'Misses the December run' / 'Handover-ready after Thu 3 Dec, the last returns run your successor can shadow with you there.'. Summary line: 'Logs to Returns pipeline: +10h scope, confidence 3.' Footer: 'Saving updates every forecast that depends on this plan.', Cancel, and 'Save check-in ⌘↵'. It posts d = {pid, done:[taskIds], changed, scopeWhat, scopeH, blockers, confidence} to saveCheckIn, which calls applyCheckIn. Its preview uses model.previewShift(pid, h).",
+   "states": [
+    "superseded; rebuild only if the product wants both modes (SPEC 7.4 asks for a structured form + free-text future state)"
+   ]
+  }
+ ],
+ "dataConsumed": [
+  "props.model: the whole shell model (built in Remi.dc.html buildModel()).",
+  "props.open (bool): drawer open. Only used in reset() to decide whether to autofocus the textarea.",
+  "props.pid (string|null): initial focus project id.",
+  "props.session (number): incremented by openCheckIn on every open; a change triggers reset().",
+  "props.prefill: {text?: string} | {scopeH?: number, pid?: string} | null. Callers: Notes 'Turn this day into an update' passes {text: dayText}, where dayText = that day's notes as 'HH:MM text' lines joined with \\n. The palette 'Quick add' ('+6h returns') passes {scopeH: h} together with the pid.",
+  "props.onClose(): closes the drawer (shell closeDrawer).",
+  "props.onSave({changes}): the shell's saveCheckIn.",
+  "model.pmap: {[projectId]: DerivedProject}. Fields read: id, name, short, accent ('var(--pc-accent)'|'var(--fi-accent)'), soft ('var(--pc-accent-soft)'|'var(--fi-accent-soft)'), domainName ('Private Credit'|'Fixed Income'), forecast (ISO|null), target (ISO), rate (planned h/day, number), confidence (1-5|null), now: [{m: milestoneName, due: ISO, tasks: [{id, t: text, h: hours}]}], milestones (derived: [{name, date ISO}], sorted by date, merged from now/next milestone names+due and explicit milestones), forecastN/targetN/startN (day numbers = days since the Unix epoch, UTC), targetS (e.g. 'Fri 27 Nov', or targetLabel such as 'Late Mar 2027').",
+  "model.P: array of DerivedProject (same shape as pmap).",
+  "model.tasks: {[taskId]: true} completion map. A task is open when !m.tasks[t.id].",
+  "model.routines: derived routines [{id, name, rule: ruleText(r) e.g. '3rd business day, monthly' | 'Every business day' | 'Every Monday', kind, bd, wd, ...}].",
+  "model.occursOn(routine, dayNumber) -> bool. Rule: business day AND (daily, OR weekly with weekday === r.wd, OR monthly with bdm === r.bd).",
+  "model.notes: {[ISO date]: [{id, t: 'HH:MM', text}]}.",
+  "model.F: formatters. iso(n) gives 'YYYY-MM-DD'; dn(iso) gives the day number; s(n) gives 'Mon 5 Oct'; dm(n) gives '5 Oct'; l(n) gives 'Monday 5 October'.",
+  "model.CAL: days[n] = {n, iso, w (weekday 0=Sun), m, d, y, bd (bool), bdm (business-day-of-month index, or null), hol}; bds (sorted business day numbers); nextBD(n); addBD(n,k); bdDiff(a,b). The range is 2026-08-31..2027-04-30 only.",
+  "model.TODAY: day number (hard-coded to 2026-10-05, BD3).",
+  "model.reduced: bool, true when props.motion === 'Reduced'. It does NOT include prefers-reduced-motion; the CSS var --spring-soft handles that separately.",
+  "CSS tokens (from Remi.dc.html :root): --paper oklch(0.975 0.007 85); --paper-raised oklch(0.99 0.004 85); --ink oklch(0.23 0.012 70); --ink-muted oklch(0.47 0.012 70); --ink-faint oklch(0.58 0.01 75); --hairline oklch(0.9 0.008 80); --pc-accent oklch(0.5 0.1 128); --pc-accent-soft color-mix(in oklch, var(--pc-accent) 13%, var(--paper)); --fi-accent oklch(0.5 0.1 265); --fi-accent-soft 13% mix; --risk oklch(0.7 0.13 70); --focus oklch(0.35 0.02 80); --font-ui 'Albert Sans'; --font-display 'Libre Caslon Text', Georgia, serif; --font-numeric 'JetBrains Mono'; --radius-s 3px; --radius-m 6px; --dur-fast 140ms; --dur-base 240ms; --dur-slow 440ms; --ease-out cubic-bezier(0.23, 1, 0.32, 1); --spring-soft linear(0, 0.049 5%, 0.156 10%, 0.283 15%, 0.408 20%, 0.522 25%, 0.62 30%, 0.702 35%, 0.769 40%, 0.864 50%, 0.922 60%, 0.956 70%, 0.976 80%, 0.987 90%, 1). Under reduced motion ([data-motion=reduced] or prefers-reduced-motion) it becomes --spring-soft: steps(1, jump-start). Icons use the Material Symbols Outlined font."
+ ],
+ "interactions": [
+  "Open drawer from any of these entry points; each calls model.openCheckIn(pid, prefill), which increments session, sets open, and closes the ⌘K palette:\n- Top-bar 'Tell Remi' button (edit_note icon): pid = current workspace project if on the workspace screen, else null.\n- ⌘K palette 'Tell Remi about <short>': pid set.\n- ⌘K palette 'Quick add' ('+6h returns' becomes 'Add 6h of scope to Returns pipeline'): pid plus prefill {scopeH}, which seeds the text 'New scope on <short>, about 6h: '.\n- Notes 'Turn this day into an update': pid null, prefill {text: that day's notes}.\n- Project cards (Projects), Workspace, Timeline side panel, Today prompts/attention items: pid set.",
+  "On open (session change): reset() clears the phase to compose, clears result, off and error, sets the text from the prefill and the focus from pid. After 380ms, if open, it focuses the textarea and puts the caret at the end.",
+  "Type in the textarea: setText updates text. If the phase is review or error, it switches back to compose (the review panel is replaced by the capabilities panel and the Send button reappears).",
+  "Click the x on the focus chip: focus = null (the update is no longer scoped to a project).",
+  "Click 'Send to Remi' or press ⌘/Ctrl+Enter (compose/error phases): runs send(). Does nothing if the text is empty or the phase is already thinking.",
+  "⌘/Ctrl+Enter in review: runs apply() (no-op when 0 selected). The handler is onKeyDown on the drawer root div and calls preventDefault.",
+  "Click a change row (anywhere on the row): toggles off[i]. The row strikes through, fades to 0.55 and the checkbox empties. The Apply label/count, srcNote count and the group EffectChip recompute live.",
+  "Click 'Edit update' (review): phase = compose (the result is kept in state but hidden). Textarea refocused after 30ms.",
+  "Click Apply: onSave({changes: acceptedChanges}). The shell closes the drawer at once and applies after 220ms, so the timeline signature animation plays as the drawer slides away.",
+  "Error panel 'Try again': send() again with the current text. 'Use a simple reading': offline() runs the heuristic parser and goes to review with src 'simple'.",
+  "Click 'Cancel' (compose/thinking/error), the header x, or the scrim, or press Escape (global window keydown in the shell; closes the palette first if it is open): onClose. State is NOT reset on close, only on the next open. An in-flight AI request is NOT cancelled.",
+  "While thinking, the textarea is readOnly (opacity 0.6) and the Send button is hidden. Cancel is still available."
+ ],
+ "motion": [
+  "Drawer slide (host): the panel's transform goes translateX(104%) ↔ translateX(0) over var(--dur-slow)=440ms with var(--spring-soft) (piecewise-linear soft spring, no bounce). The panel's opacity goes 0↔1 over var(--dur-base)=240ms with var(--ease-out) = cubic-bezier(0.23,1,0.32,1). The scrim fades 0↔1 over 240ms ease-out. Reduced motion: spring-soft becomes steps(1, jump-start), so the slide is instant.",
+  "Textarea autofocus is delayed 380ms after open, to land after the slide.",
+  "Textarea lock: opacity 1→0.6 when thinking starts (and back) over var(--dur-base) 240ms ease-out. Border-color to var(--focus) on focus over var(--dur-fast) 140ms ease-out.",
+  "Thinking progress bar: width 0% → 88% (set via a double requestAnimationFrame so the 0% paints first), transition width 2600ms cubic-bezier(0.2, 0.7, 0.3, 1). When the reply arrives, the phase switches to review and prog is set to 100%, but the thinking panel is unmounted, so 100% is never seen.",
+  "Echo lines (thinking): each sentence (max 5) goes from opacity 0 → 1 and translateY(4px) → none. Transition: opacity 240ms var(--ease-out) and transform 240ms var(--ease-out), each with transition-delay i*180ms (0, 180, 360, 540, 720ms). Triggered by echoOn=true in the same double rAF. Reduced (model.reduced): transform stays 'none', so the lines only fade.",
+  "Review group entrance: after setting phase review with shown=false, a double rAF sets shown=true. Each group goes opacity 0→1 over 220ms var(--ease-out) and translateY(6px)→none over 320ms var(--spring-soft), with delay k*70ms per group index. Reduced: transform 'none' (fade only).",
+  "Row toggle: row opacity 1↔0.55 over var(--dur-fast) 140ms ease-out; checkbox background ink↔transparent over 140ms ease-out; the check glyph opacity and the strike-through switch instantly.",
+  "Buttons: primary buttons (Send, Apply) use :active transform scale(0.98), with no transition declared.",
+  "After Apply (shell, Remi.dc.html): the drawer closes immediately and applyUpdate runs 220ms later.\n- Projects whose forecast moved because of scope get flash[pid]=true for 1100ms and moved[pid]={delta, label:'+N BD', at} for 5200ms. The timeline/cards consume these for the 'plan moves' signature moment: glide, ghost of the old position, odometer roll, delta chip.\n- A forecast change from hours_per_day alone also sets flash for 1100ms."
+ ],
+ "algorithms": [
+  "SYSTEM PROMPT (SYS), verbatim:\n`You are Remi, the planning assistant inside a personal workflow dashboard for one investment analyst. The user dumps a free-text update. Turn it into proposed changes using ONLY ids from the CONTEXT.\n\nRespond with a single JSON object and nothing else:\n{\"summary\": \"one or two plain sentences, second person, saying what you will change\", \"changes\": [ ... ], \"unplaced\": [\"short quote of anything you could not map\"]}\n\nChange objects:\n{\"type\":\"task_done\",\"project_id\":\"...\",\"task_id\":\"...\"}            an existing open task is finished\n{\"type\":\"task_add\",\"project_id\":\"...\",\"text\":\"...\",\"hours\":1.5}     a concrete next task that is part of the existing plan\n{\"type\":\"scope_add\",\"project_id\":\"...\",\"text\":\"...\",\"hours\":6}      new work added to the project's scope (estimate hours if needed; \"a day\" = 8)\n{\"type\":\"blocker\",\"project_id\":\"...\",\"text\":\"...\"}                  waiting on someone or something\n{\"type\":\"confidence\",\"project_id\":\"...\",\"value\":3}                   1 to 5, only if stated or clearly implied\n{\"type\":\"target_move\",\"project_id\":\"...\",\"date\":\"YYYY-MM-DD\"}       the target date changes\n{\"type\":\"hours_per_day\",\"project_id\":\"...\",\"value\":4}               planned focus hours a day change\n{\"type\":\"note\",\"project_id\":\"...\",\"text\":\"...\"}                     progress worth logging, 20 words max\n{\"type\":\"bau_done\",\"routine_id\":\"...\"}                               a BAU routine that runs today is finished\n\nrecent_notes are the analyst's own jottings from the last few days: use them as background to understand the update, but only propose changes the UPDATE itself supports.\n\nRules: be conservative and never invent work. Match projects by name, short name or an obvious reference. If focus_project is set, remarks with no other project belong to it. Resolve relative dates against today. Add at most one note per project. Prefer task_done over note when an open task matches.`\n(The alignment runs after the closing } of each change line are 12, 5, 6, 18, 19, 7, 15, 21 and 31 spaces respectively.)",
+  "AI CALL: await window.claude.complete({ system: SYS, max_tokens: 1800, messages: [{ role: 'user', content: 'CONTEXT\\n' + JSON.stringify(context()) + '\\n\\nUPDATE\\n' + text }] }). text is state.text.trim(). The reply is treated as a string.",
+  "CONTEXT PAYLOAD context():\n{\n today: F.iso(TODAY) + ' (' + F.l(TODAY) + ', BD' + CAL.days[TODAY].bdm + ')'  // e.g. '2026-10-05 (Monday 5 October, BD3)'\n focus_project: state.focus  // project id or null\n projects: m.P.map(p => ({ id, name, short, domain: p.domainName, forecast: p.forecast (ISO|null), target: p.target (ISO), hours_per_day: p.rate, confidence: p.confidence,\n   open_tasks: p.now.flatMap(x => x.tasks).filter(t => !m.tasks[t.id]).map(t => ({ id: t.id, text: t.t, hours: t.h })),  // NOW-horizon tasks only, not Next\n   milestones: p.milestones.map(x => x.name + ' (' + x.date + ')') }))\n routines: m.routines.map(r => ({ id, name, rule (human text), runs_today: m.occursOn(r, TODAY) }))\n recent_notes: CAL.bds.filter(n => n <= TODAY).slice(-5).flatMap(n => (m.notes[F.iso(n)] || []).map(x => F.s(n) + ' ' + x.t + ': ' + x.text))  // last 5 business days incl. today, e.g. 'Mon 5 Oct 08:41: Admin files landed…'\n}",
+  "REPLY PARSING:\n1. j = String(reply).match(/\\{[\\s\\S]*\\}/). This is greedy, from the first '{' to the last '}'.\n2. If there is no match, throw Error('Remi replied without a plan.').\n3. JSON.parse(j[0]); a SyntaxError propagates.\n4. res = validate(parsed).\nOffline detection: if !window.claude || !window.claude.complete, throw Error('offline'). The catch block sends ONLY message === 'offline' to res = simple(text), src = 'simple'. Every other error sets phase 'error' with err = 'The assistant didn’t answer cleanly (' + (e.message || 'unknown error') + '). Try again, or use a simple reading that picks out hours, blockers and names.'",
+  "VALIDATION validate(raw) → {summary, changes, unplaced}. Setup: P = m.pmap; R = routines by id; open = {taskId: projectId} for every NOW task not done. For each c in (raw.changes || []):\n- Skip if !c or !c.type.\n- bau_done: keep {type, routine_id} only if R[routine_id] exists AND m.occursOn(R[id], TODAY). No project needed.\n- Otherwise drop if !P[c.project_id].\n- task_done: keep {type, project_id, task_id} only if open[task_id] === project_id (the task must be open AND belong to that project).\n- task_add / scope_add: need truthy text. Keep {type, project_id, text: String(text).slice(0,120), hours: clamp(+c.hours || (task_add ? 1 : 0), 0.25, 80)}. A scope_add with no hours becomes 0.25.\n- blocker / note: need truthy text. Keep {type, project_id, text: String(text).slice(0,160)}.\n- confidence: v = Math.round(+value). Keep if 1<=v<=5 AND v !== current project confidence.\n- target_move: date must match /^\\d{4}-\\d{2}-\\d{2}$/ AND CAL.days[dn(date)] must exist (calendar range 2026-08-31..2027-04-30). Output date = iso(CAL.nextBD(dn(date))), so weekends/holidays roll forward to the next business day.\n- hours_per_day: v = +value. Keep if 0 < v <= 8.\n- Unknown types are dropped silently.\nAfter the loop, dedupe exact duplicates via JSON.stringify of the normalized object.\nsummary = String(raw.summary || ''). unplaced = (raw.unplaced || []).filter(Boolean).map(String).slice(0,4).",
+  "SIMPLE READING simple(text): offline heuristic fallback. The output is passed through validate().\n- Hard-coded keyword map (checked in this order): ret: ['returns pipeline','pipeline','attribution','returns automation']; manco: ['manco','nav bridge','managing committee']; play: ['playbook','runbook','successor']; fion: ['onboarding','entitlement','fi desk','data access']; alpha: ['alpha','signal'].\n- Sentence split: text.split(/(?<=[.!?])\\s+|\\n+/), trimmed, empty ones removed.\n- last = state.focus.\n- For each sentence sn (l = lowercase):\n  - pid = the first key id whose keyword appears in l, OR whose project's short name (lowercased) appears in l. Only these 5 ids are ever candidates.\n  - If /returns (bau|run)|returns are done|returns done/ matches l: push {bau_done, routine_id:'r-ret'} and move to the next sentence (last is not updated).\n  - pid = pid || last. If there is still no pid, push sn to unplaced and continue. Otherwise last = pid.\n  - h = l.match(/(\\d+(?:\\.\\d+)?)\\s*(?:h|hr|hrs|hour|hours)\\b/). If h AND /(want|also|add|scope|new|extra|asked)/ matches l, push scope_add. Its text is sn with /\\s*[,(]?\\s*(about|probably|maybe|roughly)?\\s*\\d+(\\.\\d+)?\\s*(h|hrs?|hours?)\\b\\)?/i removed, then /^.*?(want|wants|asked for|add|added)\\s+/i removed, then a trailing '.' removed, then .slice(0,80). hours = +h[1].\n  - b = l.match(/(?:waiting|blocked|stuck)(?:\\s+(?:on|for|by))?\\s+([^.;,]+)/). If found, push blocker with text b[1].trim() (lowercased).\n  - c = l.match(/confidence\\s*(?:is|at|now|:|of)?\\s*(?:a\\s+)?([1-5])/). If found, push confidence with value +c[1].\n  - r = l.match(/(\\d+(?:\\.\\d+)?)\\s*h(?:ours?)?\\s*(?:a|per)\\s*day/). If found, push hours_per_day with value +r[1].\n  - If /(finished|done|completed|sent|wrapped|shipped)/ matches l: for each open NOW task of p, words w = t.t.toLowerCase().split(/[^a-z]+/) keeping words with length > 3, and hit = the count of those words contained in l. If hit >= 2, or (w.length <= 3 && w.length > 0 && hit >= 1), push task_done.\n  - If none of blocker, confidence, scope (h && keyword) or rate matched, push note with sn.slice(0,140) in the original case. This happens even when a task_done matched.\n- summary = changes.length ? 'Here is what a simple reading picked out. Untick anything that is wrong.' : ''.",
+  "SEND FLOW send():\n1. Guard: return if the text is empty or phase === 'thinking'.\n2. echo = the first 5 sentences (same split regex).\n3. setState({phase:'thinking', echo, echoOn:false, prog:'0%', err:''}).\n4. Double rAF, then setState({prog:'88%', echoOn:true}).\n5. Call the AI, or run simple() when offline.\n6. setState({phase:'review', result:res, off:{}, src, shown:false, prog:'100%'}), then a double rAF sets shown:true.\noffline(): res = simple(text), then setState({phase:'review', result, off:{}, src:'simple', shown:false}) and a double rAF sets shown:true.",
+  "REVIEW GROUPING: groupsMap (a Map, insertion order) keyed by c.project_id || 'bau', with values [{c, i}] where i is the index in res.changes. accepted = changes whose index is not in state.off. nOn = accepted.length.",
+  "ROW TEXT text(c):\n- task_done: the task's text found in p.now tasks, else task_id.\n- task_add: text + ' · ' + hours + 'h, added to Now'.\n- scope_add: text + ' · +' + hours + 'h'.\n- confidence: (p.confidence || '—') + ' → ' + value + ' of 5'.\n- target_move: p.targetS + ' → ' + F.s(F.dn(date)), e.g. 'Fri 27 Nov → Tue 8 Dec'.\n- hours_per_day: p.rate + 'h → ' + value + 'h a day'.\n- bau_done: (routine name || id) + ', today’s run' + (routine_id === 'r-ret' ? ' (ticks all 12 funds)' : '').\n- blocker/note: c.text.",
+  "EFFECT CHIP (per-project preview diff), computed only if p.forecastN != null, using only ACCEPTED changes in the group:\n- h = sum of hours of scope_add; rc = first hours_per_day; tg = first target_move.\n- to = p.forecastN.\n- If rc: from = max(TODAY, p.startN); left = p.rate * (CAL.bdDiff(from, p.forecastN) + 1); to = CAL.addBD(from, max(1, ceil(left / rc.value)) - 1).\n- If h: to = CAL.addBD(to, ceil(h / ((rc ? rc.value : p.rate) || 1))).\n- tgt = tg ? F.dn(tg.date) : p.targetN.\n- d = CAL.bdDiff(p.forecastN, to); late = to > tgt.\n- If d !== 0: text = F.dm(p.forecastN) + ' → ' + F.dm(to) + ' · ' + (d>0 ? '+' : '−') + |d| + ' BD', with risk styling if late, else outlined.\n- Else if tg: text = late ? 'now ' + CAL.bdDiff(tgt, to) + ' BD past target' : 'forecast holds'.\n- Else no chip.\nThis assumes a flat p.rate per business day and ignores bd3/bd8/ov overrides and rateAfter.",
+  "BUSINESS-DAY CALENDAR (shell):\n- Days are integer day numbers since the epoch (UTC).\n- A business day is Mon–Fri and not in HOL. HOL = {2026-12-25 Christmas Day, 2026-12-28 Boxing Day (substitute), 2027-01-01 New Year's Day, 2027-03-26 Good Friday, 2027-03-29 Easter Monday}.\n- bdm = the 1-based business-day-of-month index.\n- nextBD(n) steps forward to the next business day.\n- addBD(n,k) = bds[clamp(idx[nextBD(n)] + k, 0, bds.length-1)].\n- bdDiff(a,b) = idx[nextBD(b)] - idx[nextBD(a)].\n- The range is 2026-08-31..2027-04-30.",
+  "APPLY (shell saveCheckIn → applyUpdate(changes) after 220ms):\n(1) Group changes by project_id. For each project:\n- pre.target = the date of the LAST target_move.\n- hpd = the first hours_per_day with value > 0.\n  - If hpd AND the project has a forecast: from = max(TODAY, dn(start)); bdLeft = bdDiff(from, dn(forecast)) + 1; left = (rate||1) * bdLeft; need = max(1, ceil(left / hpd.value)); k = rate ? hpd.value/rate : 1; pre = {rate: hpd.value, bd3: bd3*k, bd8: bd8*k, rateAfter: rateAfter*k, forecast: iso(addBD(from, need-1)), prev: old forecast}.\n  - Else if hpd, pre.rate = value.\n- adds = task_add changes.\n- If pre or adds is non-empty, run updateProject(pid, raw => ...). It merges pre; deletes targetLabel if the target changed; deep-clones now. If there are no Now milestones, it pushes {m:'Added from an update', due: iso(addBD(TODAY,9)), tasks:[]}. Each add is pushed into now[0].tasks as {id: 'u'+Date.now().toString(36)+i, t: text, h: +hours||1}.\n- If the forecast changed from hpd, set flash[pid] for 1100ms.\n- Then call applyCheckIn({pid, done: task_done ids, changed: note texts with the trailing '.' removed and joined with '. ', scopeWhat: scope texts joined with ', ', scopeH: sum of scope hours, blockers: FIRST blocker text or '', confidence: first confidence value or null}).\n(2) For each bau_done:\n- r-ret, if it occurs today: setAllFunds(true), which ticks all 12 fund booleans.\n- Otherwise, bauDone[routine_id + ':' + iso(TODAY)] = iso(TODAY), unless already set.",
+  "applyCheckIn(d) (shell; also the legacy structured-form path):\n- hasF = !!forecast.\n- delta = hasF && scopeH>0 ? ceil(scopeH / (rate||1)) : 0.\n- newF = delta ? addBD(fN, delta) : fN.\n- what = scopeWhat.trim() || 'New scope'.\n- note = [changed, scopeH>0 ? what+' added, +'+scopeH+'h' : '', blockers ? 'Blocked: '+blockers : ''].filter(Boolean).join('. ') || 'Plan confirmed.'.\n- Project update:\n  - forecast = iso(newF).\n  - prev = delta ? old forecast : prev.\n  - confidence = d.confidence ?? old.\n  - checkin = today.\n  - blocker = d.blockers || null. Any check-in with no blocker CLEARS the existing blocker.\n  - scope gets {date, what, h: scopeH, bd: delta, from: F.dm(fN)|'—', to: F.dm(newF)|'—'} appended when scopeH > 0.\n  - checkins gets {date, note, forecast, conf} appended.\n- tasks[id] = true for each done id. doneOn is NOT set, unlike toggleTask.\n- Feed item:\n  - If delta: {kind:'scope', tone:'risk', title: short, body: 'Scope added (' + what.toLowerCase() + ', +' + scopeH + 'h). Forecast moved ' + dm(fN) + ' → ' + dm(newF) + '.', delta: '+N BD', when: 'Just now'}.\n  - Else: {kind:'checkin', tone:'quiet', body: 'Checked in. ' + (changed ? changed minus trailing '.' + '. ' : '') + (hasF ? 'Forecast holds at ' + dm(fN) + '.' : ''), delta: '±0 BD'}.\n  - It is prepended to the feed, and any 'stale' feed item for this pid is removed.\n- flash[pid] = !!delta, cleared after 1100ms.\n- moved[pid] = delta ? {delta, label:'+N BD', at: Date.now()} : null, cleared after 5200ms.",
+  "previewShift(pid, h) (shell model, used by the legacy structured preview):\n- delta = h>0 ? ceil(h/(rate||1)) : 0.\n- to = addBD(forecastN, delta).\n- newOver = business days in (forecastN, to] where dayLoad with the modified forecast is over 8h and was not over before.\n- Returns {delta, from, to, fromS, toS, fromDM, toDM, deltaLabel: '+N BD'|'±0 BD', vsTarget: bdDiff(targetN, to), newOver: [{n, s, total}], missesDecRun: pid==='ret' && to >= DEC_RUN (2026-12-03), crossesMove: domain==='pc' && to >= MOVE (2027-01-04)}.",
+  "WORD COUNT: text.trim().split(/\\s+/).length, or 0 when the text is empty.",
+  "APPLY LABEL: nOn ? 'Apply ' + nOn + ' change' + (nOn === 1 ? '' : 's') : 'Nothing selected'.",
+  "PREFILL TEXT (reset):\n- If prefill.text is set, use it.\n- Else if prefill.scopeH is set: 'New scope on ' + (project for props.pid, else prefill.pid).short + ', about ' + scopeH + 'h: '. If neither project resolves, 'this project' is used.\n- Else ''."
+ ],
+ "backendImplications": [
+  "AI parse endpoint (api/): e.g. POST /api/checkins/parse {text, focus_project_id?}. It returns {summary, changes[], unplaced[], source:'ai'|'simple'}. The service builds the CONTEXT server-side from the DB: today plus its BD index, projects with open Now tasks and milestones, routines with runs_today, and the last 5 business days of notes. It calls Claude with the SYS prompt (max_tokens 1800), extracts the JSON object and validates it. The API key stays server-side, and compliance must approve the provider (SPEC open question 6).",
+  "Schemas (schemas/): use a discriminated union for the change objects:\n- task_done {project_id, task_id}\n- task_add / scope_add {project_id, text ≤120, hours 0.25..80}\n- blocker / note {project_id, text ≤160}\n- confidence {project_id, value int 1..5}\n- target_move {project_id, date ISO}\n- hours_per_day {project_id, value (0,8]}\n- bau_done {routine_id}\nThe envelope is {summary: str, changes: Change[], unplaced: str[≤4]}. Prefer structured output / tool-use JSON over the greedy regex.",
+  "Validation service (services/): port validate() exactly. The id must exist; task_done must be an open Now task of that same project; a confidence value equal to the current one is dropped; target dates roll to the next business day; bau_done only if the routine occurs today; exact duplicates are removed.",
+  "Heuristic fallback parser (utils/ or services/): port simple(), but GENERALISE the hard-coded keyword map (ret/manco/play/fion/alpha and 'r-ret'). Derive aliases from project name/short and a per-project alias field, and let routine keywords come from the routine names.",
+  "Apply endpoint: e.g. POST /api/checkins/apply {changes (accepted only), raw_text, focus_project_id}. This must be ONE transaction per update. It should:\n- Set target (clearing targetLabel).\n- Apply the hours-per-day re-plan (rate, bd3, bd8, rateAfter scaled by k, forecast recomputed, prev stored).\n- Append new tasks to the first Now milestone, or create an 'Added from an update' milestone due TODAY+9 BD.\n- Mark tasks done WITH a done-on date.\n- Append a scope log entry with the BD delta, from and to.\n- Append a CheckIn record (SPEC: {id, projectId, at, done[], changed, blockers, confidence, rawText}).\n- Update the last check-in date, set or clear the blocker, and add the confidence.\n- Write a feed/event entry and remove the stale feed item.\n- Record BAU completions keyed by routine+date. For the returns routine, tick all funds for the current run.\nReturn the updated projections plus per-project {delta, from, to} so the client can play the flash (1100ms) and moved (5200ms) animations.",
+  "SPEC says the source of truth is an append-only event log (RemiEvent). Each accepted change should become an event, with snapshots per check-in for the history scrubber.",
+  "Business-day calendar and forecasting (core/ or utils/): nextBD, addBD, bdDiff, bdm, and a holiday calendar (currently hard-coded UK 2026-27 dates; SPEC wants a choice of england-wales or south-africa). Shared forecast maths: the scope shift is ceil(hours/rate) BD, and the rate re-plan is need = max(1, ceil(rate*bdLeft/newRate)). The client needs the same maths for the live EffectChip preview. Either duplicate it in TS or offer POST /api/checkins/preview.",
+  "Routine occurrence rule (monthly on BD n, weekly on weekday, daily) is needed server-side for the runs_today flag and bau_done validation.",
+  "Optional: a legacy structured check-in endpoint that accepts {pid, done[], changed, scopeWhat, scopeH, blockers, confidence} (applyCheckIn), if the structured form is rebuilt. Its preview needs dayLoad/overload detection (8h capacity) and the DEC_RUN/MOVE constants, which should become settings."
+ ],
+ "risksAndQuirks": [
+  "The CURRENT CheckIn.dc.html has no structured form. The brief/SPEC (7.4) ask for the structured form plus free text. The structured version only survives as a screenshot (screenshots/02-sig.png) and as shell code (applyCheckIn, previewShift). Confirm with the user whether production needs both modes (the old header had a 'Structured | Tell Remi' toggle).",
+  "The prototype relies on DCLogic's SYNCHRONOUS setState: the runtime updates logic.state immediately, even for functional updaters. applyUpdate calls updateProject(), then applyCheckIn() reads this.state.projects and builds p1 from that snapshot. A naive port to React useState/class setState with automatic batching (React 18 createRoot) would build p1 from STALE state and overwrite the target/rate/forecast/new-task changes. Do the apply as a single server transaction or a single reducer.",
+  "No request cancellation and no session guard. Closing the drawer or reopening it (new session) while an AI request is in flight lets the late reply setState a review into the new session. Use AbortController and check the session id.",
+  "If the AI returns 'unplaced' as a non-array (e.g. a string), .filter throws. The error panel then shows it as 'didn’t answer cleanly'.",
+  "Reply extraction uses a greedy /\\{[\\s\\S]*\\}/, which breaks if the model writes prose containing braces after the JSON. Prefer structured outputs.",
+  "window.claude.complete is the Claude Design sandbox API. Production needs a server proxy. The offline check (`!window.claude`) must become a real availability or feature flag.",
+  "simple() hard-codes project ids ('ret','manco','play','fion','alpha') and routine 'r-ret' with fixed keyword lists. User-created projects can never be matched, not even by short name, because only those 5 keys are iterated. It also adds a note alongside task_done (against the SYS rule 'prefer task_done'). Blocker text comes out lowercased. A sentence like '2h a day' combined with 'new'/'add' can produce both hours_per_day and scope_add.",
+  "The EffectChip preview uses a flat p.rate and ignores bd3/bd8/ov/rateAfter. It also differs slightly from apply: preview uses p.rate while apply uses (rate||1), so the results differ when rate is 0. For a scope+rate combination, apply uses the post-update rate (correct only because of the synchronous state).",
+  "applyCheckIn is called for EVERY project with any accepted change, even a target move alone. So it always:\n- writes a check-in record ('Plan confirmed.' if there is no text), updates the checkin date and drops the stale feed item;\n- sets blocker = d.blockers || null, silently CLEARING an existing blocker;\n- keeps only the FIRST blocker when there are several.\nWhen hours/day moved the forecast without scope, the feed says 'Forecast holds at <new date>', which is misleading.",
+  "task_done via the check-in does not set doneOn[taskId] (toggleTask does). Completion dates are therefore missing for AI-ticked tasks.",
+  "The r-ret bau_done ticks all 12 funds via setAllFunds(true). funds is a single boolean array, not keyed by run date.",
+  "Hard-coded constants:\n- TODAY = 2026-10-05, MOVE = 2027-01-04, DEC_RUN = 2026-12-03, CAPACITY = 8h.\n- Calendar range is 2026-08-31..2027-04-30, so target dates outside it are silently dropped by validate. nextBD at the range end can walk off the calendar.\n- Holidays are a hard-coded UK list.\n- context.today renders 'BDnull' if today is not a business day.",
+  "The BAU group accent is hard-coded to var(--pc-accent) even for FI routines. bau_done groups are all merged under 'BAU · today'.",
+  "Word-count hint has no singular form ('1 words').",
+  "The progress bar's '100%' state is never visible, because the thinking panel unmounts at the same moment. The progress is purely cosmetic (0→88% over 2.6s regardless of latency). The thinkNote 'a few seconds' is static.",
+  "model.reduced only reflects the prop motion==='Reduced', not prefers-reduced-motion. JS-driven translateY offsets therefore still animate under OS reduced motion, although --spring-soft becomes steps(1).",
+  "Echo and simple() use a regex lookbehind (?<=[.!?]), which needs a modern JS engine.",
+  "The Apply button is still a clickable button when 0 changes are selected (a no-op), with only the cursor/colour changed. Consider disabled plus aria.",
+  "Row checkbox buttons have no aria-pressed/role=checkbox. The drawer has no focus trap or aria-modal. Escape is handled globally by the shell.",
+  "The 380ms autofocus delay and the 220ms apply delay are timing hacks coupled to the drawer spring (440ms)."
+ ],
+ "copyText": [
+  "Tell Remi",
+  "Say what happened in your own words. Remi works out what to change and shows you before anything moves.",
+  "Close (esc)",
+  "About",
+  "Not just this project",
+  "About anything: mention projects or routines by name",
+  "e.g. Finished mapping the last four funds and the FX share classes. The administrator now wants FX attribution too, probably 6h. Still waiting on the security-level extract, so confidence is a 3. ManCo: sent the NAV bridge spec to Finance. Returns BAU is done for today.",
+  "Change the text and send again if Remi missed something.",
+  "<N> words",
+  "Write it the way you would tell a colleague.",
+  "Send to Remi ⌘↵",
+  "Remi can",
+  "Tick things off — “Finished the FX share classes.”",
+  "Log new scope — “They want FX attribution too, about 6h.”",
+  "Note blockers — “Still waiting on the admin extract.”",
+  "Move dates — “Push the playbook target to 8 Jan.”",
+  "Change your time — “I can give ManCo 2h a day now.”",
+  "Close BAU runs — “Returns are done for today.”",
+  "You review every change before it's applied. Nothing is lost if Remi gets it wrong.",
+  "Reading your update",
+  "a few seconds",
+  "Remi will change",
+  "simple reading",
+  "<nOn> of <total> selected",
+  "Here is what Remi picked out.",
+  "Here is what a simple reading picked out. Untick anything that is wrong.",
+  "BAU · today",
+  "Kind labels: Tick off / New task / New scope / Blocker / Confidence / Target / Hours a day / Note / BAU done",
+  "Row suffixes: ' · <h>h, added to Now' / ' · +<h>h' / '<old> → <new> of 5' / '<old>h → <new>h a day' / ', today’s run' / ' (ticks all 12 funds)'",
+  "Effect chip: '<D Mon> → <D Mon> · +N BD' / '−N BD' / 'forecast holds' / 'now N BD past target'",
+  "Not sure where these go",
+  "Name the project in your update and send it again to place these.",
+  "Remi didn’t find anything to change. Try naming a project, a task, hours or a date.",
+  "Remi couldn’t read that just now",
+  "The assistant didn’t answer cleanly (<message>). Try again, or use a simple reading that picks out hours, blockers and names.",
+  "Remi replied without a plan.",
+  "Try again",
+  "Use a simple reading",
+  "Untick anything Remi got wrong. Applying updates forecasts, the timeline and Today.",
+  "Nothing changes until you apply.",
+  "Nothing changes until you review and apply.",
+  "Edit update",
+  "Cancel",
+  "Apply N change / Apply N changes ⌘↵",
+  "Nothing selected",
+  "Prefill: 'New scope on <short>, about <h>h: '",
+  "Shell feed copy: 'Scope added (<what>, +<h>h). Forecast moved <from> → <to>.' / 'Checked in. <changed>. Forecast holds at <date>.' / 'Plan confirmed.' / 'Blocked: <text>' / '<what> added, +<h>h' / milestone 'Added from an update'"
+ ],
+ "localState": [
+  "session (number, init -1): mirror of props.session, set on reset. Not otherwise used.",
+  "text (string): the textarea content; drives the word count, send and echo.",
+  "focus (projectId|null): drives the focus chip, context.focus_project and simple()'s default project.",
+  "phase ('compose'|'thinking'|'review'|'error'): selects the right-panel view, footer buttons, footNote, hint, textarea lock and Send visibility.",
+  "result ({summary, changes, unplaced}|null): the validated parse output.",
+  "off ({[changeIndex]: bool}): rows the user has unticked. Reset to {} on every new result.",
+  "err (string): the error-panel message.",
+  "src ('remi'|'simple'): the source of the result. Drives srcNote. Not reset by reset().",
+  "shown (bool): triggers the group entrance transition (double rAF).",
+  "prog ('0%'|'88%'|'100%'): progress-bar width.",
+  "echoOn (bool): triggers the echo-line entrance transition.",
+  "echo (string[] ≤5, not in initial state): sentences echoed during thinking.",
+  "taRef: React ref to the textarea, used for focus and caret placement."
+ ],
+ "persistence": [
+  "CheckIn itself persists nothing. Drafts are lost when the drawer is reopened, because reset() runs on each new session.",
+  "Shell (Remi.dc.html): changes applied through onSave land in shell state. That state is saved to localStorage key 'remi.v1', debounced 250ms on change, as {projects, tasks, feed, funds, routines, doneOn, bauDone, notes, m2: true}. On load, loadSaved() parses it and requires Array.isArray(projects). Migration flag m2: inject task 'man-0' (Send the NAV bridge spec to Finance, 0.5h, due 2026-10-02) into manco now[0] if it is missing."
+ ],
+ "externalCalls": [
+  "window.claude.complete({ system: SYS, max_tokens: 1800, messages: [{ role: 'user', content: 'CONTEXT\\n' + JSON.stringify(context) + '\\n\\nUPDATE\\n' + text }] }). This is the Claude Design sandbox helper and returns the completion text. There is no model id, temperature or streaming. The expected reply is a single JSON object {summary, changes[], unplaced[]} (see algorithms for the full prompt and schema).",
+  "Fonts and icons are loaded by the shell: Material Symbols Outlined (icons 'close', 'check'), Libre Caslon Text (display), Albert Sans (UI), JetBrains Mono (numeric).",
+  "The runtime support.js loads React/ReactDOM 18.3.1 UMD from unpkg (https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js) and uses createRoot."
+ ],
+ "actionsInvoked": [
+  "props.onClose() → shell closeDrawer(): sets drawer.open=false. The slide-out animates. CheckIn state is not reset.",
+  "props.onSave({ changes: acceptedChanges }) → shell saveCheckIn(d). It closes the drawer, then after setTimeout 220ms calls applyUpdate(changes). With no d.changes, it takes the legacy path applyCheckIn(d).",
+  "applyUpdate → updateProject(pid, fn). Mutates target (deletes targetLabel), rate/bd3/bd8/rateAfter/forecast/prev (hours-per-day re-plan) and now[0].tasks (task_add). It is wrapped in normalize().",
+  "applyUpdate → applyCheckIn({pid, done, changed, scopeWhat, scopeH, blockers, confidence}). Mutates project forecast/prev/confidence/checkin/blocker/scope[]/checkins[], tasks{} (done=true), feed (prepends a scope or checkin item and removes the stale item for this pid), flash[pid] (1100ms) and moved[pid] (5200ms).",
+  "applyUpdate → setAllFunds(true) for bau_done 'r-ret' when it runs today (ticks all 12 funds). Otherwise bauDone[routineId + ':' + todayISO] = todayISO.",
+  "Model reads only (no mutation from CheckIn directly): pmap, P, tasks, routines, occursOn, notes, F, CAL, TODAY, reduced."
+ ],
+ "sampleData": "[\"CAPS: 6 {k, v} capability rows (quoted in the CapabilitiesPanel component).\",\"Relevant shell seed (Remi.dc.html), with TODAY = Mon 5 Oct 2026 (BD3):\\n- Projects:\\n  - ret 'Returns pipeline automation' / short 'Returns pipeline': pc, rate 3.5, confidence 3, target 2026-11-27, forecast 2026-12-02, Now tasks ret-1 (done) 'Request the security-level extract from the administrator' 0.5h, ret-2 'Parse and validate the extract' 4h.\\n  - manco 'ManCo pack automation' / 'ManCo automation': target and forecast 2026-12-11, confidence 4, Now tasks man-0 'Send the NAV bridge spec to Finance' 0.5h, man-1 'Map NAV bridge to source tables' 0.75h, man-2 'Template the performance section' 0.75h, man-3 'Test build against the September pack' 0.5h, and more.\\n  - play 'PC handover playbook' / 'Handover playbook': target 2026-12-18, Now tasks pl-1 'Record the October BD3 run step by step' 2h, pl-2 'Draft the runbook outline' 1.5h.\\n  - fion 'FI onboarding & data access' / 'FI onboarding': fi, target 2027-01-04, Now tasks fi-1 (done) 'Submit entitlement forms' 1h, fi-2 'Agree curve data sources with the FI desk' 1.5h.\\n  - alpha 'Alpha engine v0' / 'Alpha engine': fi, forecast null, target 2027-03-25, targetLabel 'Late Mar 2027', no tasks.\\n- Routines: r-ret 'Fund & security-level returns' (BD3 monthly, 6h, pid ret), r-man 'Managing Committee pack' (BD8 monthly, 4h).\\n- Notes on 2026-10-05, 10-02 and 10-01, e.g. '08:41 Admin files landed at 07:40 this morning instead of last night, so returns started late.'\\n- 12 FUNDS, of which the first 5 are ticked.\"]"
+}

@@ -1,0 +1,459 @@
+/*
+ * Calendar.dc.html, px for px. Line numbers refer to the prototype template. Values that
+ * depend on data (bar widths, colours, the fade) are inline styles; everything else is here.
+ */
+
+/*
+ * ------------------------------------------------------------------ frame (:10)
+ * The prototype's `height: 100%` resolves against a host that sizes to its content, so the
+ * frame is content-height with an 880px floor: grid rows take the tallest row's content and
+ * the section scrolls. The day panel spans the whole frame. `overflow-x: clip` keeps the
+ * closed panel (translated 104% to the right) from widening the scroll area.
+ */
+.root {
+  position: relative;
+  box-sizing: border-box;
+  /* The floor, or the whole section when that is taller (a short, empty plan), so the frame
+     and the day panel reach the bottom of the screen. */
+  min-height: max(880px, 100%);
+  padding: 28px 48px 32px;
+  display: flex;
+  flex-direction: column;
+  overflow-x: clip;
+}
+
+/* ------------------------------------------------------------------ header (:11-30) */
+.head {
+  display: flex;
+  align-items: flex-end;
+  gap: 24px;
+  padding-bottom: 18px;
+}
+.kicker {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--brand-dark);
+}
+.titleRow {
+  display: flex;
+  align-items: baseline;
+  gap: 14px;
+  margin-top: 8px;
+}
+.title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 400;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+}
+.title:focus {
+  outline: none;
+}
+.sub {
+  font-family: var(--font-numeric);
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+.retry {
+  margin-left: 8px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--hairline);
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+.spacer {
+  flex: 1;
+}
+
+/* Legend (:20-24) */
+.legend {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+.legendItem {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.legendChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 18px;
+  padding: 0 6px;
+  border-radius: var(--radius-s);
+  background: var(--pc-accent-soft);
+  color: var(--ink);
+  font-size: 10px;
+  font-weight: 500;
+}
+.legendTick {
+  width: 3px;
+  height: 9px;
+  background: var(--pc-accent);
+  border-radius: 1px;
+}
+.legendBar {
+  width: 28px;
+  height: 4px;
+  border-radius: 1px;
+  background: var(--pc-accent);
+}
+.legendDiamond {
+  width: 8px;
+  height: 8px;
+  transform: rotate(45deg);
+  border: 1.5px solid var(--ink-muted);
+  box-sizing: border-box;
+}
+
+/* Month nav (:25-29): the arrows dim to 0.35 at the ends of the range. */
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.navArrow {
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+.navArrow[data-end='true'] {
+  opacity: 0.35;
+}
+
+/* ------------------------------------------------------------------ weekday heads (:32-36) */
+.heads,
+.grid {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr)) 64px 64px;
+}
+.heads {
+  border-bottom: 1px solid var(--brand-deep);
+}
+.headCell {
+  padding: 0 10px 8px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-muted);
+}
+.headCell[data-weekend='true'] {
+  color: var(--ink-faint);
+}
+
+/* ------------------------------------------------------------------ month grid (:38) */
+.grid {
+  flex: 1;
+  min-height: 0;
+  grid-auto-rows: minmax(0, 1fr);
+  transition:
+    opacity var(--dur-fast) var(--ease-out),
+    transform var(--dur-base) var(--spring-soft);
+}
+.grid[data-fading='true'] {
+  opacity: 0;
+}
+
+/* Cell (:40) */
+.cell {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  box-sizing: border-box;
+  padding: 8px 10px 10px;
+  border-bottom: 1px solid var(--hairline);
+  border-right: 1px solid var(--hairline);
+  background: transparent;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  cursor: default;
+  box-shadow: inset 0 0 0 0 var(--ink);
+  transition:
+    box-shadow var(--dur-fast) var(--ease-out),
+    background var(--dur-fast) var(--ease-out);
+}
+.cell[data-sunday='true'] {
+  border-right-color: transparent;
+}
+.cell[data-tinted='true'] {
+  background: color-mix(in oklch, var(--ink) 3.5%, var(--paper));
+}
+.cell[data-in-month='false'] {
+  opacity: 0.35;
+}
+.cell[data-in-month='true'] {
+  cursor: pointer;
+}
+.cell[data-selected='true'] {
+  box-shadow: inset 0 0 0 1.5px var(--ink);
+}
+/* The prototype's style-hover rule is !important: it replaces the weekend tint too. */
+.cell:hover {
+  background: color-mix(in oklch, var(--ink) 3%, var(--paper)) !important;
+}
+.cell:focus-visible {
+  outline: 1.5px solid var(--focus);
+  outline-offset: -2px;
+}
+
+/* Top row (:41-44) */
+.cellTop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+}
+.dayNum {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 24px;
+  height: 24px;
+  padding: 0 4px;
+  box-sizing: border-box;
+  border-radius: var(--radius-s);
+  background: transparent;
+  color: var(--ink);
+  font-size: 14px;
+  font-weight: 500;
+}
+.dayNum[data-weekend='true'] {
+  color: var(--ink-muted);
+}
+.dayNum[data-today='true'] {
+  background: var(--ink);
+  color: var(--paper);
+  font-weight: 700;
+}
+.bdLabel {
+  font-family: var(--font-numeric);
+  font-size: 11px;
+  color: var(--ink-muted);
+}
+
+/* Holiday name (:45) */
+.holiday {
+  font-size: 11px;
+  color: var(--ink-muted);
+  line-height: 1.3;
+}
+
+/* BAU chip (:47): the shared chip, pinned to the start of the column. */
+.chip {
+  align-self: flex-start;
+  box-shadow: inset 0 0 0 1px transparent;
+}
+
+/* Milestone and forecast lines (:50) */
+.mark {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  line-height: 1.3;
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+.markName {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Bottom stack (:52-67): project bars and the load meter, pinned to the cell's foot. */
+.foot {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  margin-top: auto;
+}
+.barRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+.bar {
+  flex: none;
+  height: 4px;
+  border-radius: 1px;
+}
+.barLabel {
+  font-size: 10px;
+  color: var(--ink-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.meterRow {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 4px;
+}
+.meterLabel {
+  font-family: var(--font-numeric);
+  font-size: 10px;
+  color: var(--ink-muted);
+  min-width: 30px;
+  text-align: right;
+}
+.meterLabel[data-over='true'] {
+  color: var(--overload);
+}
+
+/* ------------------------------------------------------------------ day panel (:72-122) */
+.panelTop {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.panelTitle {
+  margin: 14px 0 0;
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 400;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+.panelSub {
+  font-family: var(--font-numeric);
+  font-size: 12px;
+  color: var(--ink-muted);
+  margin-top: 8px;
+}
+
+/* Capacity (:85-94) */
+.capacity {
+  margin-top: 24px;
+}
+.capacityHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.capacityValue {
+  font-size: 13px;
+  color: var(--ink-muted);
+}
+.capacityValue[data-over='true'] {
+  color: var(--overload);
+}
+
+/* Plan rows (:95-108) */
+.rows {
+  margin-top: 22px;
+  border-top: 1px solid var(--brand-deep);
+}
+.row {
+  display: grid;
+  grid-template-columns: 48px minmax(0, 1fr);
+  column-gap: 12px;
+  width: 100%;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 12px 0;
+  border: 0;
+  border-bottom: 1px solid var(--hairline);
+  background: transparent;
+  text-align: left;
+  cursor: default;
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+button.row {
+  cursor: pointer;
+}
+button.row:focus-visible {
+  outline: 1.5px solid var(--focus);
+  outline-offset: 2px;
+}
+.rowHours {
+  font-size: 17px;
+  font-weight: 500;
+}
+.rowBody {
+  display: block;
+  min-width: 0;
+}
+.rowKind {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.rowName {
+  display: block;
+  font-size: 15px;
+  font-weight: 500;
+  margin-top: 3px;
+}
+.task {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--ink-muted);
+  margin-top: 5px;
+}
+.taskHours {
+  font-family: var(--font-numeric);
+  font-size: 11px;
+}
+
+/* Due this day (:110-117) */
+.due {
+  margin-top: 22px;
+}
+.dueList {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.dueItem {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 36px;
+  border-bottom: 1px solid var(--hairline);
+  font-size: 14px;
+}
+
+/* Empty copy (:118) and the CTA (:119-120) */
+.empty {
+  margin: 24px 0 0;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--ink-muted);
+}
+.panelSpacer {
+  flex: 1;
+  min-height: 24px;
+}
+.cta {
+  flex: none;
+}
+
+/* ------------------------------------------------------------------ loading and errors */
+.status {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  padding-top: 24px;
+}

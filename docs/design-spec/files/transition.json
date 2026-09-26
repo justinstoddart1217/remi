@@ -1,0 +1,262 @@
+{
+ "key": "transition",
+ "file": "/Users/justinstoddart/Desktop/Ninety One/remi/Remi Dashboard Design Review/Transition.dc.html",
+ "purpose": "This screen answers one question: \"Am I on track to move cleanly?\" for the analyst's move from Private Credit (PC) to Fixed Income (FI) on Mon 4 Jan 2027. It has four parts: (1) a countdown hero and verdict; (2) a strip with one block for each remaining business day, flags for PC exit forecasts, the December shadow run and the move day, and month labels; (3) a Private Credit \"wind down\" column listing wind-down projects (readiness bar, forecast, delta chip) and routines by handover status; (4) a Fixed Income \"ramp up\" column with the onboarding readiness checklist, the first three rotation tiles, a link to the whole rotation, and the next FI project (Alpha engine). It is a read-mostly summary screen. Its only actions are navigation and hover highlighting.",
+ "layout": "MOUNTING CONTEXT (from Remi.dc.html): the screen sits in <section data-screen-label=\"Transition\" style=\"position:absolute; inset:0; overflow:auto\"> inside the app's main area. The app frame is a fixed logical canvas of 1920x1080 (default) or 2560x1440, scaled to fit the viewport with transform:scale(min(vw/W, vh/H)) and centred. The app uses grid-template-columns:88px minmax(0,1fr): an 88px nav rail with border-right 1px hairline. The main area uses grid-template-rows:72px minmax(0,1fr): a 72px header with border-bottom hairline, then the content. Content width is 1920-88 = 1832px at 1080p and 2560-88 = 2472px at 1440p. Available height is 1008px at 1080p and 1368px at 1440p. Every screen stays mounted and is shown or hidden with opacity and visibility.\n\nROOT: div with box-sizing:border-box; min-height:100%; padding:36px 48px 48px; display:flex; flex-direction:column; gap:40px. Inner content width is 1832-96 = 1736px at 1080p and 2472-96 = 2376px at 1440p. There are three stacked regions, each separated by a 40px gap.\n\nREGION 1, HERO: display:grid; grid-template-columns:minmax(0,5fr) minmax(0,7fr); column-gap:72px; align-items:end. At 1080p the columns are 693.3px and 970.7px ((1736-72) x 5/12 and x 7/12). At 1440p they are 960px and 1344px.\n- Left cell:\n  - Eyebrow \"Transition\": 11px/600, letter-spacing 0.08em, uppercase, color var(--ink-muted).\n  - Below it, with margin-top:12px, a flex row (align-items:baseline; gap:18px) holding:\n    - The big number \"61\": font-size 120px, weight 300, line-height 0.9, letter-spacing -0.04em, font Albert Sans with tabular-nums inherited.\n    - A flex column (gap 4px, padding-bottom 6px) with \"business days to Fixed Income\" (20px/500) and \"Monday 4 January 2027\" (15px, ink-muted).\n- Right cell (padding-bottom:6px):\n  - Eyebrow \"Am I on track to move cleanly?\" in the same eyebrow style.\n  - With margin-top 12px, a flex row (align-items:center; gap:12px) holding:\n    - A 10x10px circle with background {{v.dot}}.\n    - The verdict short text: 36px/600, letter-spacing -0.02em, line-height 1.1.\n  - A <p> with margin:10px 0 0; font-size 17px; line-height 1.5; ink-muted; max-width 52em; text-wrap:pretty. It holds the verdict sentence.\n\nREGION 2, BUSINESS-DAY STRIP (a plain div with four stacked children):\n(a) Flag lane: position:relative; height:44px. Each flag is absolutely positioned at left:{f.x}; bottom:0 as a flex column (align-items {f.al}, transform {f.tx}). Each flag contains:\n  - A label: 11px/600, nowrap, color f.fg, padding-left f.pl, padding-right f.pr, margin-bottom f.lift.\n  - A 1px-wide vertical stick of height f.h in colour f.fg.\n  Stick bottoms touch the top of the tick bar directly below. Labels on the \"high\" level overflow above the 44px lane; there is room because of the 40px gap above.\n(b) Tick bar: display:flex; gap:2px; height:22px; align-items:stretch. It has one span for each remaining business day, with flex:'1 1 0', border-radius:1px, background t.bg, box-shadow:inset 0 0 0 1px t.line. Tick width is (1736 - 60x2)/61 ≈ 26.5px at 1080p and (2376-120)/61 ≈ 37.0px at 1440p.\n(c) Month labels: position:relative; height:22px; margin-top:6px. Each label is absolutely positioned at left:mm.x; top:0, with font var(--font-numeric) (JetBrains Mono) 11px, ink-muted, padding-left 4px, border-left 1px solid var(--hairline).\n(d) Legend row: display:flex; gap:24px; margin-top:6px; font-size 13px; ink-muted. It has three items:\n  - Swatch (10x12px, radius 1px, bg var(--pc-accent-soft), inset 1px var(--pc-accent)) followed by \"Private Credit exits still running\".\n  - Swatch (10x12, radius 1, inset 1px hairline, no fill) followed by \"Buffer after the last exit\".\n  - Plain text \"One block per remaining business day; bank holidays left out.\"\n  Swatch items are flex with align-items center and gap 8px.\n\nREGION 3, TWO COLUMNS: display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); column-gap:72px; align-items:start. Each column is 832px at 1080p and 1152px at 1440p.\n\nLEFT COLUMN (Private Credit):\n- Column header: flex, align-items:baseline, gap:12px, border-bottom:1px solid var(--ink) (a solid ink rule, not a hairline), padding-bottom:10px. Contents:\n  - A 7x7px circle in var(--pc-accent) with align-self:center.\n  - \"Private Credit\": 20px/600, letter-spacing -0.01em.\n  - \"wind down\": 13px, ink-muted.\n- Groups (sc-for over routes; there is currently only one group). Each group has padding-top:18px.\n  - Group header: flex, baseline, space-between. Label is 11px/600, 0.08em, uppercase, colour g.fg (pc-accent), text \"Wind-down projects\". Count is 12px ink-muted, text \"3 projects\".\n  - Project rows: display:grid; grid-template-columns:minmax(0,1fr) 170px 150px; column-gap:24px; align-items:center; padding:12px 0; border-bottom:1px solid var(--hairline); cursor:pointer; opacity r.op. The name column is 464px at 1080p and 784px at 1440p. Cells:\n    1. Name: 15px/500.\n    2. Readiness (170px): flex, center, gap 10px.\n      - Track: flex:1, height 4px, bg var(--hairline), radius 1px, overflow hidden. The fill is a display:block span with height 100%, width r.ready and bg var(--pc-accent).\n      - Percent label: numeric font 12px, ink-muted, min-width 32px, text-align right.\n    3. Forecast (150px): flex, align center, justify flex-end, gap 8px, 13px.\n      - Forecast day-month text, such as \"2 Dec\".\n      - Delta chip: inline-flex, height 20px, padding 0 6px, radius var(--radius-s)=3px, bg chipBg, colour chipFg, box-shadow inset 0 0 0 1px chipLine, numeric font 11px.\n  - Empty state (sc-if g.empty): 14px ink-muted, padding 10px 0, border-bottom hairline.\n- Routines block (padding-top:28px):\n  - Eyebrow \"Routines by handover status\" in ink-muted.\n  - Each row: grid minmax(0,1fr) auto; column-gap 24px; align center; padding 12px 0; border-bottom hairline.\n    - Left: name (15px/500), then a note (13px ink-muted, margin-top 3px).\n    - Right: status pill with inline-flex, gap 6px, height 24px, padding 0 8px, radius 3px, inset 1px hairline, 12px/500. It holds a 6px circle in var(--pc-accent) and the status text.\n  - These rows cannot be clicked.\n\nRIGHT COLUMN (Fixed Income):\n- Header: same as the PC header, but the dot uses var(--fi-accent), the title is \"Fixed Income\" and the subtitle is \"ramp up\".\n- Onboarding block (padding-top:18px):\n  - Header row (flex, baseline, space-between): \"Onboarding readiness\" as an eyebrow in var(--fi-accent), and the count \"2 of 5 ready\" at 12px ink-muted.\n  - Items: flex, align center, gap 12px, fixed height 42px, border-bottom hairline. Each item has:\n    - Checkbox: 16x16, border-box, radius 3px, border 1.5px solid x.bd, bg x.bg, display grid, place-items center. Inside, the Material Symbols \"check\" glyph at 13px in var(--paper) with opacity x.ck.\n    - Label: flex:1, 15px, colour x.fg.\n    - Due text: numeric font 12px, ink-muted.\n  - Footnote: 13px ink-muted, margin-top 10px.\n- First rotation block (padding-top:28px):\n  - Header row: \"First rotation\" eyebrow in fi-accent, with \"starts on day one\" at 12px ink-muted.\n  - Tiles: grid repeat(3, minmax(0,1fr)), gap 10px, margin-top 12px. Tiles are about 270.7px wide at 1080p ((832-20)/3) and 377.3px at 1440p.\n  - Each tile: border-box, padding 12px 14px, border {t.bw} solid {t.bd}, radius var(--radius-m)=6px, flex column, gap 5px. Contents:\n    - Top row (flex, space-between, center): the country code in numeric font 11px ink-muted, and a pass chip (inline-flex, height 18px, padding 0 6px, radius 3px, bg var(--fi-accent-soft), inset 1px var(--fi-accent), 10px/600).\n    - Country name: 16px/500.\n    - Dates: numeric font 11px, ink-muted.\n  - Below the tiles, a text button with margin-top 12px, border 0, transparent bg, padding 0, flex, center, gap 4px, 13px/600, cursor pointer, colour inherited (ink). Its text is \"Whole rotation, loop 1 ends {loopEnd}\", followed by the Material Symbols \"north_east\" glyph at 16px.\n- After day one block (padding-top:28px):\n  - Eyebrow \"After day one\" in fi-accent.\n  - One clickable row: grid 1fr auto, gap 24px, align center, padding 12px 0, border-bottom hairline, cursor pointer.\n    - Left: name (15px/500), then a note (13px ink-muted, margin-top 3px).\n    - Right: target text in numeric font 12px, ink-muted.\n\nAPPROXIMATE VERTICAL BUDGET at 1080p: padding 36 + hero ≈135 + gap 40 + strip ≈118 + gap 40 + FI column ≈585 + padding 48 ≈ 1000px. That just fits the 1008px content height. The section has overflow:auto, so anything taller scrolls. At 1440p the logical canvas is larger (2472x1368 content), so there is spare vertical room and all widths scale as described. No breakpoints or media queries are used; only the fr and minmax columns flex.",
+ "components": [
+  {
+   "name": "TransitionHero (countdown)",
+   "description": "Left cell of a 5fr/7fr grid (column-gap 72px, align-items end). Contents:\n- Eyebrow 'Transition': 11px, weight 600, letter-spacing 0.08em, uppercase, var(--ink-muted).\n- Row with baseline alignment, gap 18px, margin-top 12px:\n  - Big number: 120px, weight 300, line-height 0.9, letter-spacing -0.04em, Albert Sans with tabular numerals. Hard-coded '61' in the prototype; production should use the remaining business-day count N.\n  - Stacked column (gap 4px, padding-bottom 6px): '<N> business days to Fixed Income' in the 20px/500 line, then the long move date 'Monday 4 January 2027' in 15px ink-muted. The date is hard-coded; production should use F.l(MOVE).",
+   "states": [
+    "default"
+   ]
+  },
+  {
+   "name": "VerdictBlock",
+   "description": "Right cell of the hero (padding-bottom 6px). Contents:\n- Eyebrow 'Am I on track to move cleanly?'.\n- Row (align center, gap 12px, margin-top 12px): a 10px circle with background v.dot, then v.short at 36px/600, letter-spacing -0.02em, line-height 1.1.\n- Paragraph v.sentence: margin-top 10px, 17px, line-height 1.5, ink-muted, max-width 52em, text-wrap pretty.\nThe values come from model.verdict, computed in Remi.dc.html (see algorithms). Its three states each set a dot colour, a short answer and a sentence.",
+   "states": [
+    "on track: dot var(--ink), short 'Yes'",
+    "on track narrowly (any project in status 'risk'): dot var(--ink), short 'Yes, narrowly'",
+    "at risk (returns pipeline forecast >= Dec run): dot var(--risk), short 'At risk'",
+    "off track (any PC forecast >= move): dot var(--overload), short 'Not yet'"
+   ]
+  },
+  {
+   "name": "FlagLane",
+   "description": "Container: position relative, height 44px, directly above the tick bar.\n\nEach flag:\n- Absolutely positioned at left:x, bottom:0.\n- Flex column with align-items al.\n- Transform tx: translateX(-0.5px) centres the 1px stick on x; translateX(-100%) is used for the Move flag.\n- transition: left var(--dur-slow)=440ms var(--spring-soft).\n- Label: 11px/600, nowrap, colour fg, padding-left pl (6px normally, 0 for Move), padding-right pr (0 normally, 6px for Move), margin-bottom lift.\n- Stick: a 1px-wide span of height h, background fg.\n\nStaggering by sorted index i:\n- Even i: lift 2px, stick 10px (label sits low).\n- Odd i: lift 18px, stick 26px (label sits high, above the lane; there is an 18px gap between the stick top and the label).\n\nThe Move flag sits at 100%, right-aligned, and uses colour var(--fi-accent).\n\nSeed render, left to right:\n- 'Returns pipeline · 2 Dec' at 68.852%, low, risk colour.\n- 'Dec run' at 68.852%, high, ink-muted. It sits at the same x as the Returns flag.\n- 'ManCo automation · 11 Dec' at 80.328%, low, ink.\n- 'Handover playbook · 18 Dec' at 88.525%, high, ink.\n- 'Move' at 100%, low, fi-accent.",
+   "states": [
+    "normal flag (left-aligned label to the right of the stick)",
+    "Move flag (label right-aligned to the left of the stick)",
+    "risk project flag colour color-mix(in oklch, var(--risk) 45%, var(--ink))",
+    "non-risk project flag var(--ink)",
+    "Dec run var(--ink-muted)"
+   ]
+  },
+  {
+   "name": "BusinessDayTickBar",
+   "description": "Flex row: gap 2px, height 22px, align-items stretch. It has one tick for each business day strictly after TODAY and strictly before MOVE; the seed has 61.\n\nEach tick:\n- flex '1 1 0', border-radius 1px.\n- background: var(--pc-accent-soft) if the day is <= the last PC exit forecast, otherwise transparent.\n- box-shadow: inset 0 0 0 1px, in color-mix(in oklch, var(--pc-accent) 55%, var(--paper)) for PC-running days and var(--hairline) for buffer days.\n- transition: background var(--dur-base)=240ms var(--ease-out). The box-shadow is not transitioned.\n- Native title tooltip: '<Ddd D Mon> · BD<n>', for example 'Tue 6 Oct · BD4'.\n\nWith the seed data, ticks 0–53 (6 Oct to 18 Dec) are filled and ticks 54–60 (21, 22, 23, 24, 29, 30, 31 Dec) are buffer.",
+   "states": [
+    "PC exit still running (filled soft green, 55%-mix outline)",
+    "buffer after last exit (transparent, hairline outline)"
+   ]
+  },
+  {
+   "name": "MonthMarks",
+   "description": "Container: position relative, height 22px, margin-top 6px.\n\nLabels are absolutely positioned at left = k/N x 100% (3 decimals), where k is the index of the first remaining business day of each month. They use the full month name, JetBrains Mono 11px, ink-muted, padding-left 4px, border-left 1px solid hairline.\n\nSeed: 'October' at 0.000%, 'November' at 31.148%, 'December' at 65.574%.",
+   "states": [
+    "default"
+   ]
+  },
+  {
+   "name": "StripLegend",
+   "description": "Flex row: gap 24px, margin-top 6px, 13px, ink-muted. Items:\n1. A swatch (10x12px, radius 1px, bg var(--pc-accent-soft), inset 1px var(--pc-accent)) and 'Private Credit exits still running'. The legend outline uses full pc-accent, but the ticks use a 55% mix.\n2. A swatch (10x12, radius 1, inset 1px var(--hairline), no fill) and 'Buffer after the last exit'.\n3. The text 'One block per remaining business day; bank holidays left out.'\nSwatch items: flex, align center, gap 8px.",
+   "states": [
+    "static"
+   ]
+  },
+  {
+   "name": "DomainColumnHeader",
+   "description": "Flex row: align baseline, gap 12px, border-bottom 1px solid var(--ink), padding-bottom 10px. Contents:\n- A 7px circle in the domain accent, with align-self center.\n- Title at 20px/600, letter-spacing -0.01em.\n- Subtitle at 13px ink-muted.\nPC: 'Private Credit' / 'wind down' with var(--pc-accent). FI: 'Fixed Income' / 'ramp up' with var(--fi-accent).",
+   "states": [
+    "pc",
+    "fi"
+   ]
+  },
+  {
+   "name": "WindDownProjectGroup",
+   "description": "Repeated group (padding-top 18px). Header row (flex, baseline, space-between):\n- Uppercase eyebrow label in g.fg (var(--pc-accent)): 'Wind-down projects'.\n- Count at 12px ink-muted: '<n> project(s)'.\nThen one WindDownProjectRow for each PC project. When there are no PC projects, the empty-state line 'No Private Credit projects left to wind down.' shows at 14px ink-muted, padding 10px 0, border-bottom hairline.\nThe routes list only ever holds one group, although the brief asked for 'projects by exit route'.",
+   "states": [
+    "populated",
+    "empty"
+   ]
+  },
+  {
+   "name": "WindDownProjectRow",
+   "description": "Grid with columns minmax(0,1fr) 170px 150px. column-gap 24px, align center, padding 12px 0, border-bottom 1px hairline, cursor pointer. opacity is 1, or 0.35 when another project is hovered. transition: opacity var(--dur-fast)=140ms var(--ease-out).\n\nCells:\n- Name: 15px/500.\n- Readiness meter: a 4px-tall track in var(--hairline) with radius 1px and overflow hidden. The fill is var(--pc-accent) at width readiness%, with transition: width 440ms var(--spring-soft). Beside it, the percentage in JetBrains Mono 12px ink-muted, min-width 32px, right-aligned.\n- Forecast: the forecast day-month text (13px), such as '2 Dec', then a delta chip. The chip is 20px high, padding 0 6px, radius 3px, JetBrains Mono 11px.\n\nChip states:\n- Risk: bg color-mix(in oklch, var(--risk) 22%, var(--paper)); fg color-mix(in oklch, var(--risk) 40%, var(--ink)); outline transparent.\n- Otherwise: bg transparent; fg var(--ink-muted); inset 1px var(--hairline).\n\nChip text is deltaLabel: '+3 BD', '−2 BD' (uses U+2212 minus), 'On target', or 'No forecast'.\n\nSeed rows:\n- Returns pipeline automation: 60%, '2 Dec', '+3 BD' (risk).\n- ManCo pack automation: 35%, '11 Dec', 'On target'.\n- PC handover playbook: 20%, '18 Dec', 'On target'.",
+   "states": [
+    "default",
+    "hovered (self stays 1)",
+    "dimmed (another project hovered: opacity 0.35)",
+    "risk chip",
+    "neutral chip",
+    "no-forecast (forecastDM '—', chip 'No forecast')"
+   ]
+  },
+  {
+   "name": "RoutineHandoverRow",
+   "description": "Sits under the eyebrow 'Routines by handover status' (padding-top 28px on the block). Grid minmax(0,1fr) auto, gap 24px, align center, padding 12px 0, border-bottom hairline. Not interactive.\n\n- Left: the routine name (15px/500, falls back to 'Untitled routine'), then a note (13px ink-muted, margin-top 3px).\n- Right: a status pill (height 24px, padding 0 8px, radius 3px, inset 1px hairline, 12px/500, gap 6px). It holds a 6px circle that is always var(--pc-accent), and the status text. Status is the stage name: 'Manual' | 'Automating' | 'Shadowed' | 'Handed over'.\n\nSeed rows:\n- 'Fund & security-level returns' / 'Successor shadows the Thu 3 Dec run on the automated pipeline' / 'Automating'.\n- 'Managing Committee pack' / 'Successor builds the Thu 10 Dec pack; commentary stays manual' / 'Automating'.",
+   "states": [
+    "one per routine; the status dot colour is constant"
+   ]
+  },
+  {
+   "name": "OnboardingReadinessList",
+   "description": "Block with padding-top 18px.\n\nHeader: 'Onboarding readiness' (eyebrow in fi-accent), with the count '<done> of <total> ready' at 12px ink-muted.\n\nItems: height 42px, flex, gap 12px, border-bottom hairline. Each has:\n- A decorative checkbox (16x16, radius 3px, 1.5px border). Done: border and bg var(--ink), with the white-on-ink 'check' glyph (Material Symbols, 13px, colour var(--paper)) at opacity 1. Not done: border var(--ink-faint), transparent bg, glyph opacity 0.\n- Label: 15px. Colour var(--ink-muted) when done, var(--ink) when pending.\n- Due text at right (JetBrains Mono 12px ink-muted): 'done', or a short date such as 'Fri 30 Oct'.\n\nFootnote (13px ink-muted, margin-top 10px): 'Forecast ready Mon 4 Jan, the day of the move. The dry run on Thu 17 Dec is the real test.'\n\nNot clickable in this design.\n\nSeed items:\n- Market data entitlements (done).\n- Research library access (done).\n- Curve & auction data feeds (Fri 30 Oct).\n- Sovereign model walkthrough (Thu 26 Nov).\n- Day-one dry run (Thu 17 Dec).",
+   "states": [
+    "item done",
+    "item pending"
+   ]
+  },
+  {
+   "name": "RotationTile",
+   "description": "Grid of three equal tiles, gap 10px, margin-top 12px. Header row: 'First rotation' (eyebrow in fi-accent) with 'starts on day one' at 12px ink-muted.\n\nEach tile:\n- Padding 12px 14px, radius 6px, flex column, gap 5px.\n- The first tile (current/next) has a 1.5px solid var(--ink) border. The others have a 1px solid var(--hairline) border.\n- Top row: the country code (JetBrains Mono 11px ink-muted) and a pass chip ('Build' or 'Refresh'; height 18px, padding 0 6px, radius 3px, bg var(--fi-accent-soft), inset 1px var(--fi-accent), 10px/600).\n- Country name: 16px/500.\n- Date range (JetBrains Mono 11px ink-muted): '4 Jan – 11 Jan'. The separator is an en dash with spaces.\n\nSeed tiles: DE Germany Build 4 Jan – 11 Jan; FR France Build 12 Jan – 18 Jan; IT Italy Build 19 Jan – 26 Jan.",
+   "states": [
+    "first tile emphasised (1.5px ink border)",
+    "other tiles (1px hairline border)"
+   ]
+  },
+  {
+   "name": "WholeRotationLink",
+   "description": "A bare text button. margin-top 12px, border 0, transparent bg, padding 0, flex, align center, gap 4px, 13px/600, colour inherited (ink), cursor pointer. No hover style is defined.\n\nText: 'Whole rotation, loop 1 ends Mon 8 Mar', followed by the Material Symbols 'north_east' glyph at 16px. It navigates to the Routines screen.",
+   "states": [
+    "default"
+   ]
+  },
+  {
+   "name": "AfterDayOneRow",
+   "description": "Sits under the eyebrow 'After day one' (fi-accent), in a block with padding-top 28px.\n\nThe row: grid 1fr auto, gap 24px, padding 12px 0, border-bottom hairline, cursor pointer. No hover styling and no hover-dim link.\n- Left: 'Alpha engine v0' (15px/500), then the note 'In Define, charter half-written. Planning starts once the rotation is under way.' (13px ink-muted, margin-top 3px). The note is hard-coded.\n- Right: 'Target Late Mar 2027' (JetBrains Mono 12px ink-muted), from targetLabel.\n\nClicking opens the Alpha project workspace.",
+   "states": [
+    "default"
+   ]
+  }
+ ],
+ "dataConsumed": [
+  "props.model (the whole shell model). If it is missing, renderVals returns {}.",
+  "model.F: formatters. F.s(n) → 'Ddd D Mon' (e.g. 'Wed 2 Dec'). F.dm(n) → 'D Mon'. F.monL(n) → full month name. F.l(n) → 'Monday 4 January' (not used; the date is hard-coded instead). F.dn(iso) → day number. Day numbers are integer UTC days since the epoch (Math.round(Date.UTC(y,m-1,d)/86400000)).",
+  "model.CAL: business-day calendar from 2026-08-31 to 2027-04-30.\n- CAL.bds: ascending array of business-day numbers (Mon–Fri, excluding HOL).\n- CAL.days[n]: { n, iso, w (0=Sun), m (0-based month), d, y, bd:boolean, bdm: business-day-of-month ordinal or null, hol: name|null }.\n- CAL.addBD, CAL.bdDiff and CAL.idx are used indirectly through the shell.",
+  "model.TODAY: day number for 2026-10-05 (Mon; BD3 of October). Hard-coded.",
+  "model.MOVE: day number for 2027-01-04 (Mon), the move day. Hard-coded.",
+  "model.DEC_RUN: day number for 2026-12-03 (Thu), the December BD3 returns run the successor must shadow. Hard-coded.",
+  "model.P: derived projects. Fields used here:\n- id, domain ('pc' | 'fi'), name, short.\n- forecastN (day number or null).\n- forecastDM ('D Mon' or '—').\n- status: 'risk' when forecast is later than target in business days, 'on' otherwise, 'define' when there is no forecast.\n- deltaLabel: '+N BD', '−N BD', 'On target' or 'No forecast'. Delta is CAL.bdDiff(targetN, forecastN).\n- readiness: 0..1 float, manual seed. ret=0.6, manco=0.35, play=0.2.",
+  "model.pmap: map from project id to derived project. The screen reads pmap.fion and pmap.alpha.\n- pmap.fion.readinessList: Array<{ t:string, done?:boolean, due?:'YYYY-MM-DD' }>.\n- pmap.fion.forecastS: 'Mon 4 Jan'.\n- pmap.alpha.name: 'Alpha engine v0'.\n- pmap.alpha.targetS: p.targetLabel || F.s(targetN), i.e. 'Late Mar 2027'.",
+  "model.verdict: { word, short, dot, tone, sentence, buffer, toRun }. Here it is read as v.dot, v.short and v.sentence. The shell header uses word.",
+  "model.routines: derived routines { id, name, short, domain, kind, bd, wd, h, stage (0..3), statusNote, rule (ruleText, e.g. '3rd business day, monthly'), status = STAGES[stage] ('Manual' | 'Automating' | 'Shadowed' | 'Handed over'), next[] }. Seed: r-ret (stage 1, bd 3, h 6, pid 'ret') and r-man (stage 1, bd 8, h 4, pid 'manco').",
+  "model.ROT: country rotation segments { i, country, code, len (BDs), pass ('Build' | 'Refresh'), s, e (day numbers), sS, eS (F.s strings) }. The screen uses ROT.slice(0,3) and ROT[9].eS.",
+  "model.hover: the globally hovered project id, or null. It is shared across all screens.",
+  "model.setHover(id): sets the global hover id.",
+  "model.openProject(id, viaCard?): opens the project workspace.",
+  "model.go(screen): switches screen."
+ ],
+ "interactions": [
+  "Mouse enter on a wind-down project row calls m.setHover(p.id), which updates the global state.hover only if it differs. Every other wind-down row whose id differs from hover fades to opacity 0.35 over 140ms with the ease-out curve. The hovered row stays at 1. Other screens share the same hover state.",
+  "Mouse leave on a project row calls setHover(null), and all rows return to opacity 1.",
+  "Clicking a wind-down project row calls m.openProject(p.id) with no viaCard flag, so no View Transition runs. The shell closes the command palette and sets screen='workspace', ws=id, instant=false. The screens then crossfade: the outgoing screen fades opacity over 140ms and its visibility flips after 140ms; the incoming screen fades opacity over 240ms ease-out after a 60ms delay.",
+  "Clicking the 'After day one' Alpha row calls m.openProject('alpha') and behaves the same as a project row.",
+  "Clicking the 'Whole rotation, loop 1 ends Mon 8 Mar ↗' button calls m.go('routines'). This switches to the Routines screen, which shows the full rotation track, and closes the palette.",
+  "Hovering a tick in the business-day strip shows the native browser tooltip from the title attribute, e.g. 'Thu 3 Dec · BD3'.",
+  "The onboarding checkboxes, routine rows, rotation tiles, flags and legend have no interactions. They are display only.",
+  "The shell provides inherited global interactions on this screen:\n- Cmd/Ctrl+K toggles the command palette.\n- Escape closes the palette, or the check-in drawer if the palette is not open.\n- The header's 'Tell Remi' button opens the check-in drawer with a null project.\n- The header's '61 business days to Fixed Income' button navigates to this screen.\n- The nav rail 'Transition' item (icon arrow_forward) navigates here.\n- In the palette, 'Jump to → Transition' navigates here.",
+  "There is no keyboard access to the clickable rows, which are divs with no tabindex or role."
+ ],
+ "motion": [
+  "Flag position: transition: left var(--dur-slow) var(--spring-soft). Duration is 440ms. spring-soft is linear(0, 0.049 5%, 0.156 10%, 0.283 15%, 0.408 20%, 0.522 25%, 0.62 30%, 0.702 35%, 0.769 40%, 0.864 50%, 0.922 60%, 0.956 70%, 0.976 80%, 0.987 90%, 1). Flags glide when a forecast changes, for example after a check-in saved from the drawer while this screen is behind it. Re-sorting can change a flag's index, so its lift and stick height (2px/10px vs 18px/26px) snap to the new values without animation, because only left is transitioned.",
+  "Tick fill: transition: background var(--dur-base) var(--ease-out), i.e. 240ms cubic-bezier(0.23, 1, 0.32, 1). Ticks recolour when the last PC exit moves. The inset box-shadow outline colour changes instantly because it is not transitioned.",
+  "Readiness bar fill: transition: width 440ms var(--spring-soft).",
+  "Project row dim on hover: transition: opacity var(--dur-fast) var(--ease-out), i.e. 140ms cubic-bezier(0.23, 1, 0.32, 1). The target opacity is 0.35 for rows that are not hovered.",
+  "Screen enter and exit, from the shell section wrapper:\n- Entering: opacity 0→1 over 240ms ease-out with a 60ms delay; visibility switches to visible immediately.\n- Leaving: opacity 1→0 over 140ms ease-out; visibility switches to hidden after 140ms.\n- If state.instant is true (only during the project-card view transition), there is no transition.",
+  "No mount or entrance animations are defined for this screen: no stagger, no keyframes, and no count-up on the '61'. Every screen stays mounted, so value transitions only show if data changes while the screen is visible or within about 440ms of it appearing.",
+  "Reduced motion is triggered by :root[data-motion='reduced'] (the shell 'motion' tweak) or by @media (prefers-reduced-motion: reduce). It sets --spring-soft to steps(1, jump-start), so the flag slide and readiness bar width change become instant. The ease-out fades (background 240ms, opacity 140ms, screen crossfade) are not removed under reduced motion."
+ ],
+ "algorithms": [
+  "REMAINING DAYS:\n- rem = CAL.bds.filter(n => n > TODAY && n < MOVE). TODAY and MOVE are both excluded, and bank holidays are excluded because they are not in bds.\n- N = rem.length.\n- For seed TODAY=2026-10-05 and MOVE=2027-01-04, N = 61: October 19 (6–30 Oct), November 21, December 21 (25 and 28 Dec are holidays). This matches the hard-coded '61' in the hero and in the shell header, which should be replaced by N.",
+  "HOLIDAYS (HOL, England and Wales): 2026-12-25 Christmas Day; 2026-12-28 Boxing Day (substitute); 2027-01-01 New Year's Day; 2027-03-26 Good Friday; 2027-03-29 Easter Monday. A business day is weekday w in 1..5 and not in HOL. bdm is the running count of business days within the calendar month, starting at 1.",
+  "LAST PC EXIT: lastPC = Math.max(...pcProjects.map(p => p.forecastN)). PC projects are P.filter(domain==='pc'). Seed value: 2026-12-18 (PC handover playbook).",
+  "TICKS: for each n in rem:\n- bg = n <= lastPC ? 'var(--pc-accent-soft)' : 'transparent'.\n- line = n <= lastPC ? 'color-mix(in oklch, var(--pc-accent) 55%, var(--paper))' : 'var(--hairline)'.\n- title = F.s(n) + ' · BD' + CAL.days[n].bdm.\n- flex = '1 1 0'.",
+  "FLAG POSITION FUNCTIONS (percent strings with 3 decimals). Both place x at a tick boundary index divided by N, and neither accounts for the 2px gaps.\n- pos(n) = (k<0 ? N : k)/N*100, where k = first index in rem with rem[k] >= n. This is the LEFT edge of day n's tick.\n- posEnd(n) is the same but uses rem[k] > n. This is the RIGHT edge of day n's tick.",
+  "FLAGS:\n- Each PC project with forecastN != null: x = posEnd(forecastN), label = p.short + ' · ' + p.forecastDM, fg = risk ? 'color-mix(in oklch, var(--risk) 45%, var(--ink))' : 'var(--ink)'.\n- Dec run: x = pos(DEC_RUN), label 'Dec run', fg 'var(--ink-muted)'.\n- Move: x = '100%', label 'Move', fg 'var(--fi-accent)'.\n- Flags are sorted ascending by parseFloat(x). The sort is stable, so ties keep insertion order with PC projects first.\n- For sorted index i:\n  - lift = i odd ? '18px' : '2px'.\n  - h = i odd ? '26px' : '10px'.\n  - If x === '100%': al 'flex-end', pl '0px', pr '6px', tx 'translateX(-100%)'.\n  - Otherwise: al 'flex-start', pl '6px', pr '0px', tx 'translateX(-0.5px)'.\n- Seed x values:\n  - ret 2 Dec: 42/61 = 68.852%.\n  - Dec run 3 Dec: 42/61 = 68.852%.\n  - manco 11 Dec: 49/61 = 80.328%.\n  - play 18 Dec: 54/61 = 88.525%.\n  - Move: 100%.",
+  "MONTH MARKS: for k in 0..N-1, when k === 0 or CAL.days[rem[k]].m differs from CAL.days[rem[k-1]].m, push { x: (k/N*100).toFixed(3)+'%', label: F.monL(rem[k]) }. Seed: October 0.000% (k=0), November 31.148% (k=19), December 65.574% (k=40).",
+  "PROJECT ROW: for each PC project p:\n- ready = readyL = Math.round((p.readiness||0)*100) + '%'.\n- f = p.forecastDM.\n- chip = p.deltaLabel.\n- chipBg = risk ? 'color-mix(in oklch, var(--risk) 22%, var(--paper))' : 'transparent'.\n- chipFg = risk ? 'color-mix(in oklch, var(--risk) 40%, var(--ink))' : 'var(--ink-muted)'.\n- chipLine = risk ? 'transparent' : 'var(--hairline)'.\n- op = hover && hover !== p.id ? 0.35 : 1.",
+  "GROUP: a single group { label 'Wind-down projects', fg 'var(--pc-accent)', rows: all PC projects, count: n + ' project' + (n===1 ? '' : 's'), empty: n ? null : 'No Private Credit projects left to wind down.' }.",
+  "PROJECT STATUS (shell):\n- delta = CAL.bdDiff(targetN, forecastN), where bdDiff(a,b) = idx[nextBD(b)] - idx[nextBD(a)] and nextBD rolls non-business days forward.\n- status = forecast null ? 'define' : delta > 0 ? 'risk' : 'on'.\n- deltaLabel = null ? 'No forecast' : >0 ? '+'+delta+' BD' : <0 ? '−'+(-delta)+' BD' (U+2212) : 'On target'.",
+  "VERDICT (shell buildModel):\n- Inputs:\n  - pcP = PC projects.\n  - lastPC = max forecastN.\n  - buffer = CAL.bdDiff(lastPC, MOVE). This counts MOVE, so the seed gives 8, while the strip shows 7 buffer blocks.\n  - ret = pmap.ret (hard-coded project id).\n  - toRun = CAL.bdDiff(ret.forecastN, DEC_RUN).\n- Rules, checked in order:\n  1. If any PC forecastN >= MOVE: { word 'Off track for the move', short 'Not yet', dot/tone 'var(--overload)', sentence 'A Private Credit exit now lands on or after 4 Jan. Something has to be cut, automated later, or handed over as it stands.' }.\n  2. Otherwise, if ret.forecastN >= DEC_RUN: { word 'Move at risk', short 'At risk', dot/tone 'var(--risk)', sentence 'Every Private Credit exit still lands before 4 Jan, but the returns pipeline now misses the December run on Thu 3 Dec, the last one your successor can shadow with you there.' }.\n  3. Otherwise: { word = any project (all domains) with status 'risk' ? 'Move on track, narrowly' : 'Move on track'; short 'Yes, narrowly' / 'Yes'; dot/tone 'var(--ink)'; sentence 'Every Private Credit exit lands before 4 Jan, with ' + buffer + ' business days to spare. The one to watch is the returns pipeline: forecast ' + ret.forecastS + ', ' + toRun + ' business day' + (toRun===1 ? '' : 's') + ' before the December run your successor needs to shadow.' }.\n- Seed result: 'Yes, narrowly' with the sentence 'Every Private Credit exit lands before 4 Jan, with 8 business days to spare. The one to watch is the returns pipeline: forecast Wed 2 Dec, 1 business day before the December run your successor needs to shadow.'",
+  "ROUTINE ROWS: for each routine r (not filtered by domain):\n- name = r.name || 'Untitled routine'.\n- status = STAGES[r.stage], where STAGES = ['Manual','Automating','Shadowed','Handed over'].\n- note: r.id==='r-ret' → 'Successor shadows the Thu 3 Dec run on the automated pipeline'; r.id==='r-man' → 'Successor builds the Thu 10 Dec pack; commentary stays manual'; otherwise r.statusNote || r.rule. rule is ruleText: daily → 'Every business day'; weekly → 'Every <Weekday>'; monthly → ORD(bd) + ' business day, monthly'.\n- Thu 3 Dec is December BD3 and Thu 10 Dec is December BD8, the last occurrences before the move. Production should derive these rather than hard-code them.",
+  "ONBOARDING:\n- items = fion.readinessList.map(x => { t, bd: done ? 'var(--ink)' : 'var(--ink-faint)', bg: done ? 'var(--ink)' : 'transparent', ck: done ? 1 : 0, fg: done ? 'var(--ink-muted)' : 'var(--ink)', due: done ? 'done' : F.s(F.dn(x.due)) }).\n- count = doneN + ' of ' + items.length + ' ready'.\n- note = 'Forecast ready ' + fion.forecastS + ', the day of the move. The dry run on ' + F.s(F.dn('2026-12-17')) + ' is the real test.' The dry-run date and the phrase 'the day of the move' are hard-coded.",
+  "ROTATION SCHEDULE (shell):\n- ROT_DEF = [Germany DE 6 Build, France FR 5 Build, Italy IT 6 Build, Spain ES 5 Build, Netherlands NL 4 Build, Belgium BE 4 Build, Austria AT 4 Build, Portugal PT 4 Build, Ireland IE 4 Build, Finland FI 4 Build, Germany DE 3 Refresh]. Lengths are in business days.\n- Start with s = MOVE. For each entry: e = CAL.addBD(s, len-1), then next s = CAL.addBD(e, 1). addBD clamps to the calendar range.\n- Seed dates:\n  - DE 4–11 Jan.\n  - FR 12–18 Jan.\n  - IT 19–26 Jan.\n  - ES 27 Jan–2 Feb.\n  - NL 3–8 Feb.\n  - BE 9–12 Feb.\n  - AT 15–18 Feb.\n  - PT 19–24 Feb.\n  - IE 25 Feb–2 Mar.\n  - FI 3–8 Mar, so ROT[9].eS = 'Mon 8 Mar' = loopEnd.\n  - DE Refresh 9–11 Mar.",
+  "FIRST ROTATION TILES: ROT.slice(0,3).map((sg,k) => { code, pass, country, dates: F.dm(sg.s) + ' – ' + F.dm(sg.e), bw: k===0 ? '1.5px' : '1px', bd: k===0 ? 'var(--ink)' : 'var(--hairline)' }). loopEnd = ROT[9].eS, a hard-coded index for the 10th country (the end of loop 1)."
+ ],
+ "backendImplications": [
+  "Add a TransitionSettings / user profile entity: move_date (2027-01-04), today override for demos, holiday calendar region (UK vs South Africa is still open), working hours per day (8), and the successor shadow-run date. The shadow-run date is currently DEC_RUN = 2026-12-03 and should be derived as the last pre-move occurrence of the returns routine, or stored explicitly.",
+  "Build a business-calendar service in utils/core: business-day generation with holidays, bdm ordinal, addBD, bdDiff, nextBD, and formatters (short, day-month, long, month-long). This logic is used by the verdict, ticks, rotation and deltas. Store holidays in the DB or config, not in constants. The prototype calendar only covers 2026-08-31 to 2027-04-30.",
+  "Add GET /api/transition (a transition service) returning:\n- daysRemaining N and the move date (ISO plus a long label).\n- verdict { state: on_track | narrow | at_risk | off_track, word, short, sentence, buffer, toRun }.\n- The strip: remainingDays[{ date, bdm, pcRunning:boolean }], flags[{ kind: project | shadow_run | move, projectId?, label, position, status }] and monthMarks[{ label, position }]. Alternatively return raw dates and let the client compute positions.\n- The PC wind-down group(s) with project rows.\n- Routines with stage and handover note.\n- The FI onboarding checklist, the first three rotation segments plus loopEnd, and the 'after day one' FI projects.",
+  "Move the verdict to the server (services layer). It currently hard-codes the critical project id 'ret' and its link to the shadow run. Model this as a project flag (e.g. is_critical_path / shadow_routine_id) or a routine→project relation (routine.pid already exists), so the verdict can generalise.",
+  "Projects need readiness (0..1). It is a manual seed today (ret 0.6, manco 0.35, play 0.2), with a separate routine readiness (r-ret 0.55, r-man 0.35) that is unused. Decide whether readiness is user-entered on check-in or derived (e.g. completed tasks/milestones ÷ total), and store or compute it server-side.",
+  "Projects need an exit route (exit: ['Automate','Hand over'] | ['Hand over'] | null) if grouping by exit route is implemented. The design currently renders a single 'Wind-down projects' group but keeps the list-of-groups structure.",
+  "Add a project checklist/readiness-item entity for FI onboarding: { id, project_id, title, done, due_date, done_on }. The prototype items have no ids. Expose an endpoint to toggle and update items; this screen does not toggle them, but the data must be editable somewhere.",
+  "Routines need a handover note field (e.g. handover_note) or a computed note from the last pre-move occurrence ('Successor shadows the Thu 3 Dec run…', 'Successor builds the Thu 10 Dec pack…'). Both are currently hard-coded by routine id. Routine stage is an enum: Manual | Automating | Shadowed | Handed over. Consider filtering to PC routines.",
+  "Add a rotation entity (country, code, length_bd, pass Build/Refresh, order, loop) plus a rotation schedule service anchored at the move date. The loop end should be computed as the last Build segment rather than ROT[9].",
+  "Store per-project static copy, such as the Alpha 'after day one' note ('In Define, charter half-written…'), as data, e.g. a phase/status summary or next-step text. Also store a target label override (targetLabel 'Late Mar 2027').",
+  "Project forecast/target/delta/status derivation (bdDiff) belongs in the service layer and is shared with other screens.",
+  "Endpoints consumed by navigation only: none. openProject and go are client routing, e.g. /projects/:id and /routines."
+ ],
+ "risksAndQuirks": [
+  "The hero '61' and 'Monday 4 January 2027' are hard-coded in the template rather than bound to N and F.l(MOVE). The shell header also hard-codes '61', 'Mon 5 Oct' and 'BD3'.",
+  "The verdict sentences hard-code '4 Jan' and 'Thu 3 Dec'. The onboarding note hard-codes the dry-run date '2026-12-17' and the phrase 'the day of the move', whatever fion.forecast is. The Alpha note is hard-coded. The routine notes for 'r-ret' and 'r-man' are hard-coded by id.",
+  "The screen crashes if pmap.fion or pmap.alpha is missing: removeProject allows deleting them, and fion.readinessList, alpha.name and fion.forecastS would throw. The shell verdict also crashes if pmap.ret is deleted. ROT[9] assumes at least 10 rotation segments.",
+  "F.s(F.dn(x.due)) throws if a pending readiness item has no due date, or the date is outside the calendar range.",
+  "lastPC = Math.max(...) returns -Infinity with no PC projects, so no ticks are filled. Null forecasts are coerced to 0 by Math.max. The verdict's `p.forecastN >= MOVE` treats null as 0.",
+  "If a PC forecast lands on or after MOVE, posEnd returns '100%'. The code then treats that flag as the Move flag (right-aligned, translateX(-100%)), and it overlaps the Move label.",
+  "Flags at the same x overlap. Seed data already has 'Returns pipeline · 2 Dec' and 'Dec run' at exactly 68.852%. Alternating index-based heights only separate two neighbours, so three or more close flags collide. Positions ignore the 2px gaps between ticks, so flags sit slightly off the true tick edges (drift of up to about 120px x fraction).",
+  "The buffer counts disagree. The verdict says '8 business days to spare' because bdDiff includes the move day, but the strip shows 7 buffer blocks because rem excludes MOVE. Today is also excluded from the strip.",
+  "The legend swatch outline (full var(--pc-accent)) differs from the tick outline (55% mix with paper).",
+  "The brief says 'projects by exit route', but the implementation uses a single group. The exit field is ignored.",
+  "The routine list is not filtered by domain. The status dot is always pc-accent regardless of stage. Routines at stage 'Handed over' are still listed. The shell overrides the seed text 'Automating, then handover' with STAGES[stage] → 'Automating'.",
+  "Hover state is global and shared across screens. If another screen leaves hover set to an id that is not a PC project, every row here renders at 0.35 until the mouse leaves a row. Consider screen-local hover.",
+  "Clickable rows are divs with no role, tabindex or keyboard handler. Onboarding checkboxes are decorative. Tick tooltips rely on the native title attribute. The production build needs accessible buttons, links and tooltips.",
+  "sc-for lists have no keys. Use project id, 'dec-run', 'move', ISO date, month key, routine id, readiness-item id and segment index as React keys. hint-placeholder-count attributes are streaming-placeholder hints only; ignore them.",
+  "Colours are OKLCH and use color-mix(in oklch, …). Brand accents are placeholders: pc-accent oklch(0.5 0.1 128), fi-accent oklch(0.5 0.1 265). Alternative sets are exposed as shell tweak 'accents', default ['#526e2a', '#47619c'].",
+  "TODAY is fixed at 2026-10-05. Production must use the real current date in the user's timezone. Day numbers are UTC day indices.",
+  "Readiness values are static seeds and are not derived from progress."
+ ],
+ "actionsInvoked": [
+  "m.setHover(p.id): on mouse enter of a PC project row. Sets shell state.hover, which is shared by all screens and dims the other rows.",
+  "m.setHover(null), via unhover: on mouse leave of a PC project row. Clears the hover.",
+  "m.openProject(p.id): on click of a PC project row. Closes the palette and sets screen='workspace', ws=p.id, instant=false. No view transition, because viaCard is undefined.",
+  "m.openProject('alpha'): on click of the 'After day one' row. Opens the Alpha engine v0 workspace.",
+  "m.go('routines'): on click of the 'Whole rotation, loop 1 ends …' button. Sets screen='routines', instant=false and closes the palette."
+ ],
+ "copyText": [
+  "Transition",
+  "61",
+  "business days to Fixed Income",
+  "Monday 4 January 2027",
+  "Am I on track to move cleanly?",
+  "Verdict short: 'Yes' | 'Yes, narrowly' | 'At risk' | 'Not yet'",
+  "Verdict sentence (on track): 'Every Private Credit exit lands before 4 Jan, with {buffer} business days to spare. The one to watch is the returns pipeline: forecast {Ddd D Mon}, {toRun} business day(s) before the December run your successor needs to shadow.'",
+  "Verdict sentence (at risk): 'Every Private Credit exit still lands before 4 Jan, but the returns pipeline now misses the December run on Thu 3 Dec, the last one your successor can shadow with you there.'",
+  "Verdict sentence (off track): 'A Private Credit exit now lands on or after 4 Jan. Something has to be cut, automated later, or handed over as it stands.'",
+  "Header verdict word (shell): 'Move on track' | 'Move on track, narrowly' | 'Move at risk' | 'Off track for the move'",
+  "Flag labels: '{short} · {D Mon}', 'Dec run', 'Move'",
+  "Month marks: 'October', 'November', 'December'",
+  "Tick tooltip: '{Ddd D Mon} · BD{n}'",
+  "Legend: 'Private Credit exits still running' · 'Buffer after the last exit' · 'One block per remaining business day; bank holidays left out.'",
+  "Private Credit · wind down",
+  "Wind-down projects · '{n} project(s)'",
+  "Empty: 'No Private Credit projects left to wind down.'",
+  "Delta chips: '+3 BD' · '−N BD' · 'On target' · 'No forecast'",
+  "Routines by handover status",
+  "Routine notes: 'Successor shadows the Thu 3 Dec run on the automated pipeline' · 'Successor builds the Thu 10 Dec pack; commentary stays manual'",
+  "Routine fallback name: 'Untitled routine'",
+  "Fixed Income · ramp up",
+  "Onboarding readiness · '2 of 5 ready'",
+  "Onboarding items: 'Market data entitlements' (done) · 'Research library access' (done) · 'Curve & auction data feeds' (Fri 30 Oct) · 'Sovereign model walkthrough' (Thu 26 Nov) · 'Day-one dry run' (Thu 17 Dec)",
+  "Onboarding note: 'Forecast ready Mon 4 Jan, the day of the move. The dry run on Thu 17 Dec is the real test.'",
+  "First rotation · 'starts on day one'",
+  "Tiles: 'DE' 'Build' 'Germany' '4 Jan – 11 Jan'; 'FR' 'Build' 'France' '12 Jan – 18 Jan'; 'IT' 'Build' 'Italy' '19 Jan – 26 Jan'",
+  "'Whole rotation, loop 1 ends Mon 8 Mar' + north_east icon",
+  "After day one",
+  "'Alpha engine v0' · 'In Define, charter half-written. Planning starts once the rotation is under way.' · 'Target Late Mar 2027'"
+ ],
+ "externalCalls": [
+  "No fetches, AI calls or iframes in this file.",
+  "Fonts are loaded by the shell (Remi.dc.html <helmet>) from Google Fonts: Albert Sans (weights 300..700, plus italic 400..600) as --font-ui; JetBrains Mono 400/500 as --font-numeric; Libre Caslon Text as --font-display (not used on this screen). Material Symbols Outlined (opsz 20..24, wght 300, FILL 0..1) is subset to icon_names including check and north_east, which this screen uses, with display=block.",
+  "support.js is the dc runtime (sc-for, sc-if, dc-import). Replace it with React components in production."
+ ],
+ "localState": [
+  "None. The component has no state and derives everything in renderVals() from props.model.",
+  "It depends on shell state: hover (global hovered project id), projects, routines, and screen (for visibility)."
+ ],
+ "persistence": [
+  "None directly. The data shown comes from the shell's localStorage key 'remi.v1' (projects, routines, tasks, feed, funds, doneOn, bauDone, notes, m2). The shell saves it with a 250ms debounce after state changes. Project readiness, readinessList, forecast/target and routine stage persist through it. In production these become backend entities."
+ ],
+ "sampleData": "[\n  \"Calendar constants\",\n  \"  - TODAY = 2026-10-05 (Mon, October BD3).\",\n  \"  - MOVE = 2027-01-04 (Mon).\",\n  \"  - DEC_RUN = 2026-12-03 (Thu, December BD3).\",\n  \"  - CAPACITY = 8.\",\n  \"  - HOL = { 2026-12-25 Christmas Day, 2026-12-28 Boxing Day (substitute), 2027-01-01 New Year's Day, 2027-03-26 Good Friday, 2027-03-29 Easter Monday }.\",\n  \"\",\n  \"Private Credit projects\",\n  \"  - ret: 'Returns pipeline automation' / short 'Returns pipeline'.\",\n  \"    - target 2026-11-27, forecast 2026-12-02 (delta +3 BD, risk).\",\n  \"    - readiness 0.6, exit ['Automate','Hand over'].\",\n  \"  - manco: 'ManCo pack automation' / 'ManCo automation'.\",\n  \"    - target = forecast = 2026-12-11 (On target).\",\n  \"    - readiness 0.35.\",\n  \"  - play: 'PC handover playbook' / 'Handover playbook'.\",\n  \"    - target = forecast = 2026-12-18.\",\n  \"    - readiness 0.2, exit ['Hand over'].\",\n  \"\",\n  \"Fixed Income projects\",\n  \"  - fion: 'FI onboarding & data access'.\",\n  \"    - target = forecast = 2027-01-04.\",\n  \"    - readinessList:\",\n  \"      - {t:'Market data entitlements', done:true}\",\n  \"      - {t:'Research library access', done:true}\",\n  \"      - {t:'Curve & auction data feeds', due:'2026-10-30'}\",\n  \"      - {t:'Sovereign model walkthrough', due:'2026-11-26'}\",\n  \"      - {t:'Day-one dry run', due:'2026-12-17'}\",\n  \"  - alpha: 'Alpha engine v0'.\",\n  \"    - start 2026-12-03, target 2027-03-25 with targetLabel 'Late Mar 2027'.\",\n  \"    - forecast null, phase 0 (Define).\",\n  \"\",\n  \"Routines\",\n  \"  - r-ret: 'Fund & security-level returns', short 'Returns'.\",\n  \"    - rule BD3 monthly, 6h, pid 'ret', stage 1.\",\n  \"  - r-man: 'Managing Committee pack', short 'ManCo pack'.\",\n  \"    - rule BD8 monthly, 4h, pid 'manco', stage 1.\",\n  \"\",\n  \"Rotation (ROT_DEF, country / code / length in business days / pass)\",\n  \"  - Germany DE 6 Build\",\n  \"  - France FR 5 Build\",\n  \"  - Italy IT 6 Build\",\n  \"  - Spain ES 5 Build\",\n  \"  - Netherlands NL 4 Build\",\n  \"  - Belgium BE 4 Build\",\n  \"  - Austria AT 4 Build\",\n  \"  - Portugal PT 4 Build\",\n  \"  - Ireland IE 4 Build\",\n  \"  - Finland FI 4 Build\",\n  \"  - Germany DE 3 Refresh\",\n  \"\",\n  \"Derived seed render\",\n  \"  - N = 61. Ticks for 6 Oct to 18 Dec are filled (54 blocks); 7 buffer blocks follow.\",\n  \"  - Verdict: 'Yes, narrowly', with 8 BD buffer and toRun 1.\",\n  \"  - loopEnd: 'Mon 8 Mar'.\",\n  \"\",\n  \"Design tokens (shell :root)\",\n  \"  - Colours:\",\n  \"    - --paper oklch(0.975 0.007 85)\",\n  \"    - --paper-raised oklch(0.99 0.004 85)\",\n  \"    - --ink oklch(0.23 0.012 70)\",\n  \"    - --ink-muted oklch(0.47 0.012 70)\",\n  \"    - --ink-faint oklch(0.58 0.01 75)\",\n  \"    - --hairline oklch(0.9 0.008 80)\",\n  \"    - --pc-accent oklch(0.5 0.1 128)\",\n  \"    - --pc-accent-soft color-mix(in oklch, pc-accent 13%, paper)\",\n  \"    - --fi-accent oklch(0.5 0.1 265)\",\n  \"    - --fi-accent-soft color-mix(in oklch, fi-accent 13%, paper)\",\n  \"    - --risk oklch(0.7 0.13 70)\",\n  \"    - --overload oklch(0.56 0.17 28)\",\n  \"  - Radii: --radius-s 3px, --radius-m 6px.\",\n  \"  - Durations: --dur-fast 140ms, --dur-base 240ms, --dur-slow 440ms.\",\n  \"  - Easing: --ease-out cubic-bezier(0.23,1,0.32,1); --spring-soft is the linear() curve given above.\",\n  \"  - Body: font-variant-numeric tabular-nums; -webkit-font-smoothing antialiased.\"\n]"
+}

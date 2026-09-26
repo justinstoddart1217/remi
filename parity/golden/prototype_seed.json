@@ -1,0 +1,1142 @@
+{
+  "about": "Prototype sample data (Remi.dc.html BASE_* constants), for test fixtures only (ADR-0006).",
+  "today": "2026-10-05",
+  "move": "2027-01-04",
+  "decRun": "2026-12-03",
+  "capacity": 8,
+  "calendarRange": {
+    "from": "2026-08-31",
+    "to": "2027-04-30"
+  },
+  "holidays": {
+    "2026-12-25": "Christmas Day",
+    "2026-12-28": "Boxing Day (substitute)",
+    "2027-01-01": "New Year's Day",
+    "2027-03-26": "Good Friday",
+    "2027-03-29": "Easter Monday"
+  },
+  "phases": [
+    "Define",
+    "Plan",
+    "Run",
+    "Close"
+  ],
+  "stages": [
+    "Manual",
+    "Automating",
+    "Shadowed",
+    "Handed over"
+  ],
+  "projects": [
+    {
+      "id": "ret",
+      "domain": "pc",
+      "name": "Returns pipeline automation",
+      "short": "Returns pipeline",
+      "goal": "Returns for all 12 funds produced in under 30 minutes with no manual steps, ready to hand over.",
+      "start": "2026-09-14",
+      "target": "2026-11-27",
+      "forecast": "2026-12-02",
+      "prev": "2026-11-27",
+      "exit": [
+        "Automate",
+        "Hand over"
+      ],
+      "confidence": 3,
+      "checkin": "2026-10-03",
+      "phase": 2,
+      "rate": 3.5,
+      "bd3": 0,
+      "bd8": 2,
+      "rateAfter": 0,
+      "ov": {
+        "2026-11-04": 3.5
+      },
+      "baseline": 60,
+      "readiness": 0.6,
+      "milestones": [
+        {
+          "name": "Fund-level engine reconciles",
+          "date": "2026-10-16"
+        },
+        {
+          "name": "Parallel run on November BD3",
+          "date": "2026-11-04"
+        },
+        {
+          "name": "Security-level attribution",
+          "date": "2026-11-20"
+        }
+      ],
+      "endName": "Handover-ready",
+      "charter": {
+        "why": "The move to Fixed Income is on 4 Jan. Returns run every BD3 and cannot leave with me, so the process has to run without me before the December cycle.",
+        "success": [
+          "All 12 funds produced in under 30 minutes",
+          "No manual steps between administrator files and the returns pack",
+          "A successor completes the December run unaided"
+        ],
+        "inScope": [
+          "Fund-level returns for all 12 funds",
+          "Security-level returns and attribution",
+          "Reconciliation to administrator NAVs",
+          "Runbook for the successor"
+        ],
+        "outScope": [
+          "Attribution below security level",
+          "Changes to the investor reporting template"
+        ],
+        "constraints": [
+          "Administrator files land on the evening of BD2",
+          "Runs on the existing scheduler; no new infrastructure"
+        ]
+      },
+      "now": [
+        {
+          "m": "Security-level data feed connected",
+          "due": "2026-10-15",
+          "tasks": [
+            {
+              "id": "ret-1",
+              "t": "Request the security-level extract from the administrator",
+              "h": 0.5
+            },
+            {
+              "id": "ret-2",
+              "t": "Parse and validate the extract",
+              "h": 4
+            }
+          ]
+        },
+        {
+          "m": "Fund-level engine reconciles",
+          "due": "2026-10-16",
+          "tasks": [
+            {
+              "id": "ret-3",
+              "t": "Map source files for the last 4 funds",
+              "h": 3
+            },
+            {
+              "id": "ret-4",
+              "t": "Reconcile September to administrator NAVs",
+              "h": 4
+            },
+            {
+              "id": "ret-5",
+              "t": "Handle FX-hedged share classes",
+              "h": 3
+            }
+          ]
+        }
+      ],
+      "next": [
+        {
+          "m": "Parallel run on November BD3",
+          "due": "2026-11-04"
+        },
+        {
+          "m": "Security-level attribution",
+          "due": "2026-11-20"
+        },
+        {
+          "m": "Runbook drafted",
+          "due": "2026-11-27"
+        }
+      ],
+      "later": "Hand the automated run to a successor after the December cycle, then retire the manual spreadsheets.",
+      "scope": [
+        {
+          "date": "2026-10-03",
+          "what": "Security-level attribution",
+          "h": 10,
+          "bd": 3,
+          "from": "27 Nov",
+          "to": "2 Dec"
+        }
+      ],
+      "checkins": [
+        {
+          "date": "2026-09-08",
+          "note": "Charter written. Baseline 60h.",
+          "forecast": "2026-11-20",
+          "conf": 4,
+          "ms": [
+            {
+              "name": "Fund-level engine reconciles",
+              "date": "2026-10-09"
+            },
+            {
+              "name": "Parallel run on November BD3",
+              "date": "2026-11-04"
+            }
+          ]
+        },
+        {
+          "date": "2026-09-22",
+          "note": "Fund-level engine running for 8 of 12 funds. Administrator access took a week longer than planned.",
+          "forecast": "2026-11-27",
+          "conf": 4,
+          "ms": [
+            {
+              "name": "Fund-level engine reconciles",
+              "date": "2026-10-16"
+            },
+            {
+              "name": "Parallel run on November BD3",
+              "date": "2026-11-04"
+            }
+          ]
+        },
+        {
+          "date": "2026-10-03",
+          "note": "Security-level attribution added to scope, +10h.",
+          "forecast": "2026-12-02",
+          "conf": 3,
+          "ms": [
+            {
+              "name": "Fund-level engine reconciles",
+              "date": "2026-10-16"
+            },
+            {
+              "name": "Parallel run on November BD3",
+              "date": "2026-11-04"
+            },
+            {
+              "name": "Security-level attribution",
+              "date": "2026-11-20"
+            }
+          ]
+        }
+      ],
+      "risks": [
+        {
+          "r": "Security-level files arrived late every month, so the pipeline never ran end to end.",
+          "m": "Build a fallback that flags missing securities and still completes the fund-level run."
+        },
+        {
+          "r": "Nobody owned it after I left, and the first January run failed quietly.",
+          "m": "Name the successor by 13 Nov and have them run the December cycle while I watch."
+        },
+        {
+          "r": "Scope kept growing until the handover date passed.",
+          "m": "Freeze scope at the November check-in; new requests go to the successor’s backlog."
+        }
+      ],
+      "checklists": [
+        {
+          "id": "cl-1",
+          "title": "Handover checklist",
+          "items": [
+            {
+              "id": "cl-1a",
+              "t": "Successor has scheduler access",
+              "done": false
+            },
+            {
+              "id": "cl-1b",
+              "t": "Runbook reviewed with the successor",
+              "done": false
+            },
+            {
+              "id": "cl-1c",
+              "t": "Administrator knows who to contact from January",
+              "done": false
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "manco",
+      "domain": "pc",
+      "name": "ManCo pack automation",
+      "short": "ManCo automation",
+      "goal": "The ManCo pack builds itself from source data; the analyst only writes commentary.",
+      "start": "2026-09-21",
+      "target": "2026-12-11",
+      "forecast": "2026-12-11",
+      "prev": null,
+      "exit": [
+        "Automate",
+        "Hand over"
+      ],
+      "confidence": 4,
+      "checkin": "2026-09-26",
+      "phase": 2,
+      "rate": 1.5,
+      "bd3": 2,
+      "bd8": 1.5,
+      "rateAfter": 0,
+      "ov": {
+        "2026-11-04": 0
+      },
+      "baseline": 40,
+      "readiness": 0.35,
+      "milestones": [
+        {
+          "name": "Performance section builds itself",
+          "date": "2026-10-16"
+        },
+        {
+          "name": "First self-built pack, November BD8",
+          "date": "2026-11-11"
+        }
+      ],
+      "endName": "Handover-ready",
+      "charter": {
+        "why": "The pack takes 4h every BD8. A successor inherits it after the move; automating first means they inherit commentary, not plumbing.",
+        "success": [
+          "The pack builds from source in one step",
+          "Only the commentary is written by hand",
+          "The successor produces the December pack"
+        ],
+        "inScope": [
+          "Performance, exposure and pipeline sections",
+          "Chart and table templating"
+        ],
+        "outScope": [
+          "Commentary drafting",
+          "The board-level pack"
+        ],
+        "constraints": [
+          "Finance signs off the automated NAV bridge"
+        ]
+      },
+      "now": [
+        {
+          "m": "Performance section builds itself",
+          "due": "2026-10-16",
+          "tasks": [
+            {
+              "id": "man-0",
+              "t": "Send the NAV bridge spec to Finance",
+              "h": 0.5,
+              "due": "2026-10-02"
+            },
+            {
+              "id": "man-1",
+              "t": "Map NAV bridge to source tables",
+              "h": 0.75
+            },
+            {
+              "id": "man-2",
+              "t": "Template the performance section",
+              "h": 0.75
+            },
+            {
+              "id": "man-3",
+              "t": "Test build against the September pack",
+              "h": 0.5
+            },
+            {
+              "id": "man-4",
+              "t": "Exposure tables from source",
+              "h": 3
+            }
+          ]
+        }
+      ],
+      "next": [
+        {
+          "m": "First self-built pack, November BD8",
+          "due": "2026-11-11"
+        },
+        {
+          "m": "Exposure and pipeline sections",
+          "due": "2026-11-27"
+        }
+      ],
+      "later": "The successor writes the December commentary on a pack that built itself.",
+      "scope": [],
+      "checkins": [
+        {
+          "date": "2026-09-21",
+          "note": "Charter written. Baseline 40h.",
+          "forecast": "2026-12-11",
+          "conf": 4
+        },
+        {
+          "date": "2026-09-26",
+          "note": "Pack inventoried: 14 of 22 charts come straight from source.",
+          "forecast": "2026-12-11",
+          "conf": 4
+        }
+      ],
+      "risks": [
+        {
+          "r": "Finance never signed off the automated NAV bridge, so every pack was rechecked by hand.",
+          "m": "Book the sign-off session for the November pack now."
+        }
+      ],
+      "checklists": []
+    },
+    {
+      "id": "play",
+      "domain": "pc",
+      "name": "PC handover playbook",
+      "short": "Handover playbook",
+      "goal": "A successor can run every PC process alone from written runbooks.",
+      "start": "2026-09-28",
+      "target": "2026-12-18",
+      "forecast": "2026-12-18",
+      "prev": null,
+      "exit": [
+        "Hand over"
+      ],
+      "confidence": 4,
+      "checkin": "2026-10-02",
+      "phase": 2,
+      "rate": 1,
+      "bd3": 0,
+      "bd8": 0.5,
+      "rateAfter": 0,
+      "ov": {},
+      "baseline": 30,
+      "readiness": 0.2,
+      "milestones": [
+        {
+          "name": "Returns runbook",
+          "date": "2026-11-06"
+        },
+        {
+          "name": "ManCo runbook",
+          "date": "2026-11-27"
+        },
+        {
+          "name": "Successor runs BD3 alone",
+          "date": "2026-12-03"
+        }
+      ],
+      "endName": "Signed off",
+      "charter": {
+        "why": "Everything I know about PC operations lives in my head and three spreadsheets.",
+        "success": [
+          "Every routine has a runbook",
+          "The successor runs BD3 and BD8 alone, once each"
+        ],
+        "inScope": [
+          "Returns and ManCo runbooks",
+          "Contacts and escalation paths"
+        ],
+        "outScope": [
+          "Training beyond the two routines"
+        ],
+        "constraints": [
+          "Successor not yet named"
+        ]
+      },
+      "now": [
+        {
+          "m": "Returns runbook outline",
+          "due": "2026-10-16",
+          "tasks": [
+            {
+              "id": "pl-1",
+              "t": "Record the October BD3 run step by step",
+              "h": 2
+            },
+            {
+              "id": "pl-2",
+              "t": "Draft the runbook outline",
+              "h": 1.5
+            }
+          ]
+        }
+      ],
+      "next": [
+        {
+          "m": "Returns runbook",
+          "due": "2026-11-06"
+        },
+        {
+          "m": "ManCo runbook",
+          "due": "2026-11-27"
+        },
+        {
+          "m": "Successor runs December BD3 alone",
+          "due": "2026-12-03"
+        }
+      ],
+      "later": "Sign off the handover once the successor has run both routines unaided.",
+      "scope": [],
+      "checkins": [
+        {
+          "date": "2026-09-28",
+          "note": "Charter written. Baseline 30h.",
+          "forecast": "2026-12-18",
+          "conf": 4
+        },
+        {
+          "date": "2026-10-02",
+          "note": "Recorded the September BD3 run as raw notes.",
+          "forecast": "2026-12-18",
+          "conf": 4
+        }
+      ],
+      "risks": [
+        {
+          "r": "The successor was named too late to shadow a live run.",
+          "m": "Escalate the naming decision at the 13 Nov check-in."
+        }
+      ],
+      "checklists": []
+    },
+    {
+      "id": "fion",
+      "domain": "fi",
+      "name": "FI onboarding & data access",
+      "short": "FI onboarding",
+      "goal": "Ready to run sovereign analysis on day one in FI: data, models and access in place.",
+      "start": "2026-09-21",
+      "target": "2027-01-04",
+      "forecast": "2027-01-04",
+      "prev": null,
+      "exit": null,
+      "confidence": 4,
+      "checkin": "2026-09-30",
+      "phase": 2,
+      "rate": 1,
+      "bd3": 0,
+      "bd8": 0,
+      "rateAfter": 1,
+      "ov": {},
+      "baseline": 35,
+      "milestones": [
+        {
+          "name": "Curve & auction feeds",
+          "date": "2026-10-30"
+        },
+        {
+          "name": "Sovereign model walkthrough",
+          "date": "2026-11-26"
+        },
+        {
+          "name": "Day-one dry run",
+          "date": "2026-12-17"
+        }
+      ],
+      "endName": "Day one",
+      "readinessList": [
+        {
+          "t": "Market data entitlements",
+          "done": true
+        },
+        {
+          "t": "Research library access",
+          "done": true
+        },
+        {
+          "t": "Curve & auction data feeds",
+          "due": "2026-10-30"
+        },
+        {
+          "t": "Sovereign model walkthrough",
+          "due": "2026-11-26"
+        },
+        {
+          "t": "Day-one dry run",
+          "due": "2026-12-17"
+        }
+      ],
+      "charter": {
+        "why": "The rotation starts with Germany on 4 Jan. Access requests take weeks, so they start now.",
+        "success": [
+          "Curve and auction data on screen",
+          "The sovereign model runs on live data",
+          "The Germany build pass starts on day one"
+        ],
+        "inScope": [
+          "Data entitlements",
+          "Model walkthroughs",
+          "Workspace setup"
+        ],
+        "outScope": [
+          "Any analysis before the move"
+        ],
+        "constraints": [
+          "One hour a day until the move"
+        ]
+      },
+      "now": [
+        {
+          "m": "Data entitlements requested",
+          "due": "2026-10-16",
+          "tasks": [
+            {
+              "id": "fi-1",
+              "t": "Submit entitlement forms",
+              "h": 1
+            },
+            {
+              "id": "fi-2",
+              "t": "Agree curve data sources with the FI desk",
+              "h": 1.5
+            }
+          ]
+        }
+      ],
+      "next": [
+        {
+          "m": "Curve & auction data feeds",
+          "due": "2026-10-30"
+        },
+        {
+          "m": "Sovereign model walkthrough",
+          "due": "2026-11-26"
+        }
+      ],
+      "later": "Dry-run the Germany build pass in the last week of December.",
+      "scope": [],
+      "checkins": [
+        {
+          "date": "2026-09-21",
+          "note": "Charter written. Baseline 35h.",
+          "forecast": "2027-01-04",
+          "conf": 4
+        },
+        {
+          "date": "2026-09-30",
+          "note": "Market data entitlements approved; feeds pending.",
+          "forecast": "2027-01-04",
+          "conf": 4
+        }
+      ],
+      "risks": [
+        {
+          "r": "Data access landed in the second week of January, so the first rotation started blind.",
+          "m": "Chase feeds weekly; use the desk’s shared terminal as a fallback."
+        }
+      ],
+      "checklists": []
+    },
+    {
+      "id": "alpha",
+      "domain": "fi",
+      "name": "Alpha engine v0",
+      "short": "Alpha engine",
+      "goal": "A tested signal pipeline that ranks eurozone sovereign curve trades daily.",
+      "start": "2026-12-03",
+      "target": "2027-03-25",
+      "targetLabel": "Late Mar 2027",
+      "forecast": null,
+      "prev": null,
+      "exit": null,
+      "confidence": null,
+      "checkin": null,
+      "phase": 0,
+      "rate": 2,
+      "bd3": 0,
+      "bd8": 0,
+      "rateAfter": 3,
+      "ov": {},
+      "baseline": 0,
+      "milestones": [],
+      "endName": "v0 tested",
+      "charter": {
+        "why": "The rotation builds the country knowledge; the engine turns it into ranked trades.",
+        "success": [
+          "Ranks curve trades across all 10 countries, daily",
+          "Backtested over five years of data"
+        ],
+        "inScope": [],
+        "outScope": [],
+        "constraints": []
+      },
+      "now": [],
+      "next": [],
+      "later": "",
+      "scope": [],
+      "checkins": [],
+      "risks": [],
+      "checklists": []
+    }
+  ],
+  "routines": [
+    {
+      "id": "r-ret",
+      "domain": "pc",
+      "name": "Fund & security-level returns",
+      "short": "Returns",
+      "detail": "12 funds",
+      "rule": "3rd business day, monthly",
+      "bd": 3,
+      "h": 6,
+      "pid": "ret",
+      "status": "Automating, then handover",
+      "statusNote": "Returns pipeline automation replaces the manual run; successor takes over from the December cycle.",
+      "readiness": 0.55,
+      "kind": "monthly",
+      "stage": 1
+    },
+    {
+      "id": "r-man",
+      "domain": "pc",
+      "name": "Managing Committee pack",
+      "short": "ManCo pack",
+      "detail": "Monthly pack",
+      "rule": "8th business day, monthly",
+      "bd": 8,
+      "h": 4,
+      "pid": "manco",
+      "status": "Automating, then handover",
+      "statusNote": "ManCo pack automation builds the pack; commentary stays manual and moves to the successor.",
+      "readiness": 0.35,
+      "kind": "monthly",
+      "stage": 1
+    }
+  ],
+  "funds": [
+    "Senior Direct Lending I",
+    "Senior Direct Lending II",
+    "Unitranche Partners",
+    "Mezzanine Opportunities",
+    "Asset-Backed Finance",
+    "Infrastructure Debt",
+    "Real Estate Debt",
+    "Trade Finance",
+    "Special Situations",
+    "Opportunistic Credit",
+    "Credit Co-invest",
+    "Evergreen Income"
+  ],
+  "fundsDone": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false,
+    false
+  ],
+  "tasks": {
+    "ret-1": true,
+    "fi-1": true
+  },
+  "doneOn": {
+    "ret-1": "2026-10-01",
+    "fi-1": "2026-10-02"
+  },
+  "bauDone": {},
+  "notes": {
+    "2026-10-05": [
+      {
+        "id": "n1",
+        "t": "08:41",
+        "text": "Admin files landed at 07:40 this morning instead of last night, so returns started late."
+      },
+      {
+        "id": "n2",
+        "t": "09:55",
+        "text": "5 of 12 funds done. Unitranche needed the manual FX fix again, which is exactly what the pipeline should remove."
+      },
+      {
+        "id": "n3",
+        "t": "11:20",
+        "text": "Finance happy to review the ManCo NAV bridge spec on Thursday."
+      }
+    ],
+    "2026-10-02": [
+      {
+        "id": "n4",
+        "t": "16:10",
+        "text": "Recorded the September BD3 run as raw notes for the playbook. Needs tidying into steps."
+      },
+      {
+        "id": "n5",
+        "t": "17:32",
+        "text": "FI desk suggested Bloomberg curve data rather than the internal feed for day one."
+      }
+    ],
+    "2026-10-01": [
+      {
+        "id": "n6",
+        "t": "10:05",
+        "text": "Chased the entitlement forms. Market data approved; feeds still pending."
+      }
+    ]
+  },
+  "feed": [
+    {
+      "id": "f1",
+      "pid": "ret",
+      "kind": "scope",
+      "title": "Returns pipeline",
+      "body": "Scope added (security-level attribution, +10h). Forecast moved 27 Nov → 2 Dec.",
+      "delta": "+3 BD",
+      "tone": "risk",
+      "when": "Sat 3 Oct"
+    }
+  ],
+  "computedFeedReference": [
+    {
+      "id": "f2",
+      "pid": "manco",
+      "kind": "stale",
+      "title": "ManCo pack automation",
+      "body": "No check-in for 9 days.",
+      "delta": "9 days",
+      "tone": "quiet",
+      "when": "Today"
+    },
+    {
+      "id": "f3",
+      "pid": null,
+      "day": "2026-11-04",
+      "kind": "overload",
+      "title": "Wed 4 Nov (BD3)",
+      "body": "BAU plus planned project work comes to 9.5h of an 8h day.",
+      "delta": "Overload",
+      "tone": "overload",
+      "when": "Plan"
+    }
+  ],
+  "rotation": [
+    {
+      "country": "Germany",
+      "code": "DE",
+      "len": 6,
+      "pass": "Build"
+    },
+    {
+      "country": "France",
+      "code": "FR",
+      "len": 5,
+      "pass": "Build"
+    },
+    {
+      "country": "Italy",
+      "code": "IT",
+      "len": 6,
+      "pass": "Build"
+    },
+    {
+      "country": "Spain",
+      "code": "ES",
+      "len": 5,
+      "pass": "Build"
+    },
+    {
+      "country": "Netherlands",
+      "code": "NL",
+      "len": 4,
+      "pass": "Build"
+    },
+    {
+      "country": "Belgium",
+      "code": "BE",
+      "len": 4,
+      "pass": "Build"
+    },
+    {
+      "country": "Austria",
+      "code": "AT",
+      "len": 4,
+      "pass": "Build"
+    },
+    {
+      "country": "Portugal",
+      "code": "PT",
+      "len": 4,
+      "pass": "Build"
+    },
+    {
+      "country": "Ireland",
+      "code": "IE",
+      "len": 4,
+      "pass": "Build"
+    },
+    {
+      "country": "Finland",
+      "code": "FI",
+      "len": 4,
+      "pass": "Build"
+    },
+    {
+      "country": "Germany",
+      "code": "DE",
+      "len": 3,
+      "pass": "Refresh"
+    }
+  ],
+  "aliases": {
+    "notesProjects": {
+      "ret": [
+        "returns pipeline",
+        "pipeline",
+        "attribution"
+      ],
+      "manco": [
+        "manco",
+        "nav bridge",
+        "managing committee"
+      ],
+      "play": [
+        "playbook",
+        "runbook",
+        "successor"
+      ],
+      "fion": [
+        "onboarding",
+        "entitlement",
+        "fi desk",
+        "curve data",
+        "bloomberg"
+      ],
+      "alpha": [
+        "alpha engine",
+        "alpha",
+        "signal"
+      ]
+    },
+    "notesRoutines": {
+      "r-ret": [
+        "returns",
+        "funds"
+      ],
+      "r-man": [
+        "manco pack",
+        "bd8"
+      ]
+    },
+    "simpleReaderProjects": {
+      "ret": [
+        "returns pipeline",
+        "pipeline",
+        "attribution",
+        "returns automation"
+      ],
+      "manco": [
+        "manco",
+        "nav bridge",
+        "managing committee"
+      ],
+      "play": [
+        "playbook",
+        "runbook",
+        "successor"
+      ],
+      "fion": [
+        "onboarding",
+        "entitlement",
+        "fi desk",
+        "data access"
+      ],
+      "alpha": [
+        "alpha",
+        "signal"
+      ]
+    },
+    "simpleReaderBauDone": {
+      "routineId": "r-ret",
+      "pattern": "returns (bau|run)|returns are done|returns done"
+    }
+  },
+  "textbook": {
+    "store": "remi.textbook.v1",
+    "cur": "fi-rates",
+    "sections": [
+      {
+        "id": "fi",
+        "label": "Fixed Income",
+        "accent": "var(--fi-accent)"
+      },
+      {
+        "id": "pc",
+        "label": "Private Credit",
+        "accent": "var(--pc-accent)"
+      },
+      {
+        "id": "gen",
+        "label": "General",
+        "accent": "var(--ink-faint)"
+      }
+    ],
+    "pages": [
+      {
+        "id": "fi-rates",
+        "section": "fi",
+        "title": "Rates primer",
+        "updated": "2026-10-05T08:30:00.000Z",
+        "blocks": [
+          {
+            "id": "fi-rates-b01",
+            "type": "h1",
+            "text": "Rates and duration"
+          },
+          {
+            "id": "fi-rates-b02",
+            "type": "h2",
+            "text": "Price and yield"
+          },
+          {
+            "id": "fi-rates-b03",
+            "type": "p",
+            "text": "A bond’s price is the present value of its cash flows. When yields rise, those cash flows are discounted more heavily, so the price falls. The relationship is curved, not straight."
+          },
+          {
+            "id": "fi-rates-b04",
+            "type": "formula",
+            "text": "\\frac{\\Delta P}{P} \\approx -D \\times \\Delta y"
+          },
+          {
+            "id": "fi-rates-b05",
+            "type": "p",
+            "text": "where D is modified duration and Δy is the change in yield, in decimal."
+          },
+          {
+            "id": "fi-rates-b06",
+            "type": "chart",
+            "text": "",
+            "html": null,
+            "src": "charts/price-yield.html",
+            "name": "price-yield.html",
+            "h": 380,
+            "cap": "The marker drifts through yields. The dashed tangent is what duration predicts; the shaded gap is what it misses."
+          },
+          {
+            "id": "fi-rates-b07",
+            "type": "callout",
+            "text": "Duration is a first-order estimate. It is good for small moves and too pessimistic for large ones, which is why convexity matters."
+          },
+          {
+            "id": "fi-rates-b08",
+            "type": "h2",
+            "text": "Convexity"
+          },
+          {
+            "id": "fi-rates-b09",
+            "type": "p",
+            "text": "Convexity measures how much the slope itself changes as yields move. For a plain bond it is positive, so prices rise more than duration predicts when yields fall, and fall less when they rise."
+          },
+          {
+            "id": "fi-rates-b10",
+            "type": "formula",
+            "text": "\\frac{\\Delta P}{P} \\approx -D\\,\\Delta y + \\tfrac{1}{2}\\,C\\,(\\Delta y)^2"
+          }
+        ]
+      },
+      {
+        "id": "fi-rot",
+        "section": "fi",
+        "title": "Eurozone sovereign rotation",
+        "updated": "2026-10-05T08:30:00.000Z",
+        "blocks": [
+          {
+            "id": "fi-rot-b01",
+            "type": "h1",
+            "text": "How the rotation works"
+          },
+          {
+            "id": "fi-rot-b02",
+            "type": "p",
+            "text": "Ten countries, one at a time, starting with Germany on Mon 4 Jan. The first pass builds each view from scratch; the return visit refreshes it."
+          },
+          {
+            "id": "fi-rot-b03",
+            "type": "h2",
+            "text": "Germany"
+          },
+          {
+            "id": "fi-rot-b04",
+            "type": "bullet",
+            "text": "Curve shape and auction calendar"
+          },
+          {
+            "id": "fi-rot-b05",
+            "type": "bullet",
+            "text": "Supply versus ECB reinvestment"
+          },
+          {
+            "id": "fi-rot-b06",
+            "type": "h2",
+            "text": "France"
+          },
+          {
+            "id": "fi-rot-b07",
+            "type": "p",
+            "text": ""
+          }
+        ]
+      },
+      {
+        "id": "pc-ret",
+        "section": "pc",
+        "title": "Returns methodology",
+        "updated": "2026-10-05T08:30:00.000Z",
+        "blocks": [
+          {
+            "id": "pc-ret-b01",
+            "type": "h1",
+            "text": "Fund-level returns"
+          },
+          {
+            "id": "pc-ret-b02",
+            "type": "p",
+            "text": "Monthly returns use Modified Dietz, which weights each cash flow by how long it was in the fund."
+          },
+          {
+            "id": "pc-ret-b03",
+            "type": "formula",
+            "text": "R = \\frac{V_1 - V_0 - F}{V_0 + \\sum_i w_i F_i}"
+          },
+          {
+            "id": "pc-ret-b04",
+            "type": "callout",
+            "text": "Security-level attribution uses the same flows, so the two must reconcile to the administrator NAV."
+          }
+        ]
+      },
+      {
+        "id": "gen-how",
+        "section": "gen",
+        "title": "How the Textbook works",
+        "updated": "2026-10-05T08:30:00.000Z",
+        "blocks": [
+          {
+            "id": "gen-how-b01",
+            "type": "h1",
+            "text": "Writing"
+          },
+          {
+            "id": "gen-how-b02",
+            "type": "p",
+            "text": "Type / on an empty line for the block menu. Headings number themselves: 1, 1.1, 1.1.1."
+          },
+          {
+            "id": "gen-how-b03",
+            "type": "h1",
+            "text": "Live charts"
+          },
+          {
+            "id": "gen-how-b04",
+            "type": "p",
+            "text": "Ask Claude for a self-contained HTML chart, save the file, and drop it anywhere on a page. It runs live inside the page and is saved with it."
+          },
+          {
+            "id": "gen-how-b05",
+            "type": "bullet",
+            "text": "Resize by dragging the bottom edge, or pick S, M or L."
+          },
+          {
+            "id": "gen-how-b06",
+            "type": "bullet",
+            "text": "Replace swaps in a new version of the file and keeps the caption."
+          }
+        ]
+      }
+    ],
+    "sampleChart": {
+      "src": "charts/price-yield.html",
+      "name": "price-yield.html",
+      "html": "<!doctype html>\n<html>\n<head>\n<meta charset=\"utf-8\">\n<link rel=\"stylesheet\" href=\"https://fonts.googleapis.com/css2?family=Albert+Sans:wght@400;600&family=JetBrains+Mono&display=swap\">\n<style>\nhtml,body{margin:0;height:100%;background:transparent;font-family:'Albert Sans',sans-serif;color:#134848}\nsvg{display:block;width:100%;height:100%}\n</style>\n</head>\n<body>\n<svg id=\"s\"></svg>\n<script>\nconst s = document.getElementById('s');\nconst price = y => { let p = 0; for (let t = 1; t <= 10; t++) p += 3 / Math.pow(1 + y, t); return p + 100 / Math.pow(1 + y, 10); };\nconst dur = y => { const p = price(y); let d = 0; for (let t = 1; t <= 10; t++) d += t * 3 / Math.pow(1 + y, t + 1); d += 10 * 100 / Math.pow(1 + y, 11); return d / p; };\nconst mono = 'font-family=\"JetBrains Mono, monospace\"';\nconst t0 = performance.now();\nfunction draw(now) {\n  const w = s.clientWidth, h = s.clientHeight, L = 58, R = w - 28, T = 30, B = h - 42;\n  const y0 = 0.005, y1 = 0.07, p0 = 60, p1 = 132;\n  const X = y => L + (y - y0) / (y1 - y0) * (R - L), Y = p => B - (p - p0) / (p1 - p0) * (B - T);\n  const k = Math.min(1, (now - t0) / 1400), e = 1 - Math.pow(1 - k, 3);\n  const yc = 0.032 + 0.018 * Math.sin((now - t0) / 2800), pc = price(yc), D = dur(yc);\n  let path = ''; const N = 140;\n  for (let i = 0; i <= N * e; i++) { const y = y0 + (y1 - y0) * i / N; path += (i ? 'L' : 'M') + X(y).toFixed(1) + ',' + Y(price(y)).toFixed(1); }\n  const tl = y => pc * (1 - D * (y - yc)), ta = yc - 0.022, tb = yc + 0.022;\n  let g = '';\n  for (let p = 70; p <= 130; p += 20) g += '<line x1=\"' + L + '\" x2=\"' + R + '\" y1=\"' + Y(p) + '\" y2=\"' + Y(p) + '\" stroke=\"#e1ddd8\"/><text x=\"' + (L - 10) + '\" y=\"' + (Y(p) + 4) + '\" text-anchor=\"end\" font-size=\"11\" fill=\"#5f5a54\" ' + mono + '>' + p + '</text>';\n  for (let y = 0.01; y <= 0.0701; y += 0.02) g += '<text x=\"' + X(y) + '\" y=\"' + (B + 20) + '\" text-anchor=\"middle\" font-size=\"11\" fill=\"#5f5a54\" ' + mono + '>' + Math.round(y * 100) + '%</text>';\n  g += '<path d=\"' + path + '\" fill=\"none\" stroke=\"#009D80\" stroke-width=\"2.5\" stroke-linecap=\"round\"/>';\n  if (k >= 1) {\n    const gap = [];\n    for (let i = 0; i <= 30; i++) { const y = ta + (tb - ta) * i / 30; gap.push(X(y).toFixed(1) + ',' + Y(price(y)).toFixed(1)); }\n    for (let i = 30; i >= 0; i--) { const y = ta + (tb - ta) * i / 30; gap.push(X(y).toFixed(1) + ',' + Y(tl(y)).toFixed(1)); }\n    g += '<polygon points=\"' + gap.join(' ') + '\" fill=\"#C98A12\" opacity=\"0.14\"/>';\n    g += '<line x1=\"' + X(ta) + '\" y1=\"' + Y(tl(ta)) + '\" x2=\"' + X(tb) + '\" y2=\"' + Y(tl(tb)) + '\" stroke=\"#C98A12\" stroke-width=\"1.6\" stroke-dasharray=\"5 4\"/>';\n    g += '<line x1=\"' + X(yc) + '\" x2=\"' + X(yc) + '\" y1=\"' + Y(pc) + '\" y2=\"' + B + '\" stroke=\"#134848\" opacity=\"0.2\"/>';\n    g += '<circle cx=\"' + X(yc) + '\" cy=\"' + Y(pc) + '\" r=\"6\" fill=\"#fdfcf9\" stroke=\"#134848\" stroke-width=\"2\"/>';\n    const lx = X(yc) + 14, right = lx > w - 300;\n    const ax = right ? X(yc) - 14 : lx, anc = right ? 'end' : 'start';\n    g += '<text x=\"' + ax + '\" y=\"' + (Y(pc) - 14) + '\" text-anchor=\"' + anc + '\" font-size=\"13\" font-weight=\"600\" fill=\"#134848\">y ' + (yc * 100).toFixed(2) + '%  ·  P ' + pc.toFixed(2) + '  ·  D ' + D.toFixed(2) + '</text>';\n  }\n  g += '<text x=\"' + L + '\" y=\"16\" font-size=\"11\" fill=\"#5f5a54\" ' + mono + '>PRICE · 10Y, 3% COUPON</text>';\n  g += '<text x=\"' + R + '\" y=\"16\" text-anchor=\"end\" font-size=\"11\" fill=\"#5f5a54\"><tspan fill=\"#009D80\">━</tspan> price  <tspan fill=\"#C98A12\">╌</tspan> duration estimate  <tspan fill=\"#C98A12\" opacity=\"0.6\">■</tspan> convexity</text>';\n  s.innerHTML = g;\n  requestAnimationFrame(draw);\n}\nrequestAnimationFrame(draw);\n</script>\n</body>\n</html>\n",
+      "matchesDesignFile": true,
+      "designFileSha256": "70d8194169e1b962cfdee453882460b0b85bf5ca07b223a69f291712634f5f7d"
+    }
+  }
+}

@@ -1,0 +1,516 @@
+{
+  "collapsed": {
+    "title": "October so far",
+    "doneN": 2,
+    "total": 17,
+    "late": "1 overdue",
+    "headline": "2 of 17 done · 1 overdue",
+    "from": "1 Oct",
+    "to": "30 Oct",
+    "groups": [
+      {
+        "label": "BAU",
+        "count": "0/2",
+        "pct": "0%",
+        "items": [
+          {
+            "text": "Fund & security-level returns",
+            "sub": "BD3",
+            "due": "today",
+            "done": false
+          },
+          {
+            "text": "Managing Committee pack",
+            "sub": "BD8",
+            "due": "Mon 12 Oct",
+            "done": false
+          }
+        ],
+        "empty": null,
+        "more": null
+      },
+      {
+        "label": "Projects",
+        "count": "2/15",
+        "pct": "13.333333333333334%",
+        "items": [
+          {
+            "text": "Send the NAV bridge spec to Finance",
+            "sub": "ManCo automation",
+            "due": "overdue 1 BD",
+            "done": false
+          },
+          {
+            "text": "Parse and validate the extract",
+            "sub": "Returns pipeline",
+            "due": "Thu 15 Oct",
+            "done": false
+          },
+          {
+            "text": "Map source files for the last 4 funds",
+            "sub": "Returns pipeline",
+            "due": "Fri 16 Oct",
+            "done": false
+          },
+          {
+            "text": "Reconcile September to administrator NAVs",
+            "sub": "Returns pipeline",
+            "due": "Fri 16 Oct",
+            "done": false
+          },
+          {
+            "text": "Handle FX-hedged share classes",
+            "sub": "Returns pipeline",
+            "due": "Fri 16 Oct",
+            "done": false
+          }
+        ],
+        "empty": null,
+        "more": "Show 8 more and 2 done"
+      }
+    ],
+    "bars": [
+      {
+        "title": "Thu 1 Oct · 0 due by then, 1 done",
+        "plan": "0%",
+        "doneH": "5.88235294117647%",
+        "lateH": "5.88235294117647%",
+        "today": false
+      },
+      {
+        "title": "Fri 2 Oct · 1 due by then, 2 done",
+        "plan": "5.88235294117647%",
+        "doneH": "11.76470588235294%",
+        "lateH": "11.76470588235294%",
+        "today": false
+      },
+      {
+        "title": "Mon 5 Oct · 2 due by then, 2 done, 1 overdue",
+        "plan": "11.76470588235294%",
+        "doneH": "11.76470588235294%",
+        "lateH": "17.647058823529413%",
+        "today": true
+      },
+      {
+        "title": "Tue 6 Oct · 2 due by then",
+        "plan": "11.76470588235294%",
+        "doneH": "0%",
+        "lateH": "0%",
+        "today": false
+      },
+      {
+        "title": "Wed 7 Oct · 2 due by then",
+        "plan": "11.76470588235294%",
+        "doneH": "0%",
+        "lateH": "0%",
+        "today": false
+      },
+      {
+        "title": "Thu 8 Oct · 2 due by then",
+        "plan": "11.76470588235294%",
+        "doneH": "0%",
+        "lateH": "0%",
+        "today": false
+      },
+      {
+        "title": "Fri 9 Oct · 2 due by then",
+        "plan": "11.76470588235294%",
+        "doneH": "0%",
+        "lateH": "0%",
+        "today": false
+      },
+      {
+        "title": "Mon 12 Oct · 3 due by then",
+        "plan": "17.647058823529413%",
+        "doneH": "0%",
+        "lateH": "0%",
+        "today": false
+      },
+      {
+        "title": "Tue 13 Oct · 3 due by then",
+        "plan": "17.647058823529413%",
+        "doneH": "0%",
+        "lateH": "0%",
+        "today": false
+      },
+      {
+        "title": "Wed 14 Oct · 3 due by then",
+        "plan": "17.647058823529413%",
+        "doneH": "0%",
+        "lateH": "0%",
+        "today": false
+      },
+      {
+        "title": "Thu 15 Oct · 5 due by then",
+        "plan": "29.411764705882355%",
+        "doneH": "0%",
+        "lateH": "0%",
+        "today": false
+      },
+      {
+        "title": "Fri 16 Oct · 16 due by then",
+        "plan": "94.11764705882352%",
+        "doneH": "0%",
+        "lateH": "0%",
+        "today": false
+      },
+      {
+        "title": "Mon 19 Oct · 16 due by then",
+        "plan": "94.11764705882352%",
+        "doneH": "0%",
+        "lateH": "0%",
+        "today": false
+      },
+      {
+        "title": "Tue 20 Oct · 16 due by then",
+        "plan": "94.11764705882352%",
+        "doneH": "0%",
+        "lateH": "0%",
+        "today": false
+      },
+      {
+        "title": "Wed 21 Oct · 16 due by then",
+        "plan": "94.11764705882352%",
+        "doneH": "0%",
+        "lateH": "0%",
+        "today": false
+      },
+      {
+        "title": "Thu 22 Oct · 16 due by then",
+        "plan": "94.11764705882352%",
+        "doneH": "0%",
+        "lateH": "0%",
+        "today": false
+      },
+      {
+        "title": "Fri 23 Oct · 16 due by then",
+        "plan": "94.11764705882352%",
+        "doneH": "0%",
+        "lateH": "0%",
+        "today": false
+      },
+      {
+        "title": "Mon 26 Oct · 16 due by then",
+        "plan": "94.11764705882352%",
+        "doneH": "0%",
+        "lateH": "0%",
+        "today": false
+      },
+      {
+        "title": "Tue 27 Oct · 16 due by then",
+        "plan": "94.11764705882352%",
+        "doneH": "0%",
+        "lateH": "0%",
+        "today": false
+      },
+      {
+        "title": "Wed 28 Oct · 16 due by then",
+        "plan": "94.11764705882352%",
+        "doneH": "0%",
+        "lateH": "0%",
+        "today": false
+      },
+      {
+        "title": "Thu 29 Oct · 16 due by then",
+        "plan": "94.11764705882352%",
+        "doneH": "0%",
+        "lateH": "0%",
+        "today": false
+      },
+      {
+        "title": "Fri 30 Oct · 17 due by then",
+        "plan": "100%",
+        "doneH": "0%",
+        "lateH": "0%",
+        "today": false
+      }
+    ]
+  },
+  "expanded": {
+    "title": "October so far",
+    "doneN": 2,
+    "total": 17,
+    "late": "1 overdue",
+    "headline": "2 of 17 done · 1 overdue",
+    "from": "1 Oct",
+    "to": "30 Oct",
+    "groups": [
+      {
+        "label": "BAU",
+        "count": "0/2",
+        "pct": "0%",
+        "items": [
+          {
+            "text": "Fund & security-level returns",
+            "sub": "BD3",
+            "due": "today",
+            "done": false
+          },
+          {
+            "text": "Managing Committee pack",
+            "sub": "BD8",
+            "due": "Mon 12 Oct",
+            "done": false
+          }
+        ],
+        "empty": null,
+        "more": "Show less"
+      },
+      {
+        "label": "Projects",
+        "count": "2/15",
+        "pct": "13.333333333333334%",
+        "items": [
+          {
+            "text": "Send the NAV bridge spec to Finance",
+            "sub": "ManCo automation",
+            "due": "overdue 1 BD",
+            "done": false
+          },
+          {
+            "text": "Parse and validate the extract",
+            "sub": "Returns pipeline",
+            "due": "Thu 15 Oct",
+            "done": false
+          },
+          {
+            "text": "Map source files for the last 4 funds",
+            "sub": "Returns pipeline",
+            "due": "Fri 16 Oct",
+            "done": false
+          },
+          {
+            "text": "Reconcile September to administrator NAVs",
+            "sub": "Returns pipeline",
+            "due": "Fri 16 Oct",
+            "done": false
+          },
+          {
+            "text": "Handle FX-hedged share classes",
+            "sub": "Returns pipeline",
+            "due": "Fri 16 Oct",
+            "done": false
+          },
+          {
+            "text": "Map NAV bridge to source tables",
+            "sub": "ManCo automation",
+            "due": "Fri 16 Oct",
+            "done": false
+          },
+          {
+            "text": "Template the performance section",
+            "sub": "ManCo automation",
+            "due": "Fri 16 Oct",
+            "done": false
+          },
+          {
+            "text": "Test build against the September pack",
+            "sub": "ManCo automation",
+            "due": "Fri 16 Oct",
+            "done": false
+          },
+          {
+            "text": "Exposure tables from source",
+            "sub": "ManCo automation",
+            "due": "Fri 16 Oct",
+            "done": false
+          },
+          {
+            "text": "Record the October BD3 run step by step",
+            "sub": "Handover playbook",
+            "due": "Fri 16 Oct",
+            "done": false
+          },
+          {
+            "text": "Draft the runbook outline",
+            "sub": "Handover playbook",
+            "due": "Fri 16 Oct",
+            "done": false
+          },
+          {
+            "text": "Agree curve data sources with the FI desk",
+            "sub": "FI onboarding",
+            "due": "Fri 16 Oct",
+            "done": false
+          },
+          {
+            "text": "◆ Curve & auction data feeds",
+            "sub": "FI onboarding",
+            "due": "Fri 30 Oct",
+            "done": false
+          },
+          {
+            "text": "Submit entitlement forms",
+            "sub": "FI onboarding",
+            "due": "done 2 Oct",
+            "done": true
+          },
+          {
+            "text": "Request the security-level extract from the administrator",
+            "sub": "Returns pipeline",
+            "due": "done 1 Oct",
+            "done": true
+          }
+        ],
+        "empty": null,
+        "more": "Show less"
+      }
+    ],
+    "bars": [
+      {
+        "title": "Thu 1 Oct · 0 due by then, 1 done",
+        "plan": "0%",
+        "doneH": "5.88235294117647%",
+        "lateH": "5.88235294117647%",
+        "today": false
+      },
+      {
+        "title": "Fri 2 Oct · 1 due by then, 2 done",
+        "plan": "5.88235294117647%",
+        "doneH": "11.76470588235294%",
+        "lateH": "11.76470588235294%",
+        "today": false
+      },
+      {
+        "title": "Mon 5 Oct · 2 due by then, 2 done, 1 overdue",
+        "plan": "11.76470588235294%",
+        "doneH": "11.76470588235294%",
+        "lateH": "17.647058823529413%",
+        "today": true
+      },
+      {
+        "title": "Tue 6 Oct · 2 due by then",
+        "plan": "11.76470588235294%",
+        "doneH": "0%",
+        "lateH": "0%",
+        "today": false
+      },
+      {
+        "title": "Wed 7 Oct · 2 due by then",
+        "plan": "11.76470588235294%",
+        "doneH": "0%",
+        "lateH": "0%",
+        "today": false
+      },
+      {
+        "title": "Thu 8 Oct · 2 due by then",
+        "plan": "11.76470588235294%",
+        "doneH": "0%",
+        "lateH": "0%",
+        "today": false
+      },
+      {
+        "title": "Fri 9 Oct · 2 due by then",
+        "plan": "11.76470588235294%",
+        "doneH": "0%",
+        "lateH": "0%",
+        "today": false
+      },
+      {
+        "title": "Mon 12 Oct · 3 due by then",
+        "plan": "17.647058823529413%",
+        "doneH": "0%",
+        "lateH": "0%",
+        "today": false
+      },
+      {
+        "title": "Tue 13 Oct · 3 due by then",
+        "plan": "17.647058823529413%",
+        "doneH": "0%",
+        "lateH": "0%",
+        "today": false
+      },
+      {
+        "title": "Wed 14 Oct · 3 due by then",
+        "plan": "17.647058823529413%",
+        "doneH": "0%",
+        "lateH": "0%",
+        "today": false
+      },
+      {
+        "title": "Thu 15 Oct · 5 due by then",
+        "plan": "29.411764705882355%",
+        "doneH": "0%",
+        "lateH": "0%",
+        "today": false
+      },
+      {
+        "title": "Fri 16 Oct · 16 due by then",
+        "plan": "94.11764705882352%",
+        "doneH": "0%",
+        "lateH": "0%",
+        "today": false
+      },
+      {
+        "title": "Mon 19 Oct · 16 due by then",
+        "plan": "94.11764705882352%",
+        "doneH": "0%",
+        "lateH": "0%",
+        "today": false
+      },
+      {
+        "title": "Tue 20 Oct · 16 due by then",
+        "plan": "94.11764705882352%",
+        "doneH": "0%",
+        "lateH": "0%",
+        "today": false
+      },
+      {
+        "title": "Wed 21 Oct · 16 due by then",
+        "plan": "94.11764705882352%",
+        "doneH": "0%",
+        "lateH": "0%",
+        "today": false
+      },
+      {
+        "title": "Thu 22 Oct · 16 due by then",
+        "plan": "94.11764705882352%",
+        "doneH": "0%",
+        "lateH": "0%",
+        "today": false
+      },
+      {
+        "title": "Fri 23 Oct · 16 due by then",
+        "plan": "94.11764705882352%",
+        "doneH": "0%",
+        "lateH": "0%",
+        "today": false
+      },
+      {
+        "title": "Mon 26 Oct · 16 due by then",
+        "plan": "94.11764705882352%",
+        "doneH": "0%",
+        "lateH": "0%",
+        "today": false
+      },
+      {
+        "title": "Tue 27 Oct · 16 due by then",
+        "plan": "94.11764705882352%",
+        "doneH": "0%",
+        "lateH": "0%",
+        "today": false
+      },
+      {
+        "title": "Wed 28 Oct · 16 due by then",
+        "plan": "94.11764705882352%",
+        "doneH": "0%",
+        "lateH": "0%",
+        "today": false
+      },
+      {
+        "title": "Thu 29 Oct · 16 due by then",
+        "plan": "94.11764705882352%",
+        "doneH": "0%",
+        "lateH": "0%",
+        "today": false
+      },
+      {
+        "title": "Fri 30 Oct · 17 due by then",
+        "plan": "100%",
+        "doneH": "0%",
+        "lateH": "0%",
+        "today": false
+      }
+    ]
+  }
+}

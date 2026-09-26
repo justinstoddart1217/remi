@@ -1,0 +1,23 @@
+/* Remi Foundations.dc.html:228-230; Timeline.dc.html:121. */
+.seg {
+  flex: none;
+  display: flex;
+  align-items: center;
+  box-sizing: border-box;
+  height: 24px;
+  padding-left: 6px;
+  border: 1px solid var(--fi-accent);
+  border-radius: 2px;
+  color: var(--ink);
+  font-size: 11px;
+  font-weight: 600;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.build {
+  background: var(--fi-accent-soft);
+}
+.refresh {
+  border-style: dashed;
+  background: transparent;
+}

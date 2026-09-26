@@ -1,0 +1,561 @@
+/*
+ * The Home frame for full-page forms (Setup, Settings), in the Ninety One language of
+ * Remi Home.dc.html: a dark-teal band (--brand-deep) with the drifting bars on its right 46%
+ * and a dashed mint flow line at its foot; inside it the 96px header (the REMI bar mark,
+ * wordmark and caps note; Home's facts in white) and the hero (mono mint eyebrow, 72px light
+ * display H1). The step cards (816px: a 720px column inside 48px padding, Home's first card)
+ * and the rail card at x=984 (where Home's second card starts) rise over the band's foot.
+ */
+.page {
+  box-sizing: border-box;
+  min-height: 100vh;
+  background: var(--paper);
+  color: var(--ink);
+  /* The Ninety One brand green the design sets as a literal (bars, rules, the primary). */
+  --n1-green: #009d80;
+}
+
+/* ------------------------------------------------------------------------------ band */
+/* The brand keyframes live in styles/keyframes.css; global() keeps their names unhashed. */
+
+.band {
+  position: relative;
+  overflow: hidden;
+  padding-bottom: 150px;
+  background: var(--brand-deep);
+  color: #fff;
+}
+
+.bars {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: 46%;
+  opacity: 0.5;
+  pointer-events: none;
+}
+.bars svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  fill: var(--n1-green);
+}
+.driftA,
+.driftB {
+  animation: global(n1-drift-a) 9s ease-in-out infinite;
+}
+.driftB {
+  animation-name: global(n1-drift-b);
+}
+
+/* The band's foot: Home's dashed mint line, flowing left to right. */
+.flow {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 3px;
+  background-image: repeating-linear-gradient(90deg, rgb(127 224 200 / 0.5) 0 10px, transparent 10px 24px);
+  background-size: 48px 3px;
+  opacity: 0.35;
+  animation: global(n1-flow) 3.2s linear infinite;
+}
+
+/* Remi Home.dc.html:32-38 */
+.header {
+  position: relative;
+  height: 96px;
+  margin: 0 120px;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  border-bottom: 1px solid rgb(255 255 255 / 0.1);
+  opacity: 0;
+  transition: opacity 200ms var(--ease-out);
+}
+.page[data-arrived] .header {
+  opacity: 1;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  color: #fff;
+  text-decoration: none;
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+a.brand:hover {
+  color: #fff;
+  opacity: 0.85;
+}
+a.brand:focus-visible {
+  outline: 1.5px solid var(--brand-mint-2);
+  outline-offset: 6px;
+}
+.mark {
+  display: block;
+  flex: none;
+}
+.markBar {
+  transform-box: fill-box;
+  transform-origin: bottom;
+  animation: global(bar-up) 700ms var(--ease-out) both;
+}
+.brandWords {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.wordmark {
+  font-size: 19px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  line-height: 1;
+  text-transform: uppercase;
+}
+.brandNote {
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  line-height: 1;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 0.52);
+}
+.headerSpacer {
+  flex: 1;
+}
+.facts {
+  font-family: var(--font-numeric);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgb(255 255 255 / 0.6);
+}
+.factCount {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.factCountNum {
+  font-family: var(--font-numeric);
+  font-size: 20px;
+  color: #fff;
+}
+.factText {
+  font-size: 14px;
+  color: rgb(255 255 255 / 0.72);
+}
+.divider {
+  width: 1px;
+  height: 20px;
+  background: rgb(255 255 255 / 0.16);
+}
+
+/* Remi Home.dc.html:40-43: the greeting eyebrow and the light display headline, on teal. */
+.hero {
+  position: relative;
+  max-width: 1100px;
+  margin: 0 120px;
+  padding-top: 72px;
+}
+.page .heroEyebrow {
+  font-family: var(--font-numeric);
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  color: var(--brand-mint-2);
+}
+.title {
+  margin: 18px 0 0;
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: 72px;
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+  color: #fff;
+  outline: none;
+}
+.lead {
+  margin: 20px 0 0;
+  max-width: 640px;
+  font-size: 16px;
+  line-height: 1.55;
+  color: rgb(255 255 255 / 0.72);
+  text-wrap: pretty;
+}
+
+/* ------------------------------------------------------------------------------ main */
+
+.main {
+  position: relative;
+  display: grid;
+  grid-template-columns: 816px minmax(0, 440px);
+  column-gap: 48px;
+  margin-top: -86px;
+  padding: 0 120px 160px;
+}
+.column {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* Arrival: 180ms fade, 260ms spring rise, 40ms stagger (Home :48-54, motionSystem). */
+.arrive {
+  opacity: 0;
+  transform: translateY(10px);
+  transition:
+    opacity 180ms var(--ease-out) calc(var(--i, 0) * 40ms * var(--stagger)),
+    transform 260ms var(--spring-soft) calc(var(--i, 0) * 40ms * var(--stagger));
+}
+.page[data-arrived] .arrive {
+  opacity: 1;
+  transform: none;
+}
+:root[data-motion='reduced'] .arrive {
+  transform: none;
+}
+
+/* Sections: white cards (Today.dc.html:31), the first one lifted off the band as Home's. */
+.section {
+  box-sizing: border-box;
+  padding: 30px 48px 8px;
+  background: var(--paper-raised);
+  border: 1px solid var(--hairline);
+  box-shadow: 0 1px 2px rgb(10 32 29 / 0.05);
+  scroll-margin-top: 32px;
+}
+.section:first-child {
+  box-shadow: 0 18px 40px -24px rgb(10 32 29 / 0.35);
+}
+/* Today.dc.html:57, 'Today's plan': a 3px brand bar before a 21px display title in brand-deep. */
+.sectionHead {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--hairline);
+}
+.sectionNum {
+  flex: none;
+  font-family: var(--font-numeric);
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+.sectionBar {
+  flex: none;
+  width: 3px;
+  height: 20px;
+  margin-left: 2px;
+  border-radius: 999px;
+  background: var(--n1-green);
+}
+.sectionTitle {
+  flex: none;
+  margin: 0 6px 0 0;
+  white-space: nowrap;
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  color: var(--brand-deep);
+  outline: none;
+}
+/*
+ * The title row never wraps (a save note must not move the rule): the note and the save
+ * status share what the title leaves, and the status gives way first, down to 'Not saved'.
+ */
+.sectionNote {
+  flex: 0 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  font-size: 13px;
+  color: var(--ink-muted);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.sectionStatus {
+  flex: 0 100 auto;
+  min-width: 90px;
+  max-width: 360px;
+  margin-left: auto;
+  text-align: right;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  column-gap: 32px;
+  padding: 24px 0;
+  border-bottom: 1px solid var(--hairline);
+}
+.rowWide {
+  padding: 24px 0 28px;
+  border-bottom: 1px solid var(--hairline);
+}
+.row:last-child,
+.rowWide:last-child {
+  border-bottom: 0;
+}
+/* Workspace.dc.html's fact labels: 11/500 caps in brand-dark. */
+.rowLabel {
+  display: block;
+  padding-top: 2px;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  line-height: 1.4;
+  text-transform: uppercase;
+  color: var(--brand-dark);
+}
+.rowNote {
+  margin-top: 6px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--ink-muted);
+  text-wrap: pretty;
+}
+.rowBody {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 10px;
+}
+/* A field being typed in takes the brand focus line (Foundations: --focus, inputs). */
+.rowBody input:not([type='password']):focus,
+.rowWide input:focus {
+  box-shadow: inset 0 0 0 1px var(--focus);
+}
+
+/* ------------------------------------------------------------------------------ rail */
+
+.rail {
+  position: sticky;
+  top: 24px;
+  align-self: start;
+}
+.railCard {
+  position: relative;
+  display: block;
+  box-sizing: border-box;
+  padding: 28px 32px 32px;
+  background: var(--paper-raised);
+  border: 1px solid var(--hairline);
+  box-shadow: 0 18px 40px -24px rgb(10 32 29 / 0.35);
+}
+/* Today.dc.html:32: the capacity card's brand rule, drawn in from the left. */
+.railRule {
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  height: 2px;
+  background: var(--n1-green);
+  transform-origin: left;
+  animation: global(n1-draw) 900ms var(--ease-out) 250ms both;
+}
+.railCard .railEyebrow {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  color: var(--brand-dark);
+}
+.railList {
+  margin: 20px 0 0;
+  padding: 0;
+  list-style: none;
+}
+.railItem {
+  position: relative;
+}
+.railItem:not(:last-child)::before {
+  content: '';
+  position: absolute;
+  left: 4.5px;
+  top: 24px;
+  bottom: 4px;
+  width: 1px;
+  background: var(--hairline);
+  transition: background var(--dur-base) var(--ease-out);
+}
+.railItem[data-state='done']:not(:last-child)::before {
+  background: var(--n1-green);
+}
+.railButton {
+  display: grid;
+  grid-template-columns: 10px minmax(0, 1fr);
+  column-gap: 18px;
+  width: 100%;
+  padding: 6px 8px 20px 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  border-radius: var(--radius-s);
+}
+.railButton:focus-visible {
+  outline: 1.5px solid var(--focus);
+  outline-offset: 2px;
+}
+/* Square markers (the brand's square corners). */
+.railDot {
+  width: 10px;
+  height: 10px;
+  margin-top: 5px;
+  box-sizing: border-box;
+  border: 1.5px solid var(--ink-faint);
+  background: var(--paper-raised);
+  transition:
+    background var(--dur-base) var(--ease-out),
+    border-color var(--dur-base) var(--ease-out),
+    box-shadow var(--dur-base) var(--ease-out),
+    transform var(--dur-base) var(--spring-soft);
+}
+.railItem[data-state='done'] .railDot {
+  border-color: var(--n1-green);
+  background: var(--n1-green);
+}
+.railItem[data-state='invalid'] .railDot {
+  border-color: var(--risk);
+}
+.railItem[data-current='true'] .railDot {
+  border-color: var(--brand-deep);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--n1-green) 22%, transparent);
+}
+.railItem[data-current='true'][data-state='done'] .railDot {
+  border-color: var(--n1-green);
+}
+.railHead {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.railNum {
+  font-family: var(--font-numeric);
+  font-size: 11px;
+  color: var(--ink-muted);
+}
+.railTitle {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--ink-muted);
+  transition: color var(--dur-fast) var(--ease-out);
+}
+.railButton:hover .railTitle {
+  color: var(--ink);
+}
+.railItem[data-current='true'] .railTitle {
+  color: var(--brand-deep);
+  font-weight: 600;
+}
+.railSummary {
+  display: block;
+  margin-top: 3px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--ink-muted);
+  overflow-wrap: anywhere;
+}
+.railItem[data-state='invalid'] .railSummary {
+  color: var(--risk-text, color-mix(in oklch, var(--risk) 45%, var(--ink)));
+}
+.railFoot {
+  margin-top: 6px;
+  padding-top: 24px;
+  border-top: 1px solid var(--hairline);
+}
+
+/* ------------------------------------------------------------------------------ feedback */
+
+/* Calm save feedback in a section's title row: always one line, so nothing below moves. */
+.save {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  max-width: 100%;
+  font-size: 13px;
+  color: var(--ink-muted);
+  opacity: 0;
+  transition: opacity 400ms var(--ease-out);
+  white-space: nowrap;
+}
+.save[data-visible='true'] {
+  opacity: 1;
+  transition-duration: var(--dur-fast);
+}
+.save[data-phase='saved'] {
+  color: var(--brand-dark);
+}
+.save[data-phase='error'] {
+  color: var(--overload-chip-fg, color-mix(in oklch, var(--overload) 75%, var(--ink)));
+}
+.saveText {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.saveIcon {
+  flex: none;
+  font-size: 16px;
+}
+
+/* A failed save's reason, under the field it belongs to. */
+.fieldError {
+  max-width: 460px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--overload-chip-fg, color-mix(in oklch, var(--overload) 75%, var(--ink)));
+  text-wrap: pretty;
+}
+
+/* ------------------------------------------------------------------------------ motion */
+
+:root[data-motion='reduced'] .driftA,
+:root[data-motion='reduced'] .driftB,
+:root[data-motion='reduced'] .flow,
+:root[data-motion='reduced'] .markBar,
+:root[data-motion='reduced'] .railRule {
+  animation: none;
+}
+
+/* ------------------------------------------------------------------------------ narrow */
+
+@media (max-width: 1400px) {
+  .header,
+  .hero {
+    margin: 0 48px;
+  }
+  .hero {
+    padding-top: 56px;
+  }
+  .title {
+    font-size: 60px;
+  }
+  .main {
+    grid-template-columns: minmax(0, 816px);
+    padding: 0 48px 120px;
+  }
+  .rail {
+    position: static;
+    grid-row: 2;
+    margin-top: 24px;
+  }
+}
+
+@media (max-width: 900px) {
+  .section {
+    padding: 26px 24px 8px;
+  }
+  .row {
+    grid-template-columns: minmax(0, 1fr);
+    row-gap: 12px;
+  }
+  .sectionNote {
+    display: none;
+  }
+}

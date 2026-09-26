@@ -1,0 +1,829 @@
+/*
+ * Notes.dc.html, px for px. Three columns: the notebook rail, the day page, "Remi reads these".
+ * The columns (300px / 340px, or 52px strips when folded) are set inline from model.columnsFor.
+ * No italics: the redesign's Remi.dc.html sets every inline italic upright (the Ninety One faces
+ * have none), so the day previews and the empty page read upright.
+ */
+.root {
+  position: relative;
+  height: 100%;
+  display: grid;
+  transition: grid-template-columns var(--dur-slow) var(--spring-soft);
+  min-height: 0;
+}
+
+.kicker {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--brand-dark);
+}
+
+/* ---------------------------------------------------------------- rail columns */
+/* Each rail column clips an absolutely placed panel and its 52px folded strip; one fades in as
+   the other fades out while the column's width springs. */
+.column {
+  position: relative;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.strip {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 52px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 28px;
+  box-sizing: border-box;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity var(--dur-base) var(--ease-out);
+}
+.stripLeft {
+  left: 0;
+}
+.stripRight {
+  right: 0;
+}
+.column:not([data-open]) .strip {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.stripLabel {
+  margin-top: 18px;
+  writing-mode: vertical-rl;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--brand-dark);
+}
+/* The notebook's reads bottom to top, "Remi reads these" top to bottom. */
+.stripLabelUp {
+  transform: rotate(180deg);
+}
+
+.panelHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* The square fold / unfold toggle (padding is the UA's, as the prototype's). */
+.panelToggle {
+  flex: none;
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--hairline);
+  background: #fff;
+  cursor: pointer;
+  color: var(--ink-muted);
+  transition:
+    color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out);
+}
+.panelToggle:hover {
+  color: var(--brand-dark);
+  border-color: #009d80;
+}
+
+.panelToggleIcon {
+  font-size: 17px;
+}
+
+/* ---------------------------------------------------------------- notebook rail */
+.railColumn {
+  border-right: 1px solid var(--hairline);
+}
+
+.rail {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity var(--dur-base) var(--ease-out),
+    transform var(--dur-slow) var(--spring-soft);
+}
+.railColumn:not([data-open]) .rail {
+  opacity: 0;
+  transform: translateX(-24px);
+  pointer-events: none;
+}
+
+.railHead {
+  padding: 28px 18px 14px 36px;
+}
+
+.totalLine {
+  font-size: 13px;
+  color: var(--ink-muted);
+  margin-top: 6px;
+  min-height: 1lh;
+}
+
+.railList {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  padding: 0 16px 24px 20px;
+}
+
+.weekHead {
+  padding: 18px 16px 6px;
+  font-family: var(--font-numeric);
+  font-size: 10px;
+  color: var(--ink-faint);
+}
+
+.dayRow {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: 10px;
+  align-items: baseline;
+  padding: 11px 16px 12px;
+  margin-bottom: 2px;
+  border: 0;
+  border-radius: var(--radius-m);
+  background: transparent;
+  box-shadow: inset 0 0 0 1px transparent;
+  text-align: left;
+  cursor: pointer;
+  transition: background var(--dur-fast) var(--ease-out);
+}
+.dayRow[aria-current='date'] {
+  background: var(--paper-raised);
+  box-shadow: inset 0 0 0 1px var(--hairline);
+}
+.dayRow:hover {
+  background: color-mix(in oklch, var(--ink) 3.5%, transparent) !important;
+}
+
+.dayLabel {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--ink-muted);
+}
+.dayRow[data-has] .dayLabel,
+.dayRow[aria-current='date'] .dayLabel {
+  color: var(--ink);
+}
+.dayRow[aria-current='date'] .dayLabel {
+  font-weight: 600;
+}
+
+.dayCount {
+  font-family: var(--font-numeric);
+  font-size: 11px;
+  color: var(--ink-muted);
+}
+
+.dayPreview {
+  grid-column: 1 / -1;
+  margin-top: 4px;
+  font-family: var(--font-display);
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--ink-faint);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.dayRow[data-has] .dayPreview {
+  color: var(--ink-muted);
+}
+
+/* ---------------------------------------------------------------- day page */
+.center {
+  min-height: 0;
+  overflow-y: auto;
+}
+
+/* max-width is inline (model.pageWidth). The prototype lists max-width in a transition that a
+   second transition declaration then overrides; the width springs with the columns here. */
+.page {
+  box-sizing: border-box;
+  padding: 36px 56px 80px;
+  margin: 0 auto;
+  opacity: 1;
+  transform: none;
+  transition:
+    max-width var(--dur-slow) var(--spring-soft),
+    opacity 140ms var(--ease-out),
+    transform var(--dur-base) var(--spring-soft);
+}
+.page[data-fading] {
+  opacity: 0;
+}
+
+.pageHead {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 24px;
+}
+
+.toToday {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 24px;
+  padding: 0 9px 0 5px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-s);
+  background: var(--paper-raised);
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.toTodayIcon {
+  font-size: 15px;
+}
+
+.title {
+  margin: 12px 0 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 48px;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+}
+.title:focus {
+  outline: none;
+}
+
+.sub {
+  font-size: 14px;
+  color: var(--ink-muted);
+  margin-top: 12px;
+}
+
+.composer {
+  margin-top: 32px;
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  column-gap: 8px;
+  align-items: start;
+  padding: 14px 0 16px;
+  border-top: 1px solid var(--brand-deep);
+  border-bottom: 1px solid var(--hairline);
+}
+
+.nowTime {
+  font-family: var(--font-numeric);
+  font-size: 12px;
+  color: var(--ink-faint);
+  padding-top: 6px;
+}
+
+.composerInput {
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  min-height: 34px;
+  resize: none;
+  overflow: hidden;
+  field-sizing: content;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  padding: 3px 0;
+  font-family: var(--font-display);
+  font-size: 20px;
+  line-height: 1.5;
+  color: var(--ink);
+}
+
+.composerFoot {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 6px;
+  min-height: 22px;
+}
+
+.grow {
+  flex: 1;
+}
+
+.enterHint {
+  font-size: 12px;
+  color: var(--ink-faint);
+  opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+.enterHint[data-on] {
+  opacity: 1;
+}
+
+/* Tag chips: a span under the composer, a button on entries (Notes.dc.html :42, :60). */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 20px;
+  padding: 0 7px;
+  border: 0;
+  border-radius: var(--radius-s);
+  font-size: 11px;
+  font-weight: 500;
+}
+button.chip {
+  cursor: pointer;
+}
+.chip:focus-visible {
+  outline: 1.5px solid var(--focus);
+  outline-offset: 1px;
+}
+
+.chipDot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+}
+
+.entry {
+  position: relative;
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr) 32px;
+  column-gap: 8px;
+  align-items: start;
+  padding: 14px 0 12px;
+  border-bottom: 1px solid var(--hairline);
+  background: transparent;
+  transition:
+    opacity 220ms var(--ease-out),
+    transform 320ms var(--spring-soft),
+    background 900ms var(--ease-out);
+}
+.entry[data-fresh] {
+  background: color-mix(in oklch, var(--pc-accent) 7%, transparent);
+}
+
+.entryTime {
+  font-family: var(--font-numeric);
+  font-size: 12px;
+  color: var(--ink-muted);
+  padding-top: 5px;
+}
+
+.entryBody {
+  min-width: 0;
+}
+
+.entryInput {
+  display: block;
+  width: calc(100% + 12px);
+  margin: 0 -6px;
+  padding: 2px 6px;
+  box-sizing: border-box;
+  resize: none;
+  overflow: hidden;
+  field-sizing: content;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  border-radius: var(--radius-s);
+  font-family: var(--font-display);
+  font-size: 18px;
+  line-height: 1.55;
+  color: var(--ink);
+  transition: background var(--dur-fast) var(--ease-out);
+}
+.entryInput:hover {
+  background: color-mix(in oklch, var(--ink) 3%, transparent) !important;
+}
+.entryInput:focus {
+  background: var(--paper-raised) !important;
+  box-shadow: inset 0 0 0 1px var(--hairline) !important;
+}
+
+.entryTags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+/* The expand button: faint (0.15) until the row is hovered (the prototype's --ex). */
+.expand {
+  width: 30px;
+  height: 30px;
+  margin-top: 1px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--hairline);
+  background: #fff;
+  cursor: pointer;
+  color: var(--ink-muted);
+  opacity: 0.15;
+  transition:
+    opacity var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out);
+}
+.entry:hover .expand,
+.expand:focus-visible {
+  opacity: 1;
+}
+.expand:hover {
+  color: var(--brand-dark);
+  border-color: #009d80;
+  opacity: 1;
+}
+
+.expandIcon {
+  font-size: 17px;
+}
+
+.empty {
+  padding: 28px 0;
+  font-family: var(--font-display);
+  font-size: 18px;
+  line-height: 1.5;
+  color: var(--ink-muted);
+}
+
+.retry {
+  margin-left: 8px;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font-family: var(--font-ui);
+  font-style: normal;
+  font-size: 14px;
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--hairline);
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+/* ---------------------------------------------------------------- Remi reads these */
+.readsColumn {
+  border-left: 1px solid var(--hairline);
+  background: var(--paper-raised);
+}
+
+.reads {
+  position: absolute;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 340px;
+  overflow-y: auto;
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity var(--dur-base) var(--ease-out),
+    transform var(--dur-slow) var(--spring-soft);
+}
+.readsColumn:not([data-open]) .reads {
+  opacity: 0;
+  transform: translateX(24px);
+  pointer-events: none;
+}
+
+.readsInner {
+  padding: 28px 32px 32px;
+}
+
+.readsText {
+  margin: 10px 0 0;
+  font-size: 14px;
+  line-height: 1.55;
+  color: var(--ink-muted);
+  text-wrap: pretty;
+}
+
+.cta {
+  margin-top: 18px;
+  width: 100%;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 0;
+  border-radius: var(--radius-m);
+  background: var(--ink);
+  color: var(--paper);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.cta[aria-disabled='true'] {
+  background: var(--ink-faint);
+  cursor: default;
+}
+
+.ctaIcon {
+  font-size: 18px;
+}
+
+.ctaNote {
+  font-size: 12px;
+  color: var(--ink-muted);
+  margin-top: 8px;
+  line-height: 1.45;
+}
+
+.section {
+  margin-top: 34px;
+}
+
+.mentions {
+  margin-top: 10px;
+  border-top: 1px solid var(--hairline);
+}
+
+.mention {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 10px minmax(0, 1fr) auto;
+  column-gap: 10px;
+  align-items: center;
+  padding: 11px 0;
+  border: 0;
+  border-bottom: 1px solid var(--hairline);
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.mentionDot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.mentionName {
+  font-size: 14px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.mentionCount {
+  font-family: var(--font-numeric);
+  font-size: 11px;
+  color: var(--ink-muted);
+}
+
+.noMentions {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ink-muted);
+  padding: 10px 0;
+}
+
+.spark {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 56px;
+  margin-top: 12px;
+}
+
+.sparkButton {
+  flex: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 6px;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+}
+
+.sparkBar {
+  display: block;
+  min-height: 2px;
+  border-radius: 1px;
+  background: var(--hairline);
+  transition: height var(--dur-slow) var(--spring-soft);
+}
+.sparkBar[data-tone='notes'] {
+  background: var(--ink-faint);
+}
+.sparkBar[data-tone='selected'] {
+  background: var(--ink);
+}
+
+.sparkLabels {
+  display: flex;
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.sparkLabel {
+  flex: 1;
+  text-align: center;
+  font-family: var(--font-numeric);
+  font-size: 10px;
+  color: var(--ink-muted);
+}
+.sparkLabel[data-selected] {
+  color: var(--ink);
+}
+
+/* ---------------------------------------------------------------- expanded note */
+.ex {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  pointer-events: none;
+}
+.ex[data-open] {
+  pointer-events: auto;
+}
+
+.exScrim {
+  position: absolute;
+  inset: 0;
+  background: rgb(13 50 50 / 28%);
+  opacity: 0;
+  transition: opacity var(--dur-base) var(--ease-out);
+}
+
+.exCard {
+  position: absolute;
+  left: 48px;
+  right: 48px;
+  top: 28px;
+  bottom: 28px;
+  display: grid;
+  grid-template-rows: 62px minmax(0, 1fr) 48px;
+  background: #fff;
+  border: 1px solid var(--hairline);
+  box-shadow: 0 30px 60px -30px rgb(10 32 29 / 45%);
+  opacity: 0;
+  transform: scale(0.97) translateY(10px);
+  transform-origin: center top;
+  transition:
+    opacity var(--dur-base) var(--ease-out),
+    transform var(--dur-slow) var(--spring-soft);
+}
+
+.ex[data-open] .exScrim,
+.ex[data-open] .exCard {
+  opacity: 1;
+}
+.ex[data-open] .exCard {
+  transform: none;
+}
+
+/* The 2px teal line drawn across the card's top edge as it opens. */
+.exAccent {
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  height: 2px;
+  background: #009d80;
+  transform-origin: left;
+  transform: scaleX(0);
+  transition: transform 700ms cubic-bezier(0.23, 1, 0.32, 1) 120ms;
+}
+.ex[data-open] .exAccent {
+  transform: scaleX(1);
+}
+
+.exHead {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 18px 0 32px;
+  border-bottom: 1px solid var(--rule-soft);
+}
+
+.exPip {
+  width: 3px;
+  height: 18px;
+  border-radius: 999px;
+  background: #009d80;
+}
+
+.exDay {
+  font-family: var(--font-display);
+  font-size: 20px;
+  color: var(--brand-deep);
+}
+
+.exTime {
+  font-family: var(--font-numeric);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  color: var(--ink-muted);
+}
+
+.exTags {
+  display: flex;
+  gap: 6px;
+}
+
+.exCollapse {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  height: 32px;
+  padding: 0 12px;
+  border: 1px solid var(--hairline);
+  background: #fff;
+  font-size: 13px;
+  color: var(--ink-muted);
+  cursor: pointer;
+}
+.exCollapse:hover {
+  border-color: #009d80;
+  color: var(--brand-dark);
+}
+
+.exCollapseIcon {
+  font-size: 17px;
+}
+
+.exBody {
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.exInput {
+  display: block;
+  width: 100%;
+  max-width: 980px;
+  min-height: 100%;
+  margin: 0 auto;
+  box-sizing: border-box;
+  padding: 36px 48px 48px;
+  resize: none;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  font-family: var(--font-display);
+  font-size: 24px;
+  line-height: 1.6;
+  color: var(--ink);
+}
+
+.exFoot {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 32px;
+  border-top: 1px solid var(--rule-soft);
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+
+.exCount {
+  font-family: var(--font-numeric);
+}
+
+/* Reduced motion: the rails and the card fade without sliding or scaling (the prototype's
+   `red` checks); --spring-soft already turns the column and width springs into a jump. */
+:global(:root[data-motion='reduced']) .railColumn:not([data-open]) .rail,
+:global(:root[data-motion='reduced']) .readsColumn:not([data-open]) .reads,
+:global(:root[data-motion='reduced']) .exCard {
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .railColumn:not([data-open]) .rail,
+  .readsColumn:not([data-open]) .reads,
+  .exCard {
+    transform: none;
+  }
+}
+
+.status {
+  padding: 36px 56px;
+  font-size: 14px;
+  color: var(--ink-muted);
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

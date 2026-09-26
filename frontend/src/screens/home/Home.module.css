@@ -1,0 +1,594 @@
+/* Remi Home.dc.html (the Ninety One redesign), px for px. The stage is the shared Stage at a
+   fixed 1920×1080. */
+
+/* ---------------------------------------------------------------- band (:52-55) */
+/* The dark-teal band behind the header and greeting; the cards overlap its foot (388 < 470). */
+.band {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 470px;
+  overflow: hidden;
+  background: var(--brand-deep);
+  color: #fff;
+}
+
+/* ---------------------------------------------------------------- header (:56-62) */
+.header {
+  position: absolute;
+  left: 120px;
+  right: 120px;
+  top: 0;
+  height: 96px;
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  color: #fff;
+  transition: opacity 200ms var(--ease-out);
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.wordmark {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.wordmarkName {
+  font-size: 19px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  line-height: 1;
+}
+.wordmarkSub {
+  font-size: 10.5px;
+  letter-spacing: 0.16em;
+  line-height: 1;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.52);
+}
+.spacer {
+  flex: 1;
+}
+.dateCluster {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+}
+.date {
+  font-family: var(--font-numeric);
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.6);
+}
+.divider {
+  width: 1px;
+  height: 20px;
+  background: rgba(255, 255, 255, 0.16);
+}
+.countdown {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+.countdownN {
+  font-family: var(--font-numeric);
+  font-size: 20px;
+}
+.countdownWords {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.72);
+}
+
+/* ---------------------------------------------------------------- hero (:64-67) */
+.hero {
+  position: absolute;
+  left: 120px;
+  top: 170px;
+  width: 1100px;
+  color: #fff;
+}
+.greeting {
+  font-family: var(--font-numeric);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--brand-mint-2);
+  transition:
+    opacity 180ms var(--ease-out),
+    transform 260ms var(--spring-soft);
+}
+.h1 {
+  margin: 18px 0 0;
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: 92px;
+  line-height: 1.02;
+  letter-spacing: -0.02em;
+  color: #fff;
+  transition:
+    opacity 200ms var(--ease-out) 40ms,
+    transform 320ms var(--spring-soft) 40ms;
+}
+
+/* ---------------------------------------------------------------- cards (:69-149) */
+.grid {
+  position: absolute;
+  left: 120px;
+  right: 120px;
+  top: 388px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 48px;
+}
+/* White, square, lifted off the band by a soft teal-black shadow. */
+.card {
+  position: relative;
+  height: 560px;
+  box-sizing: border-box;
+  padding: 34px 40px 30px;
+  border-radius: var(--radius-m);
+  background: #fff;
+  box-shadow:
+    inset 0 0 0 1px var(--hairline),
+    0 18px 40px -24px rgba(10, 32, 29, 0.35);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  outline: none;
+  transition:
+    opacity 220ms var(--ease-out) var(--card-delay, 120ms),
+    transform 360ms var(--spring-soft),
+    box-shadow var(--dur-base) var(--ease-out);
+}
+.card[data-hover='true'] {
+  box-shadow:
+    inset 0 0 0 1px var(--ink),
+    0 18px 40px -24px rgba(10, 32, 29, 0.35);
+}
+.card:focus-visible {
+  box-shadow:
+    inset 0 0 0 1px var(--ink),
+    0 0 0 2px var(--paper),
+    0 0 0 4px var(--focus),
+    0 18px 40px -24px rgba(10, 32, 29, 0.35);
+}
+.cardHead {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+}
+.cardIndex {
+  font-family: var(--font-numeric);
+  font-size: 13px;
+  color: var(--ink-muted);
+}
+.cardTitle {
+  font-family: var(--font-display);
+  font-size: 44px;
+  line-height: 1;
+  letter-spacing: -0.015em;
+}
+.go {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--ink);
+  box-shadow: inset 0 0 0 1px var(--hairline);
+  transition:
+    background var(--dur-base) var(--ease-out),
+    color var(--dur-base) var(--ease-out);
+}
+.card[data-hover='true'] .go {
+  background: var(--ink);
+  color: var(--paper);
+  box-shadow: inset 0 0 0 1px var(--ink);
+}
+.goArrow {
+  font-size: 20px;
+  transform: translateX(0);
+  transition: transform var(--dur-base) var(--spring-soft);
+}
+.card[data-hover='true'] .goArrow {
+  transform: translateX(2px);
+}
+.cardDesc {
+  font-size: 16px;
+  color: var(--ink-muted);
+  margin-top: 14px;
+}
+.preview {
+  position: relative;
+  flex: 1;
+  margin-top: 26px;
+  border-top: 1px solid var(--hairline);
+  /* The prototype mixes from oklch(0.5 0.1 265) (:22). The token's hex sits a hair past 180°
+     from the paper's hue, so an oklch mix from it turns the other way round (pinkish #ece0d6
+     instead of #e3e4d5). Mix from the prototype's own colour here. */
+  --fi-accent-soft: color-mix(in oklch, oklch(0.5 0.1 265) 13%, var(--paper));
+}
+.previewText {
+  padding-top: 22px;
+}
+.cardFoot {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--hairline);
+}
+.meta {
+  font-size: 13px;
+  color: var(--ink-muted);
+}
+
+/* ---------------------------------------------------------------- Control Panel preview (:80-105) */
+.strip {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 14px;
+  height: 44px;
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+}
+.bar {
+  flex: 1;
+  /* A day with nothing planned still shows as a stub, so an empty plan reads as a strip. */
+  min-height: 2px;
+  border-radius: 1px;
+  background: var(--pc-accent-soft);
+  box-shadow: inset 0 0 0 1px var(--pc-accent);
+  transition:
+    height var(--dur-slow) var(--spring-soft) var(--d, 0ms),
+    background var(--dur-base) var(--ease-out);
+}
+.bar[data-tone='fi'] {
+  background: var(--fi-accent-soft);
+  box-shadow: inset 0 0 0 1px var(--fi-accent);
+}
+.bar[data-tone='over'] {
+  background: color-mix(in oklch, var(--overload) 22%, var(--paper));
+  box-shadow: inset 0 0 0 1px var(--overload);
+}
+/*
+ * A day with nothing planned: the stub is an unfilled hairline, like Today's empty track. In
+ * the accent, the two inset edges of a 2px bar meet and read as a solid dash of planned work.
+ */
+.bar[data-empty] {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--hairline);
+}
+.stripRule {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 66px;
+  border-top: 1px dashed var(--hairline);
+}
+.row {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 12px;
+  --accent: var(--pc-accent);
+  --accent-soft: var(--pc-accent-soft);
+}
+.row[data-domain='fi'] {
+  --accent: var(--fi-accent);
+  --accent-soft: var(--fi-accent-soft);
+}
+.ghost {
+  position: absolute;
+  top: 14px;
+  height: 6px;
+  box-sizing: border-box;
+  border: 1.5px dashed var(--accent);
+  border-radius: 2px;
+  transition: opacity 400ms var(--ease-out);
+}
+.rowBar {
+  position: absolute;
+  top: 0;
+  height: 10px;
+  border-radius: 2px;
+  background: var(--accent);
+  box-shadow: inset 0 0 0 1px transparent;
+  transition: width var(--dur-slow) var(--spring-soft) var(--d, 0ms);
+}
+.rowBar[data-hatch='true'] {
+  background: repeating-linear-gradient(135deg, var(--accent-soft) 0 4px, transparent 4px 8px);
+  box-shadow: inset 0 0 0 1px var(--accent);
+}
+.overrun {
+  position: absolute;
+  top: 0;
+  height: 10px;
+  border-radius: 0 2px 2px 0;
+  background: var(--risk);
+  transition:
+    left var(--dur-slow) var(--spring-soft) var(--d, 0ms),
+    width var(--dur-slow) var(--spring-soft) var(--d, 0ms);
+}
+.diamond {
+  position: absolute;
+  top: 0;
+  width: 10px;
+  height: 10px;
+  margin-left: -5px;
+  box-sizing: border-box;
+  background: var(--paper-raised);
+  border: 1.5px solid var(--accent);
+  transition: transform var(--dur-base) var(--ease-out) var(--d, 0ms);
+}
+.todayLine {
+  position: absolute;
+  top: 6px;
+  bottom: 44px;
+  width: 1px;
+  background: var(--brand-deep);
+}
+.moveLine {
+  position: absolute;
+  top: 6px;
+  bottom: 44px;
+  width: 1.5px;
+  background: var(--fi-accent);
+}
+.keyName {
+  font-size: 14px;
+  font-weight: 500;
+}
+.keyDate {
+  font-size: 15px;
+  font-weight: 500;
+  display: flex;
+}
+.pillRoll {
+  display: inline-flex;
+}
+
+/* ---------------------------------------------------------------- Textbook preview (:117-147) */
+.crumb {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  font-size: 11px;
+  color: var(--ink-muted);
+}
+.crumbSection {
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.numRow {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr);
+  align-items: baseline;
+}
+.num {
+  font-family: var(--font-numeric);
+  font-size: 13px;
+  color: var(--ink-muted);
+}
+.h1Row {
+  margin-top: 16px;
+}
+.h1Num {
+  font-size: 14px;
+}
+.h1Text {
+  font-family: var(--font-display);
+  font-size: 26px;
+  letter-spacing: -0.01em;
+}
+.h2Row {
+  margin-top: 12px;
+}
+.h2Text {
+  font-size: 16px;
+  font-weight: 600;
+}
+.para {
+  margin: 8px 0 0 44px;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--ink-muted);
+}
+/* The design writes italic, then sets every inline italic upright (Remi Home.dc.html:22). */
+.formula {
+  margin: 12px 0 0 44px;
+  font-family: var(--font-display);
+  font-style: normal;
+  font-size: 22px;
+  letter-spacing: 0.01em;
+}
+.where {
+  margin: 10px 0 0 44px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ink-muted);
+}
+.sym {
+  font-family: var(--font-display);
+  font-style: normal;
+  color: var(--ink);
+}
+.nextRow {
+  position: relative;
+  margin-top: 18px;
+}
+.nextNum {
+  opacity: 0.35;
+  transition: opacity 200ms var(--ease-out);
+}
+.typing {
+  position: relative;
+  display: inline-flex;
+  align-items: baseline;
+}
+.typed {
+  font-size: 16px;
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  display: inline-block;
+  max-width: 0ch;
+  transition: max-width 520ms steps(9, end);
+}
+.caret {
+  display: inline-block;
+  width: 1.5px;
+  height: 18px;
+  margin-left: 2px;
+  background: var(--brand-deep);
+  transform: translateY(3px);
+  opacity: 0;
+  transition: opacity 120ms linear;
+}
+.slash {
+  position: absolute;
+  left: 150px;
+  top: -6px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 5px;
+  border-radius: var(--radius-m);
+  background: var(--paper);
+  box-shadow:
+    inset 0 0 0 1px var(--hairline),
+    0 14px 28px -20px color-mix(in oklch, var(--ink) 45%, transparent);
+  opacity: 0;
+  transform: translateY(-4px);
+  transition:
+    opacity 200ms var(--ease-out) var(--menu-d, 0ms),
+    transform 320ms var(--spring-soft) var(--menu-d, 0ms);
+}
+.slashGlyph {
+  font-family: var(--font-numeric);
+  font-size: 12px;
+  color: var(--ink-muted);
+  padding: 0 6px;
+}
+.chip {
+  height: 26px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 9px;
+  border-radius: var(--radius-s);
+  background: transparent;
+  font-size: 12px;
+  font-weight: 500;
+}
+.chipOn {
+  background: color-mix(in oklch, var(--ink) 6%, transparent);
+}
+.card[data-hover='true'] .nextNum {
+  opacity: 1;
+}
+.card[data-hover='true'] .typed {
+  max-width: 9ch;
+}
+.card[data-hover='true'] .caret {
+  opacity: 1;
+}
+.card[data-hover='true'] .slash {
+  opacity: 1;
+  transform: translateY(0);
+  --menu-d: 560ms;
+}
+.card[data-reduced='true'] .slash {
+  transform: translateY(0);
+}
+
+/* A real page's excerpt (textbookExcerpt.ts): any heading is typed, long lines are clipped. */
+.crumbTitle {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.h3Text {
+  font-size: 15px;
+  font-weight: 600;
+}
+.clip {
+  display: block;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.clamp {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+.placeholder {
+  color: var(--ink-faint);
+}
+.formula sub,
+.formula sup {
+  font-size: 0.6em;
+  line-height: 0;
+}
+.formula sub {
+  vertical-align: -0.3em;
+}
+.formula sup {
+  vertical-align: 0.65em;
+}
+.typedAny {
+  transition: max-width 520ms steps(var(--typed-steps, 9), end);
+}
+.card[data-hover='true'] .typedAny {
+  max-width: calc((var(--typed-n, 9) + 1) * 1ch);
+}
+
+/* ---------------------------------------------------------------- page footer (:151-155) */
+.footer {
+  position: absolute;
+  left: 120px;
+  right: 120px;
+  bottom: 40px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  font-size: 13px;
+  color: var(--ink-muted);
+  transition: opacity 200ms var(--ease-out) 240ms;
+}
+.key {
+  font-family: var(--font-numeric);
+  font-size: 12px;
+  padding: 1px 6px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-s);
+  color: var(--ink);
+}
+
+/* ---------------------------------------------------------------- expand overlay (:157) */
+.expand {
+  position: absolute;
+  background: var(--paper);
+  box-shadow: inset 0 0 0 1px var(--hairline);
+  pointer-events: none;
+  z-index: 20;
+}

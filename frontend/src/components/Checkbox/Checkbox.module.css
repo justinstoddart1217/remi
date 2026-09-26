@@ -1,0 +1,113 @@
+/* Today.dc.html:77-78, :205; Workspace.dc.html:186; CheckIn.dc.html:84; Transition.dc.html:105. */
+.box {
+  flex: none;
+  box-sizing: border-box;
+  display: grid;
+  place-items: center;
+  border-radius: var(--radius-s);
+  border: 1.5px solid var(--ink-faint);
+  background: transparent;
+  transition:
+    background var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out);
+}
+.box[data-checked='true'] {
+  border-color: var(--ink);
+  background: var(--ink);
+}
+
+.glyph {
+  line-height: 1;
+  color: var(--paper);
+  opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+.box[data-checked='true'] .glyph {
+  opacity: 1;
+}
+
+.pop .glyph {
+  transform: scale(0.4);
+  transition:
+    opacity var(--dur-fast) var(--ease-out),
+    transform 180ms cubic-bezier(0.34, 1.5, 0.64, 1);
+}
+.pop[data-checked='true'] .glyph {
+  transform: scale(1);
+}
+:global(:root[data-motion='reduced']) .pop .glyph {
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .pop .glyph {
+    transform: none;
+  }
+}
+
+.s18 {
+  width: 18px;
+  height: 18px;
+}
+.s18 .glyph {
+  font-size: 15px;
+}
+.s16 {
+  width: 16px;
+  height: 16px;
+}
+.s16 .glyph {
+  font-size: 13px;
+}
+.s15 {
+  width: 15px;
+  height: 15px;
+}
+.s15 .glyph {
+  font-size: 12px;
+}
+
+/* Box-only control: the button is exactly the box. */
+.solo {
+  flex: none;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+
+/* Row control: the prototype's Today fund/task rows (layout details come from the caller). */
+.row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+}
+
+.label {
+  min-width: 0;
+  transition: color var(--dur-base) var(--ease-out);
+}
+.row[data-checked='true'] .label {
+  color: var(--ink-muted);
+}
+.row[data-checked='true'] .done {
+  text-decoration: line-through;
+  text-decoration-color: var(--done);
+}
+.row[data-checked='true'] .faint {
+  text-decoration: line-through;
+  text-decoration-color: var(--ink-faint);
+}
+
+.solo:focus-visible,
+.row:focus-visible {
+  outline: 1.5px solid var(--focus);
+  outline-offset: 2px;
+}

@@ -1,0 +1,74 @@
+/* Routines.dc.html:73-80, :204-205. */
+.stepper {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.connector {
+  width: 10px;
+  height: 1px;
+  background: var(--hairline);
+}
+.connector[data-done='true'] {
+  background: var(--ink);
+}
+.first {
+  width: 0;
+}
+
+.step {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 6px;
+  margin: 0 1px;
+  border: 0;
+  border-radius: var(--radius-s);
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+}
+.step:hover:not(:disabled) {
+  background: color-mix(in oklch, var(--ink) 5%, transparent);
+}
+.step:disabled {
+  cursor: default;
+}
+.step:focus-visible {
+  outline: 1.5px solid var(--focus);
+  outline-offset: 0;
+}
+
+.dot {
+  width: 9px;
+  height: 9px;
+  box-sizing: border-box;
+  border-radius: 50%;
+  border: 1.5px solid var(--ink-faint);
+  background: var(--paper);
+  transition:
+    background var(--dur-base) var(--ease-out),
+    border-color var(--dur-base) var(--ease-out);
+}
+.name {
+  font-size: 13px;
+  font-weight: 400;
+  color: var(--ink-faint);
+  white-space: nowrap;
+}
+
+.step[data-state='past'] .dot {
+  border-color: var(--ink);
+  background: var(--ink);
+}
+.step[data-state='past'] .name {
+  color: var(--ink-muted);
+}
+.step[data-state='current'] .dot {
+  border-color: var(--ink);
+}
+.step[data-state='current'] .name {
+  font-weight: 600;
+  color: var(--ink);
+}

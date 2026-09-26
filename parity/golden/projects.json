@@ -1,0 +1,770 @@
+[
+  {
+    "checklists": [
+      {
+        "id": "cl-1",
+        "title": "Handover checklist",
+        "items": [
+          {
+            "id": "cl-1a",
+            "t": "Successor has scheduler access",
+            "done": false
+          },
+          {
+            "id": "cl-1b",
+            "t": "Runbook reviewed with the successor",
+            "done": false
+          },
+          {
+            "id": "cl-1c",
+            "t": "Administrator knows who to contact from January",
+            "done": false
+          }
+        ]
+      }
+    ],
+    "milestones": [
+      {
+        "name": "Security-level data feed connected",
+        "date": "2026-10-15"
+      },
+      {
+        "name": "Fund-level engine reconciles",
+        "date": "2026-10-16"
+      },
+      {
+        "name": "Parallel run on November BD3",
+        "date": "2026-11-04"
+      },
+      {
+        "name": "Security-level attribution",
+        "date": "2026-11-20"
+      },
+      {
+        "name": "Runbook drafted",
+        "date": "2026-11-27"
+      }
+    ],
+    "now": [
+      {
+        "m": "Security-level data feed connected",
+        "due": "2026-10-15",
+        "tasks": [
+          {
+            "id": "ret-1",
+            "t": "Request the security-level extract from the administrator",
+            "h": 0.5
+          },
+          {
+            "id": "ret-2",
+            "t": "Parse and validate the extract",
+            "h": 4
+          }
+        ]
+      },
+      {
+        "m": "Fund-level engine reconciles",
+        "due": "2026-10-16",
+        "tasks": [
+          {
+            "id": "ret-3",
+            "t": "Map source files for the last 4 funds",
+            "h": 3
+          },
+          {
+            "id": "ret-4",
+            "t": "Reconcile September to administrator NAVs",
+            "h": 4
+          },
+          {
+            "id": "ret-5",
+            "t": "Handle FX-hedged share classes",
+            "h": 3
+          }
+        ]
+      }
+    ],
+    "next": [
+      {
+        "m": "Parallel run on November BD3",
+        "due": "2026-11-04"
+      },
+      {
+        "m": "Security-level attribution",
+        "due": "2026-11-20"
+      },
+      {
+        "m": "Runbook drafted",
+        "due": "2026-11-27"
+      }
+    ],
+    "risks": [
+      {
+        "r": "Security-level files arrived late every month, so the pipeline never ran end to end.",
+        "m": "Build a fallback that flags missing securities and still completes the fund-level run."
+      },
+      {
+        "r": "Nobody owned it after I left, and the first January run failed quietly.",
+        "m": "Name the successor by 13 Nov and have them run the December cycle while I watch."
+      },
+      {
+        "r": "Scope kept growing until the handover date passed.",
+        "m": "Freeze scope at the November check-in; new requests go to the successor’s backlog."
+      }
+    ],
+    "scope": [
+      {
+        "date": "2026-10-03",
+        "what": "Security-level attribution",
+        "h": 10,
+        "bd": 3,
+        "from": "27 Nov",
+        "to": "2 Dec"
+      }
+    ],
+    "checkins": [
+      {
+        "date": "2026-09-08",
+        "note": "Charter written. Baseline 60h.",
+        "forecast": "2026-11-20",
+        "conf": 4,
+        "ms": [
+          {
+            "name": "Fund-level engine reconciles",
+            "date": "2026-10-09"
+          },
+          {
+            "name": "Parallel run on November BD3",
+            "date": "2026-11-04"
+          }
+        ]
+      },
+      {
+        "date": "2026-09-22",
+        "note": "Fund-level engine running for 8 of 12 funds. Administrator access took a week longer than planned.",
+        "forecast": "2026-11-27",
+        "conf": 4,
+        "ms": [
+          {
+            "name": "Fund-level engine reconciles",
+            "date": "2026-10-16"
+          },
+          {
+            "name": "Parallel run on November BD3",
+            "date": "2026-11-04"
+          }
+        ]
+      },
+      {
+        "date": "2026-10-03",
+        "note": "Security-level attribution added to scope, +10h.",
+        "forecast": "2026-12-02",
+        "conf": 3,
+        "ms": [
+          {
+            "name": "Fund-level engine reconciles",
+            "date": "2026-10-16"
+          },
+          {
+            "name": "Parallel run on November BD3",
+            "date": "2026-11-04"
+          },
+          {
+            "name": "Security-level attribution",
+            "date": "2026-11-20"
+          }
+        ]
+      }
+    ],
+    "ov": {
+      "2026-11-04": 3.5
+    },
+    "later": "Hand the automated run to a successor after the December cycle, then retire the manual spreadsheets.",
+    "id": "ret",
+    "domain": "pc",
+    "name": "Returns pipeline automation",
+    "short": "Returns pipeline",
+    "goal": "Returns for all 12 funds produced in under 30 minutes with no manual steps, ready to hand over.",
+    "start": "2026-09-14",
+    "target": "2026-11-27",
+    "forecast": "2026-12-02",
+    "prev": "2026-11-27",
+    "exit": [
+      "Automate",
+      "Hand over"
+    ],
+    "confidence": 3,
+    "checkin": "2026-10-03",
+    "phase": 2,
+    "rate": 3.5,
+    "bd3": 0,
+    "bd8": 2,
+    "rateAfter": 0,
+    "baseline": 60,
+    "readiness": 0.6,
+    "endName": "Handover-ready",
+    "charter": {
+      "why": "The move to Fixed Income is on 4 Jan. Returns run every BD3 and cannot leave with me, so the process has to run without me before the December cycle.",
+      "success": [
+        "All 12 funds produced in under 30 minutes",
+        "No manual steps between administrator files and the returns pack",
+        "A successor completes the December run unaided"
+      ],
+      "inScope": [
+        "Fund-level returns for all 12 funds",
+        "Security-level returns and attribution",
+        "Reconciliation to administrator NAVs",
+        "Runbook for the successor"
+      ],
+      "outScope": [
+        "Attribution below security level",
+        "Changes to the investor reporting template"
+      ],
+      "constraints": [
+        "Administrator files land on the evening of BD2",
+        "Runs on the existing scheduler; no new infrastructure"
+      ]
+    },
+    "startN": "2026-09-14",
+    "targetN": "2026-11-27",
+    "forecastN": "2026-12-02",
+    "prevN": "2026-11-27",
+    "delta": 3,
+    "status": "risk",
+    "since": 2,
+    "stale": false,
+    "added": 10,
+    "growth": 17,
+    "accent": "var(--pc-accent)",
+    "soft": "var(--pc-accent-soft)",
+    "domainName": "Private Credit",
+    "forecastS": "Wed 2 Dec",
+    "forecastDM": "2 Dec",
+    "targetS": "Fri 27 Nov",
+    "targetDM": "27 Nov",
+    "prevS": "Fri 27 Nov",
+    "prevDM": "27 Nov",
+    "deltaLabel": "+3 BD",
+    "sinceLabel": "2 days ago",
+    "phaseName": "Run",
+    "flash": false,
+    "moved": null,
+    "statusColor": "var(--risk)"
+  },
+  {
+    "checklists": [],
+    "milestones": [
+      {
+        "name": "Performance section builds itself",
+        "date": "2026-10-16"
+      },
+      {
+        "name": "First self-built pack, November BD8",
+        "date": "2026-11-11"
+      },
+      {
+        "name": "Exposure and pipeline sections",
+        "date": "2026-11-27"
+      }
+    ],
+    "now": [
+      {
+        "m": "Performance section builds itself",
+        "due": "2026-10-16",
+        "tasks": [
+          {
+            "id": "man-0",
+            "t": "Send the NAV bridge spec to Finance",
+            "h": 0.5,
+            "due": "2026-10-02"
+          },
+          {
+            "id": "man-1",
+            "t": "Map NAV bridge to source tables",
+            "h": 0.75
+          },
+          {
+            "id": "man-2",
+            "t": "Template the performance section",
+            "h": 0.75
+          },
+          {
+            "id": "man-3",
+            "t": "Test build against the September pack",
+            "h": 0.5
+          },
+          {
+            "id": "man-4",
+            "t": "Exposure tables from source",
+            "h": 3
+          }
+        ]
+      }
+    ],
+    "next": [
+      {
+        "m": "First self-built pack, November BD8",
+        "due": "2026-11-11"
+      },
+      {
+        "m": "Exposure and pipeline sections",
+        "due": "2026-11-27"
+      }
+    ],
+    "risks": [
+      {
+        "r": "Finance never signed off the automated NAV bridge, so every pack was rechecked by hand.",
+        "m": "Book the sign-off session for the November pack now."
+      }
+    ],
+    "scope": [],
+    "checkins": [
+      {
+        "date": "2026-09-21",
+        "note": "Charter written. Baseline 40h.",
+        "forecast": "2026-12-11",
+        "conf": 4
+      },
+      {
+        "date": "2026-09-26",
+        "note": "Pack inventoried: 14 of 22 charts come straight from source.",
+        "forecast": "2026-12-11",
+        "conf": 4
+      }
+    ],
+    "ov": {
+      "2026-11-04": 0
+    },
+    "later": "The successor writes the December commentary on a pack that built itself.",
+    "id": "manco",
+    "domain": "pc",
+    "name": "ManCo pack automation",
+    "short": "ManCo automation",
+    "goal": "The ManCo pack builds itself from source data; the analyst only writes commentary.",
+    "start": "2026-09-21",
+    "target": "2026-12-11",
+    "forecast": "2026-12-11",
+    "prev": null,
+    "exit": [
+      "Automate",
+      "Hand over"
+    ],
+    "confidence": 4,
+    "checkin": "2026-09-26",
+    "phase": 2,
+    "rate": 1.5,
+    "bd3": 2,
+    "bd8": 1.5,
+    "rateAfter": 0,
+    "baseline": 40,
+    "readiness": 0.35,
+    "endName": "Handover-ready",
+    "charter": {
+      "why": "The pack takes 4h every BD8. A successor inherits it after the move; automating first means they inherit commentary, not plumbing.",
+      "success": [
+        "The pack builds from source in one step",
+        "Only the commentary is written by hand",
+        "The successor produces the December pack"
+      ],
+      "inScope": [
+        "Performance, exposure and pipeline sections",
+        "Chart and table templating"
+      ],
+      "outScope": [
+        "Commentary drafting",
+        "The board-level pack"
+      ],
+      "constraints": [
+        "Finance signs off the automated NAV bridge"
+      ]
+    },
+    "startN": "2026-09-21",
+    "targetN": "2026-12-11",
+    "forecastN": "2026-12-11",
+    "prevN": null,
+    "delta": 0,
+    "status": "on",
+    "since": 9,
+    "stale": true,
+    "added": 0,
+    "growth": 0,
+    "accent": "var(--pc-accent)",
+    "soft": "var(--pc-accent-soft)",
+    "domainName": "Private Credit",
+    "forecastS": "Fri 11 Dec",
+    "forecastDM": "11 Dec",
+    "targetS": "Fri 11 Dec",
+    "targetDM": "11 Dec",
+    "prevS": null,
+    "prevDM": null,
+    "deltaLabel": "On target",
+    "sinceLabel": "9 days ago",
+    "phaseName": "Run",
+    "flash": false,
+    "moved": null,
+    "statusColor": "var(--pc-accent)"
+  },
+  {
+    "checklists": [],
+    "milestones": [
+      {
+        "name": "Returns runbook outline",
+        "date": "2026-10-16"
+      },
+      {
+        "name": "Returns runbook",
+        "date": "2026-11-06"
+      },
+      {
+        "name": "ManCo runbook",
+        "date": "2026-11-27"
+      },
+      {
+        "name": "Successor runs December BD3 alone",
+        "date": "2026-12-03"
+      }
+    ],
+    "now": [
+      {
+        "m": "Returns runbook outline",
+        "due": "2026-10-16",
+        "tasks": [
+          {
+            "id": "pl-1",
+            "t": "Record the October BD3 run step by step",
+            "h": 2
+          },
+          {
+            "id": "pl-2",
+            "t": "Draft the runbook outline",
+            "h": 1.5
+          }
+        ]
+      }
+    ],
+    "next": [
+      {
+        "m": "Returns runbook",
+        "due": "2026-11-06"
+      },
+      {
+        "m": "ManCo runbook",
+        "due": "2026-11-27"
+      },
+      {
+        "m": "Successor runs December BD3 alone",
+        "due": "2026-12-03"
+      }
+    ],
+    "risks": [
+      {
+        "r": "The successor was named too late to shadow a live run.",
+        "m": "Escalate the naming decision at the 13 Nov check-in."
+      }
+    ],
+    "scope": [],
+    "checkins": [
+      {
+        "date": "2026-09-28",
+        "note": "Charter written. Baseline 30h.",
+        "forecast": "2026-12-18",
+        "conf": 4
+      },
+      {
+        "date": "2026-10-02",
+        "note": "Recorded the September BD3 run as raw notes.",
+        "forecast": "2026-12-18",
+        "conf": 4
+      }
+    ],
+    "ov": {},
+    "later": "Sign off the handover once the successor has run both routines unaided.",
+    "id": "play",
+    "domain": "pc",
+    "name": "PC handover playbook",
+    "short": "Handover playbook",
+    "goal": "A successor can run every PC process alone from written runbooks.",
+    "start": "2026-09-28",
+    "target": "2026-12-18",
+    "forecast": "2026-12-18",
+    "prev": null,
+    "exit": [
+      "Hand over"
+    ],
+    "confidence": 4,
+    "checkin": "2026-10-02",
+    "phase": 2,
+    "rate": 1,
+    "bd3": 0,
+    "bd8": 0.5,
+    "rateAfter": 0,
+    "baseline": 30,
+    "readiness": 0.2,
+    "endName": "Signed off",
+    "charter": {
+      "why": "Everything I know about PC operations lives in my head and three spreadsheets.",
+      "success": [
+        "Every routine has a runbook",
+        "The successor runs BD3 and BD8 alone, once each"
+      ],
+      "inScope": [
+        "Returns and ManCo runbooks",
+        "Contacts and escalation paths"
+      ],
+      "outScope": [
+        "Training beyond the two routines"
+      ],
+      "constraints": [
+        "Successor not yet named"
+      ]
+    },
+    "startN": "2026-09-28",
+    "targetN": "2026-12-18",
+    "forecastN": "2026-12-18",
+    "prevN": null,
+    "delta": 0,
+    "status": "on",
+    "since": 3,
+    "stale": false,
+    "added": 0,
+    "growth": 0,
+    "accent": "var(--pc-accent)",
+    "soft": "var(--pc-accent-soft)",
+    "domainName": "Private Credit",
+    "forecastS": "Fri 18 Dec",
+    "forecastDM": "18 Dec",
+    "targetS": "Fri 18 Dec",
+    "targetDM": "18 Dec",
+    "prevS": null,
+    "prevDM": null,
+    "deltaLabel": "On target",
+    "sinceLabel": "3 days ago",
+    "phaseName": "Run",
+    "flash": false,
+    "moved": null,
+    "statusColor": "var(--pc-accent)"
+  },
+  {
+    "checklists": [],
+    "milestones": [
+      {
+        "name": "Data entitlements requested",
+        "date": "2026-10-16"
+      },
+      {
+        "name": "Curve & auction data feeds",
+        "date": "2026-10-30"
+      },
+      {
+        "name": "Sovereign model walkthrough",
+        "date": "2026-11-26"
+      },
+      {
+        "name": "Day-one dry run",
+        "date": "2026-12-17"
+      }
+    ],
+    "now": [
+      {
+        "m": "Data entitlements requested",
+        "due": "2026-10-16",
+        "tasks": [
+          {
+            "id": "fi-1",
+            "t": "Submit entitlement forms",
+            "h": 1
+          },
+          {
+            "id": "fi-2",
+            "t": "Agree curve data sources with the FI desk",
+            "h": 1.5
+          }
+        ]
+      }
+    ],
+    "next": [
+      {
+        "m": "Curve & auction data feeds",
+        "due": "2026-10-30"
+      },
+      {
+        "m": "Sovereign model walkthrough",
+        "due": "2026-11-26"
+      }
+    ],
+    "risks": [
+      {
+        "r": "Data access landed in the second week of January, so the first rotation started blind.",
+        "m": "Chase feeds weekly; use the desk’s shared terminal as a fallback."
+      }
+    ],
+    "scope": [],
+    "checkins": [
+      {
+        "date": "2026-09-21",
+        "note": "Charter written. Baseline 35h.",
+        "forecast": "2027-01-04",
+        "conf": 4
+      },
+      {
+        "date": "2026-09-30",
+        "note": "Market data entitlements approved; feeds pending.",
+        "forecast": "2027-01-04",
+        "conf": 4
+      }
+    ],
+    "ov": {},
+    "later": "Dry-run the Germany build pass in the last week of December.",
+    "id": "fion",
+    "domain": "fi",
+    "name": "FI onboarding & data access",
+    "short": "FI onboarding",
+    "goal": "Ready to run sovereign analysis on day one in FI: data, models and access in place.",
+    "start": "2026-09-21",
+    "target": "2027-01-04",
+    "forecast": "2027-01-04",
+    "prev": null,
+    "exit": null,
+    "confidence": 4,
+    "checkin": "2026-09-30",
+    "phase": 2,
+    "rate": 1,
+    "bd3": 0,
+    "bd8": 0,
+    "rateAfter": 1,
+    "baseline": 35,
+    "endName": "Day one",
+    "readinessList": [
+      {
+        "t": "Market data entitlements",
+        "done": true
+      },
+      {
+        "t": "Research library access",
+        "done": true
+      },
+      {
+        "t": "Curve & auction data feeds",
+        "due": "2026-10-30"
+      },
+      {
+        "t": "Sovereign model walkthrough",
+        "due": "2026-11-26"
+      },
+      {
+        "t": "Day-one dry run",
+        "due": "2026-12-17"
+      }
+    ],
+    "charter": {
+      "why": "The rotation starts with Germany on 4 Jan. Access requests take weeks, so they start now.",
+      "success": [
+        "Curve and auction data on screen",
+        "The sovereign model runs on live data",
+        "The Germany build pass starts on day one"
+      ],
+      "inScope": [
+        "Data entitlements",
+        "Model walkthroughs",
+        "Workspace setup"
+      ],
+      "outScope": [
+        "Any analysis before the move"
+      ],
+      "constraints": [
+        "One hour a day until the move"
+      ]
+    },
+    "startN": "2026-09-21",
+    "targetN": "2027-01-04",
+    "forecastN": "2027-01-04",
+    "prevN": null,
+    "delta": 0,
+    "status": "on",
+    "since": 5,
+    "stale": false,
+    "added": 0,
+    "growth": 0,
+    "accent": "var(--fi-accent)",
+    "soft": "var(--fi-accent-soft)",
+    "domainName": "Fixed Income",
+    "forecastS": "Mon 4 Jan",
+    "forecastDM": "4 Jan",
+    "targetS": "Mon 4 Jan",
+    "targetDM": "4 Jan",
+    "prevS": null,
+    "prevDM": null,
+    "deltaLabel": "On target",
+    "sinceLabel": "5 days ago",
+    "phaseName": "Run",
+    "flash": false,
+    "moved": null,
+    "statusColor": "var(--fi-accent)"
+  },
+  {
+    "checklists": [],
+    "milestones": [],
+    "now": [],
+    "next": [],
+    "risks": [],
+    "scope": [],
+    "checkins": [],
+    "ov": {},
+    "later": "",
+    "id": "alpha",
+    "domain": "fi",
+    "name": "Alpha engine v0",
+    "short": "Alpha engine",
+    "goal": "A tested signal pipeline that ranks eurozone sovereign curve trades daily.",
+    "start": "2026-12-03",
+    "target": "2027-03-25",
+    "targetLabel": "Late Mar 2027",
+    "forecast": null,
+    "prev": null,
+    "exit": null,
+    "confidence": null,
+    "checkin": null,
+    "phase": 0,
+    "rate": 2,
+    "bd3": 0,
+    "bd8": 0,
+    "rateAfter": 3,
+    "baseline": 0,
+    "endName": "v0 tested",
+    "charter": {
+      "why": "The rotation builds the country knowledge; the engine turns it into ranked trades.",
+      "success": [
+        "Ranks curve trades across all 10 countries, daily",
+        "Backtested over five years of data"
+      ],
+      "inScope": [],
+      "outScope": [],
+      "constraints": []
+    },
+    "startN": "2026-12-03",
+    "targetN": "2027-03-25",
+    "forecastN": null,
+    "prevN": null,
+    "delta": null,
+    "status": "define",
+    "since": null,
+    "stale": false,
+    "added": 0,
+    "growth": 0,
+    "accent": "var(--fi-accent)",
+    "soft": "var(--fi-accent-soft)",
+    "domainName": "Fixed Income",
+    "forecastS": "Not yet",
+    "forecastDM": "—",
+    "targetS": "Late Mar 2027",
+    "targetDM": "Late Mar 2027",
+    "prevS": null,
+    "prevDM": null,
+    "deltaLabel": "No forecast",
+    "sinceLabel": "Not yet",
+    "phaseName": "Define",
+    "flash": false,
+    "moved": null,
+    "statusColor": "var(--ink-faint)"
+  }
+]

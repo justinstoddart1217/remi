@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<span style="position:relative; display:inline-block; line-height:1.25; vertical-align:baseline; text-align:left;"><span style="visibility:hidden; white-space:pre;">{{ text }}</span><span aria-hidden="true" style="position:absolute; left:0; top:0; height:1.25em; display:flex;"><sc-for list="{{ parts }}" as="p" hint-placeholder-count="0"><span style="position:relative; display:block; height:1.25em; overflow:hidden;"><span style="visibility:hidden; white-space:pre;">{{ p.cur }}</span><span style="position:absolute; left:0; top:0; display:flex; flex-direction:column; transform:{{ p.y }}; transition:transform var(--dur-slow) var(--spring-soft);"><sc-for list="{{ p.cells }}" as="c" hint-placeholder-count="0"><span style="display:block; height:1.25em; white-space:pre;">{{ c }}</span></sc-for></span></span></sc-for></span></span>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:240,&quot;height&quot;:64},&quot;value&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;Wed 2 Dec&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  renderVals() {
+    const v = String(this.props.value ?? '');
+    const DIG = ['', '0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+    const WD = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+    const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    const col = (cells, cur) => { const i = Math.max(0, cells.indexOf(cur)); return { cells, cur, y: 'translateY(' + (-i * 1.25) + 'em)' }; };
+    const stat = (s) => ({ cells: [s], cur: s, y: 'translateY(0em)' });
+    let parts;
+    const dm = v.match(/^(?:(Mon|Tue|Wed|Thu|Fri|Sat|Sun) )?(\d{1,2}) (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)$/);
+    const nm = v.match(/^([+\u2212-]?)(\d{1,3})(?:\.(\d))?(\D*)$/);
+    if (dm) {
+      parts = [];
+      if (dm[1]) parts.push(col(WD, dm[1]), stat(' '));
+      const d = dm[2];
+      parts.push(col(DIG, d.length === 2 ? d[0] : ''), col(DIG, d[d.length - 1]), stat(' '), col(MON, dm[3]));
+    } else if (nm) {
+      const sign = nm[1] === '-' ? '\u2212' : nm[1];
+      const int = nm[2].padStart(3, ' ');
+      parts = [col(['', '+', '\u2212'], sign)];
+      for (const ch of int) parts.push(col(DIG, ch === ' ' ? '' : ch));
+      parts.push(col(['', '.'], nm[3] ? '.' : ''), col(DIG, nm[3] || ''), stat(nm[4] || ''));
+    } else {
+      parts = [stat(v)];
+    }
+    return { text: v, parts };
+  }
+}
+</script>
+</body>
+</html>

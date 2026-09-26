@@ -1,0 +1,32 @@
+/* Remi Foundations.dc.html:245-246; Timeline.dc.html:181. */
+.tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 22px;
+  padding: 0 8px;
+  border-radius: var(--radius-s);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  color: var(--ink);
+  white-space: nowrap;
+}
+.pc {
+  background: var(--pc-accent-soft);
+}
+.fi {
+  background: var(--fi-accent-soft);
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+}
+.pc .dot {
+  background: var(--pc-accent);
+}
+.fi .dot {
+  background: var(--fi-accent);
+}

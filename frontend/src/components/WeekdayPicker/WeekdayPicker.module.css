@@ -1,0 +1,26 @@
+/* Routines.dc.html:43-48. */
+.days {
+  display: flex;
+  gap: 2px;
+}
+.day {
+  width: 30px;
+  height: 28px;
+  padding: 0;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-s);
+  background: var(--paper-raised);
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.day[aria-checked='true'] {
+  border-color: var(--ink);
+  background: var(--ink);
+  color: var(--paper);
+}
+.day:focus-visible {
+  outline: 1.5px solid var(--focus);
+  outline-offset: 1px;
+}

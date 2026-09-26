@@ -1,0 +1,137 @@
+{
+  "verdict": {
+    "word": "Move on track, narrowly",
+    "short": "Yes, narrowly",
+    "sentence": "Every Private Credit exit lands before 4 Jan, with 8 business days to spare. The one to watch is the returns pipeline: forecast Wed 2 Dec, 1 business day before the December run your successor needs to shadow.",
+    "buffer": 8,
+    "toRun": 1
+  },
+  "businessDaysStrictlyBetween": 61,
+  "flags": [
+    {
+      "x": "68.852%",
+      "label": "Returns pipeline · 2 Dec"
+    },
+    {
+      "x": "68.852%",
+      "label": "Dec run"
+    },
+    {
+      "x": "80.328%",
+      "label": "ManCo automation · 11 Dec"
+    },
+    {
+      "x": "88.525%",
+      "label": "Handover playbook · 18 Dec"
+    },
+    {
+      "x": "100%",
+      "label": "Move"
+    }
+  ],
+  "monthMarks": [
+    {
+      "x": "0.000%",
+      "label": "October"
+    },
+    {
+      "x": "31.148%",
+      "label": "November"
+    },
+    {
+      "x": "65.574%",
+      "label": "December"
+    }
+  ],
+  "routes": [
+    {
+      "label": "Wind-down projects",
+      "count": "3 projects",
+      "empty": null,
+      "rows": [
+        {
+          "name": "Returns pipeline automation",
+          "ready": "60%",
+          "f": "2 Dec",
+          "chip": "+3 BD"
+        },
+        {
+          "name": "ManCo pack automation",
+          "ready": "35%",
+          "f": "11 Dec",
+          "chip": "On target"
+        },
+        {
+          "name": "PC handover playbook",
+          "ready": "20%",
+          "f": "18 Dec",
+          "chip": "On target"
+        }
+      ]
+    }
+  ],
+  "routines": [
+    {
+      "name": "Fund & security-level returns",
+      "status": "Automating",
+      "note": "Successor shadows the Thu 3 Dec run on the automated pipeline"
+    },
+    {
+      "name": "Managing Committee pack",
+      "status": "Automating",
+      "note": "Successor builds the Thu 10 Dec pack; commentary stays manual"
+    }
+  ],
+  "onboarding": {
+    "count": "2 of 5 ready",
+    "note": "Forecast ready Mon 4 Jan, the day of the move. The dry run on Thu 17 Dec is the real test.",
+    "items": [
+      {
+        "t": "Market data entitlements",
+        "due": "done"
+      },
+      {
+        "t": "Research library access",
+        "due": "done"
+      },
+      {
+        "t": "Curve & auction data feeds",
+        "due": "Fri 30 Oct"
+      },
+      {
+        "t": "Sovereign model walkthrough",
+        "due": "Thu 26 Nov"
+      },
+      {
+        "t": "Day-one dry run",
+        "due": "Thu 17 Dec"
+      }
+    ]
+  },
+  "firstRot": [
+    {
+      "code": "DE",
+      "pass": "Build",
+      "country": "Germany",
+      "dates": "4 Jan – 11 Jan"
+    },
+    {
+      "code": "FR",
+      "pass": "Build",
+      "country": "France",
+      "dates": "12 Jan – 18 Jan"
+    },
+    {
+      "code": "IT",
+      "pass": "Build",
+      "country": "Italy",
+      "dates": "19 Jan – 26 Jan"
+    }
+  ],
+  "loopEnd": "Mon 8 Mar",
+  "alpha": {
+    "name": "Alpha engine v0",
+    "note": "In Define, charter half-written. Planning starts once the rotation is under way.",
+    "target": "Target Late Mar 2027"
+  }
+}

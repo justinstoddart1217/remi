@@ -1,0 +1,53 @@
+/*
+ * Today.dc.html:56-58, :144-146, :181-183; Workspace.dc.html:170-172; Remi Textbook.dc.html:139-140,
+ * :176; Transition.dc.html:62 (accent). Workspace.dc.html:142 and Remi Textbook.dc.html:166 (plain).
+ * Ninety One redesign: the rule under the row is a hairline (it was ink).
+ */
+.row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--hairline);
+  padding-bottom: 10px;
+}
+
+.title {
+  margin: 0;
+}
+
+/* accent: display 21/400 in --brand-deep behind a 3×18 brand-teal bar, 10px gap. */
+.accent {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-size: 21px;
+  font-weight: 400;
+  color: var(--brand-deep);
+}
+/* The prototype writes the bar as #009D80, not --pc-accent, so it stays brand teal under the accents tweak. */
+.bar {
+  flex: none;
+  width: 3px;
+  height: 18px;
+  border-radius: 999px;
+  background: var(--brand-teal, #009d80);
+}
+
+/* plain: the 20/600 ink title (Workspace "Charter", Textbook "Recently edited"). */
+.plain {
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+.note {
+  font-size: 13px;
+  color: var(--ink-muted);
+}
+
+.numeric {
+  font-family: var(--font-numeric);
+  font-size: 12px;
+  color: var(--ink-muted);
+}

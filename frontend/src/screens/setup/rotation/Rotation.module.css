@@ -1,0 +1,257 @@
+/*
+ * Editable RotationTiles (Remi Foundations.dc.html:233-234, the `m` tile): 1px hairline,
+ * square corners, 12/14 padding, mono code line, a Build/Refresh pill and a 16/500 country,
+ * on paper inside the white step card. Three to a row in the 720px column; the stop running
+ * today has a brand-deep border.
+ */
+.empty {
+  max-width: 600px;
+  margin-top: 14px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin-top: 16px;
+}
+/* The list of tiles: its items are the grid's cells, followed by the add button. */
+.list {
+  display: contents;
+}
+
+.tile {
+  position: relative;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  min-height: 94px;
+  padding: 12px 14px 10px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-m);
+  background: var(--paper);
+  transition:
+    border-color var(--dur-fast) var(--ease-out),
+    background 1200ms var(--ease-out);
+}
+.tile:hover,
+.tile:focus-within {
+  border-color: color-mix(in oklch, var(--ink-faint) 60%, var(--hairline));
+}
+.tile[data-current='true'] {
+  border: 1.5px solid var(--brand-deep);
+  padding: 11.5px 13.5px 9.5px;
+}
+.tile[data-issue='true']:not(:focus-within) {
+  border-color: color-mix(in oklch, var(--risk) 55%, var(--paper));
+}
+.tile[data-dragging='true'] {
+  opacity: 0.45;
+}
+.tile[data-drop='true'] {
+  box-shadow: -7px 0 0 -5px var(--n1-green, #009d80);
+}
+.tile[data-fresh='true'] {
+  animation: tile-arrive 1200ms var(--ease-out) 1;
+}
+@keyframes tile-arrive {
+  from {
+    background: color-mix(in oklch, var(--fi-accent) 8%, var(--paper));
+  }
+  to {
+    background: var(--paper);
+  }
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.code {
+  display: flex;
+  align-items: baseline;
+  font-family: var(--font-numeric);
+  font-size: 11px;
+  color: var(--ink-muted);
+}
+.codeInput {
+  width: 3.2ch;
+  margin-left: 2px;
+  padding: 1px 3px;
+  font-family: var(--font-numeric);
+  font-size: 11px;
+  color: var(--ink);
+  text-transform: uppercase;
+}
+.pass {
+  display: inline-flex;
+  align-items: center;
+  height: 18px;
+  padding: 0 6px;
+  border: 0;
+  border-radius: var(--radius-s);
+  box-shadow: inset 0 0 0 1px var(--fi-accent);
+  background: transparent;
+  color: var(--ink);
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background var(--dur-fast) var(--ease-out);
+}
+.pass[data-pass='Build'] {
+  background: var(--fi-accent-soft);
+}
+.pass:hover {
+  background: color-mix(in oklch, var(--fi-accent) 20%, var(--paper));
+}
+.pass:focus-visible {
+  outline: 1.5px solid var(--focus);
+  outline-offset: 1px;
+}
+
+.countryInput {
+  width: calc(100% + 8px);
+  margin-left: -4px;
+  padding: 1px 4px;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.mono {
+  display: flex;
+  align-items: baseline;
+  gap: 4px;
+  font-family: var(--font-numeric);
+  font-size: 11px;
+  color: var(--ink-muted);
+  white-space: nowrap;
+}
+.lenInput {
+  width: 3.4ch;
+  field-sizing: content;
+  min-width: 1.2ch;
+  margin-left: -3px;
+  padding: 1px 3px;
+  font-family: var(--font-numeric);
+  font-size: 11px;
+  color: var(--ink);
+}
+@supports (field-sizing: content) {
+  .lenInput {
+    width: auto;
+  }
+}
+.dates {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.tile:focus-within .issue {
+  display: none;
+}
+.issue {
+  font-size: 11px;
+  line-height: 1.35;
+  color: var(--risk-text, color-mix(in oklch, var(--risk) 45%, var(--ink)));
+}
+
+.tools {
+  display: flex;
+  gap: 0;
+  margin: -3px 0 -3px auto;
+  opacity: 0;
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+.tile:hover .tools,
+.tile:focus-within .tools {
+  opacity: 1;
+}
+.tool {
+  display: grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-s);
+  background: transparent;
+  color: var(--ink-muted);
+  cursor: pointer;
+  font-size: 16px;
+}
+.tool:hover:not(:disabled) {
+  background: color-mix(in oklch, var(--ink) 6%, transparent);
+  color: var(--ink);
+}
+.tool:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.tool:focus-visible {
+  outline: 1.5px solid var(--focus);
+  outline-offset: 0;
+}
+.grip {
+  cursor: grab;
+}
+.remove:hover:not(:disabled) {
+  color: var(--overload-chip-fg, color-mix(in oklch, var(--overload) 75%, var(--ink)));
+}
+
+.add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  min-height: 94px;
+  box-sizing: border-box;
+  border: 1px dashed var(--hairline);
+  border-radius: var(--radius-m);
+  background: transparent;
+  color: var(--ink-muted);
+  font-size: 13px;
+  cursor: pointer;
+  transition:
+    border-color var(--dur-fast) var(--ease-out),
+    background var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+.add:hover {
+  border-color: var(--n1-green, #009d80);
+  color: var(--brand-dark);
+  background: color-mix(in oklch, var(--n1-green, #009d80) 5%, transparent);
+}
+.add:focus-visible {
+  outline: 1.5px solid var(--focus);
+  outline-offset: 1px;
+}
+.addIcon {
+  font-size: 16px;
+}
+
+.foot {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  margin-top: 14px;
+  font-size: 13px;
+  color: var(--ink-muted);
+}
+.footNum {
+  font-family: var(--font-numeric);
+  font-size: 12px;
+}
+.footUnfinished {
+  color: var(--risk-text, color-mix(in oklch, var(--risk) 45%, var(--ink)));
+}
+.footSpacer {
+  flex: 1;
+}
+.hint {
+  font-size: 12px;
+  color: var(--ink-faint);
+}

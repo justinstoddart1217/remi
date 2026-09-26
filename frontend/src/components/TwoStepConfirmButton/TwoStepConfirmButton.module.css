@@ -1,0 +1,43 @@
+/* Workspace.dc.html:164, :602-604; Routines.dc.html:85, :218; Remi Textbook.dc.html:115, :660. */
+.button {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.button:focus-visible {
+  outline: 1.5px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.text {
+  padding: 0;
+}
+.text:hover {
+  text-decoration: underline;
+}
+
+.ghost {
+  height: 32px;
+  padding: 0 10px;
+  border-radius: var(--radius-m);
+}
+.ghost:hover {
+  background: color-mix(in oklch, var(--ink) 5%, transparent);
+}
+
+.f12 {
+  font-size: 12px;
+}
+.f13 {
+  font-size: 13px;
+}
+
+.muted {
+  color: var(--ink-muted);
+}
+.faint {
+  color: var(--ink-faint);
+}
+.button[data-armed='true'] {
+  color: var(--overload);
+}

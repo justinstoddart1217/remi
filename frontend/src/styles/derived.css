@@ -1,0 +1,81 @@
+/*
+ * Derived tokens: the named colour-mix recipes, shadows and appearance switches, built only
+ * from tokens.css (so a brand swap still edits tokens.css alone). Each recipe has one
+ * canonical value, taken from the prototype's most common use (arch-frontend-core §4,
+ * synthesis.designTokens "Colour-mix recipes").
+ */
+:root {
+  /* Risk (amber) */
+  --risk-chip-bg: color-mix(in oklch, var(--risk) 22%, var(--paper));
+  --risk-chip-fg: color-mix(in oklch, var(--risk) 40%, var(--ink));
+  --risk-text: color-mix(in oklch, var(--risk) 45%, var(--ink));
+  --stale-ring: color-mix(in oklch, var(--risk) 45%, var(--paper));
+  --risk-late-fill: color-mix(in oklch, var(--risk) 55%, var(--paper));
+  --risk-late-tint: color-mix(in oklch, var(--risk) 7%, transparent);
+
+  /* Overload (brick red) */
+  --overload-chip-bg: color-mix(in oklch, var(--overload) 14%, var(--paper));
+  --overload-chip-fg: color-mix(in oklch, var(--overload) 75%, var(--ink));
+  --overload-fill: color-mix(in oklch, var(--overload) 20%, var(--paper));
+  /* Timeline's capacity strip uses 22%. */
+  --overload-fill-strip: color-mix(in oklch, var(--overload) 22%, var(--paper));
+  --overload-ring: color-mix(in oklch, var(--overload) 50%, transparent);
+
+  /* Ink tints over whatever is underneath (hover and selection) */
+  --tint-hover-2-5: color-mix(in oklch, var(--ink) 2.5%, transparent);
+  --tint-hover-3: color-mix(in oklch, var(--ink) 3%, transparent);
+  --tint-hover-3-5: color-mix(in oklch, var(--ink) 3.5%, transparent);
+  --tint-hover-4: color-mix(in oklch, var(--ink) 4%, transparent);
+  --tint-hover-5: color-mix(in oklch, var(--ink) 5%, transparent);
+  --tint-hover-6: color-mix(in oklch, var(--ink) 6%, transparent);
+  --tint-hover-7: color-mix(in oklch, var(--ink) 7%, transparent);
+  --palette-selected: color-mix(in oklch, var(--ink) 6%, var(--paper-raised));
+
+  /* Ink into paper (bands and cells) */
+  --weekend-cell: color-mix(in oklch, var(--ink) 3.5%, var(--paper));
+  --weekend-band: color-mix(in oklch, var(--ink) 4.5%, var(--paper));
+  --holiday-band: color-mix(in oklch, var(--ink) 9%, var(--paper));
+  --letterbox: color-mix(in oklch, var(--ink) 6%, var(--paper));
+  --placeholder: color-mix(in oklch, var(--ink-faint) 70%, var(--paper));
+  /* The redesign's dark buttons hover to the deeper brand teal (components/Button). */
+  --button-primary-hover: var(--brand-deeper);
+
+  /* Scrims */
+  --scrim-drawer: color-mix(in oklch, var(--ink) 18%, transparent);
+  --scrim-palette: color-mix(in oklch, var(--ink) 10%, transparent);
+
+  /* Accent tints */
+  --flash-accent: color-mix(in oklch, var(--pc-accent) 8%, transparent);
+  --flash-accent-notes: color-mix(in oklch, var(--pc-accent) 7%, transparent);
+  --pc-tick-outline: color-mix(in oklch, var(--pc-accent) 55%, var(--paper));
+  --rotation-outline: color-mix(in oklch, var(--fi-accent) 35%, var(--paper));
+
+  /* Elevation: only the drawer, palette, tooltip and popovers have shadows */
+  --shadow-drawer: -24px 0 48px -32px color-mix(in oklch, var(--ink) 30%, transparent);
+  --shadow-side-panel: -24px 0 48px -36px color-mix(in oklch, var(--ink) 35%, transparent);
+  --shadow-palette: 0 24px 48px -28px color-mix(in oklch, var(--ink) 35%, transparent);
+  --shadow-tooltip: 0 12px 28px -18px color-mix(in oklch, var(--ink) 40%, transparent);
+  --shadow-popover: 0 18px 40px -24px color-mix(in oklch, var(--ink) 45%, transparent);
+
+  /* Linked highlight: one dim value everywhere (Foundations) */
+  --linked-dim: 0.28;
+}
+
+/*
+ * Appearance (app/useAppearance.ts, app/appearance.ts ACCENT_PAIRS). `teal` (#009D80 / #2F6B9A)
+ * is tokens.css's own pair, so the first render already matches the design. The other pairs
+ * are the redesign's `accents` tweak options (Remi.dc.html, section "Brand").
+ */
+:root[data-accent='deep'] {
+  --pc-accent: #026e62;
+  --fi-accent: #5b7fa8;
+}
+
+:root[data-accent='mint'] {
+  --pc-accent: #34c1a3;
+  --fi-accent: #1f4e79;
+}
+
+:root[data-serif='off'] {
+  --font-display: var(--font-ui);
+}

@@ -1,0 +1,5 @@
+/* View Transitions (card goal -> workspace, 'remi-goal'): Remi.dc.html lines 52-55, verbatim. */
+::view-transition-group(remi-goal){animation-duration:420ms;animation-timing-function:cubic-bezier(0.23,1,0.32,1);}
+::view-transition-old(remi-goal),::view-transition-new(remi-goal){height:100%;width:auto;object-fit:none;object-position:left top;}
+::view-transition-old(root),::view-transition-new(root){animation-duration:220ms;}
+:root[data-motion="reduced"]::view-transition-group(*){animation-duration:0s;}

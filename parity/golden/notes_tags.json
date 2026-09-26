@@ -1,0 +1,270 @@
+{
+  "about": "Notes.dc.html tagsFor(text): project and routine ids tagged (substring matching, as the prototype does).",
+  "cases": [
+    {
+      "id": "n1",
+      "day": "2026-10-05",
+      "text": "Admin files landed at 07:40 this morning instead of last night, so returns started late.",
+      "tags": [
+        "r-ret"
+      ]
+    },
+    {
+      "id": "n2",
+      "day": "2026-10-05",
+      "text": "5 of 12 funds done. Unitranche needed the manual FX fix again, which is exactly what the pipeline should remove.",
+      "tags": [
+        "ret",
+        "r-ret"
+      ]
+    },
+    {
+      "id": "n3",
+      "day": "2026-10-05",
+      "text": "Finance happy to review the ManCo NAV bridge spec on Thursday.",
+      "tags": [
+        "manco"
+      ]
+    },
+    {
+      "id": "n4",
+      "day": "2026-10-02",
+      "text": "Recorded the September BD3 run as raw notes for the playbook. Needs tidying into steps.",
+      "tags": [
+        "play"
+      ]
+    },
+    {
+      "id": "n5",
+      "day": "2026-10-02",
+      "text": "FI desk suggested Bloomberg curve data rather than the internal feed for day one.",
+      "tags": [
+        "fion"
+      ]
+    },
+    {
+      "id": "n6",
+      "day": "2026-10-01",
+      "text": "Chased the entitlement forms. Market data approved; feeds still pending.",
+      "tags": [
+        "fion"
+      ]
+    },
+    {
+      "id": "harness-review",
+      "text": "+6h returns, blocked on data access",
+      "tags": [
+        "r-ret"
+      ]
+    },
+    {
+      "id": "fx-attribution-scope",
+      "text": "They want FX attribution too, about 6h.",
+      "tags": [
+        "ret"
+      ]
+    },
+    {
+      "id": "waiting-admin-extract",
+      "text": "Still waiting on the admin extract.",
+      "tags": []
+    },
+    {
+      "id": "push-playbook-target",
+      "text": "Push the playbook target to 8 Jan.",
+      "tags": [
+        "play"
+      ]
+    },
+    {
+      "id": "manco-hours-a-day",
+      "text": "I can give ManCo 2h a day now.",
+      "tags": [
+        "manco"
+      ]
+    },
+    {
+      "id": "returns-bau-done",
+      "text": "Returns are done for today.",
+      "tags": [
+        "r-ret"
+      ]
+    },
+    {
+      "id": "fx-share-classes-finished",
+      "text": "Finished the FX share classes.",
+      "tags": []
+    },
+    {
+      "id": "nav-bridge-spec-sent",
+      "text": "Sent the NAV bridge spec to Finance.",
+      "tags": [
+        "manco"
+      ]
+    },
+    {
+      "id": "extract-parsed",
+      "text": "Parsed and validated the extract, all done.",
+      "tags": []
+    },
+    {
+      "id": "pipeline-confidence-2",
+      "text": "Confidence is 2 on the pipeline now.",
+      "tags": [
+        "ret"
+      ]
+    },
+    {
+      "id": "playbook-slow-confidence",
+      "text": "The playbook is going slowly. Confidence at 3.",
+      "tags": [
+        "play"
+      ]
+    },
+    {
+      "id": "nav-bridge-blocked",
+      "text": "Blocked by Finance sign-off on the NAV bridge.",
+      "tags": [
+        "manco"
+      ]
+    },
+    {
+      "id": "entitlements-approved",
+      "text": "Entitlement forms submitted and approved.",
+      "tags": [
+        "fion"
+      ]
+    },
+    {
+      "id": "entitlements-done",
+      "text": "Submitted the entitlement forms, done.",
+      "tags": [
+        "fion"
+      ]
+    },
+    {
+      "id": "curve-sources-wrapped",
+      "text": "Wrapped up agreeing the curve data sources with the FI desk.",
+      "tags": [
+        "fion"
+      ]
+    },
+    {
+      "id": "alpha-can-wait",
+      "text": "Alpha engine signal research can wait until January.",
+      "tags": [
+        "alpha"
+      ]
+    },
+    {
+      "id": "unrelated-chat",
+      "text": "Had a good chat with the team about lunch.",
+      "tags": []
+    },
+    {
+      "id": "bd3-run-recorded",
+      "text": "Recorded the October BD3 run step by step, done.",
+      "tags": []
+    },
+    {
+      "id": "successor-walkthrough-scope",
+      "text": "The successor wants a walkthrough of the scheduler too, about 3 hours.",
+      "tags": [
+        "play"
+      ]
+    },
+    {
+      "id": "attribution-extra-4h",
+      "text": "Security-level attribution needs an extra 4h for FX.",
+      "tags": [
+        "ret"
+      ]
+    },
+    {
+      "id": "manco-two-sentences",
+      "text": "ManCo exposure tables are taking longer; waiting for source access. Confidence now 3.",
+      "tags": [
+        "manco"
+      ]
+    },
+    {
+      "id": "returns-run-done",
+      "text": "Returns run done, all 12 funds.",
+      "tags": [
+        "r-ret"
+      ]
+    },
+    {
+      "id": "pipeline-4h-a-day",
+      "text": "I can give the pipeline 4 hours a day from Monday.",
+      "tags": [
+        "ret"
+      ]
+    },
+    {
+      "id": "onboarding-stuck",
+      "text": "Onboarding: data access still stuck with IT.",
+      "tags": [
+        "fion"
+      ]
+    },
+    {
+      "id": "source-files-mapped",
+      "text": "Mapped source files for the last 4 funds, finished.",
+      "tags": [
+        "r-ret"
+      ]
+    },
+    {
+      "id": "cash-bridge-scope",
+      "text": "New request from Finance: add a cash bridge to the ManCo pack, roughly 5h.",
+      "tags": [
+        "manco"
+      ]
+    },
+    {
+      "id": "september-reconciled",
+      "text": "Reconciled September to administrator NAVs. Everything ties out.",
+      "tags": []
+    },
+    {
+      "id": "performance-section-done",
+      "text": "Templated the performance section and tested the build against the September pack, both done.",
+      "tags": []
+    },
+    {
+      "id": "dry-run-booked",
+      "text": "Dry run for day one booked for 17 Dec.",
+      "tags": []
+    },
+    {
+      "id": "multi-line",
+      "text": "Pipeline: engine now reconciles 11 of 12 funds.\nPlaybook: outline drafted.\nReturns are done for today.",
+      "tags": [
+        "ret",
+        "play",
+        "r-ret"
+      ]
+    },
+    {
+      "id": "confidence-unchanged",
+      "text": "Target for the playbook moves to 8 January; confidence is 4.",
+      "tags": [
+        "play"
+      ]
+    },
+    {
+      "id": "mixed-focus-fallback",
+      "text": "Exposure tables from source are half done. They also asked for a pipeline section, about 1.5h. Stuck on the NAV bridge sign-off.",
+      "tags": [
+        "ret",
+        "manco"
+      ]
+    },
+    {
+      "id": "empty",
+      "text": "   ",
+      "tags": []
+    }
+  ]
+}

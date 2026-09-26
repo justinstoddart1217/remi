@@ -1,0 +1,44 @@
+/*
+ * Design tokens: the :root block, the data-motion rule and the prefers-reduced-motion rule of
+ * "Remi Dashboard Design Review/Remi.dc.html" (the Ninety One redesign of 2026-09-25), copied
+ * verbatim. A brand change edits only this file.
+ *
+ * The prototype's applyTweaks() writes its default `accents` tweak ["#009D80", "#2F6B9A"] onto
+ * :root at runtime; those equal the values below, so nothing differs from the stylesheet.
+ *
+ * Font families resolve to the self-hosted @font-face rules in fonts.css ('N1Visuelt',
+ * 'N1Display'); the numeric face is the platform monospace. Nothing leaves the machine.
+ */
+:root{
+  --paper: #FAF9F5;
+  --paper-raised: #FFFFFF;
+  --ink: #222222;
+  --ink-muted: #595959;
+  --ink-faint: #9A978C;
+  --hairline: #E4E2D6;
+  --pc-accent: #009D80;
+  --pc-accent-soft: color-mix(in oklch, var(--pc-accent) 13%, var(--paper));
+  --fi-accent: #2F6B9A;
+  --fi-accent-soft: color-mix(in oklch, var(--fi-accent) 13%, var(--paper));
+  --risk: #C98A12;
+  --overload: #D83949;
+  --done: #B9B6AA;
+  --focus: #009D80;
+  --font-ui: 'N1Visuelt', 'Segoe UI', Arial, sans-serif;
+  --font-display: 'N1Display', 'N1Visuelt', 'Segoe UI', sans-serif;
+  --font-numeric: 'SF Mono', ui-monospace, Menlo, Consolas, monospace;
+  --radius-s: 0px; --radius-m: 0px;
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 24px; --space-6: 32px; --space-7: 48px; --space-8: 64px;
+  --dur-fast: 140ms; --dur-base: 240ms; --dur-slow: 440ms;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --spring-soft: linear(0, 0.049 5%, 0.156 10%, 0.283 15%, 0.408 20%, 0.522 25%, 0.62 30%, 0.702 35%, 0.769 40%, 0.864 50%, 0.922 60%, 0.956 70%, 0.976 80%, 0.987 90%, 1);
+
+  --brand-deep: #134848; --brand-deeper: #0D3232; --brand-dark: #026E62; --brand-mint: #7FE0C8; --brand-mint-2: #34C1A3; --good: #16895A; --rule-soft: #F1F1F1;
+
+  /* One addition to the verbatim block: the prototype hard-codes #009D80 (not --pc-accent) for
+     the section accent bars, the nav underline and the shell CTA, so the Appearance accents
+     never recolour them. Components read it as var(--brand-teal, #009d80). */
+  --brand-teal: #009D80;
+}
+:root[data-motion="reduced"]{ --spring-soft: steps(1, jump-start); }
+@media (prefers-reduced-motion: reduce){ :root{ --spring-soft: steps(1, jump-start); } }

@@ -1,0 +1,471 @@
+{
+ "key": "workspace",
+ "file": "/Users/justinstoddart/Desktop/Ninety One/remi/Remi Dashboard Design Review/Workspace.dc.html",
+ "purpose": "The Project workspace is the single-project screen. It shows the goal sentence as the hero, a strip of stats with Start / Target / Forecast / Hours a day / Work left / To land on target, a plain-language forecast verdict with confidence and last check-in, and a history scrubber that replays forecast and milestone snapshots from past check-ins. Below that it shows an inline-editable Charter (Why now, Success measures, In scope, Out of scope, Constraints, Remove project) and a rolling-wave Plan (Now milestones with tasks, Next milestones, Later intent). Every text field is edited in place with a draft, then committed on blur. Changing hours a day, work left or the start date re-forecasts the finish date with a business-day capacity model. The JS also computes a phase stepper, exit route, checklists, risks, scope log and check-in timeline, but the final template never renders them (see risks).",
+ "layout": "HOST: the component sits in Remi.dc.html inside <section data-screen-label=\"Project workspace\" style=\"position:absolute; inset:0; overflow:auto\">, inside <main> of a fixed-size app frame. The frame is 1920x1080 by default (or 2560x1440, or 'Fit window'), with grid-template-columns 88px (nav rail) | 1fr, a 72px header row, and transform: scale() to fit the window. So at 1920 the workspace viewport is 1832 x 1008 CSS px, and at 2560 it is 2472 x 1368. The page scrolls vertically inside the section.\n\nROOT (rootRef): position:relative; box-sizing:border-box; min-height:100%; padding:22px 48px 40px; display:flex; flex-direction:column; gap:20px. Content width is 1736px at 1920 and 2376px at 2560. There are no media queries; everything is fluid through fr/minmax. The fixed pieces are: padding, the 200px scrubber label column, the 292px date picker, and the goal max-width of 30em (= 1320px at 44px).\n\nREGION 1, header (min-width:0):\n- Row: flex, align-items:center, gap:16px, flex-wrap:wrap. It holds:\n  (a) Back button: flex, gap 2px, no border or background, padding 0, 13px, ink-muted, hover ink. Contains a Material Symbols 'chevron_left' at 18px and the text 'Projects'.\n  (b) Divider: 1px x 16px, hairline.\n  (c) Domain chip: inline-flex, gap 6px, height 22px, padding 0 8px, radius-s (3px), background p.soft (--pc-accent-soft or --fi-accent-soft), 11px, weight 600, letter-spacing 0.04em. It holds a 6x6 circle in p.accent and the text 'Private Credit' or 'Fixed Income'.\n  (d) Project-name input (data-fk='name'): width = max(6, len+1)ch, min-width 120px, padding 3px 6px, box-sizing content-box, 14px, weight 600, ink, no border or outline, transparent, radius-s. Hover: background ink 4% mix. Focus: background paper-raised plus box-shadow inset 0 0 0 1px hairline.\n- Goal textarea (data-fk='goal') below the row: display block; width calc(100% + 16px); max-width 30em; margin 12px -8px 0; padding 4px 8px; resize none; overflow hidden; field-sizing content; font-family var(--font-display) (Libre Caslon Text), weight 400, 44px, line-height 1.12, letter-spacing -0.015em; radius-m (6px); text-wrap balance; view-transition-name = 'remi-goal' only while vtPhase==='to' for this project (otherwise none). It has a background/box-shadow transition. Hover background: ink 3%. Focus: paper-raised plus an inset 1px hairline.\n\nREGION 2, stats strip: a wrapper with border-top 1px solid var(--ink) and border-bottom 1px solid var(--hairline).\n- 6-column grid: grid-template-columns repeat(2, minmax(0,0.9fr)) minmax(0,1.3fr) repeat(3, minmax(0,1fr)) (6.1fr total). At 1920 that gives about 256 / 256 / 370 / 285 / 285 / 285 px. At 2560 it gives about 350 / 350 / 506 / 390 / 390 / 390 px.\n  - Cell 1 padding is 16px 20px 16px 0. Cells 2-6 have padding 16px 20px and border-left 1px hairline.\n  - Every cell has a label (11px, weight 600, letter-spacing 0.08em, uppercase, ink-muted), then its value (margin-top 8px, 26px, weight 500, letter-spacing -0.01em), then a sub line (12px, ink-muted, margin-top 6px).\n  - Cells in order: START, TARGET, FORECAST (label becomes 'Forecast then' in history mode; the cell background tints to risk 7% when late), HOURS A DAY, WORK LEFT, TO LAND ON TARGET.\n- Progress bar under the grid: relative, height 3px, background hairline. The fill is absolute left 0, width cp.prog (%), background p.accent.\n- Verdict row: grid-template-columns minmax(0,1fr) auto auto auto; column-gap 28px; align-items center; padding 14px 0. It holds:\n  [8px status dot (margin-top 6px) plus the sentence at 15px, line-height 1.5, text-wrap pretty]\n  ['Confidence' 13px ink-muted, gap 10px, then 5 bars of 12x8 with radius 1.5px and gap 3px, then 'N/5' in the numeric font at 12px, ink]\n  ['Checked in <span>' 13px ink-muted, nowrap]\n  ['Tell Remi' button].\n\nREGION 3, history scrubber: grid-template-columns 200px minmax(0,1fr); column-gap 24px; align-items end; padding 58px 0 0 (the 58px top leaves room for hover labels above the bar); border-top 1px hairline. The bar column is 1512px wide at 1920 and 2152px at 2560.\n- Left column (padding-bottom 18px):\n  - 'PLAN AS OF' label.\n  - A Roll date at 17px, weight 600, margin-top 6px.\n  - A hint at 12px, ink-muted, margin-top 4px.\n  - An optional 'Back to now' link: margin-top 8px, 12px, weight 600, ink, underline in hairline colour, underline offset 3px.\n- Right column (relative, min-width 0) has two stacked 44px rows:\n  (a) Bar row (barRef): height 44px, cursor crosshair. It contains:\n    - Hover-label layer: absolute, left 0, right 0, bottom 100%, height 54px, pointer-events none. Up to 3 label rows at 17px pitch.\n    - Crosshair and cursor tooltip.\n    - Plan bar: top 17px, height 10px, radius 2px.\n    - Overrun bar: top 17px, height 10px, radius 0 2px 2px 0, var(--risk).\n    - Milestone diamonds: 10x10 rotated 45deg, margin-left -5px, top 17px, border 1.5px in accent.\n    - End diamond: 14x14 rotated 45deg, top 15px, margin-left -7px, border 2px paper.\n    - Target flag: top 6px, height 32px, width 7px. A 1px vertical ink line plus a 7x1 ink tick at the top.\n    - Today line: top 0, bottom -12px, 1px, ink-faint.\n  (b) Track row (trackRef): height 44px, touch-action none, user-select none. It contains:\n    - Axis line: top 14px, 1px hairline, full width.\n    - Month labels: top 26px, numeric font 10px, ink-muted, padding-left 4px, border-left 1px hairline, line-height 12px.\n    - Check-in stops: 9x9 circles at top 10px, margin-left -4.5px, border 1.5px ink.\n    - Drag handle: 4x21 at top 4px, margin-left -2px, radius 2px, ink, box-shadow 0 0 0 3px paper.\n\nREGION 4, body: grid-template-columns minmax(0,4fr) minmax(0,8fr); column-gap 72px; align-items start. That is about 555px + 1109px at 1920, and 768px + 1536px at 2560. Opacity is 0.35 and pointer-events none in history mode.\n- LEFT column, Charter:\n  - Title 'Charter': 20px, weight 600, letter-spacing -0.01em, border-bottom 1px ink, padding-bottom 10px.\n  - Block 'WHY NOW': padding 12px 0, border-bottom 1px hairline, label margin-bottom 6px. Textarea at 15px, line-height 1.55, width calc(100% + 12px), margin 0 -6px, padding 3px 6px.\n  - 4 list blocks in order: Success measures, In scope, Out of scope, Constraints. Each has padding 12px 0 and border-bottom hairline.\n    - Header: flex, baseline, space-between, margin-bottom 4px. Label on the left; on the right a '+ Add' button (12px, ink-muted, 'add' icon at 15px, gap 2px).\n    - Item rows: grid with columns '28px minmax(0,1fr)' for success (it shows a '01' / '02' index in the numeric font at 12px, ink-muted, padding-top 5px) or '0px minmax(0,1fr)' for the others; margin-top 3px.\n    - Item textareas: success at 15px, the rest at 14px; line-height 1.45. Out-of-scope text is ink-muted until focused.\n    - Empty state: 14px, line-height 1.45, italic, ink-muted, margin-top 4px.\n  - Remove-project button: padding-top 36px, 13px, underlined on hover.\n- RIGHT column, Plan: flex column, gap 28px.\n  - Header: 'Plan' (20px, weight 600) on the left and planNote (13px, ink-muted) on the right; baseline, space-between, border-bottom 1px ink, padding-bottom 10px.\n  - Then a grid with grid-template-columns minmax(0,5fr) minmax(0,4fr) minmax(0,3fr), column-gap 32px, padding-top 16px. That is about 436 / 348 / 261 px at 1920.\n  - NOW column:\n    - Header: 'Now' (15px, weight 600) plus 'next 2 weeks · 5–16 Oct' (numeric font 11px, ink-muted), gap 10px, baseline.\n    - Each milestone block has margin-top 14px.\n    - Milestone row: flex, center, gap 10px, padding-bottom 6px. It holds a 9x9 diamond (border 1.5px accent, fill paper), a name input (14px, weight 600, flex 1, margin 0 -4px, padding 2px 4px) and a date button.\n    - Task rows: flex, flex-start, gap 10px, min-height 34px, border-top 1px hairline, padding 6px 0 4px 19px. Each holds a checkbox, a textarea at 13px with line-height 1.4, and an hours input (2.4em wide, right-aligned, numeric 11px) plus an 'h' suffix.\n    - '+ Add task' button: full width, border-top hairline, padding 7px 0 0 17px, 12px.\n    - Empty state line.\n    - '+ Add milestone' button: padding 14px 0 0, 13px, 16px icon.\n  - NEXT column:\n    - Header: 'Next' plus '2–6 weeks · milestones only'.\n    - List with margin-top 14px. Rows: flex, center, gap 10px, min-height 40px, border-bottom hairline. Each row has a diamond, a textarea (14px, line-height 1.35) and a date button.\n    - '+ Add milestone' button: padding 10px 0 0.\n  - LATER column: header 'Later' plus 'one line of intent', then a textarea with margin 12px -6px 0, display font, italic, 17px, line-height 1.5.\n\nREGION 5, date-picker popover (conditional, pk.on):\n- A transparent full-screen backdrop: position fixed, inset 0, z-index 40.\n- The panel: position absolute at (pk.x, pk.y) px relative to root, z-index 41, width 292px, padding 14px 14px 12px, background paper-raised, border 1px hairline, radius-m, box-shadow 0 18px 40px -24px color-mix(in oklch, var(--ink) 45%, transparent).\n- Panel contents:\n  - Header row: month title (14px, weight 600, flex 1), then prev and next buttons, each 28x28 with an 18px chevron.\n  - A 7-column grid (margin-top 8px). Weekday heads are 22px high. Day cells are 34px high with a 1px margin.\n  - Footer: margin-top 8px, padding-top 10px, border-top hairline, gap 10px. It holds a 'Today' button (height 26px, padding 0 10px, border 1px hairline, radius-s, 12px) and a note (12px, ink-muted, right-aligned, flex 1).",
+ "components": [
+  {
+   "name": "Back link",
+   "description": "A button with the 'chevron_left' icon (Material Symbols Outlined, 18px) and the text 'Projects'. 13px, var(--ink-muted); on hover the colour becomes var(--ink) (the style-hover class is applied with !important). No border or background, padding 0, gap 2px. Click calls model.go('projects').",
+   "states": [
+    "default ink-muted",
+    "hover ink"
+   ]
+  },
+  {
+   "name": "Domain chip",
+   "description": "inline-flex, align-items center, gap 6px, height 22px, padding 0 8px, border-radius 3px, background p.soft (color-mix(in oklch, accent 13%, paper)), 11px, weight 600, letter-spacing 0.04em. Holds a 6x6 circle filled with p.accent and the text domainName ('Private Credit' or 'Fixed Income'). Not interactive.",
+   "states": [
+    "pc (green accent oklch(0.5 0.1 128))",
+    "fi (blue accent oklch(0.5 0.1 265))"
+   ]
+  },
+  {
+   "name": "Project name inline input",
+   "description": "<input data-fk='name'>. Width is Math.max(6, value.length+1) + 'ch', min-width 120px, box-sizing content-box, padding 3px 6px, 14px, weight 600, ink, border 0, outline 0, transparent, radius 3px. Placeholder 'Project name'. Hover: background color-mix(in oklch, var(--ink) 4%, transparent). Focus: background var(--paper-raised) and box-shadow inset 0 0 0 1px var(--hairline). The value is required: clearing it reverts. Committing also sets `short` to the same value.",
+   "states": [
+    "idle",
+    "hover",
+    "focus/editing (draft)",
+    "empty -> reverts on blur"
+   ]
+  },
+  {
+   "name": "Goal sentence (hero textarea)",
+   "description": "<textarea data-fk='goal'>. The largest text on the page: Libre Caslon Text, 400, 44px, line-height 1.12, letter-spacing -0.015em, text-wrap balance, max-width 30em, width calc(100% + 16px), margin 12px -8px 0, padding 4px 8px, radius 6px. It auto-grows through field-sizing:content; the rows fallback is ceil(len/40). Placeholder 'What will be true when this is done?'. transition: background 140ms and box-shadow 140ms, both cubic-bezier(0.23,1,0.32,1). Hover background is ink 3%; focus is paper-raised with an inset 1px hairline. Enter (without Shift) commits and blurs. It carries view-transition-name 'remi-goal' during the card-to-workspace shared-element transition. When a project is newly created it is auto-focused with the caret at the end.",
+   "states": [
+    "idle",
+    "hover",
+    "focus",
+    "empty placeholder",
+    "view-transition target"
+   ]
+  },
+  {
+   "name": "Stat cell: Start",
+   "description": "Label 'START'. The value is a button (title 'Change the start date'): flex, gap 8px, 26px, weight 500, letter-spacing -0.01em, padding 0 6px, margin-left -6px, radius 3px; hover background is ink 4%. It holds a <Roll> of F.s(startN) (for example 'Mon 14 Sep') and a 26x26 calendar_month icon tile (radius 3px, inset 1px hairline ring, background paper-raised, 16px icon, ink-muted). Sub line: when started, '{done} BD in of {total}' (for example '15 BD in of 58'); otherwise 'starts in {n} BD'. Click opens the date picker with the note 'Moving the start keeps the work left the same'.",
+   "states": [
+    "started",
+    "not started",
+    "picker open"
+   ]
+  },
+  {
+   "name": "Stat cell: Target",
+   "description": "Label 'TARGET'. Same button styling as Start (title 'Change the target date'). The Roll shows p.targetLabel || p.targetS; targetLabel is a fuzzy label such as 'Late Mar 2027'. Sub line: '{bdTgt} BD from today' (from 'start' if not started); 'passed' if the target is before today; otherwise '—'. Picking a date clears targetLabel and logs a feed item.",
+   "states": [
+    "normal",
+    "fuzzy label",
+    "passed"
+   ]
+  },
+  {
+   "name": "Stat cell: Forecast",
+   "description": "Label is fLabel: 'FORECAST', or 'FORECAST THEN' when scrubbed into history. Cell background: color-mix(in oklch, var(--risk) 7%, transparent) when late (the PC project crosses the move, or buffer < 0); otherwise transparent. transition: background 440ms ease-out. The top-right badge reads 'moved +N BD': height 20px, padding 0 6px, radius 3px, background color-mix(in oklch, var(--risk) 22%, var(--paper)), colour color-mix(in oklch, var(--risk) 40%, var(--ink)), numeric font 11px, weight 600. Its opacity is 1 while p.moved is set (for 5.2s after a check-in that moved the forecast) and 0 otherwise. Its scale is 1 when shown and 0.9 when hidden (always 1 under reduced motion), with 180ms ease-out on opacity and transform. The value row has gap 10px: a Roll of hdr.f (F.s(forecast) or 'Not yet', 26px, weight 500), then a delta chip (height 22px, padding 0 7px, radius 3px, numeric font 12px, weight 500, nowrap). The chip reads '+N BD vs target' (background risk 22%/paper, text risk 40%/ink, no ring), '−N BD vs target' (U+2212 minus; transparent background, ink-muted text, 1px hairline inset ring), 'On target' (hairline ring) or 'No forecast'. Sub line: '{bdLeft} BD of work left' or 'set work left to get one'.",
+   "states": [
+    "on track",
+    "late (tinted)",
+    "no forecast",
+    "history (Forecast then)",
+    "moved badge visible"
+   ]
+  },
+  {
+   "name": "Stat cell: Hours a day",
+   "description": "Label 'HOURS A DAY'. An <input data-fk='rate' inputMode='decimal'> with placeholder '—'. Width is calc(max(1,len)*0.62em + 8px), margin-left -6px, padding 0 2px 0 6px, font-ui 26px, weight 500, line-height 1.25, with the same hover and focus styles. It is followed by 'h' (26px, 500) and 'a day' (13px, ink-muted, margin-left 6px). Sub line: 'averages {avg}h once BAU days are counted' when |avgPlan - rate| > 0.2 and there is a forecast; otherwise 'planned focus time'. The value is clamped to [0, 24]. Committing re-forecasts with the work left held constant.",
+   "states": [
+    "idle",
+    "editing",
+    "re-forecasting"
+   ]
+  },
+  {
+   "name": "Stat cell: Work left",
+   "description": "Label 'WORK LEFT'. An <input data-fk='left'> showing the derived hours left: round-to-0.5 of workBetween(from, forecast). Followed by 'h' and 'to go'. Sub line: 'planned between now and the forecast' when there is a forecast; otherwise 'your estimate of what remains'. The value is clamped to [0, 999]. Committing re-forecasts at the current rate; if the rate is 0 it uses 1 and saves rate = 1.",
+   "states": [
+    "no forecast (empty '—')",
+    "has forecast"
+   ]
+  },
+  {
+   "name": "Stat cell: To land on target",
+   "description": "Label 'TO LAND ON TARGET'. Value: a Roll of hr(need) (26px, 500), coloured by need.fg, plus 'h a day' (13px, ink-muted). When needBad (need > rate + 0.05) the colour is color-mix(in oklch, var(--risk) 45%, var(--ink)) and the sub line reads '{need-rate}h a day more than planned' in the same risk colour. Otherwise the colour is ink and the sub line reads 'within your {rate}h a day' in ink-muted. When need is null the value is '—' in ink-faint and the sub line is 'needs a work estimate' (target still ahead) or 'target has passed'.",
+   "states": [
+    "within plan",
+    "over plan (risk)",
+    "no estimate",
+    "target passed"
+   ]
+  },
+  {
+   "name": "Progress rule",
+   "description": "A 3px bar in var(--hairline). The fill is absolute left 0 with width = min(100, doneBD/totalBD*100)% in p.accent. transition: width 440ms var(--spring-soft).",
+   "states": [
+    "0%",
+    "partial",
+    "100%"
+   ]
+  },
+  {
+   "name": "Verdict sentence row",
+   "description": "An 8x8 dot (colours: ink = buffer, var(--risk) = late or no buffer, var(--overload) = PC after the move, ink-faint = no plan) followed by the sentence (15px, line-height 1.5, ink, text-wrap pretty). See algorithms for the exact text.",
+   "states": [
+    "no plan",
+    "after move",
+    "late",
+    "no buffer",
+    "buffer"
+   ]
+  },
+  {
+   "name": "Confidence meter",
+   "description": "'Confidence' (13px, ink-muted), then 5 pills of 12x8 with border-radius 1.5px and gap 3px. Pill k is filled var(--ink) when k <= conf; otherwise var(--hairline). transition: background 240ms ease-out. Then 'N/5' or '—' (JetBrains Mono 12px, ink). It reads the snapshot nearest the scrubber position, so it changes as you scrub.",
+   "states": [
+    "1-5",
+    "null"
+   ]
+  },
+  {
+   "name": "Checked in label",
+   "description": "'Checked in ' (13px, ink-muted) followed by a span with sinceLabel in lower case ('today', 'yesterday', 'N days ago', or 'never' when sinceLabel is 'Not yet'). The span is color-mix(in oklch, var(--risk) 45%, var(--ink)) when stale (7 or more days); otherwise ink.",
+   "states": [
+    "fresh",
+    "stale",
+    "never"
+   ]
+  },
+  {
+   "name": "Tell Remi button (outline)",
+   "description": "height 36px, padding 0 16px, border 1px solid var(--ink), radius 6px, transparent, 14px, weight 600, nowrap. Hover: background var(--ink), colour var(--paper). Click calls model.openCheckIn(p.id), which opens the 1160px check-in drawer from the right.",
+   "states": [
+    "default",
+    "hover inverted"
+   ]
+  },
+  {
+   "name": "History scrubber: 'Plan as of' column",
+   "description": "Label 'PLAN AS OF', then a Roll of F.s(nearest snapshot date) at 17px, weight 600. Hint (12px, ink-muted): 'Viewing a past check-in' in history mode; 'Drag back through {N} check-ins' when N > 1; otherwise 'One check-in so far'. In history mode a 'Back to now' text button appears; it sets pos back to null.",
+   "states": [
+    "live",
+    "history",
+    "single check-in"
+   ]
+  },
+  {
+   "name": "History scrubber: plan strip (bar row)",
+   "description": "A 44px-high row with cursor crosshair. Contents:\n- Plan bar from start to min(forecast, target)+1, or to target+1 when there is no forecast. Colour p.accent, or for 'define' status projects (no forecast) a hatched repeating-linear-gradient(135deg, soft 0 4px, transparent 4px 8px).\n- Risk overrun bar from target+1 to forecast+1 in var(--risk), with a square left end and a 2px radius on the right.\n- Milestone diamonds: filled with accent if the date is before TODAY, otherwise paper; tooltip is the name.\n- End (forecast) diamond: 14px, filled with risk or accent, with a 2px paper border.\n- Target flag.\n- Today line: ink-faint, extends 12px below the bar.\nEverything lerps between snapshots while you scrub.",
+   "states": [
+    "on track",
+    "overrun risk",
+    "define (hatched)",
+    "no forecast (end diamond opacity 0)"
+   ]
+  },
+  {
+   "name": "History scrubber: hover labels + crosshair",
+   "description": "Hovering the bar row fades in (opacity, 140ms ease-out) a label layer above the bar. Each label is: a 7x7 marker (circle for Start; square rotated 45deg for milestones and forecast; unrotated square for Target; border 1.5px) + name (11px, weight 500, line-height 16px) + date (JetBrains Mono 10px, ink-muted). Labels have background paper and padding 0 4px, and are packed into up to 3 rows at 17px each. A 1px stem in ink 18% runs from each label down to the bar. A vertical 1px ink crosshair follows the pointer (top 4px, bottom 4px), with a dark tooltip chip at top 30px: height 18px, padding 0 6px, radius 3px, background ink, colour paper, JetBrains Mono 10px, z-index 2. Example tooltip: 'Mon 19 Oct · BD13 · 3.5h planned · Fund-level engine reconciles'. Hidden while dragging.",
+   "states": [
+    "hidden",
+    "hover (labels + crosshair)"
+   ]
+  },
+  {
+   "name": "History scrubber: track + handle",
+   "description": "A 44px row with cursor grab (grabbing while dragging; default if there are fewer than 2 check-ins). It has a hairline axis at 14px, month tick labels ('Sep', 'Oct', ...), and one 9px circle per check-in stop; the stop nearest the handle is filled ink and the others paper. The handle is a 4x21 ink pill with a 3px paper halo. Drag is pointer-captured, and release snaps to the nearest stop.",
+   "states": [
+    "idle at latest",
+    "dragging",
+    "snapped to past stop"
+   ]
+  },
+  {
+   "name": "Charter list block (x4)",
+   "description": "Success measures, In scope, Out of scope and Constraints. Each is an uppercase label plus a '+ Add' button, then a list of auto-growing textareas. Success items are numbered '01', '02', ... in JetBrains Mono. Clearing an item's text and blurring removes it. Placeholders: 'A measurable outcome' / 'Something this includes' / 'Something you will refuse' / 'A limit to respect'. Empty states (italic): 'How will you know it worked?' / 'Not written yet. What must it do?' / 'Not written yet. What will you refuse to build?' / 'None noted yet.'",
+   "states": [
+    "empty",
+    "items",
+    "editing",
+    "new blank item (auto-focused)"
+   ]
+  },
+  {
+   "name": "Why now textarea",
+   "description": "15px, line-height 1.55, multi-line (Enter inserts a newline; only blur commits). Placeholder 'Why does this matter now, rather than later?'",
+   "states": [
+    "empty",
+    "filled",
+    "focus"
+   ]
+  },
+  {
+   "name": "Remove project (two-step)",
+   "description": "13px text button, hover underline. First click: the label becomes 'Click again to remove {name} and its history' in var(--overload) and auto-reverts after 4000ms. A second click within that window calls model.removeProject.",
+   "states": [
+    "idle 'Remove project' ink-muted",
+    "armed (overload red)"
+   ]
+  },
+  {
+   "name": "Now milestone block",
+   "description": "A 9px diamond (1.5px accent border, paper fill), a milestone name input (14px, weight 600, placeholder 'Milestone') and a date button. The date button shows a calendar_month icon (14px, ink-faint) and the due date as 'Thu 15 Oct', or 'Set date', in JetBrains Mono 11px ink-muted; hover background is ink 5% with ink text. Below come the task rows and '+ Add task'.",
+   "states": [
+    "with tasks",
+    "no tasks",
+    "new (blank, focused)"
+   ]
+  },
+  {
+   "name": "Task row",
+   "description": "The checkbox is a 15x15 button with radius 3px and a 1.5px border (ink when done, ink-faint when not). Background is ink when done. It holds a 'check' glyph (12px, paper) with opacity 0→1 and scale 0.4→1. Transitions: background and border 140ms ease-out; glyph opacity 140ms; glyph transform 180ms cubic-bezier(0.34, 1.5, 0.64, 1), an overshoot pop. The task textarea is 13px with line-height 1.4. When done it is ink-muted with line-through in var(--done); focus removes the strike. The hours input is 2.4em wide, right-aligned, JetBrains Mono 11px, followed by an 'h' suffix. aria-label 'Toggle task'.",
+   "states": [
+    "open",
+    "done",
+    "editing",
+    "empty (removed on blur)"
+   ]
+  },
+  {
+   "name": "Next milestone row",
+   "description": "min-height 40px with a bottom hairline. It holds a diamond, a textarea (14px, line-height 1.35, placeholder 'Milestone') and a date button.",
+   "states": [
+    "normal",
+    "new blank"
+   ]
+  },
+  {
+   "name": "Later intent",
+   "description": "An italic serif textarea (17px, line-height 1.5), placeholder 'Where does this end up?'. Enter commits.",
+   "states": [
+    "empty",
+    "filled"
+   ]
+  },
+  {
+   "name": "Business-day date picker popover",
+   "description": "292px wide. Header shows 'October 2026' with prev and next chevrons; they drop to opacity 0.3 when the month is outside the calendar range [31 Aug 2026 – 30 Apr 2027]. Weekday heads are M T W T F S S (10px, weight 600, letter-spacing 0.06em); S and S are ink-faint, the rest ink-muted. Day buttons are 34px high: the date number (13px) with a 'BD{n}' business-day-of-month sub-label beneath (JetBrains Mono 8px). Selected: ink background, paper text, weight 600. Today: inset 1px ink ring, weight 600. Non-business days: ink-faint text. Days outside the month or calendar: opacity 0.3. Hover: ink 6% background (ink if selected). Background transition 140ms. Each day has a tooltip: 'Sat 10 Oct · weekend' or 'Fri 25 Dec · Christmas Day'. Footer: a 'Today' button and a note (default 'Weekends and holidays move to the next business day').",
+   "states": [
+    "closed",
+    "open",
+    "prev/next disabled",
+    "selected",
+    "today"
+   ]
+  },
+  {
+   "name": "Roll (child component, Roll.dc.html)",
+   "description": "A slot-machine text roller used for the start, target, forecast, 'to land' value and 'Plan as of' dates. It parses 'Wed 2 Dec' into columns: weekday (Mon–Sun), tens digit, ones digit, and month (Jan–Dec). It parses numbers matching /^([+−-]?)(\\d{1,3})(?:\\.(\\d))?(\\D*)$/ into sign, 3 digit columns, a decimal point, a decimal digit and a static suffix. Each column is a vertical stack of cells 1.25em tall, clipped by overflow hidden and translated with translateY(-index*1.25em) with transition: transform 440ms var(--spring-soft). An invisible copy of the text sets the width. Any other string renders as static text.",
+   "states": [
+    "date",
+    "number",
+    "static text"
+   ]
+  }
+ ],
+ "dataConsumed": [
+  "model.pmap[model.ws] || model.P[0]: the current project p (derived in Remi.buildModel).",
+  "p.id, p.domain ('pc'|'fi'), p.name, p.short, p.goal.",
+  "p.domainName ('Private Credit'|'Fixed Income'), p.accent ('var(--pc-accent)'|'var(--fi-accent)'), p.soft (accent-soft var).",
+  "p.start / p.startN: ISO string and day-number (days since the Unix epoch, UTC).",
+  "p.target / p.targetN / p.targetS (F.s or targetLabel) / p.targetLabel (optional fuzzy label, e.g. 'Late Mar 2027').",
+  "p.forecast / p.forecastN (nullable), p.prev (previous forecast ISO).",
+  "p.status: 'define' (no forecast), 'risk' (delta>0) or 'on'.",
+  "p.rate: planned focus hours per normal business day.",
+  "p.bd3, p.bd8: hours on business day 3 and 8 of each month (BAU-heavy days).",
+  "p.rateAfter: hours per day on or after the MOVE date.",
+  "p.ov: {iso: hours} per-day overrides.",
+  "p.phase: index 0..3 into PHASES ['Define','Plan','Run','Close'] (computed only, not rendered).",
+  "p.exit: ordered array drawn from 'Finish'|'Automate'|'Hand over'|'Stop' (PC only; null for FI) (computed only).",
+  "p.confidence (1–5 or null), p.checkin (ISO of last check-in).",
+  "p.since (calendar days since last check-in), p.sinceLabel ('Not yet'|'Today'|'Yesterday'|'N days ago'), p.stale (since>=7).",
+  "p.moved: {delta, label:'+N BD', at} or null. Set for 5200ms after a check-in that moved the forecast.",
+  "p.milestones: derived list [{name, date}]. derivedMs = Now and Next milestones that have a due date, plus stored milestones whose name is not already used and whose date is not already taken, sorted by date.",
+  "p.endName (e.g. 'Handover-ready', 'Signed off', 'Day one', 'v0 tested', 'Done'): the forecast label name.",
+  "p.charter: {why:string, success:string[], inScope:string[], outScope:string[], constraints:string[]}.",
+  "p.now: [{m:milestone name, due:ISO, tasks:[{id, t:text, h:hours, due?}]}].",
+  "p.next: [{m, due}].",
+  "p.later: string.",
+  "p.checkins: [{date ISO, note, forecast ISO|null, conf 1-5|null, ms?: [{name,date}]}]. These are the snapshots the scrubber replays.",
+  "p.scope: [{date, what, h, bd (BD shift), from:'27 Nov', to:'2 Dec'}]; p.baseline (hours), p.added (sum of scope h), p.growth (% of baseline) (computed only).",
+  "p.risks: [{r: risk text, m: mitigation}] (computed only).",
+  "p.checklists: [{id, title, items:[{id, t, done}]}] (computed only).",
+  "model.tasks: {taskId: boolean}. Global task-done map; drives the checkboxes and the Now estimate.",
+  "model.F formatters: s(n) → 'Mon 14 Sep'; dm(n) → '14 Sep'; mon(n) → 'Sep'; iso(n) → 'YYYY-MM-DD'; dn(iso) → day-number.",
+  "model.CAL: days{n: {n, iso, w (0=Sun), m, d, y, bd:boolean, bdm: business-day-of-month index, hol: holiday name|null}}, bds (sorted business-day numbers), idx (n→index in bds), nextBD(n), addBD(n,k) (clamped to range), bdDiff(a,b) = idx[nextBD(b)] - idx[nextBD(a)].",
+  "model.TODAY: day-number of 2026-10-05. model.MOVE: 2027-01-04.",
+  "model.loads[n]: {items:[{id,pid,kind:'bau'|'proj',h,...}], bau, proj, total, free, over: total>8}. Per-BD capacity load, used for the overloaded-days sentence.",
+  "model.PHASES.",
+  "model.reduced: boolean (motion prop === 'Reduced').",
+  "model.vtPhase ('from'|'to'|null) and model.vtId: shared-element view transition state.",
+  "model.focusGoal (project id to autofocus goal) and model.screen.",
+  "Actions: model.updateProject(id, fn(raw)=>raw), model.logChange(item), model.toggleTask(id), model.removeProject(id), model.go(screen), model.openCheckIn(pid), model.clearFocusGoal()."
+ ],
+ "interactions": [
+  "Click 'Projects' (back): model.go('projects').",
+  "Click 'Tell Remi': model.openCheckIn(p.id) opens the check-in drawer (translateX 104%→0, 440ms spring-soft) for this project.",
+  "Inline text fields (name, goal, why, later, charter items, milestone names, task text, task hours, rate, work left) all use one draft/commit pattern. onChange stores a draft in state.drafts[key]. onBlur commits. Enter (without Shift) on non-multi fields calls preventDefault and blurs, which commits. Escape calls stopPropagation (so the app-level Escape does not close the drawer or palette), discards the draft and blurs on the next tick (a revert). 'why' is multi: Enter inserts a newline.",
+  "Commit rules:\n- If no draft exists but the field has a removePath and its original value is blank, the item is removed. This auto-cleans a freshly added blank item the user left without typing.\n- Numeric fields: replace ',' with '.', parseFloat, fall back to 0, clamp to [0, max] (24 by default, 999 for work left). No-op if unchanged.\n- Text fields: trimmed. Blank + removePath → delete the list item (milestones also delete their entry in raw.milestones). Blank + required (name) → revert. Unchanged → no-op. Otherwise set the value, then run the field's `after` hook.",
+  "Add buttons (charter '+ Add', '+ Add task', '+ Add milestone' in Now/Next): append a blank item and set pendingFocus to its data-fk. componentDidUpdate then focuses it after 30ms with the caret at the end.\n- New task: {id: uid(), t: '', h: 1}.\n- New Now milestone: {m: '', due: TODAY + 9 BD, tasks: []}.\n- New Next milestone: {m: '', due: TODAY + 20 BD}.",
+  "Task checkbox click: model.toggleTask(taskId) flips the global tasks map and sets or clears doneOn[taskId] = TODAY ISO.",
+  "Rename a Now or Next milestone: also renames the matching raw.milestones entry (matched by old name). Clearing the name removes the milestone from now/next and from raw.milestones.",
+  "Start/Target stat buttons and milestone date buttons open the date picker, anchored under the clicked button. Clicking the same trigger again toggles it closed. Clicking the backdrop or pressing Escape (a capture-phase window keydown that calls stopPropagation) closes it. The prev and next chevrons change month, and are disabled at the calendar bounds. Clicking a day picks CAL.nextBD(day), so weekends and holidays roll forward. 'Today' picks TODAY.",
+  "Pick Start date: refit keeps the work-left hours constant and recomputes the forecast from max(TODAY, new start). No feed entry is logged.",
+  "Pick Target date: no-op if unchanged or outside the calendar. Otherwise it sets target, deletes targetLabel, and logs a feed item {pid, kind:'edit', title:p.short, body:'Target moved {old targetS} → {F.s(new)}.', delta:'Target'}.",
+  "Pick a milestone due date: sets now[i].due or next[i].due, and syncs raw.milestones[name].date.",
+  "Edit Hours a day: refit(raw, {}, newRate, left, startN). Work left stays the same, bd3/bd8/rateAfter/ov are scaled proportionally by newRate/oldRate, and the forecast is recomputed. prev is set to the old forecast if it changed.",
+  "Edit Work left: refit(raw, {}, raw.rate || 1, newHours, startN). The forecast is recomputed at the current rate.",
+  "Hover the scrubber bar row: labels for Start, the milestones, the forecast and Target fade in above the bar, and a crosshair plus a date tooltip follow the pointer. Pointer moves only trigger setState when x changes by more than 0.2% of the width. Mouse leave hides everything.",
+  "Scrubber track: pointerdown (only when there are 2 or more stops) captures the pointer and sets pos to a fractional stop index computed from the pointer x. pointermove updates pos while dragging; the plan strip, milestones, forecast and handle all interpolate continuously. pointerup/pointercancel round pos to the nearest stop; if that is the last stop, pos becomes null (the live view). The cursor is grab or grabbing.",
+  "In history mode (pos != null):\n- The Forecast label reads 'Forecast then'.\n- The forecast value and chip, and the confidence meter, show the nearest snapshot.\n- 'Plan as of' shows the snapshot date, and the hint reads 'Viewing a past check-in'.\n- A 'Back to now' button appears and resets pos to null.\n- The Charter/Plan body dims to opacity 0.35 and becomes non-interactive (pointer-events none).",
+  "Remove project: the first click arms it (red label, auto-disarms after 4s). A second click calls model.removeProject(p.id), which deletes the project and all its feed entries, navigates to Projects, and sets ws to the first remaining project.",
+  "Switching project (model.ws changes): local pos, drag, drafts and confirmRemove are reset. The picker and hover state are not reset.",
+  "After createProject: model.focusGoal === ws and the screen is 'workspace', so the goal textarea is auto-focused and model.clearFocusGoal() is called.",
+  "The global ⌘K palette and the header 'Tell Remi' button live in the shell. The header button opens a check-in for the current workspace project."
+ ],
+ "motion": [
+  "Design tokens: --dur-fast 140ms, --dur-base 240ms, --dur-slow 440ms. --ease-out: cubic-bezier(0.23, 1, 0.32, 1). --spring-soft: linear(0, 0.049 5%, 0.156 10%, 0.283 15%, 0.408 20%, 0.522 25%, 0.62 30%, 0.702 35%, 0.769 40%, 0.864 50%, 0.922 60%, 0.956 70%, 0.976 80%, 0.987 90%, 1). Under reduced motion (data-motion='reduced' or prefers-reduced-motion), --spring-soft becomes steps(1, jump-start), which makes every spring transition instant.",
+  "Screen enter/exit (shell): the incoming section uses 'opacity var(--dur-base) var(--ease-out) 60ms, visibility 0s linear 0s'. The outgoing section uses 'opacity var(--dur-fast) var(--ease-out), visibility 0s linear var(--dur-fast)'. When a view transition is running the shell sets instant, and the transition is 'none'.",
+  "Card → workspace shared-element transition: the Projects card goal has view-transition-name 'remi-goal' while vtPhase==='from'; the workspace goal textarea has it while vtPhase==='to'. document.startViewTransition runs with ::view-transition-group(remi-goal){animation-duration:420ms; animation-timing-function:cubic-bezier(0.23,1,0.32,1)}. ::view-transition-old/new(remi-goal) use height:100%, width:auto, object-fit:none, object-position:left top (the text grows from the top-left without stretching). The root crossfade is 220ms. Reduced motion sets all groups to 0s. It is skipped when reduced, when there is no startViewTransition support, when not opened via a card, or when already on the workspace.",
+  "Roll (slot-machine) values: each character column moves with transform translateY(-i*1.25em), transition 440ms var(--spring-soft). It is used for Start, Target, Forecast (including while scrubbing), 'To land on target' and 'Plan as of'. When a value changes (for example the forecast after an edit), the digits, weekday and month roll to their new values.",
+  "Goal and inline inputs: background and box-shadow transition over var(--dur-fast) var(--ease-out) on hover and focus.",
+  "Forecast cell late tint: background transition over var(--dur-slow) var(--ease-out).",
+  "'moved +N BD' badge: opacity 0↔1 and transform scale 0.9↔1 over 180ms var(--ease-out). It is visible for 5200ms after a check-in that moved the forecast. Under reduced motion the scale stays at 1.",
+  "Progress rule fill: width over var(--dur-slow) var(--spring-soft).",
+  "Confidence pills: background over var(--dur-base) var(--ease-out). They update as you scrub.",
+  "Scrubber plan bar: width over var(--dur-slow) var(--spring-soft). The overrun bar animates left and width, and the target flag and end diamond animate left, all with the same spring. Milestone diamonds animate left over var(--dur-slow) var(--spring-soft) and opacity over var(--dur-base) var(--ease-out). During a drag the values are recomputed on every pointermove, so these transitions give the strip a slightly lagging, springy follow.",
+  "Milestone crossfade while scrubbing: a milestone that exists only in snapshot A has opacity 1 - t; one that exists only in B has opacity t; one in both has opacity 1 and its position is lerped.",
+  "Scrubber handle: 'left var(--dur-slow) var(--spring-soft)' when idle or snapping; 'none' while dragging, so it tracks the pointer 1:1. On release it springs to the nearest stop.",
+  "Hover label layer: opacity over var(--dur-fast) var(--ease-out). The crosshair and tooltip switch opacity with no transition.",
+  "Task checkbox: background and border-color over var(--dur-fast) var(--ease-out). The check glyph uses opacity over var(--dur-fast) var(--ease-out), and transform scale 0.4→1 over 180ms cubic-bezier(0.34, 1.5, 0.64, 1), an overshoot pop. Under reduced motion the glyph scale stays at 1, so it only fades.",
+  "Charter and task textareas: background transition over var(--dur-fast) var(--ease-out).",
+  "Body dimming in history mode: opacity 1↔0.35 over var(--dur-base) var(--ease-out).",
+  "Date-picker day buttons: background over var(--dur-fast) var(--ease-out). The popover itself appears and disappears instantly (no animation).",
+  "Check-in drawer (shell, triggered here): transform translateX(104%)↔0 over var(--dur-slow) var(--spring-soft), and opacity over var(--dur-base). Its scrim is ink 18% with opacity over var(--dur-base)."
+ ],
+ "algorithms": [
+  "Day numbers: n = round(Date.UTC(y, m-1, d) / 86400000). All date maths uses integer UTC day numbers.",
+  "Calendar (shell):\n- Covers 2026-08-31..2027-04-30.\n- A business day is Mon–Fri and not in HOL. HOL = {2026-12-25 Christmas Day, 2026-12-28 Boxing Day (substitute), 2027-01-01 New Year's Day, 2027-03-26 Good Friday, 2027-03-29 Easter Monday}.\n- bdm is the 1-based business-day-of-month counter.\n- nextBD(n) steps forward to the next business day (or stays on n).\n- addBD(n, k) = bds[clamp(idx[nextBD(n)] + k)].\n- bdDiff(a, b) = idx[nextBD(b)] - idx[nextBD(a)].",
+  "dayH(p, n, rate), the planned project hours on day n:\n- 0 if n is not a business day.\n- k = p.rate ? rate / p.rate : 1.\n- If p.ov[iso] != null, return ov * k.\n- Else if n >= MOVE (2027-01-04), return (p.rateAfter || 0) * k.\n- Else if bdm === 3, return (p.bd3 || 0) * k.\n- Else if bdm === 8, return (p.bd8 || 0) * k.\n- Else return rate.",
+  "workBetween(p, a, b, rate) = sum of dayH over the business days n with a <= n <= b.",
+  "finishFor(p, from, hours, rate):\n- If hours <= 0, return nextBD(from).\n- Otherwise walk the business days n >= from, adding dayH. Return the first n where the cumulative sum >= hours - 0.01.\n- If the calendar runs out, return the last business day (a silent clamp).",
+  "Work left (derived, not stored): from = max(TODAY, startN). left = forecastN != null ? round(workBetween(p, from, forecastN, p.rate) * 2) / 2 : null (rounded to 0.5h).",
+  "refit(raw, fields, rate, hours, start):\n- kk = p.rate ? rate / p.rate : 1.\n- If rate !== p.rate, scale proportionally: bd3 *= kk, bd8 *= kk, rateAfter *= kk, and every ov value *= kk.\n- If hours == null or rate <= 0, return {...raw, ...fields, rate, ...scaled} (the forecast is untouched).\n- Otherwise nf = finishFor({...p, ...fields, rate, startN: start, ...scaled}, max(TODAY, start), hours, rate) and return {...raw, ...fields, rate, ...scaled, forecast: iso(nf), prev: (raw.forecast && raw.forecast !== iso(nf)) ? raw.forecast : raw.prev}.\n- It is used for: rate edits (hours = current left, start = startN), work-left edits (rate = raw.rate || 1, hours = new value) and start-date edits (fields = {start}, rate = raw.rate || 0, hours = left, start = new start).",
+  "Panel metrics (hr(x) = round to 1 decimal):\n- from = max(TODAY, startN); started = startN <= TODAY; hasF = forecastN != null.\n- bdLeft = hasF ? max(0, bdDiff(from, forecastN) + 1) : null.\n- bdTgt = targetN >= from ? bdDiff(from, targetN) + 1 : 0.\n- capTgt = workBetween(p, from, targetN, rate).\n- need = (left != null && bdTgt > 0) ? left / bdTgt : null. This is a plain average that ignores BD3/BD8/override days.\n- avgPlan = (left != null && bdLeft) ? left / bdLeft : rate.\n- buffer = hasF ? bdDiff(forecastN, targetN) : null.\n- total = hasF ? bdDiff(startN, forecastN) + 1 : 0.\n- done = started ? max(0, bdDiff(startN, TODAY)) : 0.\n- progress = total ? min(100, done / total * 100)% : 0%.\n- overDays = the business days n in [from, forecastN] where loads[n].over and loads[n].items includes this project's id.\n- needBad = need > rate + 0.05.",
+  "Verdict sentence, the first matching branch:\n(1) No forecast: 'No plan yet. Enter the work left and hours a day, and Remi works out when it lands.' (dot ink-faint).\n(2) PC and forecastN >= MOVE: 'Lands after the move on 4 Jan. At {hr(rate)}h a day this does not leave with you; cut {hr(max(0, left - workBetween(p, from, addBD(MOVE,-1), rate)))}h or plan more time.' (dot overload; late).\n(3) buffer < 0: 'Lands {-buffer} BD after target. To make {targetS}, plan {hr(need)}h a day instead of {hr(rate)}h, or cut about {hr(max(0, left - capTgt))}h of work.' (dot risk; late).\n(4) buffer === 0: 'No buffer. It lands on the target day, so any new scope pushes it past {targetS}.' (dot risk).\n(5) Otherwise: '{buffer} BD of buffer: roughly {hr(workBetween(p, addBD(forecastN,1), targetN, rate))}h of new scope before the target moves.' (dot ink).\nThen these are appended when they apply:\n- ' It sits on {k} overloaded day{s}, first {F.s(overDays[0])}.'\n- ' Not checked in for {since} days, so treat the forecast as untested.' (if stale)\n- ' Starts in {bdDiff(TODAY,startN)} BD.' (if not started and there is a forecast)",
+  "Header delta (history-aware): hf = the forecast of the nearest snapshot. hd = bdDiff(targetN, hf), using the current target. Label: '+hd BD vs target', '−|hd| BD vs target', 'On target' or 'No forecast'. Confidence: near.conf.",
+  "Snapshots for the scrubber:\n- snaps = p.checkins.map(c => ({date: dn(c.date), f: c.forecast ? dn : null, conf: c.conf, ms: (c.ms || p.milestones).map({name, n: dn(date)})})). A check-in without an ms array falls back to the current milestones.\n- The live state is cur = {date: TODAY, f: forecastN, conf: confidence, ms: current milestones}.\n- If there are no check-ins, snaps = [cur]. Otherwise the last snapshot is replaced by {...cur, date: lastCheckin.date}: the last stop shows the live plan, pinned at the date of the last check-in.",
+  "Scrubber axis:\n- A0 = min(startN, ...snap dates) - 4.\n- A1 = max(targetN > TODAY + 200 ? TODAY + 120 : targetN, TODAY, ...all snapshot forecasts) + 12.\n- pct(n) = clamp01((n - A0) / (A1 - A0)) * 100, to 3 decimal places, + '%'.\n- Stop x positions xs[i] = (snap.date - A0) / (A1 - A0) * 100 (unclamped).\n- Month ticks: every day in [A0, A1] whose day-of-month is 1, labelled F.mon.",
+  "Scrub interpolation:\n- pos = clamp(state.pos ?? last). i0 = floor(pos), t = pos - i0, i1 = min(last, i0 + 1). A = snaps[i0], B = snaps[i1], near = snaps[round(pos)].\n- fNow = lerp(A.f, B.f, t) when both exist; otherwise whichever exists.\n- risk = fNow > targetN + 0.5.\n- Plan bar: left pct(startN), width calc(pct(min(fNow, targetN) + 1) - pct(startN)). With no forecast it runs to targetN + 1.\n- Overrun bar: left pct(targetN + 1), width calc(pct(fNow + 1) - pct(targetN + 1)) when risk, otherwise 0%.\n- Milestones (the union of names across all snapshots): n = lerp(a.n, b.n) if the name is in both A and B, else whichever exists. x = pct(n + 0.5). opacity = (a ? 1 - t : 0) + (b ? t : 0). Fill is accent if n < TODAY.\n- End diamond at pct(fNow + 0.5). Target flag at pct(targetN + 1). Today line at pct(TODAY + 0.5).\n- Handle at lerp(xs[i0], xs[i1]). The stop filled ink is round(pos).",
+  "Pointer → pos:\n- pct = (clientX - track.left) / track.width * 100.\n- If pct <= xs[0], pos = 0. Otherwise, for the first i where pct <= xs[i+1], pos = i + (pct - xs[i]) / max(0.001, xs[i+1] - xs[i]). If none, pos = last.\n- On release: p = round(pos). If p >= last, pos = null (live).",
+  "Hover label packing:\n- The label set is: Start (startN); each milestone name at its position in B, else A (not lerped); the forecast (round(fNow), '{endName||Forecast} · forecast'); Target (targetN). Sorted by n.\n- BW = barRef.offsetWidth (1400 on first render).\n- For each label:\n  - xp = clamp01((n + 0.5 - A0) / (A1 - A0)) * 100.\n  - Estimated width wpx = name.length * 6.1 + F.s(nextBD(n)).length * 6.2 + 34.\n  - anchor = 'l' if xp < 6, 'r' if xp > 94, else 'c'. cx = xp% * BW. left = cx - 4 (l), cx - wpx + 4 (r), or cx - wpx/2 (c).\n  - Greedy row assignment over 3 rows: take the first row whose previous end + 10 < left, else the row with the smallest end. Set ends[row] = left + wpx.\n  - top = row * 17px. The stem starts at row * 17 + 16px and ends at bottom -17px.\n  - transform: translateX(-4px) (l), translateX(calc(-100% + 4px)) (r), translateX(-50%) (c).\n  - Date text = F.s(CAL.nextBD(n)).\n- Marker styles:\n  - start: round, 0deg.\n  - ms: 45deg; filled accent if in the past, otherwise paper; accent border.\n  - end: 45deg, filled risk or accent.\n  - tgt: square, 0deg, paper fill, ink border.",
+  "Crosshair tooltip:\n- n = round(A0 + hx * (A1 - A0) - 0.5).\n- The text is: F.s(n) + (bd ? ' · BD' + bdm : hol ? ' · ' + hol : ' · weekend') + (hours planned > 0 ? ' · ' + round1(dayH(p, n, rate)) + 'h planned' : '') + (a label exactly on n ? ' · ' + name : '').\n- Hours only count when startN <= n <= fNow.\n- The tooltip is anchored left if hx < 0.12, right if hx > 0.88, otherwise centred.",
+  "Date-picker grid:\n- first = day-number of the 1st of the month. start = first - ((weekday(first) + 6) % 7), Monday-first.\n- Iterate up to 42 cells. Break when a cell is outside the month, after the 1st, and at a row boundary (days.length % 7 === 0), which gives 5 or 6 rows.\n- Cell sub-label 'BD{bdm}' on business days.\n- Pick = iso(CAL.nextBD(n)).\n- Month nav is disabled when the adjacent month's boundary day is not in CAL.\n- Positioning: k = root.offsetWidth / root.getBoundingClientRect().width. This corrects for the app frame's CSS scale.\n- x = (btn.left - root.left) * k, y = (btn.bottom - root.top) * k + 6. Clamp x so that x + 300 <= root.offsetWidth.",
+  "Plan note: status 'define' → 'Drafted after the charter'. Otherwise '{est}h estimated in Now', where est = the sum of +h over Now tasks not marked done in model.tasks, rounded to 2 decimals.",
+  "Textarea rows fallback: max(1, ceil(len / cpl)). cpl: goal 40, why 46, later 30, success 40, other charter items 44, Next milestone 22, task 34, default 48. Input width: max(6, len + 1)ch. CSS field-sizing: content is the primary auto-size.",
+  "uid(): 'u' + Date.now().toString(36) + 3 random base-36 characters.",
+  "Immutable path helpers: setIn(o, path, v) copies arrays and objects along the path. removeIn(o, path) splices the last index out of the parent array. getIn follows the path with null-safety.",
+  "Milestone sync msSync(oldName, fn): maps raw.milestones, applying fn to the entry whose name === oldName; with fn = null it filters that entry out. It runs after renaming, re-dating or removing a Now/Next milestone.",
+  "(Computed, not rendered) Phase pick i: if i !== phase, set phase = i and forecast = raw.forecast || (i > 0 ? raw.target : null). Logs {kind:'edit', title:short, body:'Phase moved {old} → {new}.' + (no forecast && i > 0 ? ' Forecast starts at the target, {targetS}.' : ''), delta: phaseName}.\nPhase stepper styling per step:\n- connector lineW 0 for the first step, else 14px; line colour ink if i <= phase, else hairline.\n- ring ink if i <= phase, else ink-faint. fill ink if i < phase, else paper.\n- weight 600 on the current step. Text colour: ink (current), ink-muted (past), ink-faint (future).",
+  "(Computed, not rendered) Exit route (PC only), options ['Finish','Automate','Hand over','Stop']:\n- Toggling removes the option if present; otherwise it appends and keeps only the last 2 (.slice(-2)).\n- A step number '1'/'2' shows when more than one is selected.\n- On: background ink, text paper, border ink, weight 600. Off: transparent, ink-muted, hairline, weight 400.\n- exitLine = 'Exit route: ' + exit.join(', then ').toLowerCase() with the first letter capitalised, e.g. 'Exit route: Automate, then hand over'.",
+  "(Computed, not rendered) Scope chart:\n- For each business day from startN to TODAY: b = baseline / maxH * 54 and a = (sum of scope.h dated <= n) / maxH * 54, where maxH = max(1, baseline + added) * 1.08. The chart is 54px tall.\n- growth label: baseline ? (growth > 0 ? '+{growth}% since charter' : 'No growth') : '—'. The colour is risk 45%/ink when growth > 0.\n- hours: '{baseline}h → {baseline+added}h'. from: 'Charter · {F.dm(first check-in)}'.\n- Items newest first, with effect text: bd ? '+{bd} BD · {from} → {to}' : 'absorbed, no change to forecast'.\n- Empty text: no baseline → 'Scope is measured against a baseline, which the first check-in sets.'; no scope → 'No scope added since the charter. The plan is still the one you wrote.'",
+  "(Computed, not rendered) Check-in timeline, newest first: dateS = F.s, note, meta = '{F.dm(forecast)|—} · {conf}/5|—'. The dot is ink for the newest and paper for the others. The tail line is hairline, transparent on the last item.",
+  "(Computed, not rendered) Checklists: count 'done/total' and pct. Items toggle raw.checklists[i].items[j].done. Adding an item appends {id:uid(), t:'', done:false}. Risks: r text (removable when blanked, cpl 34) and m text (cpl 32). Adding a risk appends {r:'', m:''}."
+ ],
+ "backendImplications": [
+  "Project entity with the fields: id, domain ('pc'|'fi'), name, short, goal, start, target, targetLabel?, forecast?, prev?, phase (0..3 or an enum), exit (an ordered list of at most 2 from Finish/Automate/Hand over/Stop, PC only), confidence?, lastCheckin, rate, bd3, bd8, rateAfter, overrides (date→hours), baseline, endName, later, readiness?, blocker?. Child tables: charter (why plus 4 ordered string lists: success, inScope, outScope, constraints), milestones (now/next horizon, name, due, order), tasks (milestoneId, text, hours, order, done, doneOn), scope changes, check-ins (snapshots), risks, checklists and checklist items.",
+  "Snapshots: every check-in must persist a full plan snapshot, at minimum {date, forecast, confidence, milestones[{name,date}]}. The prototype's applyCheckIn does NOT store ms, so the scrubber falls back to today's milestones. The spec's append-only RemiEvent log would allow true replay (including charter and Now/Next content, which the prototype only dims). Expose an endpoint such as GET /projects/{id}/snapshots returning ordered snapshots.",
+  "Forecast engine to run server-side (or in a shared pure module): the business-day calendar with its holiday source and the BD-of-month index, dayH, workBetween, finishFor, refit, the derived milestones (derivedMs), the panel metrics (bdLeft, bdTgt, need, avgPlan, buffer, total, done, progress) and the verdict sentence. The PATCH endpoints for rate, workLeft and start must return the recomputed forecast and prev.",
+  "Endpoints the editing flows need:\n- PATCH /projects/{id}, with name (also updates short), goal, why, later, rate, workLeft (a virtual field, never stored), start, target (clears targetLabel), phase and exit.\n- POST/PATCH/DELETE for charter list items, now-milestones, next-milestones, tasks, risks, checklists and checklist items.\n- POST /tasks/{id}/toggle.\n- DELETE /projects/{id}, which cascades to feed items, check-ins, scope and snapshots.\nCommit semantics: a blank text on a removable item means delete; the name is required.",
+  "Server-side validation:\n- Numeric clamps: rate and task hours 0..24; work left 0..999.\n- Dates must fall inside the supported calendar and be rolled forward to the next business day.\n- The target must be a valid date.\n- A milestone rename, re-date or delete must be synced to the milestone record used by the timeline (in the prototype this sync is by name, which is fragile; use IDs).",
+  "Activity feed writes (logChange) happen on a target change ('Target moved X → Y.', delta 'Target') and on a phase change ('Phase moved A → B.'). A check-in writes a scope or checkin feed item. The feed item shape is {id, pid, kind: 'edit'|'scope'|'checkin'|'stale'|'overload', title, body, delta, tone: 'quiet'|'risk'|'overload', when}. The server should timestamp items rather than store 'Just now'.",
+  "Capacity loads (per business day: BAU routines before the move, the rotation after it, and project hours by forecast window; over when above an 8h capacity) are needed here to count overloaded days. Provide them from the backend, e.g. GET /loads?from&to or embedded in the project detail.",
+  "Task completion is currently a global map {taskId: bool} plus doneOn. In production, store done/doneAt on the task.",
+  "The 'moved +N BD' badge relies on a transient per-project flag set for 5.2s after a check-in moved the forecast. The API response to a check-in should return the delta so the client can show it.",
+  "TODAY is hard-coded (2026-10-05). The backend must supply the server date or user timezone, plus settings: move date, hours-per-day capacity and holiday calendar."
+ ],
+ "risksAndQuirks": [
+  "MAJOR: the renderVals output computes phases (phase stepper), exits and exitLine (exit route), checklists, risks, scope (scope log plus the cumulative chart), checkins (timeline), ciCount/ciEmpty, noChecklists/riskEmpty, addChecklist/addRisk, and targetISO/targetRoll/openPicker/setTarget (a legacy native <input type=date> flow). None of these are referenced in the final <x-dc> template, so the workspace shows no phase stepper, exit route, scope log, check-in history, risks or checklists. The spec and brief (section 7.3) require them. Earlier screenshots (screenshots/02-edit.png, 03-edit.png, ws-trim.png) show a header phase stepper '● Define — ● Plan — ○ Run — ○ Close', an 'Exit route: Automate, then hand over' line, a hint 'Click any text to edit · clear a line to remove it', and a row of 'Scope log (+17% since charter) | Check-ins (3) | Risks (+ Add)' below the Plan. The design was trimmed later. Confirm with the user whether to reinstate these sections (a likely spec requirement) using the computed styling tokens.",
+  "The 'Now' column subheading hard-codes 'next 2 weeks · 5–16 Oct'. Compute it as TODAY → addBD(TODAY, 9).",
+  "The verdict text hard-codes 'Lands after the move on 4 Jan'. Use the MOVE setting. The MOVE date (2027-01-04), TODAY (2026-10-05), CAPACITY 8h, the holiday list and the calendar window (2026-08-31..2027-04-30) are all hard-coded in the shell. finishFor silently clamps to the last business day in the window.",
+  "The 'need' calculation (left/bdTgt) is a plain average that ignores the reduced BD3/BD8/override days, while 'cut' uses the capacity-aware capTgt. The hv.png screenshot shows the resulting nonsense copy: 'plan 3.5h a day instead of 3.5h'. In production, compute the required rate by solving with the day-weight model (scale k so that workBetween(from, target, k) = left).",
+  "Work left is not stored. It is derived from the forecast (round to 0.5 of workBetween), and editing it rewrites the forecast. With rate 0, editing work left silently sets rate = 1.",
+  "Rate, work-left and start edits change the forecast without a feed entry and without a check-in snapshot. Only target and phase changes log.",
+  "The history header delta uses the current target, not the target at the time of the snapshot. Snapshots store only the forecast, confidence and milestones; the Charter and Plan body is not replayed, only dimmed to 0.35. 'The plan morphs as you drag' is only true for the strip and the header.",
+  "The latest scrubber stop shows the live plan but keeps the date of the last check-in. 'Plan as of' reads 'Sat 3 Oct' even in the live view on Mon 5 Oct.",
+  "Check-ins without ms fall back to the current milestones, and new check-ins from applyCheckIn never store ms, so their history has no real milestone movement. applyCheckIn also never sets baseline, yet the scope empty-state says the first check-in sets it.",
+  "Two check-ins on the same day give duplicate xs; posFrom guards with max(0.001, ...).",
+  "Hover label widths are estimated from character counts (6.1 and 6.2 px per char, plus 34) rather than measured. barRef width is read during render (1400 fallback on first paint). Labels are limited to 3 rows and overlap beyond that.",
+  "Milestone identity is by name (msSync and derivedMs dedupe by name and date). Renaming, or two milestones with the same name or date, can drop or merge entries. Use IDs.",
+  "The exit route keeps only the last two clicked options (.slice(-2)), which gives an implicit primary/secondary order.",
+  "A phase change to a phase above Define with no forecast sets forecast = target. There is no path back to no forecast.",
+  "removeProject crashes when only one project remains (s.projects.find(...).id on undefined). The rmT timeout is not cleared on unmount. The picker (pk) and hover state are not reset when switching projects.",
+  "Date picker positioning divides by the frame's CSS scale factor (k). Production without the scaled frame can use a normal popover or anchor library. The picker has no keyboard grid navigation, only Escape to close.",
+  "style-hover and style-focus are compiled to !important pseudo-classes by support.js. field-sizing: content (Chromium only) is the textarea auto-size; the rows fallback is a char-count heuristic.",
+  "Feed ids are 'f' + Date.now(), which can collide. uid() uses Date.now plus 3 random chars.",
+  "Escape handling in inline fields calls stopPropagation. The picker registers a capture-phase window keydown so Escape closes it before the shell's drawer or palette handler.",
+  "Duplicate or legacy code: the setDate('target') logic in panel() and the unused setTarget both implement the target move."
+ ],
+ "localState": [
+  "state.pos: number|null. Fractional scrubber position as an index into snaps. null means live, the latest stop. It drives interpolation, history mode (inHistory = pos != null), the body dimming, the 'Forecast then' label and 'Back to now'.",
+  "state.drag: boolean. True while the pointer is captured on the track. It sets the handle transition to none, the cursor to grabbing, and suppresses the hover labels.",
+  "state.drafts: {fieldKey: string}. Uncommitted text for every inline field. Keys: 'name', 'goal', 'why', 'later', 'rate', 'left', 'ch.{list}.{i}', 'now.{i}.m', 'now.{i}.t.{j}', 'now.{i}.h.{j}', 'next.{i}.m', 'cl.{i}.title', 'cl.{i}.it.{j}', 'risk.{i}.r', 'risk.{i}.m'. The same keys are the data-fk attributes used for focusing.",
+  "state.confirmRemove: boolean. The armed state of the two-step remove; a 4000ms timer (this.rmT) resets it.",
+  "state.pk: {key, iso, x, y, ym:[year, monthIndex], note}|null. The open date picker. this.pkSet holds the setter callback.",
+  "state.hv: boolean. The pointer is over the scrubber bar row. state.hx: 0..1|null, the pointer x fraction across the bar.",
+  "Instance fields:\n- pendingFocus: the data-fk to focus after the next update.\n- lastMoved: a sticky 'moved' label, so the badge keeps its text while fading out.\n- _xs: stop x-percentages for posFrom.\n- _A: [A0, A1].\n- _hv: the hover model.\n- lastF: the field map, so panel() can read the rate and left fields.\n- barRef, trackRef, rootRef: DOM refs.",
+  "Reset rule: when model.ws changes, pos, drag, drafts and confirmRemove reset."
+ ],
+ "copyText": [
+  "Projects (back link)",
+  "Private Credit / Fixed Income (domain chip)",
+  "Project name (placeholder)",
+  "What will be true when this is done? (goal placeholder)",
+  "Start · Target · Forecast / Forecast then · Hours a day · Work left · To land on target",
+  "Change the start date / Change the target date (button titles)",
+  "'{n} BD in of {total}' / 'starts in {n} BD'",
+  "'{n} BD from today' / '{n} BD from start' / 'passed' / '—'",
+  "'moved +3 BD'",
+  "'+3 BD vs target' / '−2 BD vs target' / 'On target' / 'No forecast'",
+  "'{n} BD of work left' / 'set work left to get one'",
+  "'a day' · 'averages {x}h once BAU days are counted' / 'planned focus time'",
+  "'to go' · 'planned between now and the forecast' / 'your estimate of what remains'",
+  "'h a day' · '{x}h a day more than planned' / 'within your {x}h a day' / 'needs a work estimate' / 'target has passed'",
+  "No plan yet. Enter the work left and hours a day, and Remi works out when it lands.",
+  "Lands after the move on 4 Jan. At {r}h a day this does not leave with you; cut {x}h or plan more time.",
+  "Lands {n} BD after target. To make {date}, plan {x}h a day instead of {r}h, or cut about {c}h of work.",
+  "No buffer. It lands on the target day, so any new scope pushes it past {date}.",
+  "{n} BD of buffer: roughly {x}h of new scope before the target moves.",
+  "It sits on {n} overloaded day(s), first {date}.",
+  "Not checked in for {n} days, so treat the forecast as untested.",
+  "Starts in {n} BD.",
+  "Confidence · 'N/5' / '—'",
+  "Checked in {today|yesterday|N days ago|never}",
+  "Tell Remi",
+  "Plan as of · 'Viewing a past check-in' / 'Drag back through {n} check-ins' / 'One check-in so far' · Back to now",
+  "Crosshair: 'Mon 19 Oct · BD13 · 3.5h planned · {label}' / '· weekend' / '· Christmas Day'",
+  "Label names: 'Start', milestone names, '{endName} · forecast' (e.g. 'Handover-ready · forecast'), 'Target'",
+  "Charter · Why now · 'Why does this matter now, rather than later?'",
+  "Success measures ('A measurable outcome'; empty 'How will you know it worked?')",
+  "In scope ('Something this includes'; empty 'Not written yet. What must it do?')",
+  "Out of scope ('Something you will refuse'; empty 'Not written yet. What will you refuse to build?')",
+  "Constraints ('A limit to respect'; empty 'None noted yet.')",
+  "Add",
+  "Remove project / 'Click again to remove {name} and its history'",
+  "Plan · 'Drafted after the charter' / '{x}h estimated in Now'",
+  "Now · 'next 2 weeks · 5–16 Oct' · 'Milestone' · 'Task' · 'Set date' · 'Change date' · 'Add task' · 'Add milestone' · 'Nothing scheduled for the next two weeks yet.'",
+  "Next · '2–6 weeks · milestones only'",
+  "Later · 'one line of intent' · 'Where does this end up?'",
+  "Date picker: 'October 2026', M T W T F S S, 'BD3', 'Today', 'Weekends and holidays move to the next business day', 'Moving the start keeps the work left the same'",
+  "Toggle task (aria-label)",
+  "Feed: 'Target moved {old} → {new}.' (delta 'Target'); 'Phase moved {A} → {B}.' + ' Forecast starts at the target, {date}.'",
+  "Unrendered: 'Exit route: Automate, then hand over'; '+17% since charter' / 'No growth'; 'Charter · 8 Sep'; '60h → 70h'; 'absorbed, no change to forecast'; 'Scope is measured against a baseline, which the first check-in sets.'; 'No scope added since the charter. The plan is still the one you wrote.'"
+ ],
+ "externalCalls": [
+  "No AI calls, fetches or iframes in this file. Material Symbols Outlined icons (chevron_left, chevron_right, calendar_month, add, check) and the fonts Albert Sans (UI), Libre Caslon Text (display/goal/Later italic) and JetBrains Mono (numeric) all come from Google Fonts in the Remi.dc.html <helmet>. The Material Symbols request uses an icon_names subset and display=block.",
+  "document.startViewTransition is used by the shell (openProject) for the 'remi-goal' shared element."
+ ],
+ "persistence": [
+  "The workspace has no persistence of its own. Every mutation goes through model.updateProject / logChange / toggleTask / removeProject in Remi.dc.html. The shell debounces a save by 250ms and writes localStorage key 'remi.v1' = {projects, tasks, feed, funds, routines, doneOn, bauDone, notes, m2:true}. It loads from that key on boot and falls back to BASE_PROJECTS. Migration: if m2 is missing, it inserts task 'man-0' into ManCo Now[0]. normalize() fills defaults: checklists/milestones/now/next/risks/scope/checkins [], ov {}, later '', and charter {why:'', success:[], inScope:[], outScope:[], constraints:[]}.",
+  "Drafts, scrubber position, the picker and confirm state are ephemeral component state."
+ ],
+ "sampleData": "This file has no seed data; it reads the shell's BASE_PROJECTS. The key record is the default workspace project 'ret':\n\n- Identity and goal: {id:'ret', domain:'pc', name:'Returns pipeline automation', short:'Returns pipeline', goal:'Returns for all 12 funds produced in under 30 minutes with no manual steps, ready to hand over.'}\n- Dates: start '2026-09-14', target '2026-11-27', forecast '2026-12-02', prev '2026-11-27'.\n- Status: exit ['Automate','Hand over'], confidence 3, checkin '2026-10-03', phase 2 (Run).\n- Rates: rate 3.5, bd3 0, bd8 2, rateAfter 0, ov {'2026-11-04': 3.5}, baseline 60.\n- Milestones: [Fund-level engine reconciles 2026-10-16, Parallel run on November BD3 2026-11-04, Security-level attribution 2026-11-20]; endName 'Handover-ready'.\n- Charter:\n  - why: 'The move to Fixed Income is on 4 Jan. Returns run every BD3 and cannot leave with me, so the process has to run without me before the December cycle.'\n  - success: 3 items.\n  - inScope: 4 items.\n  - outScope: 2 items.\n  - constraints: 2 items.\n- now:\n  - 'Security-level data feed connected' (due 2026-10-15). Tasks: ret-1 'Request the security-level extract from the administrator' 0.5h (done); ret-2 'Parse and validate the extract' 4h.\n  - 'Fund-level engine reconciles' (due 2026-10-16). Tasks: ret-3 3h, ret-4 4h, ret-5 3h.\n- next: [Parallel run on November BD3 2026-11-04, Security-level attribution 2026-11-20, Runbook drafted 2026-11-27].\n- later: 'Hand the automated run to a successor after the December cycle, then retire the manual spreadsheets.'\n- scope: [{date:'2026-10-03', what:'Security-level attribution', h:10, bd:3, from:'27 Nov', to:'2 Dec'}].\n- checkins (3 snapshots):\n  - 2026-09-08: forecast 2026-11-20, conf 4, ms Fund-level 10-09 / Parallel 11-04.\n  - 2026-09-22: forecast 2026-11-27, conf 4, ms Fund-level 10-16 / Parallel 11-04.\n  - 2026-10-03: forecast 2026-12-02, conf 3, adds Security-level 11-20.\n- risks: 3 premortem pairs {r, m}.\n- checklists: [{id:'cl-1', title:'Handover checklist', 3 items}].\n\nOther projects:\n- manco (PC): rate 1.5, bd3 2, bd8 1.5, target = forecast = 2026-12-11.\n- play (PC): rate 1, target 2026-12-18.\n- fion (FI): rate 1, rateAfter 1, target 2027-01-04.\n- alpha (FI): define phase, forecast null, targetLabel 'Late Mar 2027', no check-ins. This is the empty-state case: hatched bar, 'No plan yet...', and an empty charter list.\n\nA new project created via createProject: name 'Untitled project', goal '', start TODAY, target and forecast TODAY+30 BD, rate 0, phase 0, exit [] (pc) or null (fi), endName 'Done'. The goal is auto-focused."
+}

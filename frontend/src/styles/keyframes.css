@@ -1,0 +1,20 @@
+/*
+ * Keyframes, verbatim from Remi.dc.html (the Ninety One redesign): its three remi-* keyframes and
+ * the six brand ones every redesigned file carries. In a CSS module, name them with
+ * `global(...)` (CSS Modules would otherwise hash the name).
+ * - bar-up: the REMI logo mark's bars grow from the baseline (700ms, once).
+ * - n1-flow: the dashed mint strip along a dark-teal edge (3.2s, loops).
+ * - n1-drift-a / n1-drift-b: the brand bars graphic drifting (loops).
+ * - n1-draw: a rule drawn left to right (once).
+ * - n1-ping: the verdict dot's ring (2.4s, loops).
+ * The loops stop under reduced motion, where each use says so (see the shell's HeaderBar).
+ */
+@keyframes remi-pulse{0%{box-shadow:0 0 0 0 color-mix(in oklch, var(--overload) 50%, transparent);}100%{box-shadow:0 0 0 7px color-mix(in oklch, var(--overload) 0%, transparent);}}
+@keyframes remi-settle{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+@keyframes remi-tick{0%{transform:scale(0.6);}60%{transform:scale(1.08);}100%{transform:scale(1);}}
+@keyframes bar-up{from{transform:scaleY(0);}to{transform:scaleY(1);}}
+@keyframes n1-flow{from{background-position:0 0;}to{background-position:48px 0;}}
+@keyframes n1-drift-a{0%,100%{transform:translateY(0);}50%{transform:translateY(-16px);}}
+@keyframes n1-drift-b{0%,100%{transform:translateY(0);}50%{transform:translateY(13px);}}
+@keyframes n1-draw{from{transform:scaleX(0);}to{transform:scaleX(1);}}
+@keyframes n1-ping{0%{transform:scale(1);opacity:.85;}100%{transform:scale(3.2);opacity:0;}}

@@ -1,0 +1,831 @@
+/*
+ * Today.dc.html (the Ninety One redesign), px for px. Line numbers refer to the prototype
+ * template. The linked highlight dims with [data-dim] (styles/motion.css).
+ */
+
+/*
+ * :10 Two columns over two shared rows: the hero and capacity card sit level with the week
+ * card (row 1), the plan level with the month snapshot (row 2). Each column is a subgrid.
+ * `align-content: start`: in the prototype the min-height never resolves (its parent has no
+ * definite height), so a short day leaves space below; here it resolves against the screen,
+ * and the default stretch would share that space out to the rows, stretching the hero.
+ */
+.root {
+  box-sizing: border-box;
+  min-height: 100%;
+  padding: 28px 40px 48px;
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  grid-template-rows: auto auto;
+  align-content: start;
+  column-gap: 48px;
+  row-gap: 32px;
+  align-items: stretch;
+}
+
+/* :12 the day-switch wrapper (left column only) */
+.left {
+  display: grid;
+  grid-row: 1 / span 2;
+  grid-template-rows: subgrid;
+  row-gap: 32px;
+  min-width: 0;
+  transition:
+    opacity 120ms var(--ease-out),
+    transform var(--dur-base) var(--spring-soft);
+}
+.left[data-fading] {
+  opacity: 0;
+}
+
+/* :142 */
+.right {
+  display: grid;
+  grid-row: 1 / span 2;
+  grid-template-rows: subgrid;
+  row-gap: 32px;
+  min-width: 0;
+}
+
+/* :13 the hero and the capacity card, 8px above the row, the hero taking the spare height */
+.top {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+  margin-top: -8px;
+}
+
+/* Arrival (:13, :28, :50, :138, :175): opacity + 6px rise, 140ms, staggered by --d. */
+.arrive {
+  opacity: 0;
+  transform: translateY(6px);
+  transition:
+    opacity 140ms var(--ease-out) var(--d, 0ms),
+    transform 140ms var(--ease-out) var(--d, 0ms);
+}
+[data-arrived] .arrive {
+  opacity: 1;
+  transform: none;
+}
+[data-reduced] .arrive {
+  transform: none;
+}
+
+.eyebrow {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--brand-dark);
+}
+
+/* ------------------------------------------------------------------ hero :14-29 */
+.hero {
+  position: relative;
+  overflow: hidden;
+  flex: 1;
+  margin: 0;
+  padding: 30px 32px 40px;
+  background: var(--brand-deep);
+  color: #fff;
+  box-shadow: 0 1px 3px rgba(10, 32, 29, 0.07);
+}
+
+.kickerRow {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 12px;
+  min-height: 24px;
+}
+.kicker {
+  font-family: var(--font-numeric);
+  font-size: 12px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--brand-mint-2);
+}
+
+.back {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 24px;
+  padding: 0 9px 0 5px;
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  background: transparent;
+  font: inherit;
+  font-size: 12px;
+  color: #fff;
+  cursor: pointer;
+}
+.back:hover {
+  border-color: #009d80;
+  background: rgba(255, 255, 255, 0.07);
+}
+.back:focus-visible {
+  outline: 1.5px solid var(--brand-mint);
+  outline-offset: 2px;
+}
+.backIcon {
+  font-size: 15px;
+}
+
+.title {
+  position: relative;
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 300;
+  font-size: 52px;
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  color: #fff;
+}
+.title:focus {
+  outline: none;
+}
+
+.meta {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 16px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #fff;
+}
+.metaBd {
+  font-family: var(--font-numeric);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.62);
+}
+.arrow {
+  color: #009d80;
+}
+.sep {
+  color: rgba(255, 255, 255, 0.35);
+}
+.verdict {
+  color: var(--brand-mint);
+}
+
+/* ------------------------------------------------------------------ capacity card :31-52 */
+/* The white card (capacity, and the week strip :143). */
+.panel {
+  position: relative;
+  margin: 0;
+  padding: 20px 24px 20px;
+  background: #fff;
+  border: 1px solid var(--hairline);
+  box-shadow: 0 1px 2px rgba(10, 32, 29, 0.05);
+}
+/* :32 the teal rule drawn across the top edge, once, 250ms in. */
+.draw {
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  right: -1px;
+  height: 2px;
+  background: #009d80;
+  transform-origin: left;
+  animation: draw 900ms cubic-bezier(0.23, 1, 0.32, 1) 250ms both;
+}
+[data-reduced] .draw {
+  animation: none;
+}
+@keyframes draw {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+.capHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 12px;
+}
+.capLabel {
+  font-size: 14px;
+  color: var(--ink-muted);
+}
+.capLabel[data-over] {
+  color: var(--overload);
+}
+.legend {
+  margin-top: 12px;
+}
+
+/* ------------------------------------------------------------------ plan :50-133 */
+.plan {
+  display: flex;
+  flex-direction: column;
+  gap: 36px;
+}
+
+.sectionHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--hairline);
+  padding-bottom: 10px;
+}
+/* :57 the display-face title after a 3×18 teal accent bar (the design's empty span). */
+.sectionTitle {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--font-display);
+  font-size: 21px;
+  font-weight: 400;
+  color: var(--brand-deep);
+}
+.sectionTitle::before {
+  content: '';
+  width: 3px;
+  height: 18px;
+  border-radius: 999px;
+  background: #009d80;
+}
+.sectionNote {
+  font-size: 13px;
+  color: var(--ink-muted);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 64px minmax(0, 1fr);
+  column-gap: 16px;
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+.gutter {
+  font-size: 24px;
+  font-weight: 500;
+  line-height: 1.2;
+}
+.gutter[data-faint] {
+  color: var(--ink-faint);
+}
+.body {
+  min-width: 0;
+}
+
+.line1 {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+}
+.line1[data-wrap] {
+  flex-wrap: wrap;
+}
+.kind {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+.kind[data-domain='pc'] {
+  color: var(--pc-accent);
+}
+.kind[data-domain='fi'] {
+  color: var(--fi-accent);
+}
+.mono12 {
+  font-family: var(--font-numeric);
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+.note {
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+.spacer {
+  flex: 1;
+}
+
+.line2 {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 6px;
+}
+.name {
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.link {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  font: inherit;
+  font-size: 14px;
+  color: var(--ink-muted);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.link:hover {
+  color: var(--ink);
+}
+.linkIcon {
+  font-size: 16px;
+}
+
+/* The checklist run card (:57-85) */
+.runCount {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 15px;
+  white-space: nowrap;
+}
+.runRoll {
+  display: inline-flex;
+}
+.runOf {
+  color: var(--ink-muted);
+}
+.track {
+  height: 2px;
+  background: var(--hairline);
+  margin: 12px 0 4px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 1px;
+}
+.trackFill {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  transition: width var(--dur-slow) var(--spring-soft);
+}
+.trackFill[data-domain='pc'] {
+  background: var(--pc-accent);
+}
+.trackFill[data-domain='fi'] {
+  background: var(--fi-accent);
+}
+.items {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: 24px;
+}
+.items > .item {
+  height: 40px;
+  border-bottom: 1px solid var(--hairline);
+  color: var(--ink);
+}
+.items > .item[aria-disabled='true'] {
+  cursor: default;
+}
+.itemLabel {
+  font-size: 14px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.noBau {
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--ink-muted);
+  padding-top: 4px;
+}
+
+/* Focus blocks (:105-132) */
+.goal {
+  margin: 8px 0 10px;
+  font-family: var(--font-display);
+  /* The design sets italic, then overrides every inline italic to normal (Remi.dc.html:22). */
+  font-style: normal;
+  font-size: 17px;
+  line-height: 1.45;
+  color: var(--ink-muted);
+  max-width: 62ch;
+  text-wrap: pretty;
+}
+.noTasks {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ink-muted);
+  padding: 10px 0;
+  border-bottom: 1px solid var(--hairline);
+}
+.body > .task {
+  width: 100%;
+  height: 40px;
+  border-bottom: 1px solid var(--hairline);
+  color: var(--ink);
+}
+.taskLabel {
+  flex: 1;
+  font-size: 15px;
+}
+.taskHours {
+  font-family: var(--font-numeric);
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+.milestone {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--ink-muted);
+}
+.diamond {
+  width: 8px;
+  height: 8px;
+  transform: rotate(45deg);
+}
+.diamond[data-domain='pc'] {
+  background: var(--pc-accent);
+}
+.diamond[data-domain='fi'] {
+  background: var(--fi-accent);
+}
+
+/* ------------------------------------------------------------------ week strip :143-178 */
+.weekCard {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  margin-top: -8px;
+  padding: 22px 24px 18px;
+}
+.weekHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--hairline);
+  padding-bottom: 10px;
+  margin-bottom: 16px;
+}
+.weekSub {
+  font-family: var(--font-numeric);
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+.week {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  column-gap: 10px;
+  align-items: stretch;
+}
+.card {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px 10px 12px;
+  margin: 0;
+  border: 0;
+  border-top: 2px solid var(--hairline);
+  border-radius: 0 0 var(--radius-m) var(--radius-m);
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background var(--dur-fast) var(--ease-out),
+    border-color var(--dur-base) var(--ease-out);
+}
+.card[aria-pressed='true'] {
+  border-top-color: var(--ink);
+  background: var(--paper-raised);
+}
+.card:hover {
+  background: color-mix(in oklch, var(--ink) 3.5%, transparent);
+}
+.card:focus-visible {
+  outline: 1.5px solid var(--focus);
+  outline-offset: 2px;
+}
+.gap {
+  min-width: 0;
+}
+.cardHead {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 4px;
+}
+.cardLabel {
+  font-size: 14px;
+  font-weight: 500;
+}
+.card[aria-pressed='true'] .cardLabel {
+  font-weight: 700;
+}
+.todayTag {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--ink-muted);
+  margin-left: 6px;
+}
+.cardBd {
+  font-family: var(--font-numeric);
+  font-size: 11px;
+  color: var(--ink-muted);
+}
+.cardLoad {
+  font-family: var(--font-numeric);
+  font-size: 11px;
+  color: var(--ink-muted);
+}
+.cardLoad[data-over] {
+  color: var(--overload);
+}
+.cardStack {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 2px;
+}
+.chip {
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+.weekItem {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  cursor: default;
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+.weekItemName {
+  font-size: 12px;
+  line-height: 1.3;
+  color: var(--ink);
+}
+.weekItemBar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.weekItemFill {
+  height: 3px;
+  border-radius: 1px;
+}
+.weekItemFill[data-domain='pc'] {
+  background: var(--pc-accent);
+}
+.weekItemFill[data-domain='fi'] {
+  background: var(--fi-accent);
+}
+.weekItemH {
+  font-family: var(--font-numeric);
+  font-size: 10px;
+  color: var(--ink-muted);
+}
+.more {
+  font-size: 11px;
+  color: var(--ink-muted);
+}
+
+/* ------------------------------------------------------------------ month snapshot :176-212 */
+.monthCount {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--ink-muted);
+}
+.monthDone {
+  display: inline-flex;
+  color: var(--ink);
+  font-weight: 600;
+}
+.monthLate {
+  color: color-mix(in oklch, var(--risk) 45%, var(--ink));
+  font-weight: 600;
+}
+.bars {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  gap: 3px;
+  height: 60px;
+  margin-top: 16px;
+}
+.bar {
+  position: relative;
+  flex: 1;
+  height: 100%;
+}
+.barPlan,
+.barLate,
+.barDone {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 1px;
+}
+.barPlan {
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--ink-faint) 55%, var(--paper));
+  transition: height var(--dur-slow) var(--spring-soft);
+}
+.barPlan[data-past] {
+  box-shadow: inset 0 0 0 1px var(--ink-faint);
+}
+.barLate {
+  background: color-mix(in oklch, var(--risk) 55%, var(--paper));
+  transition: height var(--dur-slow) var(--spring-soft) var(--d, 0ms);
+}
+.barDone {
+  background: var(--ink);
+  transition: height var(--dur-slow) var(--spring-soft) var(--d, 0ms);
+}
+.barToday {
+  position: absolute;
+  left: 50%;
+  bottom: -7px;
+  width: 1px;
+  height: 5px;
+  background: var(--brand-deep);
+}
+.axis {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 9px;
+  font-family: var(--font-numeric);
+  font-size: 10px;
+  color: var(--ink-muted);
+}
+.monthLegend {
+  display: flex;
+  gap: 16px;
+  margin-top: 6px;
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+.monthKey {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.swatch {
+  width: 8px;
+  height: 8px;
+  border-radius: 1px;
+}
+.swatchDone {
+  background: var(--brand-deep);
+}
+.swatchLate {
+  background: color-mix(in oklch, var(--risk) 55%, var(--paper));
+}
+.swatchDue {
+  box-shadow: inset 0 0 0 1px var(--ink-faint);
+}
+
+.groupHead {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 18px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--hairline);
+}
+.groupTrack {
+  width: 56px;
+  height: 2px;
+  background: var(--hairline);
+  border-radius: 1px;
+  overflow: hidden;
+}
+.groupFill {
+  display: block;
+  height: 100%;
+  background: var(--brand-deep);
+  transition: width var(--dur-slow) var(--spring-soft);
+}
+.groupCount {
+  font-family: var(--font-numeric);
+  font-size: 11px;
+  color: var(--ink-muted);
+  min-width: 32px;
+  text-align: right;
+}
+.monthRow {
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr) auto;
+  column-gap: 4px;
+  align-items: center;
+  min-height: 34px;
+  border-bottom: 1px solid var(--hairline);
+  transition: opacity var(--dur-fast) var(--ease-out);
+}
+.monthText {
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 13px;
+}
+.monthItem {
+  color: var(--ink);
+  transition: color var(--dur-base) var(--ease-out);
+}
+.monthItem[data-done] {
+  color: var(--ink-muted);
+  text-decoration: line-through;
+  text-decoration-color: var(--done);
+}
+.monthSub {
+  color: var(--ink-muted);
+}
+.due {
+  font-family: var(--font-numeric);
+  font-size: 11px;
+  font-weight: 400;
+  color: var(--ink-muted);
+  white-space: nowrap;
+  padding-left: 8px;
+}
+.due[data-tone='done'] {
+  color: var(--ink-faint);
+}
+.due[data-tone='late'] {
+  color: color-mix(in oklch, var(--risk) 45%, var(--ink));
+  font-weight: 600;
+}
+.due[data-tone='today'] {
+  color: var(--ink);
+  font-weight: 600;
+}
+.groupEmpty {
+  font-size: 13px;
+  color: var(--ink-muted);
+  padding: 10px 0;
+  border-bottom: 1px solid var(--hairline);
+}
+.showMore {
+  border: 0;
+  background: transparent;
+  padding: 8px 0 0;
+  font: inherit;
+  font-size: 12px;
+  color: var(--ink-muted);
+  cursor: pointer;
+}
+.showMore:hover {
+  color: var(--ink);
+}
+
+/* ------------------------------------------------------------------ states */
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+.status {
+  padding: 28px 40px;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--ink-muted);
+}
+.retry {
+  margin-left: 8px;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font: inherit;
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--hairline);
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+/* Below the 66px top bar (Remi.dc.html:73). */
+.toastLayer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 66px;
+  bottom: 0;
+  pointer-events: none;
+}

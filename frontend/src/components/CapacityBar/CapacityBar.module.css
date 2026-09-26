@@ -1,0 +1,209 @@
+/*
+ * Capacity bars. Sources: Today.dc.html:32-41 (day), :150-154 (mini); Calendar.dc.html:61-62
+ * (cell), :87-93 (panel); Timeline.dc.html:78-81, :299-300 (strip); Remi Home.dc.html:64-66
+ * (decor); Remi Foundations.dc.html:182-195.
+ *
+ * Colours come from three custom properties set per segment:
+ *   --c    the accent (BAU notches, project outline)
+ *   --soft the project fill
+ */
+.pc {
+  --c: var(--pc-accent);
+  --soft: var(--pc-accent-soft);
+}
+.fi {
+  --c: var(--fi-accent);
+  --soft: var(--fi-accent-soft);
+}
+.over .pc,
+.over .fi {
+  --c: var(--overload);
+  --soft: var(--overload-fill, color-mix(in oklch, var(--overload) 20%, var(--paper)));
+}
+
+.bar {
+  position: relative;
+  display: flex;
+}
+
+.seg {
+  flex: none;
+  display: flex;
+  height: 100%;
+  overflow: hidden;
+  box-sizing: border-box;
+}
+.bau {
+  background: transparent;
+}
+.proj {
+  background: var(--soft);
+  box-shadow: inset 0 0 0 1px var(--c);
+}
+.free {
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--hairline);
+}
+.notch {
+  flex: 1;
+  background: var(--c);
+}
+
+/* day · 14px (Today) */
+.day {
+  gap: 2px;
+  height: 14px;
+  border-radius: var(--radius-s);
+}
+.day .seg,
+.panel .seg {
+  gap: 2px;
+  border-radius: 2px;
+}
+.day .notch,
+.panel .notch {
+  border-radius: 1.5px;
+}
+.day .seg {
+  transition:
+    width var(--dur-slow) var(--spring-soft) 90ms,
+    opacity var(--dur-fast) var(--ease-out);
+}
+
+/* panel · 12px (Calendar day panel) */
+.panel {
+  gap: 2px;
+  height: 12px;
+  border-radius: var(--radius-s);
+}
+.panel .seg {
+  transition:
+    width var(--dur-slow) var(--spring-soft),
+    opacity var(--dur-fast) var(--ease-out);
+}
+
+/* mini · 6px (Today week cards; Foundations draws the notches with a gradient) */
+.mini {
+  gap: 1px;
+  height: 6px;
+  border-radius: 1px;
+}
+.mini .seg {
+  gap: 1px;
+  border-radius: 1px;
+  transition:
+    width var(--dur-slow) var(--spring-soft) 160ms,
+    opacity var(--dur-fast) var(--ease-out);
+}
+
+/* cell · 5px (Calendar month cells): solid BAU, and solid overload on an over day */
+.cell {
+  flex: 1 1 auto;
+  min-width: 0;
+  gap: 1px;
+  height: 5px;
+  border-radius: 1px;
+}
+.cell .seg {
+  border-radius: 1px;
+}
+.cell .bau {
+  background: var(--c);
+  box-shadow: inset 0 0 0 1px var(--c);
+}
+.cell.over .seg {
+  background: var(--overload);
+  box-shadow: inset 0 0 0 1px var(--overload);
+}
+
+/* strip · one vertical bar per business day, 5px per hour (Timeline) */
+.strip {
+  flex-direction: column-reverse;
+  gap: 1px;
+  border-radius: 1px;
+}
+.strip.over .pc,
+.strip.over .fi {
+  --soft: color-mix(in oklch, var(--overload) 22%, var(--paper));
+}
+.vseg {
+  flex: none;
+  border-radius: 1px;
+  transition:
+    height var(--dur-slow) var(--spring-soft),
+    opacity var(--dur-fast) var(--ease-out);
+}
+.vseg.bau {
+  background: repeating-linear-gradient(to top, var(--c) 0 4px, transparent 4px 5px);
+}
+
+/* decor · Home's decorative strip: one soft bar per day */
+.decor {
+  flex: 1;
+  border-radius: 1px;
+  background: var(--soft);
+  box-shadow: inset 0 0 0 1px var(--c);
+}
+.decor.over {
+  --c: var(--overload);
+  --soft: color-mix(in oklch, var(--overload) 22%, var(--paper));
+}
+
+/* The capacity line, drawn while the day is over (--brand-deep: Today.dc.html:45, Foundations :196). */
+.marker {
+  position: absolute;
+  top: -5px;
+  bottom: -5px;
+  width: 1px;
+  background: var(--brand-deep);
+}
+
+/* One overload pulse: remi-pulse 600ms, no loop. Keyed by the caller so it can replay. */
+.ring {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  /* global(): the keyframes live in styles/keyframes.css; a bare name would be hashed. */
+  animation: global(remi-pulse) 600ms var(--ease-out) 1;
+}
+:global(:root[data-motion='reduced']) .ring {
+  animation: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .ring {
+    animation: none;
+  }
+}
+
+/*
+ * Transitions of the roots, and the linked highlight (`dimmed`, `itemDimmed`): --linked-dim
+ * over --dur-fast. Segments already transition their opacity; each root adds an opacity fade
+ * to the glides it already had (strip: width; decor: height and background).
+ */
+.seg[data-dim],
+.vseg[data-dim] {
+  opacity: var(--linked-dim, 0.28);
+}
+.bar,
+.decor {
+  --dim-fade: opacity var(--dur-fast) var(--ease-out);
+}
+.bar:not(.strip) {
+  transition: var(--dim-fade);
+}
+.strip {
+  transition:
+    width var(--dur-slow) var(--spring-soft),
+    var(--dim-fade);
+}
+.decor {
+  transition:
+    height var(--dur-slow) var(--spring-soft),
+    background var(--dur-base) var(--ease-out),
+    var(--dim-fade);
+}
+.bar[data-dim],
+.decor[data-dim] {
+  opacity: var(--linked-dim, 0.28);
+}

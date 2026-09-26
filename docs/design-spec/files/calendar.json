@@ -1,0 +1,296 @@
+{
+ "key": "calendar",
+ "file": "/Users/justinstoddart/Desktop/Ninety One/remi/Remi Dashboard Design Review/Calendar.dc.html",
+ "purpose": "Calendar is a month grid covering Oct 2026 to Jan 2027. Monday to Friday get wide columns and Sat/Sun get compressed 64px columns. Each business day shows its per-month business-day number (BDn), BAU chips, milestone and forecast diamonds, thin project-hour bars, and an hours load meter that turns red and pulses when a day is overloaded (over 8h). Clicking an in-month day slides in a 440px day-detail panel from the right. The panel shows a capacity bar with hour ticks, the planned BAU and project rows (including which Now tasks the plan expects to be worked that day), what is due that day, prev/next business-day stepping, and a button that opens that day's plan in the Today screen.",
+ "layout": "ROOT (component root div): position:relative; box-sizing:border-box; height:100%; min-height:880px; padding:28px 48px 32px; display:flex; flex-direction:column. The shell mounts it inside <section data-screen-label=\"Calendar\" style=\"position:absolute; inset:0; overflow:auto\">, which sits inside <main>. The app frame is a grid: 88px left nav plus content. The content is a 72px header over main.\n - At 1920x1080: main is about 1832 x 1008 px. Content width after the 48px side paddings is about 1736px (the older debug screenshot showed 1721px with a scrollbar). Weekday columns are (1736 - 128)/5, about 321.6px each. Weekend columns are fixed at 64px each.\n - At 2560x1440: main is about 2472 x 1368. Content is about 2376px wide, so weekday columns are about 449.6px each. Weekend columns stay 64px.\n - Main height minus 60px vertical padding, the header block (about 71px) and the weekday-head row (about 22px) leaves the grid about 855px at 1080 and about 1215px at 1440. Rows share that height equally: 5-row months get about 171px per row at 1080 (about 243px at 1440). November 2026 needs 6 rows (about 142px each at 1080).\n - The shell does the frame scaling: fixed 1920x1080 or 2560x1440 canvas, transform:scale() to fit, centred.\n\n1) HEADER ROW: display:flex; align-items:flex-end; gap:24px; padding-bottom:18px. Children left to right:\n  a) Title block. Kicker \"Calendar\": 11px, weight 600, letter-spacing 0.08em, uppercase, color var(--ink-muted). Below it (margin-top 8px) a flex row with align-items:baseline and gap 14px:\n     - monthLabel (e.g. \"October 2026\"): font-family var(--font-display) (Libre Caslon Text), 28px, line-height 1.1, letter-spacing -0.01em.\n     - monthSub (e.g. \"22 business days\" or \"21 business days · 1 overloaded\"): var(--font-numeric) (JetBrains Mono), 12px, var(--ink-muted).\n  b) Spacer, flex:1.\n  c) Legend: flex; align-items:center; gap 16px; 12px; var(--ink-muted). Three items, each flex with gap 6px:\n     (i) A mini BAU chip followed by the text \"chip\". The chip is inline-flex, gap 4px, height 18px, padding 0 6px, radius var(--radius-s)=3px, bg var(--pc-accent-soft), color var(--ink), 10px/500. It holds a 3x9px tick (bg var(--pc-accent), radius 1px) and the text \"BAU\".\n     (ii) A 28x4px bar (radius 1px, bg var(--pc-accent)) followed by \"project hours\".\n     (iii) An 8x8px diamond (transform rotate(45deg), border 1.5px solid var(--ink-muted), box-sizing border-box) followed by \"milestone\".\n  d) Month nav: flex, gap 8px.\n     - Prev button: 32x32, display grid, place-items center, 1px solid var(--hairline), radius var(--radius-m)=6px, bg var(--paper-raised), cursor pointer, opacity prevO (0.35 on the first month, else 1). Icon: Material Symbols Outlined \"chevron_left\", 18px.\n     - \"This month\" button: height 32px, padding 0 12px, same border/radius/bg, 13px.\n     - Next button: same as prev, with \"chevron_right\" and opacity nextO (0.35 on the last month).\n\n2) WEEKDAY HEADS: display:grid; grid-template-columns: repeat(5, minmax(0,1fr)) 64px 64px; border-bottom: 1px solid var(--ink). Seven cells, each padding 0 10px 8px; 11px/600, letter-spacing 0.08em, uppercase. Labels Mon Tue Wed Thu Fri Sat Sun. Colour is var(--ink-muted) for Mon–Fri and var(--ink-faint) for Sat/Sun.\n\n3) MONTH GRID: flex:1; min-height:0; display:grid; same grid-template-columns; grid-auto-rows:minmax(0,1fr); opacity gridO; transform gridT; transition: opacity var(--dur-fast) var(--ease-out), transform var(--dur-base) var(--spring-soft).\n CELL (one per day from the Monday on or before the 1st to the Sunday on or after the last day): position:relative; min-width:0; min-height:0; overflow:hidden; box-sizing:border-box; padding:8px 10px 10px; border-bottom:1px solid var(--hairline); border-right:1px solid (transparent on Sundays, else var(--hairline)); display:flex; flex-direction:column; gap:6px.\n  - Background: color-mix(in oklch, var(--ink) 3.5%, var(--paper)) on weekends and holidays, else transparent.\n  - opacity: 1 in-month, 0.35 out-of-month.\n  - cursor: pointer in-month, default otherwise.\n  - Selected ring: box-shadow: inset 0 0 0 {1.5px when selected | 0px} var(--ink).\n  - transition: box-shadow var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out).\n  - Hover: background color-mix(in oklch, var(--ink) 3%, var(--paper)), applied through a generated class with !important.\n  Cell contents, top to bottom:\n   a) Top row: flex, align-items center, justify-content space-between, gap 6px.\n      - Day-number badge: inline-flex, centred, min-width 24px, height 24px, padding 0 4px, border-box, radius 3px, 14px. Today: bg var(--ink), color var(--paper), weight 700. Otherwise transparent bg, weight 500, colour var(--ink-muted) on weekends and var(--ink) on other days.\n      - Right side: \"BD{n}\" in var(--font-numeric) 11px var(--ink-muted); empty on non-business days.\n   b) Holiday name if any: 11px, var(--ink-muted), line-height 1.3.\n   c) BAU chips, each: align-self flex-start; inline-flex; align-items center; gap 5px; height 20px; padding 0 7px; radius 3px; bg = domain soft; box-shadow inset 0 0 0 1px transparent; 11px/500; white-space nowrap. Leading tick is 3x10px in the domain accent with radius 1px. Label like \"Returns · 6h\".\n   d) Milestone lines, each: flex; align-items center; gap 6px; 11px; line-height 1.3. A 7x7px diamond (flex:none, border-box, rotate 45deg, border 1.5px solid accent, bg fill), then the name (nowrap, overflow hidden, ellipsis).\n   e) Bottom stack: flex column, gap 3px, margin-top:auto (pinned to the cell bottom).\n      - Project bars, each a flex row (align-items center, gap 6px, native tooltip via title). The bar is flex:none, height 4px, width (h/8*62)%, radius 1px. Next to it a label at 10px var(--ink-muted), nowrap, ellipsis, e.g. \"Returns pipeline 3.5h\".\n      - Load meter row: flex, align-items center, gap 6px, margin-top 4px.\n        * Meter: flex:1; display flex; gap 1px; height 5px; radius 1px; optional pulse animation. Each segment has width calc(pct - 1px), a background, box-shadow inset 0 0 0 1px line, and radius 1px.\n        * Label: var(--font-numeric) 10px, min-width 30px, text-align right, e.g. \"7h\", in var(--ink-muted) or var(--overload).\n\n4) DAY PANEL, an overlay sibling of the grid inside ROOT: position:absolute; top:0; right:0; bottom:0; width:440px; z-index:5; box-sizing:border-box; padding:28px 32px; background var(--paper); border-left 1px solid var(--hairline); box-shadow: -24px 0 48px -36px color-mix(in oklch, var(--ink) 35%, transparent); display flex; flex-direction column; overflow:auto.\n - Closed: transform translateX(104%), opacity 0, pointer-events none. Open: translateX(0), opacity 1, pointer-events auto.\n - transition: transform var(--dur-slow) var(--spring-soft), opacity var(--dur-base) var(--ease-out).\n - There is no scrim. The panel covers the Sat/Sun columns and roughly the right 312px of the Friday column, and the rest of the grid stays interactive.\n Contents, rendered only while open:\n  a) Top bar: flex, align-items center, gap 10px.\n     - Kicker: 11px/600, 0.08em, uppercase, var(--ink-muted).\n     - Spacer, flex:1.\n     - Prev and next buttons (title \"Previous day\" / \"Next day\"): 30x30, grid centred, 1px solid var(--hairline), radius 6px, bg var(--paper-raised), chevron icons at 18px.\n     - Close button (title \"Close\"): 30x30, border 0, transparent, color var(--ink-muted), icon \"close\" at 20px.\n  b) Title, e.g. \"Wednesday 14 October\": var(--font-display) 32px, line-height 1.15, letter-spacing -0.01em, margin-top 14px.\n  c) Sub, e.g. \"BD10 of October\": var(--font-numeric) 12px, var(--ink-muted), margin-top 8px.\n  d) Business days with a load only:\n     - Capacity block, margin-top 24px. Header row: flex, baseline-aligned, space-between, margin-bottom 10px. Left: label \"Capacity\" (11px/600/0.08em uppercase, muted). Right: value at 13px in colour fg.\n     - Bar: position relative; flex; gap 2px; height 12px; radius 3px; optional pulse animation. Each segment has width calc(pct - 2px), flex:none, and is itself flex with gap 2px, radius 2px, bg, box-shadow inset 0 0 0 1px line, overflow hidden, opacity op, and transition: width var(--dur-slow) var(--spring-soft), opacity var(--dur-fast) var(--ease-out). BAU segments contain ceil(h) child cells (flex:1, radius 1.5px, solid colour), which reads as one tick per hour.\n     - Rows list: margin-top 22px; border-top 1px solid var(--ink). Each row: display grid; grid-template-columns 48px minmax(0,1fr); column-gap 12px; padding 12px 0; border-bottom 1px solid var(--hairline).\n       * Hours column, e.g. \"3.5h\": 17px/500.\n       * Kind line, e.g. \"PROJECT · PRIVATE CREDIT\": 11px/600, 0.08em, uppercase, in the domain accent.\n       * Name: 15px/500, margin-top 3px.\n       * Task lines: flex, space-between, gap 10px, 13px, var(--ink-muted), margin-top 5px. Hours are right-aligned in var(--font-numeric) 11px.\n  e) If there are due items: \"Due this day\" block, margin-top 22px, with the same label style as above. Each item: flex, align-items center, gap 10px, min-height 36px, border-bottom 1px hairline, 14px. It has an 8x8 diamond (border 1.5px accent, fill) and the name.\n  f) Empty-state paragraph when applicable: margin-top 24px, 15px, line-height 1.55, var(--ink-muted).\n  g) Spacer: flex:1; min-height:24px. This pushes the CTA to the bottom.\n  h) CTA \"Open the day’s plan in Today\" (future or today business days only): height 40px, border 0, radius 6px, bg var(--ink), colour var(--paper), 14px/600, full width (stretched by the flex column).\n\nGlobal: body font var(--font-ui) \"Albert Sans\"; font-variant-numeric: tabular-nums; antialiased. Page bg var(--paper).",
+ "components": [
+  {
+   "name": "CalendarScreen (root)",
+   "description": "Owns month index, fade/direction and the selected day. It renders the header, the weekday heads, the month grid and the DayPanel overlay. Root: relative flex column, min-height 880px, padding 28px 48px 32px. It adds a window keydown listener on mount: Escape closes the panel when a day is selected and model.screen === 'calendar'. The listener is removed on unmount.",
+   "states": [
+    "month index 0..3 (Oct 2026, Nov 2026, Dec 2026, Jan 2027)",
+    "fading (grid opacity 0 and shifted 10px) for 130ms during a month change",
+    "panel closed (sel=null)",
+    "panel open for a selected day"
+   ]
+  },
+  {
+   "name": "CalendarHeader",
+   "description": "Kicker 'Calendar' (11px/600/0.08em uppercase muted). Month title in display serif 28px/1.1/-0.01em. Sub-line in mono 12px muted: '{nBD} business days' plus ' · {overN} overloaded' when overN > 0. Legend (12px muted, gap 16px): a BAU mini-chip plus 'chip', a 28x4 accent bar plus 'project hours', an 8x8 outlined diamond plus 'milestone'. Nav: 32x32 prev and next icon buttons plus a 'This month' text button (height 32, padding 0 12px, 13px). All three have a 1px hairline border, 6px radius and a paper-raised background. Prev/next drop to opacity 0.35 at the range ends but stay clickable (no disabled attribute; the clamp makes them no-ops).",
+   "states": [
+    "prev dimmed at first month (opacity 0.35)",
+    "next dimmed at last month (opacity 0.35)",
+    "sub-line with or without the ' · N overloaded' suffix"
+   ]
+  },
+  {
+   "name": "WeekdayHeadRow",
+   "description": "7-column grid (5 x minmax(0,1fr) + 64px + 64px) with a 1px solid var(--ink) bottom border. Labels Mon..Sun at 11px/600/0.08em uppercase, padding 0 10px 8px. Weekdays use var(--ink-muted); Sat/Sun use var(--ink-faint).",
+   "states": [
+    "static"
+   ]
+  },
+  {
+   "name": "DayCell",
+   "description": "Grid cell for one calendar day. Padding 8px 10px 10px. Borders: 1px hairline on the bottom; 1px hairline on the right except Sundays, which are transparent. Flex column with gap 6px and overflow hidden. Contents: day-number badge (24px min square, 14px), BD label (mono 11px muted, 'BD{n}'), optional holiday name (11px muted), BAU chips, milestone/forecast diamonds, and a bottom-pinned stack of project bars plus the load meter. Chips, diamonds, bars and meter render only when the day is a business day AND in the displayed month. Out-of-month days show only the number and BD label at opacity 0.35 and cannot be clicked. Weekend and holiday cells have a 3.5% ink tint background. Hover background is a 3% ink tint (forced with !important). A selected cell gets a 1.5px inset ink ring.",
+   "states": [
+    "in-month business day",
+    "in-month weekend (tinted bg, muted number, no BD label, clickable → panel says Weekend)",
+    "in-month bank holiday (tinted bg, holiday name line, no BD label, clickable → Bank holiday)",
+    "out-of-month (opacity 0.35, cursor default, click no-op, no content even if business day)",
+    "today (number badge bg var(--ink), fg var(--paper), weight 700)",
+    "selected (inset 1.5px ink ring, 140ms transition)",
+    "hover (bg color-mix(in oklch, var(--ink) 3%, var(--paper)))",
+    "overloaded (all bars and meter segments var(--overload), label red, pulse animation once)",
+    "dimmed by global hover (child items at opacity 0.25 when another id is hovered)"
+   ]
+  },
+  {
+   "name": "BauChip",
+   "description": "Inline-flex pill, height 20px, padding 0 7px, radius 3px. Background is the domain soft colour (var(--pc-accent-soft) or var(--fi-accent-soft)). box-shadow inset 0 0 0 1px transparent. 11px/500, nowrap, align-self:flex-start, gap 5px. Leading 3x10px tick in the domain accent (radius 1px). Label is '{item.name} · {h}h', e.g. 'Returns · 6h', 'ManCo pack · 4h', 'Germany · Build · 4h'. onMouseEnter calls setHover(routineId); onMouseLeave calls setHover(null). Opacity transition var(--dur-fast) var(--ease-out).",
+   "states": [
+    "normal (opacity 1)",
+    "dimmed (0.25) when a different id is hovered"
+   ]
+  },
+  {
+   "name": "MilestoneDiamondLine (cell)",
+   "description": "Flex row, gap 6px, 11px, line-height 1.3. A 7x7 diamond (rotate 45deg, 1.5px solid accent border, background fill), then the name with ellipsis. Two sources: (1) each project milestone dated that day: accent p.accent; fill p.accent if the day is before TODAY, else var(--paper) (hollow for the future). (2) The project's forecast end on that day: name '{p.short} · {p.endName lowercased}' (e.g. 'Returns pipeline · handover-ready'); accent and fill are var(--risk) when p.status === 'risk', else p.accent (solid). Hover calls setHover(p.id).",
+   "states": [
+    "past milestone (solid)",
+    "future milestone (hollow, paper fill)",
+    "forecast end on-track (solid accent)",
+    "forecast end at risk (solid var(--risk))",
+    "dimmed 0.25"
+   ]
+  },
+  {
+   "name": "ProjectBar",
+   "description": "Row: flex, align-items center, gap 6px. It has a native title tooltip '{p.name} · {h}h' (e.g. 'Returns pipeline automation · 3.5h'). The bar is 4px tall, radius 1px, width (h/8*62)%: 8h gives 62% and 1h gives 7.75%. Bar colour is the domain accent, or var(--overload) if the whole day is over capacity. Label '{p.short} {h}h' at 10px muted with ellipsis. Hover calls setHover(projectId). Opacity transition 140ms ease-out.",
+   "states": [
+    "normal",
+    "overload (red)",
+    "dimmed 0.25"
+   ]
+  },
+  {
+   "name": "CellLoadMeter",
+   "description": "Flex row (gap 6px, margin-top 4px). Meter: flex:1, height 5px, gap 1px, radius 1px. One segment per load item in item order (BAU first, then projects in project order), width calc(h/cap*100% - 1px), where cap = max(total, 8). BAU segments are solid domain accent. Project segments are the domain soft fill with a 1px inset accent line. If the day is over, every segment gets a var(--overload) fill and line. When free > 0 a trailing free segment is added: transparent with a 1px inset var(--hairline) line. Label '{total}h' in mono 10px, min-width 30px, right-aligned, var(--ink-muted) or var(--overload). No hover handlers on these segments.",
+   "states": [
+    "under capacity with free segment",
+    "exactly full (no free segment)",
+    "overloaded (all red, label red, remi-pulse once with 300ms delay)"
+   ]
+  },
+  {
+   "name": "DayPanel",
+   "description": "Right-side sheet: 440px wide, absolute top/right/bottom 0, z-index 5, padding 28px 32px, paper bg, 1px hairline left border, shadow -24px 0 48px -36px (35% ink). Scrolls internally (overflow:auto). Slides from translateX(104%) to 0 over 440ms with the spring; opacity 0→1 over 240ms ease-out. Contents: kicker, prev/next/close buttons, serif 32px day title, mono sub-line, capacity section, planned rows, 'Due this day' list, empty-state copy, bottom CTA. Content is inside sc-if(pn.on), so it unmounts as soon as the panel closes, and the slide-out animates an empty sheet.",
+   "states": [
+    "closed (off-screen, pointer-events none)",
+    "open on today",
+    "open on a future business day (shows task allocation and CTA)",
+    "open on a past business day (no tasks, no CTA)",
+    "open on a weekend (kicker 'Weekend', empty copy)",
+    "open on a bank holiday (kicker 'Bank holiday', holiday copy)",
+    "open on a business day with no items ('Nothing planned. A free day.')",
+    "overloaded day (red capacity, pulse with 200ms delay)"
+   ]
+  },
+  {
+   "name": "PanelCapacityBar",
+   "description": "Header row: 'Capacity' label on the left and a status value on the right (13px, muted or overload). The status reads '{total}h of 8h · {free}h free', or '{total}h planned · {total-8}h over' when overloaded. Bar: height 12px, flex, gap 2px, radius 3px. Segments: width calc(h/cap*100% - 2px), flex:none, radius 2px, overflow hidden, with transition width 440ms spring-soft and opacity 140ms ease-out. BAU segments are a transparent container holding ceil(h) child blocks (flex:1, radius 1.5px, gap 2px) in the solid domain accent, or overload red, so they read as per-hour ticks. Project segments are the domain soft bg with a 1px inset accent line; when overloaded they use bg color-mix(in oklch, var(--overload) 20%, var(--paper)) and an overload line. Free is transparent with a hairline inset line. BAU and project segments set hover (setHover(id)) and dim to 0.25 when another id is hovered. The free segment has op 1 and a no-op enter.",
+   "states": [
+    "normal",
+    "overloaded (pulse 600ms, delay 200ms)",
+    "segment dimmed via global hover"
+   ]
+  },
+  {
+   "name": "PanelPlanRow",
+   "description": "Grid with columns 48px and 1fr, column-gap 12px, padding 12px 0, hairline bottom border, under a 1px ink top rule on the container. Column 1: hours '{h}h' at 17px/500. Column 2: kind line 'BAU · Private Credit' / 'Project · Fixed Income' etc. (11px/600/0.08em uppercase, domain accent colour); name (15px/500, margin-top 3px). For BAU the name is the full routine name from model.routines, falling back to the item name (e.g. 'Germany · Build' for the rotation). For projects it is the full project name. Then task lines (13px muted, with mono 11px hours on the right, margin-top 5px). Project rows have cursor pointer and click calls model.openProject(p.id); BAU rows have cursor default and click does nothing. Hover calls setHover(i.id); opacity dims to 0.25 when another id is hovered.",
+   "states": [
+    "BAU row (not clickable)",
+    "project row (clickable → workspace)",
+    "with task lines (future/today)",
+    "without task lines (past day or BAU)",
+    "dimmed"
+   ]
+  },
+  {
+   "name": "PanelDueList",
+   "description": "Label 'Due this day' followed by rows with min-height 36px, hairline bottom border, 14px text, gap 10px, and an 8x8 diamond. Rows are: milestones '{milestone} · {p.short}' (filled if the day is before TODAY, else hollow); forecast ends '{p.short} · {endName lowercased} (forecast)' (risk colour if at risk, else accent, solid); targets '{p.short} · target' (ink border, paper fill); and on the move date 'Move to Fixed Income' (fi-accent border and fill). No hover handlers.",
+   "states": [
+    "hidden when empty (sc-if on ms.length)",
+    "listed"
+   ]
+  },
+  {
+   "name": "OpenInTodayButton",
+   "description": "Full-width 40px button: ink bg, paper text, 14px/600, radius 6px, no border. Copy 'Open the day’s plan in Today' (typographic apostrophe). Shown only when the day is a business day and on or after TODAY. Click calls model.previewDay(sel). The shell then sets dayReq={n, t:Date.now()} and screen='today', and Today picks that day.",
+   "states": [
+    "visible",
+    "hidden"
+   ]
+  }
+ ],
+ "dataConsumed": [
+  "props.model: the whole app model built by Remi.dc.html buildModel(). Calendar returns {} (renders nothing bound) if model is missing.",
+  "model.CAL.days: Record<number, Day>, keyed by integer day number n = Math.round(Date.UTC(y,m,d)/86400000) (days since the Unix epoch, UTC). Day = { n, iso:'YYYY-MM-DD', w:0..6 (0=Sunday), m:0..11, d:1..31, y, bd:boolean (weekday and not a holiday), bdm:number|null (1-based business-day ordinal within the calendar month; resets each month), hol:string|null (holiday name) }. Coverage is only 2026-08-31 to 2027-04-30.",
+  "model.CAL.bds: number[], all business-day numbers in ascending order.",
+  "model.CAL.bdDiff(a,b): number, business-day index difference idx[nextBD(b)] - idx[nextBD(a)]. nextBD rolls a non-business day forward to the next business day.",
+  "model.F.dn(iso) → day number; model.F.l(n) → long label 'Wednesday 14 October' (full weekday, date, full month, no year).",
+  "model.TODAY: number (sample: dn('2026-10-05'), Mon 5 Oct 2026, BD3).",
+  "model.MOVE: number (sample: dn('2027-01-04'), the move to Fixed Income).",
+  "model.loads: Record<businessDayN, DayLoad>. DayLoad = { n, items: Item[], bau:number, proj:number, total:number, free:number = max(0, 8 - total), over:boolean = total > 8 }. Item = { id:string (routine id, 'rot', or project id), pid, kind:'bau'|'proj', domain:'pc'|'fi', h:number hours, name:string (routine short, 'Country · Pass', or project short) }. Only business days have entries.",
+  "model.P: Project[] (derived). Fields used: id, name, short, accent ('var(--pc-accent)'|'var(--fi-accent)'), status ('risk'|'on'|'define'), endName (e.g. 'Handover-ready', 'Signed off', 'Day one', 'v0 tested', 'Done'), forecastN (number|null), targetN (number), milestones: {name, date:'YYYY-MM-DD'}[] (derived: Now/Next items with a due date plus explicit milestones not already present by name or date, sorted by date), now: {m, due, tasks:{id, t:string, h:number}[]}[].",
+  "model.pmap: Record<projectId, Project>.",
+  "model.routines: derived routines array; only id and name are read (the full routine name for BAU rows in the panel).",
+  "model.tasks: Record<taskId, boolean>, task done flags. Done tasks are excluded from the task allocation for future days.",
+  "model.hover: string|null, the globally hovered entity id (shared across screens).",
+  "model.setHover(id|null): sets the global hover.",
+  "model.reduced: boolean, true only when the shell's motion tweak prop === 'Reduced'. It does NOT include OS prefers-reduced-motion.",
+  "model.screen: current screen id; Escape closes the panel only when this is 'calendar'.",
+  "model.openProject(projectId): navigates to the project workspace (called without viaCard, so there is no view transition).",
+  "model.previewDay(n): shell sets dayReq {n, t: Date.now()} and switches to screen 'today' (non-instant)."
+ ],
+ "interactions": [
+  "Click the prev chevron: go(mi - 1), clamped to 0..3. No-op at the first month, though the button is still clickable at opacity 0.35.",
+  "Click the next chevron: go(mi + 1), clamped. No-op at the last month (Jan 2027).",
+  "Click 'This month': go(0), which always jumps to October 2026 (the hard-coded first month, assumed to hold TODAY). No-op if already there.",
+  "Click an in-month cell (business day, weekend or holiday): toggles the selection. It opens the DayPanel for that day, or closes it if that day is already selected. The selected cell gets a 1.5px inset ink ring.",
+  "Click an out-of-month cell: nothing (cursor default).",
+  "Hover any cell: background tint 3% ink over paper (!important, so it also replaces the 3.5% weekend/holiday tint and applies to out-of-month cells).",
+  "Hover a BAU chip: setHover(routine id, e.g. 'r-ret', or 'rot'). Mouse leave: setHover(null). Items with other ids across the calendar (and other screens using model.hover) dim to opacity 0.25.",
+  "Hover a milestone or forecast diamond line in a cell: setHover(project id). Leave: setHover(null).",
+  "Hover a project bar: setHover(project id); the native title tooltip shows '{project name} · {h}h'. Leave: setHover(null).",
+  "Hover a panel capacity segment (BAU or project): setHover(item id). The free segment does nothing. Leave: setHover(null).",
+  "Hover a panel plan row: setHover(item id). Leave: setHover(null).",
+  "Click a panel project row: model.openProject(p.id), which leaves Calendar for the workspace. BAU rows do nothing.",
+  "Panel prev ('Previous day') / next ('Next day'): step to the previous/next BUSINESS day, skipping weekends and holidays. If that day's month is one of the four displayed months, set sel to it and switch the displayed month instantly (no fade animation). If it is outside the range (e.g. before 1 Oct 2026, where Sep 30 is valid CAL data but September isn't displayed), or beyond the CAL data, nothing happens. Stepping from a weekend goes to the adjacent business day.",
+  "Panel close (X) button: sel = null, the panel slides out.",
+  "Escape key (window keydown): if a day is selected and model.screen === 'calendar', close the panel. Quirk: the shell's own Escape handler (closes the palette or drawer) also fires on the same keypress.",
+  "'Open the day’s plan in Today' button: model.previewDay(sel). The app switches to Today, which previews that day. Calendar's sel persists, so the panel is still open when you come back to Calendar.",
+  "Month navigation while the panel is open: the panel stays open showing the selected day even if it is not in the newly displayed month."
+ ],
+ "motion": [
+  "Tokens (from Remi.dc.html :root): --dur-fast 140ms; --dur-base 240ms; --dur-slow 440ms; --ease-out cubic-bezier(0.23, 1, 0.32, 1); --spring-soft linear(0, 0.049 5%, 0.156 10%, 0.283 15%, 0.408 20%, 0.522 25%, 0.62 30%, 0.702 35%, 0.769 40%, 0.864 50%, 0.922 60%, 0.956 70%, 0.976 80%, 0.987 90%, 1). Under :root[data-motion=\"reduced\"] or @media (prefers-reduced-motion: reduce), --spring-soft becomes steps(1, jump-start), so every spring transition becomes an instant jump.",
+  "Month change (go): setState {fade:true, dir: +1 forward / -1 back}. The grid goes to opacity 0 (transition 140ms ease-out) and transform translateX(dir * -10px), i.e. -10px when going forward and +10px when going back (transition 240ms spring-soft). After a setTimeout of 130ms: setState {mi:newIndex, fade:false}. The new month renders and animates back to opacity 1 (140ms ease-out) and transform none (240ms spring-soft). The outgoing grid drifts 10px toward the travel direction's opposite side, and the new grid springs back from that offset. With model.reduced there is no transform (gridT 'none'), only the opacity dip. The timeout is not cancelled on unmount and not debounced.",
+  "Panel open/close: transform translateX(104%) ↔ translateX(0) over var(--dur-slow)=440ms with var(--spring-soft). Opacity 0 ↔ 1 over var(--dur-base)=240ms var(--ease-out). pointer-events toggles none/auto instantly. Content unmounts immediately on close.",
+  "Cell selection ring: box-shadow inset 0 0 0 0px → 1.5px var(--ink), transition 140ms ease-out. Cell background (hover) transition 140ms ease-out.",
+  "Hover dimming: chips, diamonds, bars, panel segments and panel rows transition opacity (1 ↔ 0.25) over 140ms ease-out.",
+  "Panel capacity segments: width transition 440ms spring-soft (animates when the day changes via prev/next, because segment elements are reused by index), plus opacity 140ms ease-out.",
+  "Overload pulse, cell meter: animation 'remi-pulse 600ms var(--ease-out) 1 300ms' (one iteration, 300ms delay) on the 5px meter container when l.over && !model.reduced, else 'none'.",
+  "Overload pulse, panel capacity bar: 'remi-pulse 600ms var(--ease-out) 1 200ms' (200ms delay) when over && !reduced.",
+  "@keyframes remi-pulse { 0% { box-shadow: 0 0 0 0 color-mix(in oklch, var(--overload) 50%, transparent); } 100% { box-shadow: 0 0 0 7px color-mix(in oklch, var(--overload) 0%, transparent); } }. This is an expanding red halo ring that fades out. It replays whenever an element's animation value changes from 'none' to the pulse string (e.g. navigating to November, where the Nov 4 cell index gets the pulse).",
+  "Screen enter/exit (shell section wrapper): entering screen 'opacity var(--dur-base) var(--ease-out) 60ms, visibility 0s linear 0s'; leaving 'opacity var(--dur-fast) var(--ease-out), visibility 0s linear var(--dur-fast)'.",
+  "Reduced-motion fallback: model.reduced (tweak only) removes the grid slide and the pulses. The CSS token swap handles the spring durations for both the tweak and the OS preference. Opacity fades still run in reduced mode."
+ ],
+ "algorithms": [
+  "Day numbering: n = Math.round(Date.UTC(y, m, d) / 86400000). All date math is on integer UTC day indices.",
+  "Business-day calendar (built in the shell, consumed here): for every day in the range, bd = (w between 1 and 5) && !holiday. bdm = running count of business days within the calendar month, reset at month change. bds = ordered list of business days; idx[n] = position in bds. nextBD(n) = first business day on or after n. addBD(n,k) = bds[clamp(idx[nextBD(n)] + k)]. bdDiff(a,b) = idx[nextBD(b)] - idx[nextBD(a)]. Sample holidays: 2026-12-25 'Christmas Day', 2026-12-28 'Boxing Day (substitute)', 2027-01-01 \"New Year's Day\", 2027-03-26 'Good Friday', 2027-03-29 'Easter Monday'.",
+  "Displayed months: MONTHS = [[2026,9],[2026,10],[2026,11],[2027,0]] (0-based months: Oct 2026, Nov 2026, Dec 2026, Jan 2027). State mi indexes this list and starts at 0.",
+  "Grid range for month (y, mo): first = dn(y, mo, 1); w0 = (days[first].w + 6) % 7 (Monday-based weekday 0..6); start = first - w0. lastDay = dn(y, mo+1, 0); end = lastDay + (6 - (days[lastDay].w + 6) % 7). Cells run over every n from start to end inclusive (always a multiple of 7). Rows = cells/7: Oct 2026 = 35 cells (Mon 28 Sep to Sun 1 Nov); Nov 2026 = 42 cells (Mon 26 Oct to Sun 6 Dec, 6 rows); Dec 2026 = 35 (Mon 30 Nov to Sun 3 Jan); Jan 2027 = 35 (Mon 28 Dec to Sun 31 Jan).",
+  "Per cell: inM = days[n].m === mo (compares month only, not year); wkend = w===0||w===6; today = n===TODAY; l = d.bd ? loads[n] : null. Content (chips, ms, bars, load) is built only when l && inM.",
+  "BAU chips: l.items filtered to kind==='bau', in order. Label = name + ' · ' + h + 'h'. accent = domain accent; bg = domain soft; op = hover && hover !== id ? 0.25 : 1.",
+  "Cell milestones: for each project p (in P order), then each milestone x in p.milestones: if F.dn(x.date) === n, push {name:x.name, accent:p.accent, fill: n < TODAY ? p.accent : 'var(--paper)'}. Then for each p with p.forecastN === n, push {name: p.short + ' · ' + p.endName.toLowerCase(), accent/fill: p.status==='risk' ? 'var(--risk)' : p.accent}. Target dates and the move date are NOT shown in cells.",
+  "Project bars: l.items filtered to kind==='proj'. width = (h / 8 * 62) + '%' (a full 8h day is 62% of the cell's inner width). colour = l.over ? var(--overload) : domain accent. label = pmap[id].short + ' ' + h + 'h'. title = pmap[id].name + ' · ' + h + 'h'.",
+  "Cell load meter: cap = max(l.total, 8). For each item i: width 'calc(' + (i.h/cap*100) + '% - 1px)'. bg = over ? overload : (bau ? accent : soft). line = over ? overload : accent. If l.free > 0, append the free segment {width calc(free/cap*100% - 1px), bg transparent, line var(--hairline)}. label = total + 'h'. fg = over ? overload : ink-muted.",
+  "Month sub-line: nBD = count of CAL.bds whose day has m===mo && y===y. overN = count of those with loads[n].over. Text: nBD + ' business days' + (overN ? ' · ' + overN + ' overloaded' : ''). Sample values: Oct 22; Nov 21 with 1 overloaded (Wed 4 Nov BD3: Returns BAU 6h + Returns pipeline override 3.5h = 9.5h); Dec 21 (holidays 25 and 28 Dec); Jan 20 (holiday 1 Jan).",
+  "Panel kicker: sel===TODAY → 'Today'. Non-business day → d.hol ? 'Bank holiday' : 'Weekend'. Otherwise ahead = CAL.bdDiff(TODAY, sel): if sel < TODAY → abs(ahead) + ' business day' + (abs===1 ? '' : 's') + ' ago'; ahead===1 → 'Tomorrow' (counted in business days, so Monday is 'Tomorrow' from a Friday); else ahead + ' business days ahead'.",
+  "Panel title: F.l(sel) = WDL[w] + ' ' + d + ' ' + MOL[m], e.g. 'Wednesday 14 October'. Sub: business day → 'BD' + bdm + ' of ' + MOL[m] + (sel >= MOVE ? ' · Fixed Income' : ''). Holiday → the holiday name. Weekend → 'Not a business day'.",
+  "Panel due list (computed for any selected day, including non-business days): for each project in P order: (a) milestones with F.dn(date)===sel → name x.name + ' · ' + p.short, accent p.accent, fill sel<TODAY ? accent : paper; (b) forecastN===sel → p.short + ' · ' + endName.toLowerCase() + ' (forecast)', risk colour if status==='risk' else accent, solid; (c) targetN===sel → p.short + ' · target', accent var(--ink), fill var(--paper). Then if sel===MOVE, push 'Move to Fixed Income' (accent and fill var(--fi-accent)).",
+  "Panel capacity: cap = max(total, 8). BAU segment: width calc(h/cap*100% - 2px), transparent container, cells = Array(Math.ceil(h)).fill(over ? overload : accent), i.e. one block per started hour. Project segment: same width; bg = over ? color-mix(in oklch, var(--overload) 20%, var(--paper)) : soft; line = over ? overload : accent. Free: width calc(free/cap*100% - 2px), transparent, hairline line. Label: over ? total + 'h planned · ' + (total - 8) + 'h over' : total + 'h of 8h · ' + free + 'h free'.",
+  "Panel task allocation, which pours a project's Now tasks into its planned daily hours. It applies only to project rows and only when sel >= TODAY. Steps: off = sum over business days n with TODAY <= n < sel of the hours of loads[n]'s item for this project (kind 'proj'). candidates = p.now.flatMap(m => m.tasks), filtered by (sel === TODAY || !model.tasks[t.id]), so done tasks are dropped for future days but kept for today. Walk candidates in order with cum starting at 0: a0 = cum; a1 = cum + (+t.h || 0); cum = a1. Include the task when a1 > off + 0.01 && a0 < off + i.h - 0.01, i.e. its hour window overlaps this day's window [off, off + i.h]. Output {t: t.t, hl: t.h + 'h'}. Nothing is shown for past days.",
+  "Panel step(k): n = sel + k; while days[n] exists and !days[n].bd, n += k. If days[n] exists: mi = MONTHS.findIndex(([yy, mm]) => yy === dd.y && mm === dd.m); if mi >= 0, setState({sel: n, mi}). No fade is applied.",
+  "Empty-state copy: non-business day → hol ? hol + '. Nothing is planned, and business-day numbers skip it.' : 'Weekend. Nothing is planned.'. Business day with zero items → 'Nothing planned. A free day.'. Otherwise null.",
+  "canOpen = d.bd && sel >= TODAY.",
+  "Hover opacity: op(id) = hover && hover !== id ? 0.25 : 1.",
+  "Day load (shell dayLoad, which feeds loads): for a non-business day, return null. BAU: if n < MOVE, then for each routine with stage < 3 that occurs on the day, add {id: r.id, kind: 'bau', domain: 'pc' (HARD-CODED), h: r.h, name: r.short || r.name || 'Untitled routine'}. A routine occurs when: daily → any business day; weekly → d.w === r.wd; monthly (default) → d.bdm === r.bd. If n >= MOVE, add the FI rotation segment active that day as {id: 'rot', kind: 'bau', domain: 'fi', h: 4, name: country + ' · ' + pass}. The rotation runs sequentially from MOVE, each country lasting len business days: DE 6 Build, FR 5 Build, IT 6 Build, ES 5 Build, NL 4, BE 4, AT 4, PT 4, IE 4, FI 4 Build, then DE 3 Refresh. Projects (in P order): active if startN <= n <= (forecastN ?? targetN). h = p.ov[iso] if set, else if n >= MOVE then p.rateAfter, else if bdm === 3 then p.bd3, else if bdm === 8 then p.bd8, else p.rate. Include the project only if h > 0. total = bau + proj; free = max(0, 8 - total); over = total > 8.",
+  "Sample outcomes (for verifying a rebuild): an ordinary Oct/Nov business day has Returns pipeline 3.5h, ManCo automation 1.5h, Handover playbook 1h and FI onboarding 1h, total 7h with 1h free. Mon 5 Oct (TODAY, BD3): chip 'Returns · 6h' plus bar 'ManCo automation 2h', total 8h. Mon 12 Oct (BD8): chip 'ManCo pack · 4h' plus bars Returns pipeline 2h, ManCo automation 1.5h and Handover playbook 0.5h, total 8h. Wed 4 Nov (BD3) is overloaded at 9.5h. Thu 15 Oct has the milestone 'Security-level data feed connected'. Fri 16 Oct has four: 'Fund-level engine reconciles', 'Performance section builds itself', 'Returns runbook outline' and 'Data entitlements requested'. The forecast marker 'Returns pipeline · handover-ready' on Wed 2 Dec is in the risk colour (forecast is 3 BD after the 27 Nov target). Mon 4 Jan: chip 'Germany · Build · 4h', FI onboarding 1h, Alpha engine 3h, total 8h, and the panel shows 'Move to Fixed Income'."
+ ],
+ "backendImplications": [
+  "Business-day calendar service: generate days for an arbitrary range (not a hard-coded Aug 2026–Apr 2027 window) with weekday, per-month business-day ordinal (bdm), holiday name and business-day flag. The holiday set comes from Settings.holidayCalendar ('england-wales' | 'south-africa'), plus user leave (SPEC). Expose bdDiff/addBD/nextBD as utils (core/utils) and unit-test them.",
+  "Settings entity: hoursPerDay (capacity, currently hard-coded 8), holidayCalendar, leave dates, fiStartDate/move date (currently 2027-01-04), and the timezone convention (the prototype uses UTC day indices).",
+  "Month calendar endpoint, e.g. GET /api/calendar/months/{yyyy-mm}. It should return the Monday–Sunday padded day range, and for each day: iso, weekday, inMonth, isBusinessDay, bdm, holiday, isToday, and a load (items [{id, kind: bau|proj, domain: pc|fi, hours, name, shortName}], bauHours, projHours, total, free, over). It should also return milestones on the day (project milestone name, project id, domain, past or future), forecast ends (project id, short name, endName, status) and targets, plus month summary counts (businessDays, overloadedDays). The frontend could compute presentation, but loads and flags should come from the engine service (capacity/expandRoutines/flags per SPEC).",
+  "Day detail endpoint, e.g. GET /api/calendar/days/{iso}. Returns: kicker data (business-day distance from today, relative label), load items with full routine or project names, due list including targets and the move-date marker, the per-project task allocation (the pour of Now tasks into planned hours, excluding completed tasks for future days), and canOpenInToday.",
+  "Day-load computation belongs in services (a capacity/allocation service). It covers BAU expansion from routine rules (daily, weekly on weekday, monthly on the Nth business day; stage < 3 only; only before the move), FI rotation after the move (sequential country segments with len BDs and 4h/day; these constants should become data), and project allocation (per-date overrides, then rateAfter after the move, then the bd3/bd8 special rates, then the base rate, active between start and forecast-or-target). Replace the hard-coded bd3/bd8 hooks with a general mechanism, e.g. per-routine-day project rate overrides.",
+  "The routine domain is hard-coded to 'pc' in dayLoad. The backend Routine entity needs a real domain field, and it should drive chip colour.",
+  "Repositories: projects (with milestones, now/next plan items and tasks with hours and done flags), routines, rotation segments, holidays, settings, task completion events. The prototype's 'milestones' are derived (Now/Next due items plus explicit milestones, deduped by name and date, sorted), so implement that derivation in a service.",
+  "Project status: 'risk' when bdDiff(target, forecast) > 0, 'define' when there is no forecast, else 'on'. Must be computed server-side and returned for calendar markers.",
+  "Actions the calendar triggers are navigation only (open project, preview day in Today). There are no mutations, so the Calendar needs read-only GET endpoints. Global hover and panel selection are purely client state."
+ ],
+ "risksAndQuirks": [
+  "MONTHS is hard-coded to Oct 2026–Jan 2027, and 'This month' is hard-coded to index 0 (October 2026) rather than derived from TODAY. Production needs an open-ended month range, with 'This month' computed from the current date and bounds from settings or data.",
+  "CAL only covers 2026-08-31..2027-04-30. Building a cell for any day outside it would crash (d.w on undefined, since inM guards `d &&` but wkend doesn't).",
+  "Capacity 8h is hard-coded in the Calendar in several places: bar width h/8*62, cap = Math.max(total, 8), label 'of 8h', overage 'total - 8'. It should use settings.hoursPerDay. The 62% maximum bar width is a magic constant.",
+  "TODAY is a fixed date (2026-10-05), and so are MOVE (2027-01-04) and DEC_RUN. The shell header ('Mon 5 Oct · BD3', '61 business days') is hard-coded too.",
+  "inM compares month only, not year. That works for a 4-month range but is wrong for any range longer than 12 months.",
+  "Cells show chips, milestones, bars and the meter ONLY for in-month business days. Milestones dated on weekends or holidays appear only in the day panel. Out-of-month days show no content even if they are in-range business days. Target markers and the 'Move to Fixed Income' marker appear only in the panel, never in cells.",
+  "The cell hover background is applied with !important through the dc runtime's style-hover generator. On hover it replaces the weekend/holiday 3.5% tint with a lighter 3% tint, and it also applies to non-clickable out-of-month cells.",
+  "Escape handling duplicates the shell's: one keypress can close the command palette or check-in drawer and the Calendar panel together.",
+  "model.reduced only reflects the motion tweak prop, not OS prefers-reduced-motion. With the OS setting on and the tweak set to 'Full', the grid slide and overload pulses still play (spring transitions do collapse via the CSS token).",
+  "Month-change setTimeout (130ms) is neither cleared nor debounced. Clicking next twice within 130ms still only advances one month, because mi hasn't updated when the second click computes mi+1. The timer can also fire after unmount.",
+  "Panel prev/next (step) switches the displayed month instantly, without the fade used by header navigation. It silently does nothing when the target business day falls in an undisplayed month (e.g. from Thu 1 Oct back to Wed 30 Sep).",
+  "Header month navigation doesn't clear the panel selection. The panel can show a day from another month while no ring is visible on the grid.",
+  "Panel content is wrapped in sc-if(pn.on), so it unmounts immediately on close and the 440ms slide-out animates an empty sheet. A production rebuild should keep the last content mounted during the exit animation (e.g. AnimatePresence).",
+  "Global hover ids differ by entity: BAU chips use the routine id ('r-ret'), and bars and milestones use the project id ('ret'). Hovering the Returns BAU chip therefore dims the Returns pipeline project items. Cell load-meter segments have no hover, and neither do panel due-list rows.",
+  "The panel task allocation includes done tasks when sel === TODAY but excludes them for future days. This inconsistency may be intentional so today's list stays stable. A task with a missing h is treated as 0 hours, and its label renders 'undefinedh'.",
+  "Task allocation counts the project's planned hours from TODAY inclusive, so hours already worked today aren't accounted for. It only draws from the 'now' horizon tasks. Once those run out, later days show no tasks.",
+  "'Tomorrow' is computed in business days (bdDiff===1), so on a Friday the next Monday is labelled 'Tomorrow'.",
+  "The panel's due list includes non-business-day items, but panel titles and sub-lines have no year. Titles have no year either (F.l), which will be ambiguous across years.",
+  "A fixed 440px panel with no scrim covers the weekend columns and part of Friday. Content under it cannot be clicked, but the rest of the grid can, and clicking another visible day switches the panel content.",
+  "Routine domain is hard-coded to 'pc' in dayLoad, and the FI rotation BAU (4h/day, fixed country order and lengths) is hard-coded. Both depend on open questions (SPEC §10).",
+  "BAU rows in the panel look up names from model.routines by id. The rotation id 'rot' isn't a routine, so it falls back to the item name 'Germany · Build'.",
+  "sc-for keys are array indices. Pulse animations and panel width transitions depend on element reuse by index, so a keyed React rebuild must preserve the intended replays (pulse when a cell first becomes overloaded or is first shown; animated widths when stepping days).",
+  "Brand colours and fonts are placeholders pending Ninety One brand values. The accents can be overridden at runtime by the tweak prop (default #526e2a PC / #47619c FI).",
+  "Screenshots in /screenshots (01-cal.png, 02-cal.png, 01-cal2.png, cal-dbg.png) predate the current shell: they show a 'Check in' header button rather than 'Tell Remi'. The calendar grid itself matches the current code."
+ ],
+ "copyText": [
+  "Calendar",
+  "{Month} {Year} e.g. 'October 2026'",
+  "'{n} business days' / '{n} business days · {k} overloaded'",
+  "Legend: 'BAU' (mini chip) + 'chip', 'project hours', 'milestone'",
+  "This month",
+  "Weekday heads: Mon, Tue, Wed, Thu, Fri, Sat, Sun",
+  "Cell BD label: 'BD3'",
+  "Chip: 'Returns · 6h', 'ManCo pack · 4h', 'Germany · Build · 4h'",
+  "Bar label: 'Returns pipeline 3.5h'; tooltip 'Returns pipeline automation · 3.5h'",
+  "Cell forecast marker: 'Returns pipeline · handover-ready'",
+  "Load label: '7h'",
+  "Panel kickers: 'Today', 'Weekend', 'Bank holiday', 'Tomorrow', '{n} business days ahead', '1 business day ago', '{n} business days ago'",
+  "Panel button titles: 'Previous day', 'Next day', 'Close'",
+  "Panel title: 'Wednesday 14 October'",
+  "Panel sub: 'BD10 of October', 'BD1 of January · Fixed Income', 'Not a business day', or the holiday name e.g. 'Christmas Day'",
+  "Capacity",
+  "'7h of 8h · 1h free' / '9.5h planned · 1.5h over'",
+  "Row kind: 'BAU · Private Credit', 'BAU · Fixed Income', 'Project · Private Credit', 'Project · Fixed Income'",
+  "Due this day",
+  "Due items: '{milestone} · {project short}', '{short} · {endName lowercased} (forecast)', '{short} · target', 'Move to Fixed Income'",
+  "Empty: 'Weekend. Nothing is planned.'",
+  "Empty: '{Holiday}. Nothing is planned, and business-day numbers skip it.' e.g. 'Christmas Day. Nothing is planned, and business-day numbers skip it.'",
+  "Empty: 'Nothing planned. A free day.'",
+  "CTA: 'Open the day’s plan in Today' (typographic right single quote)"
+ ],
+ "localState": [
+  "mi: number (0..3), index into MONTHS, i.e. the displayed month. Initial 0 (Oct 2026). Drives the grid range, month label, sub-line counts and prev/next opacity.",
+  "fade: boolean. True for 130ms during a month switch. Drives gridO (0/1) and gridT (translateX(dir*-10px) unless reduced).",
+  "dir: 1 | -1 (set in go(), not in the initial state). Direction of the month switch, used for the translate sign.",
+  "sel: number | null. Selected day number. Drives the cell ring, the panel open state and the panel contents. Toggled by cell click, changed by panel prev/next, cleared by close or Escape. Persists while the user is on other screens (the component stays mounted).",
+  "onKey: instance field holding the keydown handler (Escape closes the panel).",
+  "Global (shell-owned, read via model): hover id, used for cross-item dimming."
+ ],
+ "persistence": [
+  "The Calendar has no persistence of its own. mi, sel and fade are ephemeral and reset on reload.",
+  "The data behind it (projects, routines, tasks done flags, etc.) is persisted by the shell to localStorage key 'remi.v1' as {projects, tasks, feed, funds, routines, doneOn, bauDone, notes, m2:true}, debounced 250ms after state changes. Hover is not persisted."
+ ],
+ "externalCalls": [
+  "Google Fonts (loaded by the shell): Albert Sans (UI), Libre Caslon Text (display: month title and panel title), JetBrains Mono (numeric: sub-line, BD labels, load labels, task hours). Material Symbols Outlined icon font with icons chevron_left, chevron_right, close (display=block).",
+  "No fetches, AI calls or iframes in this file."
+ ],
+ "actionsInvoked": [
+  "model.setHover(id) on mouse enter of BAU chips, cell milestone lines, project bars, panel capacity segments and panel rows; model.setHover(null) on mouse leave. Sets the shell's global hover id; items elsewhere dim to 0.25.",
+  "model.openProject(projectId) on click of a project row in the day panel. The shell closes the palette and sets screen='workspace', ws=id (no view transition because viaCard is undefined).",
+  "model.previewDay(n) from the 'Open the day’s plan in Today' button. The shell sets dayReq={n, t: Date.now()}, screen='today', instant=false, and Today.componentDidUpdate picks up the new request and previews that day."
+ ],
+ "sampleData": "[\"The Calendar has no seed data of its own apart from the MONTHS constant [[2026,9],[2026,10],[2026,11],[2027,0]] and the MOL month-name list. It consumes the shell sample data:\",\"TODAY = 2026-10-05 and MOVE = 2027-01-04. Holidays: 2026-12-25 Christmas Day, 2026-12-28 Boxing Day (substitute), 2027-01-01 New Year's Day, 2027-03-26 Good Friday, 2027-03-29 Easter Monday.\",\"Routines: r-ret 'Fund & security-level returns' (short 'Returns'), BD3 monthly, 6h. r-man 'Managing Committee pack' (short 'ManCo pack'), BD8 monthly, 4h. Both are stage 1 and PC.\",\"Projects, in P order. For each: rate / bd3 / bd8 / rateAfter hours, start → target / forecast, and endName.\",\"ret 'Returns pipeline automation' / 'Returns pipeline': 3.5 / 0 / 2 / 0, override 2026-11-04 = 3.5. 2026-09-14 → target 11-27 / forecast 12-02 (risk). endName 'Handover-ready'.\",\"manco 'ManCo pack automation' / 'ManCo automation': 1.5 / 2 / 1.5 / 0, override 11-04 = 0. 09-21 → 12-11 / 12-11. 'Handover-ready'.\",\"play 'PC handover playbook' / 'Handover playbook': 1 / 0 / 0.5 / 0. 09-28 → 12-18. 'Signed off'.\",\"fion 'FI onboarding & data access' / 'FI onboarding': 1 / 0 / 0 / rateAfter 1. 09-21 → 2027-01-04. 'Day one'.\",\"alpha 'Alpha engine v0' / 'Alpha engine': 2 / 0 / 0 / 3. Start 12-03, target 2027-03-25, no forecast (status 'define'; its allocation runs to targetN).\",\"Derived milestones: ret (10-15 'Security-level data feed connected', 10-16 'Fund-level engine reconciles', 11-04 'Parallel run on November BD3', 11-20 'Security-level attribution', 11-27 'Runbook drafted'); manco (10-16 'Performance section builds itself', 11-11 'First self-built pack, November BD8', 11-27 'Exposure and pipeline sections'); play (10-16 'Returns runbook outline', 11-06 'Returns runbook', 11-27 'ManCo runbook', 12-03 'Successor runs December BD3 alone'); fion (10-16 'Data entitlements requested', 10-30 'Curve & auction data feeds', 11-26 'Sovereign model walkthrough', 12-17 'Day-one dry run').\",\"Now tasks with hours: ret-1 0.5 (done), ret-2 4, ret-3 3, ret-4 4, ret-5 3; man-0 0.5, man-1 0.75, man-2 0.75, man-3 0.5, man-4 3; pl-1 2, pl-2 1.5; fi-1 1 (done), fi-2 1.5.\",\"FI rotation from 4 Jan 2027 at 4h/day: Germany Build 6 BD, France 5, Italy 6, Spain 5, Netherlands 4, Belgium 4, Austria 4, Portugal 4, Ireland 4, Finland 4 (all Build), then Germany Refresh 3.\"]"
+}

@@ -1,0 +1,639 @@
+{
+  "about": "Workspace.dc.html refit() via its commit path: forecast after a rate edit or a work-left edit.",
+  "projects": {
+    "ret": {
+      "rate": 3.5,
+      "workLeft": 144,
+      "forecast": "2026-12-02",
+      "rateEdits": [
+        {
+          "rate": 0.5,
+          "result": {
+            "rate": 0.5,
+            "bd3": 0,
+            "bd8": 0.2857142857142857,
+            "rateAfter": 0,
+            "ov": {
+              "2026-11-04": 0.5
+            },
+            "forecast": "2027-04-30",
+            "prev": "2026-12-02"
+          }
+        },
+        {
+          "rate": 1,
+          "result": {
+            "rate": 1,
+            "bd3": 0,
+            "bd8": 0.5714285714285714,
+            "rateAfter": 0,
+            "ov": {
+              "2026-11-04": 1
+            },
+            "forecast": "2027-04-30",
+            "prev": "2026-12-02"
+          }
+        },
+        {
+          "rate": 1.5,
+          "result": {
+            "rate": 1.5,
+            "bd3": 0,
+            "bd8": 0.8571428571428571,
+            "rateAfter": 0,
+            "ov": {
+              "2026-11-04": 1.5
+            },
+            "forecast": "2027-04-30",
+            "prev": "2026-12-02"
+          }
+        },
+        {
+          "rate": 2,
+          "result": {
+            "rate": 2,
+            "bd3": 0,
+            "bd8": 1.1428571428571428,
+            "rateAfter": 0,
+            "ov": {
+              "2026-11-04": 2
+            },
+            "forecast": "2027-04-30",
+            "prev": "2026-12-02"
+          }
+        },
+        {
+          "rate": 3,
+          "result": {
+            "rate": 3,
+            "bd3": 0,
+            "bd8": 1.7142857142857142,
+            "rateAfter": 0,
+            "ov": {
+              "2026-11-04": 3
+            },
+            "forecast": "2026-12-15",
+            "prev": "2026-12-02"
+          }
+        },
+        {
+          "rate": 4,
+          "result": {
+            "rate": 4,
+            "bd3": 0,
+            "bd8": 2.2857142857142856,
+            "rateAfter": 0,
+            "ov": {
+              "2026-11-04": 4
+            },
+            "forecast": "2026-11-25",
+            "prev": "2026-12-02"
+          }
+        },
+        {
+          "rate": 6,
+          "result": {
+            "rate": 6,
+            "bd3": 0,
+            "bd8": 3.4285714285714284,
+            "rateAfter": 0,
+            "ov": {
+              "2026-11-04": 6
+            },
+            "forecast": "2026-11-09",
+            "prev": "2026-12-02"
+          }
+        },
+        {
+          "rate": 8,
+          "result": {
+            "rate": 8,
+            "bd3": 0,
+            "bd8": 4.571428571428571,
+            "rateAfter": 0,
+            "ov": {
+              "2026-11-04": 8
+            },
+            "forecast": "2026-10-30",
+            "prev": "2026-12-02"
+          }
+        }
+      ],
+      "workLeftEdits": [
+        {
+          "workLeft": 0,
+          "result": {
+            "rate": 3.5,
+            "bd3": 0,
+            "bd8": 2,
+            "rateAfter": 0,
+            "ov": {
+              "2026-11-04": 3.5
+            },
+            "forecast": "2026-10-05",
+            "prev": "2026-12-02"
+          }
+        },
+        {
+          "workLeft": 138,
+          "result": {
+            "rate": 3.5,
+            "bd3": 0,
+            "bd8": 2,
+            "rateAfter": 0,
+            "ov": {
+              "2026-11-04": 3.5
+            },
+            "forecast": "2026-12-01",
+            "prev": "2026-12-02"
+          }
+        },
+        {
+          "workLeft": 150,
+          "result": {
+            "rate": 3.5,
+            "bd3": 0,
+            "bd8": 2,
+            "rateAfter": 0,
+            "ov": {
+              "2026-11-04": 3.5
+            },
+            "forecast": "2026-12-07",
+            "prev": "2026-12-02"
+          }
+        },
+        {
+          "workLeft": 160,
+          "result": {
+            "rate": 3.5,
+            "bd3": 0,
+            "bd8": 2,
+            "rateAfter": 0,
+            "ov": {
+              "2026-11-04": 3.5
+            },
+            "forecast": "2026-12-10",
+            "prev": "2026-12-02"
+          }
+        }
+      ]
+    },
+    "manco": {
+      "rate": 1.5,
+      "workLeft": 74.5,
+      "forecast": "2026-12-11",
+      "rateEdits": [
+        {
+          "rate": 0.5,
+          "result": {
+            "rate": 0.5,
+            "bd3": 0.6666666666666666,
+            "bd8": 0.5,
+            "rateAfter": 0,
+            "ov": {
+              "2026-11-04": 0
+            },
+            "forecast": "2027-04-30",
+            "prev": "2026-12-11"
+          }
+        },
+        {
+          "rate": 1,
+          "result": {
+            "rate": 1,
+            "bd3": 1.3333333333333333,
+            "bd8": 1,
+            "rateAfter": 0,
+            "ov": {
+              "2026-11-04": 0
+            },
+            "forecast": "2027-04-30",
+            "prev": "2026-12-11"
+          }
+        },
+        {
+          "rate": 1.5,
+          "result": null
+        },
+        {
+          "rate": 2,
+          "result": {
+            "rate": 2,
+            "bd3": 2.6666666666666665,
+            "bd8": 2,
+            "rateAfter": 0,
+            "ov": {
+              "2026-11-04": 0
+            },
+            "forecast": "2026-11-25",
+            "prev": "2026-12-11"
+          }
+        },
+        {
+          "rate": 3,
+          "result": {
+            "rate": 3,
+            "bd3": 4,
+            "bd8": 3,
+            "rateAfter": 0,
+            "ov": {
+              "2026-11-04": 0
+            },
+            "forecast": "2026-11-09",
+            "prev": "2026-12-11"
+          }
+        },
+        {
+          "rate": 4,
+          "result": {
+            "rate": 4,
+            "bd3": 5.333333333333333,
+            "bd8": 4,
+            "rateAfter": 0,
+            "ov": {
+              "2026-11-04": 0
+            },
+            "forecast": "2026-10-29",
+            "prev": "2026-12-11"
+          }
+        },
+        {
+          "rate": 6,
+          "result": {
+            "rate": 6,
+            "bd3": 8,
+            "bd8": 6,
+            "rateAfter": 0,
+            "ov": {
+              "2026-11-04": 0
+            },
+            "forecast": "2026-10-21",
+            "prev": "2026-12-11"
+          }
+        },
+        {
+          "rate": 8,
+          "result": {
+            "rate": 8,
+            "bd3": 10.666666666666666,
+            "bd8": 8,
+            "rateAfter": 0,
+            "ov": {
+              "2026-11-04": 0
+            },
+            "forecast": "2026-10-15",
+            "prev": "2026-12-11"
+          }
+        }
+      ],
+      "workLeftEdits": [
+        {
+          "workLeft": 0,
+          "result": {
+            "rate": 1.5,
+            "bd3": 2,
+            "bd8": 1.5,
+            "rateAfter": 0,
+            "ov": {
+              "2026-11-04": 0
+            },
+            "forecast": "2026-10-05",
+            "prev": "2026-12-11"
+          }
+        },
+        {
+          "workLeft": 68.5,
+          "result": {
+            "rate": 1.5,
+            "bd3": 2,
+            "bd8": 1.5,
+            "rateAfter": 0,
+            "ov": {
+              "2026-11-04": 0
+            },
+            "forecast": "2026-12-07",
+            "prev": "2026-12-11"
+          }
+        },
+        {
+          "workLeft": 80.5,
+          "result": {
+            "rate": 1.5,
+            "bd3": 2,
+            "bd8": 1.5,
+            "rateAfter": 0,
+            "ov": {
+              "2026-11-04": 0
+            },
+            "forecast": "2026-12-17",
+            "prev": "2026-12-11"
+          }
+        },
+        {
+          "workLeft": 90.5,
+          "result": {
+            "rate": 1.5,
+            "bd3": 2,
+            "bd8": 1.5,
+            "rateAfter": 0,
+            "ov": {
+              "2026-11-04": 0
+            },
+            "forecast": "2026-12-30",
+            "prev": "2026-12-11"
+          }
+        }
+      ]
+    },
+    "play": {
+      "rate": 1,
+      "workLeft": 50.5,
+      "forecast": "2026-12-18",
+      "rateEdits": [
+        {
+          "rate": 0.5,
+          "result": {
+            "rate": 0.5,
+            "bd3": 0,
+            "bd8": 0.25,
+            "rateAfter": 0,
+            "ov": {},
+            "forecast": "2027-04-30",
+            "prev": "2026-12-18"
+          }
+        },
+        {
+          "rate": 1,
+          "result": null
+        },
+        {
+          "rate": 1.5,
+          "result": {
+            "rate": 1.5,
+            "bd3": 0,
+            "bd8": 0.75,
+            "rateAfter": 0,
+            "ov": {},
+            "forecast": "2026-11-24",
+            "prev": "2026-12-18"
+          }
+        },
+        {
+          "rate": 2,
+          "result": {
+            "rate": 2,
+            "bd3": 0,
+            "bd8": 1,
+            "rateAfter": 0,
+            "ov": {},
+            "forecast": "2026-11-12",
+            "prev": "2026-12-18"
+          }
+        },
+        {
+          "rate": 3,
+          "result": {
+            "rate": 3,
+            "bd3": 0,
+            "bd8": 1.5,
+            "rateAfter": 0,
+            "ov": {},
+            "forecast": "2026-10-29",
+            "prev": "2026-12-18"
+          }
+        },
+        {
+          "rate": 4,
+          "result": {
+            "rate": 4,
+            "bd3": 0,
+            "bd8": 2,
+            "rateAfter": 0,
+            "ov": {},
+            "forecast": "2026-10-23",
+            "prev": "2026-12-18"
+          }
+        },
+        {
+          "rate": 6,
+          "result": {
+            "rate": 6,
+            "bd3": 0,
+            "bd8": 3,
+            "rateAfter": 0,
+            "ov": {},
+            "forecast": "2026-10-16",
+            "prev": "2026-12-18"
+          }
+        },
+        {
+          "rate": 8,
+          "result": {
+            "rate": 8,
+            "bd3": 0,
+            "bd8": 4,
+            "rateAfter": 0,
+            "ov": {},
+            "forecast": "2026-10-14",
+            "prev": "2026-12-18"
+          }
+        }
+      ],
+      "workLeftEdits": [
+        {
+          "workLeft": 0,
+          "result": {
+            "rate": 1,
+            "bd3": 0,
+            "bd8": 0.5,
+            "rateAfter": 0,
+            "ov": {},
+            "forecast": "2026-10-05",
+            "prev": "2026-12-18"
+          }
+        },
+        {
+          "workLeft": 44.5,
+          "result": {
+            "rate": 1,
+            "bd3": 0,
+            "bd8": 0.5,
+            "rateAfter": 0,
+            "ov": {},
+            "forecast": "2026-12-10",
+            "prev": "2026-12-18"
+          }
+        },
+        {
+          "workLeft": 56.5,
+          "result": {
+            "rate": 1,
+            "bd3": 0,
+            "bd8": 0.5,
+            "rateAfter": 0,
+            "ov": {},
+            "forecast": "2026-12-30",
+            "prev": "2026-12-18"
+          }
+        },
+        {
+          "workLeft": 66.5,
+          "result": {
+            "rate": 1,
+            "bd3": 0,
+            "bd8": 0.5,
+            "rateAfter": 0,
+            "ov": {},
+            "forecast": "2027-04-30",
+            "prev": "2026-12-18"
+          }
+        }
+      ]
+    },
+    "fion": {
+      "rate": 1,
+      "workLeft": 57,
+      "forecast": "2027-01-04",
+      "rateEdits": [
+        {
+          "rate": 0.5,
+          "result": {
+            "rate": 0.5,
+            "bd3": 0,
+            "bd8": 0,
+            "rateAfter": 0.5,
+            "ov": {},
+            "forecast": "2027-03-24",
+            "prev": "2027-01-04"
+          }
+        },
+        {
+          "rate": 1,
+          "result": null
+        },
+        {
+          "rate": 1.5,
+          "result": {
+            "rate": 1.5,
+            "bd3": 0,
+            "bd8": 0,
+            "rateAfter": 1.5,
+            "ov": {},
+            "forecast": "2026-12-01",
+            "prev": "2027-01-04"
+          }
+        },
+        {
+          "rate": 2,
+          "result": {
+            "rate": 2,
+            "bd3": 0,
+            "bd8": 0,
+            "rateAfter": 2,
+            "ov": {},
+            "forecast": "2026-11-18",
+            "prev": "2027-01-04"
+          }
+        },
+        {
+          "rate": 3,
+          "result": {
+            "rate": 3,
+            "bd3": 0,
+            "bd8": 0,
+            "rateAfter": 3,
+            "ov": {},
+            "forecast": "2026-11-02",
+            "prev": "2027-01-04"
+          }
+        },
+        {
+          "rate": 4,
+          "result": {
+            "rate": 4,
+            "bd3": 0,
+            "bd8": 0,
+            "rateAfter": 4,
+            "ov": {},
+            "forecast": "2026-10-27",
+            "prev": "2027-01-04"
+          }
+        },
+        {
+          "rate": 6,
+          "result": {
+            "rate": 6,
+            "bd3": 0,
+            "bd8": 0,
+            "rateAfter": 6,
+            "ov": {},
+            "forecast": "2026-10-20",
+            "prev": "2027-01-04"
+          }
+        },
+        {
+          "rate": 8,
+          "result": {
+            "rate": 8,
+            "bd3": 0,
+            "bd8": 0,
+            "rateAfter": 8,
+            "ov": {},
+            "forecast": "2026-10-16",
+            "prev": "2027-01-04"
+          }
+        }
+      ],
+      "workLeftEdits": [
+        {
+          "workLeft": 0,
+          "result": {
+            "rate": 1,
+            "bd3": 0,
+            "bd8": 0,
+            "rateAfter": 1,
+            "ov": {},
+            "forecast": "2026-10-05",
+            "prev": "2027-01-04"
+          }
+        },
+        {
+          "workLeft": 51,
+          "result": {
+            "rate": 1,
+            "bd3": 0,
+            "bd8": 0,
+            "rateAfter": 1,
+            "ov": {},
+            "forecast": "2026-12-22",
+            "prev": "2027-01-04"
+          }
+        },
+        {
+          "workLeft": 63,
+          "result": {
+            "rate": 1,
+            "bd3": 0,
+            "bd8": 0,
+            "rateAfter": 1,
+            "ov": {},
+            "forecast": "2027-01-12",
+            "prev": "2027-01-04"
+          }
+        },
+        {
+          "workLeft": 73,
+          "result": {
+            "rate": 1,
+            "bd3": 0,
+            "bd8": 0,
+            "rateAfter": 1,
+            "ov": {},
+            "forecast": "2027-01-26",
+            "prev": "2027-01-04"
+          }
+        }
+      ]
+    }
+  }
+}

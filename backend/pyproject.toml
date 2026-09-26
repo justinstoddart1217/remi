@@ -1,0 +1,94 @@
+[project]
+name = "remi"
+version = "0.1.0"
+description = "Remi: a local-only planning companion (FastAPI backend)."
+requires-python = ">=3.12"
+license = { text = "Proprietary" }
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.32",
+    "sqlalchemy>=2.0.36,<2.1",
+    "alembic>=1.14",
+    "pydantic>=2.10",
+    "pydantic-settings>=2.6",
+    "holidays>=0.60",
+    "platformdirs>=4.3",
+    "python-multipart>=0.0.18",
+    "httpx>=0.28",
+    "tzdata>=2024.2",
+]
+
+[project.optional-dependencies]
+anthropic = ["anthropic>=1.8,<2"]
+keyring = ["keyring>=25"]
+
+[project.scripts]
+remi = "app.main:cli"
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3",
+    "pytest-cov>=6",
+    "hypothesis>=6.118",
+    "respx>=0.21",
+    "pytest-socket>=0.7",
+    "ruff>=0.8",
+    "pyright>=1.1.390",
+    # starlette.testclient prefers httpx2 and warns on plain httpx.
+    "httpx2>=2.13",
+    # The Anthropic provider tests and pyright need the SDK (see docs/requests/AI-providers.md).
+    "anthropic>=1.8,<2",
+]
+
+[build-system]
+requires = ["hatchling>=1.25"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["app"]
+
+[tool.uv]
+default-groups = ["dev"]
+
+# ---------------------------------------------------------------- ruff
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+extend-exclude = ["alembic/versions"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "SIM", "RUF", "S", "PTH", "DTZ"]
+
+[tool.ruff.lint.per-file-ignores]
+# pytest uses bare asserts by design.
+"tests/**" = ["S101"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["app"]
+# backend/alembic/ (migration scripts) would otherwise make `alembic` look first-party.
+known-third-party = ["alembic"]
+
+# ---------------------------------------------------------------- pyright
+[tool.pyright]
+include = ["app", "tests", "scripts"]
+typeCheckingMode = "strict"
+pythonVersion = "3.12"
+venvPath = "."
+venv = ".venv"
+
+# ---------------------------------------------------------------- pytest
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# Import `app` from the source tree, independent of the editable install's .pth file.
+pythonpath = ["."]
+# Stay local: tests may only open sockets to loopback (pytest-socket).
+addopts = "-ra --strict-markers --allow-hosts=127.0.0.1,::1"
+markers = [
+    "golden: compares against values extracted from the design prototype",
+    "slow: long-running tests",
+]
+filterwarnings = ["error"]
+
+[tool.coverage.run]
+source = ["app"]
+branch = true

@@ -1,0 +1,197 @@
+/*
+ * Remi.dc.html:101 (primary); CheckIn.dc.html:32 (primary 40px); Workspace.dc.html:91 (outline);
+ * Timeline.dc.html:31-33 (raised); Remi Textbook.dc.html:115, :242 (ghost);
+ * Today.dc.html:65, Routines.dc.html:83 (text links); Workspace.dc.html:151, :196, :199 and
+ * Routines.dc.html:21 (add).
+ * Ninety One redesign: the primary fill and the outline stroke are --brand-deep (CheckIn.dc.html:32,
+ * :109; Calendar.dc.html:120; Timeline.dc.html:205; Workspace.dc.html:91); text stays paper / ink.
+ */
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  box-sizing: border-box;
+  border: 0;
+  border-radius: var(--radius-m);
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.button:disabled {
+  cursor: default;
+}
+.button:focus-visible,
+.iconButton:focus-visible,
+.textLink:focus-visible,
+.add:focus-visible {
+  outline: 1.5px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.s {
+  height: 32px;
+  padding: 0 14px;
+  font-size: 13px;
+}
+.m {
+  height: 36px;
+  padding: 0 16px;
+  font-size: 14px;
+}
+.l {
+  height: 40px;
+  padding: 0 18px;
+  font-size: 14px;
+}
+.withIcon {
+  gap: 8px;
+}
+.m.withIcon {
+  padding: 0 16px 0 12px;
+}
+.icon {
+  font-size: 18px;
+}
+.kbd {
+  font-family: var(--font-numeric);
+  font-size: 11px;
+  font-weight: 400;
+  opacity: 0.7;
+}
+
+.primary {
+  background: var(--brand-deep);
+  color: var(--paper);
+}
+/* The prototype gives these buttons no hover; darken to --brand-deeper, as the brand CTA does. */
+.primary:hover:not(:disabled) {
+  background: var(--brand-deeper);
+}
+.primary:active:not(:disabled) {
+  transform: scale(0.98);
+}
+.primary:disabled {
+  background: var(--ink-faint);
+}
+
+.outline {
+  border: 1px solid var(--brand-deep);
+  background: transparent;
+  color: var(--ink);
+}
+.outline:hover:not(:disabled) {
+  background: var(--brand-deep);
+  color: var(--paper);
+}
+
+.raised {
+  border: 1px solid var(--hairline);
+  background: var(--paper-raised);
+  color: var(--ink);
+  font-weight: 400;
+}
+.raised.s {
+  padding: 0 12px;
+}
+
+.ghost {
+  background: transparent;
+  color: var(--ink-muted);
+  font-weight: 400;
+}
+.ghost.s {
+  padding: 0 10px;
+}
+.ghost:hover:not(:disabled) {
+  background: color-mix(in oklch, var(--ink) 5%, transparent);
+  color: var(--ink);
+}
+
+/* Icon buttons */
+.iconButton {
+  flex: none;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  box-sizing: border-box;
+  cursor: pointer;
+}
+.ib_raised {
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-m);
+  background: var(--paper-raised);
+  color: var(--ink);
+}
+.ib_plain {
+  border: 0;
+  background: transparent;
+  color: var(--ink-muted);
+}
+
+/* Text links */
+.textLink {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.tl_strong {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+.tl_muted {
+  font-size: 14px;
+  color: var(--ink-muted);
+}
+.tl_muted:hover {
+  color: var(--ink);
+}
+.arrow {
+  font-size: 16px;
+}
+
+/* + Add */
+.add {
+  display: flex;
+  align-items: center;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  color: var(--ink-muted);
+  cursor: pointer;
+}
+.add:hover {
+  color: var(--ink);
+}
+.add_s {
+  gap: 2px;
+  font-size: 12px;
+}
+.add_s .addIcon {
+  font-size: 15px;
+}
+.add_m {
+  gap: 4px;
+  font-size: 13px;
+}
+.add_m .addIcon,
+.add_bordered .addIcon {
+  font-size: 16px;
+}
+.add_bordered {
+  gap: 4px;
+  height: 28px;
+  padding: 0 10px;
+  box-sizing: border-box;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-s);
+  font-size: 13px;
+}
+.add_bordered:hover {
+  border-color: var(--ink-faint);
+}

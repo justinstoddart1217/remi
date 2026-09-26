@@ -1,0 +1,71 @@
+/* Remi Foundations.dc.html:240-243; Projects.dc.html:41; Timeline.dc.html:133, :152; Workspace.dc.html:43, :47. */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  box-sizing: border-box;
+  border-radius: var(--radius-s);
+  font-family: var(--font-numeric);
+  font-size: 11px;
+  white-space: nowrap;
+}
+
+.l {
+  height: 22px;
+  padding: 0 7px;
+}
+.m {
+  height: 20px;
+  padding: 0 6px;
+}
+.s {
+  height: 18px;
+  padding: 0 6px;
+}
+
+.w400 {
+  font-weight: 400;
+}
+.w500 {
+  font-weight: 500;
+}
+.w600 {
+  font-weight: 600;
+}
+
+.risk {
+  background: var(--risk-chip-bg, color-mix(in oklch, var(--risk) 22%, var(--paper)));
+  color: var(--risk-chip-fg, color-mix(in oklch, var(--risk) 40%, var(--ink)));
+}
+.neutral {
+  background: transparent;
+  color: var(--ink-muted);
+  box-shadow: inset 0 0 0 1px var(--hairline);
+}
+.overload {
+  background: var(--overload-chip-bg, color-mix(in oklch, var(--overload) 14%, var(--paper)));
+  color: var(--overload-chip-fg, color-mix(in oklch, var(--overload) 75%, var(--ink)));
+}
+
+/* The moved chip: fades 180ms and scales 0.9 → 1 from its left edge (no scale when reduced). */
+.presence {
+  transform-origin: left center;
+  transition:
+    opacity 180ms var(--ease-out),
+    transform 180ms var(--ease-out);
+}
+.presence[data-show='false'] {
+  opacity: 0;
+  transform: scale(0.9);
+}
+.presence[data-show='true'] {
+  opacity: 1;
+  transform: scale(1);
+}
+:global(:root[data-motion='reduced']) .presence {
+  transform: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .presence {
+    transform: none;
+  }
+}

@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Remi</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..24,300,0..1,0&amp;icon_names=arrow_forward,north_east&amp;display=block">
+<style>
+@font-face{font-family:'N1Visuelt';src:url('fonts/NinetyOneVisuelt-Light.ttf') format('truetype');font-weight:300;}
+@font-face{font-family:'N1Visuelt';src:url('fonts/NinetyOneVisuelt-Regular.ttf') format('truetype');font-weight:400;}
+@font-face{font-family:'N1Visuelt';src:url('fonts/NinetyOneVisuelt-Medium.ttf') format('truetype');font-weight:500 700;}
+@font-face{font-family:'N1Display';src:url('fonts/NinetyOneVisueltDisplay-Light.ttf') format('truetype');font-weight:300 400;}
+@font-face{font-family:'N1Display';src:url('fonts/NinetyOneVisueltDisplay-Regular.ttf') format('truetype');font-weight:500 700;}
+[style*="font-style: italic"]{font-style:normal !important;}
+@keyframes bar-up{from{transform:scaleY(0);}to{transform:scaleY(1);}}
+@keyframes n1-flow{from{background-position:0 0;}to{background-position:48px 0;}}
+@keyframes n1-drift-a{0%,100%{transform:translateY(0);}50%{transform:translateY(-16px);}}
+@keyframes n1-drift-b{0%,100%{transform:translateY(0);}50%{transform:translateY(13px);}}
+@keyframes n1-draw{from{transform:scaleX(0);}to{transform:scaleX(1);}}
+@keyframes n1-ping{0%{transform:scale(1);opacity:.85;}100%{transform:scale(3.2);opacity:0;}}
+:root{
+  --paper: #FAF9F5; --paper-raised: #FFFFFF;
+  --ink: #222222; --ink-muted: #595959; --ink-faint: #9A978C; --hairline: #E4E2D6;
+  --pc-accent: #009D80; --pc-accent-soft: color-mix(in oklch, var(--pc-accent) 13%, var(--paper));
+  --fi-accent: #2F6B9A; --fi-accent-soft: color-mix(in oklch, var(--fi-accent) 13%, var(--paper));
+  --risk: #C98A12; --overload: #D83949; --done: #B9B6AA; --focus: #009D80;
+  --font-ui: 'N1Visuelt', 'Segoe UI', Arial, sans-serif; --font-display: 'N1Display', 'N1Visuelt', 'Segoe UI', sans-serif; --font-numeric: 'SF Mono', ui-monospace, Menlo, Consolas, monospace;
+  --radius-s: 0px; --radius-m: 0px;
+  --dur-fast: 140ms; --dur-base: 240ms; --dur-slow: 440ms;
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+  --spring-soft: linear(0, 0.049 5%, 0.156 10%, 0.283 15%, 0.408 20%, 0.522 25%, 0.62 30%, 0.702 35%, 0.769 40%, 0.864 50%, 0.922 60%, 0.956 70%, 0.976 80%, 0.987 90%, 1);
+
+  --brand-deep: #134848; --brand-deeper: #0D3232; --brand-dark: #026E62; --brand-mint: #7FE0C8; --brand-mint-2: #34C1A3; --good: #16895A; --rule-soft: #F1F1F1;
+}
+@media (prefers-reduced-motion: reduce){ :root{ --spring-soft: steps(1, jump-start); } }
+html,body{margin:0;height:100%;background:var(--paper);color:var(--ink);font-family:var(--font-ui);font-feature-settings:"kern";-webkit-font-smoothing:antialiased;}
+a{color:var(--ink);text-decoration-color:var(--hairline);text-underline-offset:3px;}
+a:hover{color:var(--pc-accent);}
+</style>
+</helmet>
+<div style="position:fixed; inset:0; overflow:hidden; background:color-mix(in oklch, var(--ink) 6%, var(--paper));">
+  <div data-screen-label="Remi home" style="position:absolute; left:{{ st.x }}px; top:{{ st.y }}px; width:1920px; height:1080px; transform:scale({{ st.s }}); transform-origin:0 0; background:var(--paper); overflow:hidden;">
+
+    <div style="position:absolute; left:0; right:0; top:0; height:470px; overflow:hidden; background:var(--brand-deep); color:#fff;">
+      <div aria-hidden="true" style="position:absolute; right:0; top:0; bottom:0; width:46%; opacity:0.5; pointer-events:none;"><svg viewBox="0 0 240 200" preserveAspectRatio="xMaxYMid slice" style="display:block; width:100%; height:100%; fill:#009D80; overflow:visible;"><g transform="rotate(9 240 0)"><rect x="52" y="-20" width="16" height="120" style="animation:n1-drift-a 9s ease-in-out 0s infinite;"></rect><rect x="84" y="46" width="18" height="150" style="animation:n1-drift-b 11s ease-in-out -2s infinite;"></rect><rect x="120" y="-20" width="22" height="88" style="animation:n1-drift-a 13s ease-in-out -5s infinite;"></rect><rect x="150" y="70" width="20" height="140" style="animation:n1-drift-b 8s ease-in-out -1s infinite;"></rect><rect x="186" y="-20" width="18" height="112" style="animation:n1-drift-a 10s ease-in-out -4s infinite;"></rect><rect x="206" y="92" width="24" height="120" style="animation:n1-drift-b 12s ease-in-out -6s infinite;"></rect></g></svg></div>
+      <span style="position:absolute; left:0; right:0; bottom:0; height:3px; background-image:repeating-linear-gradient(90deg, rgba(127,224,200,0.5) 0 10px, transparent 10px 24px); background-size:48px 3px; animation:n1-flow 3.2s linear infinite; opacity:0.35;"></span>
+    </div>
+    <div style="position:absolute; left:120px; right:120px; top:0; height:96px; display:flex; align-items:center; gap:28px; border-bottom:1px solid rgba(255,255,255,0.1); color:#fff; opacity:{{ a0.o }}; transition:opacity 200ms var(--ease-out);">
+      <span style="display:flex; align-items:center; gap:18px;"><svg viewBox="0 0 35.05 56.69" height="44" aria-hidden="true" style="display:block;"><rect fill="#009D80" x="0" y="0" width="10.308" height="28.346" style="transform-box:fill-box; transform-origin:bottom; animation:bar-up 700ms cubic-bezier(.23,1,.32,1) 120ms both;"></rect><rect fill="#009D80" x="12.369" y="0" width="10.308" height="28.346" style="transform-box:fill-box; transform-origin:bottom; animation:bar-up 700ms cubic-bezier(.23,1,.32,1) 210ms both;"></rect><rect fill="#026E62" x="12.369" y="28.346" width="10.308" height="28.346" style="transform-box:fill-box; transform-origin:bottom; animation:bar-up 700ms cubic-bezier(.23,1,.32,1) 300ms both;"></rect><rect fill="#009D80" x="24.739" y="0" width="10.308" height="28.346" style="transform-box:fill-box; transform-origin:bottom; animation:bar-up 700ms cubic-bezier(.23,1,.32,1) 390ms both;"></rect><rect fill="#026E62" x="24.739" y="28.346" width="10.308" height="28.346" style="transform-box:fill-box; transform-origin:bottom; animation:bar-up 700ms cubic-bezier(.23,1,.32,1) 480ms both;"></rect></svg><span style="display:flex; flex-direction:column; gap:5px;"><span style="font-size:19px; font-weight:500; letter-spacing:0.2em; line-height:1;">REMI</span><span style="font-size:10.5px; letter-spacing:0.16em; line-height:1; text-transform:uppercase; color:rgba(255,255,255,0.52);">Workflow · Private Credit → Fixed Income</span></span></span>
+      <span style="flex:1;"></span>
+      <span style="display:flex; align-items:baseline; gap:10px;"><span style="font-family:var(--font-numeric); font-size:11px; letter-spacing:0.1em; text-transform:uppercase; color:rgba(255,255,255,0.6);">Mon 5 Oct · BD3</span></span>
+      <span style="width:1px; height:20px; background:rgba(255,255,255,0.16);"></span>
+      <span style="display:flex; align-items:baseline; gap:8px;"><span style="font-family:var(--font-numeric); font-size:20px;">61</span><span style="font-size:14px; color:rgba(255,255,255,0.72);">business days to Fixed Income</span></span>
+    </div>
+
+    <div style="position:absolute; left:120px; top:170px; width:1100px; color:#fff;">
+      <div style="font-family:var(--font-numeric); font-size:12px; letter-spacing:0.1em; text-transform:uppercase; color:var(--brand-mint-2); opacity:{{ a1.o }}; transform:{{ a1.t }}; transition:opacity 180ms var(--ease-out), transform 260ms var(--spring-soft);">{{ greeting }}</div>
+      <h1 style="margin:18px 0 0; font-family:var(--font-display); font-weight:300; font-size:92px; line-height:1.02; letter-spacing:-0.02em; color:#fff; opacity:{{ a2.o }}; transform:{{ a2.t }}; transition:opacity 200ms var(--ease-out) 40ms, transform 320ms var(--spring-soft) 40ms;">{{ headline }}</h1>
+    </div>
+
+    <div style="position:absolute; left:120px; right:120px; top:388px; display:grid; grid-template-columns:1fr 1fr; column-gap:48px;">
+
+      <div ref="{{ cpRef }}" onMouseEnter="{{ cp.enter }}" onMouseLeave="{{ leave }}" onClick="{{ cp.open }}" style="position:relative; height:560px; box-sizing:border-box; padding:34px 40px 30px; background:#fff; box-shadow:inset 0 0 0 1px {{ cp.line }}, 0 18px 40px -24px rgba(10,32,29,0.35); cursor:pointer; display:flex; flex-direction:column; overflow:hidden; opacity:{{ a4.o }}; transform:{{ cp.t }}; transition:opacity 220ms var(--ease-out) 120ms, transform 360ms var(--spring-soft), box-shadow var(--dur-base) var(--ease-out);">
+        <div style="display:flex; align-items:baseline; gap:16px;">
+          <span style="font-family:var(--font-numeric); font-size:13px; color:var(--ink-muted);">01</span>
+          <span style="font-family:var(--font-display); font-size:44px; line-height:1; letter-spacing:-0.015em;">Control Panel</span>
+          <span style="flex:1;"></span>
+          <span style="display:grid; place-items:center; width:40px; height:40px; border-radius:50%; background:{{ cp.btnBg }}; color:{{ cp.btnFg }}; box-shadow:inset 0 0 0 1px {{ cp.btnLine }}; transition:background var(--dur-base) var(--ease-out), color var(--dur-base) var(--ease-out);"><span style="font-family:'Material Symbols Outlined'; font-size:20px; transform:translateX({{ cp.arrowX }}); transition:transform var(--dur-base) var(--spring-soft);">arrow_forward</span></span>
+        </div>
+        <div style="font-size:16px; color:var(--ink-muted); margin-top:14px;">Today, the timeline, projects, routines and the move, recalculated as you go.</div>
+
+        <div style="position:relative; flex:1; margin-top:26px; border-top:1px solid var(--hairline);">
+          <div style="position:absolute; left:0; right:0; top:14px; height:44px; display:flex; align-items:flex-end; gap:3px;">
+            <sc-for list="{{ cp.cap }}" as="c" hint-placeholder-count="30">
+              <div style="flex:1; height:{{ c.h }}; background:{{ c.bg }}; box-shadow:inset 0 0 0 1px {{ c.line }}; border-radius:1px; transition:height var(--dur-slow) var(--spring-soft) {{ c.d }}, background var(--dur-base) var(--ease-out);"></div>
+            </sc-for>
+          </div>
+          <div style="position:absolute; left:0; right:0; top:66px; border-top:1px dashed var(--hairline);"></div>
+          <sc-for list="{{ cp.rows }}" as="r" hint-placeholder-count="5">
+            <div style="position:absolute; left:0; right:0; top:{{ r.y }}px; height:12px;">
+              <div style="position:absolute; left:{{ r.gx }}; width:{{ r.gw }}; top:14px; height:6px; box-sizing:border-box; border:1.5px dashed {{ r.accent }}; border-radius:2px; opacity:{{ r.go }}; transition:opacity 400ms var(--ease-out);"></div>
+              <div style="position:absolute; left:{{ r.x }}; width:{{ r.w }}; top:0; height:10px; border-radius:2px; background:{{ r.bg }}; box-shadow:inset 0 0 0 1px {{ r.line }}; transition:width var(--dur-slow) var(--spring-soft) {{ r.d }};"></div>
+              <div style="position:absolute; left:{{ r.ox }}; width:{{ r.ow }}; top:0; height:10px; border-radius:0 2px 2px 0; background:var(--risk); transition:left var(--dur-slow) var(--spring-soft) {{ r.d }}, width var(--dur-slow) var(--spring-soft) {{ r.d }};"></div>
+              <sc-for list="{{ r.ms }}" as="d" hint-placeholder-count="0"><div style="position:absolute; left:{{ d }}; top:0; width:10px; height:10px; margin-left:-5px; box-sizing:border-box; transform:rotate(45deg) scale({{ r.ds }}); background:var(--paper-raised); border:1.5px solid {{ r.accent }}; transition:transform var(--dur-base) var(--ease-out) {{ r.d }};"></div></sc-for>
+            </div>
+          </sc-for>
+          <div style="position:absolute; top:6px; bottom:44px; left:4%; width:1px; background:var(--brand-deep);"></div>
+          <div style="position:absolute; top:6px; bottom:44px; left:84%; width:1.5px; background:var(--fi-accent);"></div>
+
+          <div style="position:absolute; left:0; right:0; bottom:0; display:flex; align-items:center; gap:14px; padding-top:14px; border-top:1px solid var(--hairline);">
+            <span style="font-size:14px; font-weight:500;">Returns pipeline</span>
+            <span style="font-size:15px; font-weight:500; display:flex;"><dc-import name="Roll" value="{{ cp.fS }}" hint-size="90px,20px"></dc-import></span>
+            <span style="display:inline-flex; align-items:center; height:22px; padding:0 7px; border-radius:var(--radius-s); background:color-mix(in oklch, var(--risk) 22%, var(--paper)); color:color-mix(in oklch, var(--risk) 40%, var(--ink)); font-family:var(--font-numeric); font-size:11px; font-weight:600;"><span style="display:inline-flex;"><dc-import name="Roll" value="{{ cp.delta }}" hint-size="44px,14px"></dc-import></span></span>
+            <span style="flex:1;"></span>
+            <span style="font-size:13px; color:var(--ink-muted);">{{ cp.meta }}</span>
+          </div>
+        </div>
+      </div>
+
+      <div ref="{{ tbRef }}" onMouseEnter="{{ tb.enter }}" onMouseLeave="{{ leave }}" onClick="{{ tb.open }}" style="position:relative; height:560px; box-sizing:border-box; padding:34px 40px 30px; border-radius:var(--radius-m); background:var(--paper-raised); box-shadow:inset 0 0 0 1px {{ tb.line }}, 0 18px 40px -24px rgba(10,32,29,0.35); background:#fff; cursor:pointer; display:flex; flex-direction:column; overflow:hidden; opacity:{{ a5.o }}; transform:{{ tb.t }}; transition:opacity 220ms var(--ease-out) 170ms, transform 360ms var(--spring-soft), box-shadow var(--dur-base) var(--ease-out);">
+        <div style="display:flex; align-items:baseline; gap:16px;">
+          <span style="font-family:var(--font-numeric); font-size:13px; color:var(--ink-muted);">02</span>
+          <span style="font-family:var(--font-display); font-size:44px; line-height:1; letter-spacing:-0.015em;">Textbook</span>
+          <span style="flex:1;"></span>
+          <span style="display:grid; place-items:center; width:40px; height:40px; border-radius:50%; background:{{ tb.btnBg }}; color:{{ tb.btnFg }}; box-shadow:inset 0 0 0 1px {{ tb.btnLine }}; transition:background var(--dur-base) var(--ease-out), color var(--dur-base) var(--ease-out);"><span style="font-family:'Material Symbols Outlined'; font-size:20px; transform:translateX({{ tb.arrowX }}); transition:transform var(--dur-base) var(--spring-soft);">arrow_forward</span></span>
+        </div>
+        <div style="font-size:16px; color:var(--ink-muted); margin-top:14px;">Numbered notes, clean formulas and live charts you drop in from Claude.</div>
+
+        <div style="position:relative; flex:1; margin-top:26px; border-top:1px solid var(--hairline); padding-top:22px;">
+          <div style="display:flex; align-items:baseline; gap:10px; font-size:11px; color:var(--ink-muted);"><span style="font-weight:600; letter-spacing:0.08em; text-transform:uppercase;">Fixed Income</span><span>/</span><span>Rates primer</span></div>
+          <div style="display:grid; grid-template-columns:44px minmax(0,1fr); margin-top:16px; align-items:baseline;">
+            <span style="font-family:var(--font-numeric); font-size:14px; color:var(--ink-muted);">1</span>
+            <span style="font-family:var(--font-display); font-size:26px; letter-spacing:-0.01em;">Rates and duration</span>
+          </div>
+          <div style="display:grid; grid-template-columns:44px minmax(0,1fr); margin-top:12px; align-items:baseline;">
+            <span style="font-family:var(--font-numeric); font-size:13px; color:var(--ink-muted);">1.1</span>
+            <span style="font-size:16px; font-weight:600;">Price and yield</span>
+          </div>
+          <div style="margin:8px 0 0 44px; font-size:15px; line-height:1.55; color:var(--ink-muted);">When yields rise, bond prices fall. For small moves:</div>
+          <div style="margin:12px 0 0 44px; font-family:var(--font-display); font-style:italic; font-size:22px; letter-spacing:0.01em;">ΔP / P ≈ −D × Δy</div>
+          <div style="margin:10px 0 0 44px; font-size:14px; line-height:1.5; color:var(--ink-muted);">where <span style="font-family:var(--font-display); font-style:italic; color:var(--ink);">D</span> is modified duration and <span style="font-family:var(--font-display); font-style:italic; color:var(--ink);">Δy</span> the change in yield.</div>
+          <div style="position:relative; display:grid; grid-template-columns:44px minmax(0,1fr); margin-top:18px; align-items:baseline;">
+            <span style="font-family:var(--font-numeric); font-size:13px; color:var(--ink-muted); opacity:{{ tb.nextO }}; transition:opacity 200ms var(--ease-out);">1.2</span>
+            <span style="position:relative; display:inline-flex; align-items:baseline;">
+              <span style="font-size:16px; font-weight:600; white-space:nowrap; overflow:hidden; display:inline-block; max-width:{{ tb.typeW }}; transition:max-width 520ms steps(9, end);">Convexity</span>
+              <span style="display:inline-block; width:1.5px; height:18px; margin-left:2px; background:var(--brand-deep); transform:translateY(3px); opacity:{{ tb.caretO }}; transition:opacity 120ms linear;"></span>
+            </span>
+            <div style="position:absolute; left:150px; top:-6px; display:flex; align-items:center; gap:4px; padding:5px; border-radius:var(--radius-m); background:var(--paper); box-shadow:inset 0 0 0 1px var(--hairline), 0 14px 28px -20px color-mix(in oklch, var(--ink) 45%, transparent); opacity:{{ tb.menuO }}; transform:{{ tb.menuT }}; transition:opacity 200ms var(--ease-out) {{ tb.menuD }}, transform 320ms var(--spring-soft) {{ tb.menuD }};">
+              <span style="font-family:var(--font-numeric); font-size:12px; color:var(--ink-muted); padding:0 6px;">/</span>
+              <sc-for list="{{ tb.menu }}" as="x" hint-placeholder-count="4"><span style="height:26px; display:inline-flex; align-items:center; padding:0 9px; border-radius:var(--radius-s); background:{{ x.bg }}; font-size:12px; font-weight:500;">{{ x.l }}</span></sc-for>
+            </div>
+          </div>
+
+          <div style="position:absolute; left:0; right:0; bottom:0; display:flex; align-items:center; gap:14px; padding-top:14px; border-top:1px solid var(--hairline);">
+            <span style="font-size:13px; color:var(--ink-muted);">{{ tb.meta }}</span>
+            <span style="flex:1;"></span>
+            <span style="font-size:13px; color:var(--ink-muted);">{{ tb.pages }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div style="position:absolute; left:120px; right:120px; bottom:40px; display:flex; align-items:center; gap:24px; font-size:13px; color:var(--ink-muted); opacity:{{ a0.o }}; transition:opacity 200ms var(--ease-out) 240ms;">
+      <span>Press <span style="font-family:var(--font-numeric); font-size:12px; padding:1px 6px; border:1px solid var(--hairline); border-radius:var(--radius-s); color:var(--ink);">1</span> or <span style="font-family:var(--font-numeric); font-size:12px; padding:1px 6px; border:1px solid var(--hairline); border-radius:var(--radius-s); color:var(--ink);">2</span> to jump straight in</span>
+      <span style="flex:1;"></span>
+      <span>A personal instrument. Nothing here is shared.</span>
+    </div>
+
+    <div style="position:absolute; left:{{ ex.x }}px; top:{{ ex.y }}px; width:{{ ex.w }}px; height:{{ ex.h }}px; border-radius:{{ ex.r }}; background:var(--paper); box-shadow:inset 0 0 0 1px var(--hairline); opacity:{{ ex.o }}; pointer-events:none; z-index:20; transition:{{ ex.tr }};"></div>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+const CAP = [8, 8, 7, 7, 7, 8, 7, 7, 7, 9.5, 7, 7, 8, 7, 6.5, 7, 7, 6, 5.5, 6, 5.5, 5.5, 3, 3, 3, 8, 7, 7, 7, 7];
+const CAPH = [8, 8, 7, 7, 7, 8, 7, 7, 7, 9.5, 7, 7, 8, 7, 6.5, 7, 9, 9, 9, 6, 5.5, 5.5, 3, 3, 3, 8, 7, 7, 7, 7];
+
+class Component extends DCLogic {
+  state = { vw: typeof window !== 'undefined' ? window.innerWidth : 1920, vh: typeof window !== 'undefined' ? window.innerHeight : 1080, arrived: false, hover: null, ex: null, soon: false, notes: 0, projects: 5, routines: 2 };
+  cpRef = React.createRef(); tbRef = React.createRef();
+
+  componentDidMount() {
+    this.onResize = () => this.setState({ vw: window.innerWidth, vh: window.innerHeight });
+    this.onKey = e => { if (e.key === '1') this.openCP(); if (e.key === '2') this.openTB(); };
+    this.setState({ tbPages: '4 pages · 1 live chart' });
+    window.addEventListener('resize', this.onResize); window.addEventListener('keydown', this.onKey);
+    try { const tbk = JSON.parse(localStorage.getItem('remi.textbook.v1') || 'null'); const pgs = tbk && tbk.pages ? tbk.pages : null; const ch = pgs ? pgs.reduce((a, p) => a + p.blocks.filter(b => b.type === 'chart' && (b.html || b.src)).length, 0) : 1; this.setState({ tbPages: (pgs ? pgs.length : 4) + ' pages · ' + ch + ' live chart' + (ch === 1 ? '' : 's') }); } catch (e) {}
+    try { const s = JSON.parse(localStorage.getItem('remi.v1') || 'null'); if (s) this.setState({ notes: ((s.notes || {})['2026-10-05'] || []).length, projects: (s.projects || []).length || 5, routines: (s.routines || []).length || 2 }); else this.setState({ notes: 3 }); } catch (e) {}
+    requestAnimationFrame(() => requestAnimationFrame(() => this.setState({ arrived: true })));
+  }
+  componentWillUnmount() { window.removeEventListener('resize', this.onResize); window.removeEventListener('keydown', this.onKey); clearTimeout(this.t1); clearTimeout(this.t2); }
+  reduced() { return window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches; }
+
+  openCP = () => this.expand(this.cpRef.current, 'Remi.dc.html');
+  expand(el, url) {
+    if (this.state.ex) return;
+    if (!el || this.reduced()) { window.location.href = url; return; }
+    const x = el.offsetLeft + el.offsetParent.offsetLeft, y = el.offsetTop + el.offsetParent.offsetTop;
+    this.setState({ ex: { x, y, w: el.offsetWidth, h: el.offsetHeight, r: '6px', o: 0, tr: 'none' } });
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      this.setState({ ex: { x, y, w: el.offsetWidth, h: el.offsetHeight, r: '6px', o: 1, tr: 'opacity 140ms var(--ease-out)' } });
+      this.t1 = setTimeout(() => this.setState({ ex: { x: 0, y: 0, w: 1920, h: 1080, r: '0px', o: 1, tr: 'left 420ms var(--spring-soft), top 420ms var(--spring-soft), width 420ms var(--spring-soft), height 420ms var(--spring-soft), border-radius 420ms var(--spring-soft)' } }), 120);
+      this.t2 = setTimeout(() => { window.location.href = url; }, 520);
+    }));
+  }
+  openTB = () => this.expand(this.tbRef.current, 'Remi%20Textbook.dc.html');
+
+  renderVals() {
+    const s = this.state;
+    const sc = Math.min(s.vw / 1920, s.vh / 1080);
+    const st = { s: sc, x: Math.round((s.vw - 1920 * sc) / 2), y: Math.round((s.vh - 1080 * sc) / 2) };
+    const a = s.arrived, red = this.reduced();
+    const arr = (on) => ({ o: on ? 1 : 0, t: on || red ? 'none' : 'translateY(10px)' });
+    const hc = s.hover === 'cp', ht = s.hover === 'tb';
+    const lift = on => on && !red ? 'translateY(-4px)' : 'none';
+    const col = { pc: 'var(--pc-accent)', fi: 'var(--fi-accent)' };
+    const pct = v => (v * 100).toFixed(2) + '%';
+    const rowsDef = [
+      { d: 'pc', x: 0.02, end: hc ? 0.655 : 0.62, tgt: 0.575, ms: [0.2, 0.36, 0.5], ghost: hc ? 0.62 : 0.575 },
+      { d: 'pc', x: 0.08, end: 0.68, ms: [0.2, 0.42] },
+      { d: 'pc', x: 0.1, end: 0.74, ms: [0.38, 0.55, 0.62] },
+      { d: 'fi', x: 0.06, end: 0.84, ms: [0.3, 0.52, 0.76] },
+      { d: 'fi', x: 0.62, end: 1.02, hatch: true }
+    ];
+    const rows = rowsDef.map((r, i) => {
+      const w = a ? Math.min(r.tgt || r.end, r.end) - r.x : 0;
+      const risk = r.tgt && r.end > r.tgt;
+      return { y: 86 + i * 34, accent: col[r.d], d: (i * 50 + 80) + 'ms',
+        x: pct(r.x), w: pct(Math.max(0, w)), bg: r.hatch ? 'repeating-linear-gradient(135deg, ' + (r.d === 'pc' ? 'var(--pc-accent-soft)' : 'var(--fi-accent-soft)') + ' 0 4px, transparent 4px 8px)' : col[r.d], line: r.hatch ? col[r.d] : 'transparent',
+        ox: pct(r.tgt || r.end), ow: pct(a && risk ? r.end - r.tgt : 0),
+        gx: pct(r.x), gw: pct(r.ghost ? r.ghost - r.x : 0), go: r.ghost ? (hc ? 0.9 : 0.4) : 0,
+        ms: (r.ms || []).map(pct), ds: a ? 1 : 0 };
+    });
+    const cap = (hc ? CAPH : CAP).map((h, i) => { const over = h > 8; return { h: a ? (h / 10 * 100) + '%' : '0%', d: (i * 12) + 'ms', bg: over ? 'color-mix(in oklch, var(--overload) 22%, var(--paper))' : i >= 25 ? 'var(--fi-accent-soft)' : 'var(--pc-accent-soft)', line: over ? 'var(--overload)' : i >= 25 ? 'var(--fi-accent)' : 'var(--pc-accent)' }; });
+    const hour = new Date().getHours();
+    const tw = ht && !red ? '9ch' : red && ht ? '9ch' : '0ch';
+    return {
+      headline: 'Where to this ' + (hour < 12 ? 'morning' : hour < 18 ? 'afternoon' : 'evening') + '?',
+      st, greeting: (hour < 12 ? 'Good morning' : hour < 18 ? 'Good afternoon' : 'Good evening') + ' · Monday 5 October',
+      a0: arr(a), a1: arr(a), a2: arr(a), a3: arr(a), a4: arr(a), a5: arr(a),
+      cpRef: this.cpRef, tbRef: this.tbRef, leave: () => this.setState({ hover: null }),
+      cp: { enter: () => this.setState({ hover: 'cp' }), open: this.openCP, t: a ? lift(hc) : red ? 'none' : 'translateY(14px)', line: hc ? 'var(--ink)' : 'var(--hairline)',
+        btnBg: hc ? 'var(--ink)' : 'transparent', btnFg: hc ? 'var(--paper)' : 'var(--ink)', btnLine: hc ? 'var(--ink)' : 'var(--hairline)', arrowX: hc ? '2px' : '0px',
+        rows, cap, fS: hc ? 'Fri 4 Dec' : 'Wed 2 Dec', delta: hc ? '+5 BD' : '+3 BD',
+        meta: s.projects + ' projects · ' + s.routines + ' routines · ' + s.notes + ' note' + (s.notes === 1 ? '' : 's') + ' today' },
+      tb: { enter: () => this.setState({ hover: 'tb' }), open: this.openTB, t: a ? lift(ht) : red ? 'none' : 'translateY(14px)', line: ht ? 'var(--ink)' : 'var(--hairline)',
+        btnBg: ht ? 'var(--ink)' : 'transparent', btnFg: ht ? 'var(--paper)' : 'var(--ink)', btnLine: ht ? 'var(--ink)' : 'var(--hairline)', arrowX: ht ? '2px' : '0px',
+        typeW: tw, caretO: ht ? 1 : 0, nextO: ht ? 1 : 0.35,
+        menuO: ht ? 1 : 0, menuT: ht || red ? 'translateY(0)' : 'translateY(-4px)', menuD: ht ? '560ms' : '0ms',
+        menu: [['Heading', true], ['Formula', false], ['Callout', false], ['Link to project', false]].map(([l, on]) => ({ l, bg: on ? 'color-mix(in oklch, var(--ink) 6%, transparent)' : 'transparent' })),
+        meta: 'Numbered sections · formulas · live charts', pages: s.tbPages },
+      ex: s.ex ? s.ex : { x: 0, y: 0, w: 0, h: 0, r: '6px', o: 0, tr: 'none' }
+    };
+  }
+}
+</script>
+</body>
+</html>

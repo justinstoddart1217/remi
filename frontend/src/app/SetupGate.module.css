@@ -1,0 +1,21 @@
+.hint {
+  margin: 0;
+}
+
+/* The browser's or server's own words, for whoever needs them. */
+.details {
+  margin-top: 8px;
+  font-size: 13px;
+}
+
+.details summary {
+  cursor: pointer;
+  width: fit-content;
+}
+
+.detailsText {
+  margin: 6px 0 0;
+  font-family: var(--font-numeric);
+  font-size: 12px;
+  white-space: pre-wrap;
+}

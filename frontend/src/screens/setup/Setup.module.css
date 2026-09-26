@@ -1,0 +1,80 @@
+/* Setup-only pieces; the frame is in frame/Frame.module.css. */
+.blank {
+  min-height: 100vh;
+  background: var(--paper);
+}
+
+.snapped {
+  color: var(--risk-text, color-mix(in oklch, var(--risk) 45%, var(--ink)));
+}
+
+.start {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: 14px;
+}
+/*
+ * The one filled action, in the top bar's 'Tell Remi' green (Remi.dc.html:98): brand green
+ * with its soft green shadow, brand dark and a 1px lift on hover, a press to 0.97. Waiting
+ * for a move date it sits back in a pale brand wash.
+ */
+.start .startButton {
+  width: 100%;
+  height: 44px;
+  border: 1px solid var(--n1-green, #009d80);
+  background: var(--n1-green, #009d80);
+  color: #fff;
+  font-weight: 500;
+  box-shadow: 0 6px 18px rgb(0 157 128 / 0.25);
+  transition:
+    background var(--dur-fast) var(--ease-out),
+    border-color var(--dur-fast) var(--ease-out),
+    box-shadow var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out),
+    transform var(--dur-fast) var(--ease-out);
+}
+.start .startButton:hover:not(:disabled) {
+  border-color: var(--brand-dark);
+  background: var(--brand-dark);
+  transform: translateY(-1px);
+}
+.start .startButton:active:not(:disabled) {
+  transform: scale(0.97);
+}
+.start .startButton:disabled {
+  border-color: transparent;
+  background: color-mix(in oklch, var(--brand-deep) 8%, var(--paper-raised));
+  color: color-mix(in oklch, var(--brand-deep) 62%, var(--paper-raised));
+  box-shadow: none;
+}
+.startNote,
+.startError {
+  margin: 0;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--ink-muted);
+  text-wrap: pretty;
+}
+.startError {
+  color: var(--overload-chip-fg, color-mix(in oklch, var(--overload) 75%, var(--ink)));
+}
+
+.rotationHead {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.rotationLabel {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  line-height: 1.4;
+  text-transform: uppercase;
+  color: var(--brand-dark);
+}
+.rotationNote {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--ink-muted);
+}

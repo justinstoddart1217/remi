@@ -1,0 +1,309 @@
+{
+ "key": "today",
+ "file": "/Users/justinstoddart/Desktop/Ninety One/remi/Remi Dashboard Design Review/Today.dc.html",
+ "purpose": "Today is the home screen of Remi (the default `screen: 'today'` in the shell). It shows one business day in detail: a date header with the BD number and the move verdict, a segmented capacity bar (BAU, project, free, with an overload state), and the day's plan. The plan lists the Returns fund checklist when it is BD3, other BAU routines, and project \"focus blocks\" holding the slice of Now tasks that fits the block's hours plus the next milestone. The right column has a 5-day week strip (click a day to preview it in the left column) and a month-to-date snapshot (\"October so far\"): a cumulative done/overdue/due-by-then bar chart plus collapsible BAU and Projects to-do groups. You can preview any business day. Preview mode keeps the same layout with read-only fund ticks, a \"Back to today\" button and preview copy.",
+ "layout": "HOST: rendered inside the shell <section data-screen-label=\"Today\" style=\"position:absolute; inset:0; overflow:auto\"> inside <main>. The shell is a fixed-size canvas scaled with transform: scale() to fit the window (frame prop: 1920×1080 default, 2560×1440, or 'Fit window'). There are NO media queries: every size is in fixed px and the grid uses fr. The shell grid is 88px nav rail + main, and main has a 72px header row. So at 1920×1080 the Today scroll viewport is 1832×1008; at 2560×1440 it is 2472×1368.\n\nROOT: div box-sizing:border-box; min-height:100%; padding:40px 48px 48px; display:grid; grid-template-columns:minmax(0,7fr) minmax(0,5fr); column-gap:72px; align-items:start.\n- 1920: content width 1832−96=1736, minus 72 gap = 1664, so LEFT ≈970.67px and RIGHT ≈693.33px.\n- 2560: 2472−96−72=2304, so LEFT 1344px and RIGHT 960px.\n\nLEFT COLUMN (the day-switch wrapper): display:flex; flex-direction:column; gap:40px; min-width:0; opacity/transform from `sw`. Three children, each an \"arrival\" wrapper:\n\n (1) DAY HEADER (arrival delay 0ms).\n   - Kicker row: flex; align-items:center; gap:14px; margin-bottom:14px; min-height:24px.\n     - Kicker span: 11px/600, letter-spacing 0.08em, uppercase, color --ink-muted.\n     - Optional \"Back to today\" button (only when previewing): flex, align-items:center, gap:4px, height:24px, padding:0 9px 0 5px, border:1px solid --hairline, radius --radius-s (3px), bg --paper-raised, 12px, color --ink, cursor pointer; hover border-color --ink-faint. Contains the Material Symbols 'chevron_left' icon at 15px.\n   - H1: margin 0; font-family --font-display (Libre Caslon Text, Georgia fallback); weight 400; 52px; line-height 1.1; letter-spacing -0.015em. Text is the long date, e.g. \"Monday 5 October\".\n   - Meta row: flex; align-items:center; gap:14px; margin-top:14px; 15px; --ink-muted. Items in order:\n     - bdLine (\"BD3 of 22\") in --font-numeric (JetBrains Mono) 13px;\n     - 3×3px circular dot in --ink-faint;\n     - \"8h working day\";\n     - another dot;\n     - verdict.word in --ink (e.g. \"Move on track, narrowly\").\n\n (2) CAPACITY (arrival delay 40ms).\n   - Header row: flex; align-items:baseline; justify-content:space-between; margin-bottom:12px.\n     - Left: capTitle, 11px/600/0.08em uppercase, muted.\n     - Right: capLabel at 14px, color --ink-muted or --overload.\n   - Bar: position:relative; display:flex; gap:2px; height:14px; border-radius:3px; animation from capAnim.\n     - Segments: width calc(h/cap*100% − 2px); flex:none; display:flex; gap:2px; height:100%; radius 2px; overflow hidden; box-shadow: inset 0 0 0 1px <line>.\n     - BAU segment: transparent, containing ceil(h) \"hour cells\". Each cell is flex:1 with radius 1.5px, coloured with the domain accent (or --overload when the day is over capacity).\n     - Project segment: soft domain fill + inset 1px accent outline.\n     - Free segment: transparent + inset 1px --hairline.\n     - Capacity marker: absolute, top:-5px, bottom:-5px (24px tall), left = CAPACITY/cap%, width 1px, background --ink. Opacity 1 only when over.\n   - Legend: flex; gap:24px; margin-top:12px; 13px muted. Each item is flex with gap 8px.\n     - BAU swatch: three 5×10px bars, radius 1px, --pc-accent, gap 2px.\n     - Project swatch: 19×10px, --pc-accent-soft fill + inset 1px --pc-accent.\n     - Free swatch: 19×10px with inset 1px --hairline.\n     - Each swatch is followed by its label and a value in mono 12px --ink.\n\n (3) PLAN (arrival delay 80ms): flex column, gap:36px.\n   - Section header: flex; baseline; space-between; border-bottom:1px solid --ink; padding-bottom:10px.\n     - Title: 20px/600, letter-spacing -0.01em.\n     - Note: 13px muted.\n   - Every plan row uses a 2-column grid: 64px hours gutter + minmax(0,1fr), column-gap 16px. The hours cell is 24px/500, line-height 1.2.\n   - Returns BAU card (only if r-ret runs that day).\n     - Line 1: flex; baseline; gap 12px; flex-wrap wrap. Contains:\n       - \"BAU · Private Credit\" at 11px/600/0.08em uppercase in --pc-accent;\n       - \"BD3, monthly\" in mono 12px muted;\n       - an optional note at 12px muted;\n       - a flex:1 spacer;\n       - the \"Routine ↗\" text button: 14px muted, hover --ink, gap 4px, with the 'north_east' icon at 16px.\n     - Line 2: margin-top 6px, space-between, gap 16px.\n       - Left: name at 20px/500, line-height 1.3.\n       - Right: inline-flex baseline, gap 6px, 15px, nowrap: a Roll counter plus \"of 12 funds\" in muted.\n     - Progress track: height 2px, --hairline, margin 12px 0 4px, radius 1px, overflow hidden. The fill is absolutely positioned, --pc-accent, width done/12.\n     - Fund grid: repeat(3, minmax(0,1fr)), column-gap 24px, 12 rows total (4 rows of 3).\n       - Each fund row is a button: flex, align center, gap 12px, height 40px, border 0, border-bottom 1px --hairline, transparent, text-align left, padding 0.\n       - Checkbox: 18×18px.\n       - Name: 14px, nowrap with ellipsis.\n       - At 1920 each fund column is about 281px.\n   - Other BAU rows (for example ManCo, or the post-move rotation). Same grid.\n     - Line 1: \"BAU · <domainName>\" in the domain accent, then the rule in mono 12px muted.\n     - Line 2: margin-top 6px. Name at 20px/500, plus a \"Routine ↗\" button.\n   - \"No BAU\" row: the hours cell reads \"0h\" in --ink-faint. The text is 15px, line-height 1.5, muted, padding-top 4px.\n   - Project focus blocks: same grid, one per project with hours that day.\n     - Line 1: \"Project · <domainName>\" in the project accent, then \"Focus block\" in mono 12px muted.\n     - Line 2: name at 20px/500 plus a \"Workspace ↗\" button.\n     - Goal: a <p> with margin 8px 0 10px, --font-display italic 17px, line-height 1.45, muted, max-width 62ch, text-wrap: pretty.\n     - Optional empty message: 14px, line-height 1.5, muted, padding 10px 0, border-bottom hairline.\n     - Task rows: button, width 100%, height 40px, gap 12px, bottom hairline.\n       - 18px checkbox.\n       - Text at flex:1, 15px.\n       - Hours in mono 12px muted.\n     - Milestone line: margin-top 12px, gap 10px, 13px muted. It starts with an 8×8px square rotated 45deg (a diamond) in the project accent.\n\nRIGHT COLUMN: flex column; gap:40px; min-width:0; padding-top:4px. It does NOT get the day-switch fade, only the arrival animation.\n\n (4) WEEK STRIP (arrival delay 120ms).\n   - Header: baseline, space-between, border-bottom 1px --ink, padding-bottom 10px, margin-bottom 16px.\n     - Title: 20px/600, -0.01em.\n     - Subtitle: mono 12px muted.\n   - Grid: repeat(5, minmax(0,1fr)), column-gap 14px. Column width is about 127.5px at 1920 and about 180.8px at 2560.\n   - Day card (clickable div):\n     - Box: min-width 0; flex column; gap 8px; padding 10px 8px; margin 0 -8px, so the background bleeds 8px into each gutter.\n     - Border: border-top 2px solid (--ink when selected, else --hairline); radius 0 0 6px 6px.\n     - Background: --paper-raised when selected, else transparent.\n     - Hover background: color-mix(in oklch, var(--ink) 3.5%, transparent). It is applied as !important, so it overrides the selected background.\n     - Label row: baseline, space-between, gap 4px.\n       - Left: \"Mon 5\" at 14px, weight 700 if selected else 500. On the real today it is followed by \"today\" at 11px/500 muted with margin-left 6px.\n       - Right: \"BD3\" in mono 11px muted.\n     - Mini bar: flex, gap 1px, height 6px, radius 1px. Segments have width calc(h/cap% − 1px) and radius 1px; hour cells have gap 1px and no radius.\n     - Load label: mono 11px, muted or --overload.\n     - Items stack: flex column, gap 6px, margin-top 2px.\n       - BAU chips, then milestone chips: align-self flex-start; inline-flex; gap 5px; height 20px; max-width 100%; padding 0 6px; radius 3px; 11px/500 --ink; nowrap, overflow hidden. Each chip has a 3×10px accent tick (radius 1px) and an ellipsised label.\n       - Then up to 2 project items: flex column, gap 4px.\n         - Name: 12px, line-height 1.3, --ink.\n         - Below the name: a 3px-tall bar (width h/4×100%, radius 1px, accent) plus hours in mono 10px muted, gap 6px.\n       - Then \"+N more\" at 11px muted.\n\n (5) MONTH SNAPSHOT (arrival delay 160ms).\n   - Header: baseline, space-between, border-bottom 1px --ink, padding-bottom 10px.\n     - Title: 20px/600.\n     - Right: flex baseline, gap 6px, 13px muted. A Roll counter (ink, 600), then \"of N done\", then an optional \"· N overdue\" in color-mix(risk 45%, ink) at weight 600.\n   - Bar chart: position relative; flex; align-items flex-end; gap 3px; height 60px; margin-top 16px. It has one bar per business day of the month (22 in Oct 2026, about 28.6px each at 1920). Each bar is flex:1, height 100%, relative, with 3 absolutely positioned layers anchored at the bottom:\n     - Plan outline: inset 1px box-shadow, radius 1px.\n     - Late fill: color-mix(in oklch, var(--risk) 55%, var(--paper)).\n     - Done fill: --ink.\n     - The today bar also has a tick: 1px×5px at left 50%, bottom -7px, --ink.\n   - Axis row: flex, space-between, margin-top 9px, mono 10px muted, showing \"1 Oct\" and \"30 Oct\".\n   - Legend: flex, gap 16px, margin-top 6px, 12px muted. Swatches are 8×8px, radius 1px:\n     - Done: --ink.\n     - Overdue: risk 55% mixed with paper.\n     - Due by then: inset 1px --ink-faint.\n   - Groups (BAU, then Projects).\n     - Group header: flex, align center, gap 10px, margin-top 18px, padding-bottom 6px, bottom hairline. Contains:\n       - Label: 11px/600/0.08em uppercase, muted.\n       - flex:1 spacer.\n       - 56×2px progress track (--hairline, radius 1px) with an --ink fill.\n       - Count: mono 11px muted, min-width 32px, right-aligned.\n     - Row grid: 26px | minmax(0,1fr) | auto, column-gap 4px, align center, min-height 34px, bottom hairline.\n       - 16×16px checkbox button.\n       - Text: 13px, nowrap with ellipsis. It is the item text (with done styling) + \" · sub\" in muted.\n       - Due label: mono 11px, nowrap, padding-left 8px.\n     - Empty text: 13px muted, padding 10px 0, bottom hairline.\n     - \"Show more\" button: border 0, transparent, padding 8px 0 0, 12px muted, hover --ink.\n\nSCROLL: the section scrolls (overflow:auto) when the content is taller than the viewport, as with the expanded month groups. Nothing is sticky.",
+ "components": [
+  {
+   "name": "TodayScreen (root)",
+   "description": "Two-column grid shell of the screen. The left column holds the day detail and gets the day-switch transition (sw). The right column holds the week strip and month snapshot. Five sections use a staggered arrival animation (arr) at delays 0/40/80/120/160ms.",
+   "states": [
+    "pre-arrival (opacity 0, translateY(6px))",
+    "arrived",
+    "day-switch fading (left column opacity 0, translateX(-8px*dir))",
+    "today mode (sel=null)",
+    "preview mode (sel = a BD ≠ TODAY)"
+   ]
+  },
+  {
+   "name": "DayHeader",
+   "description": "Parts, top to bottom:\n- Kicker: 'Today', 'Tomorrow · preview', or '<Weekday> · N business days ahead'.\n- A 'Back to today' button, shown only in preview.\n- 52px serif H1 with the long date ('Monday 5 October').\n- Meta line: 'BD{bdm} of {monthBDs}' in mono, a dot, '8h working day', a dot, then verdict.word in ink.\nThe verdict is global (about the move), not about the day.",
+   "states": [
+    "today",
+    "preview (+ Back to today button)",
+    "Back-to-today button hover (border --ink-faint)"
+   ]
+  },
+  {
+   "name": "CapacityBar (large, 14px)",
+   "description": "Header: capTitle ('Today’s capacity' / '<Weekday>’s capacity') and capLabel. capLabel reads '8h of 8h planned · 0h free', or '9.5h planned · 1.5h over' in --overload when over.\n\nThe segmented bar runs in this order:\n- BAU segments (one per BAU item), each split into ceil(h) hour cells in the domain accent;\n- project segments (soft domain fill + 1px accent inset outline);\n- a free segment (1px hairline outline), only when free > 0.\n\nWidths are proportional to cap = max(total, 8), minus a 2px gap each. When over, every BAU cell turns --overload, and project segments get an overload 20% mix fill with an --overload outline. A 1px ink capacity marker (24px tall) appears at 8/cap%. The bar pulses once (remi-pulse).\n\nOn hover, a segment sets the global hover to its item id. Other segments dim to 0.25.\n\nLegend: BAU / Project / Free with hours formatted by hrs().",
+   "states": [
+    "normal",
+    "over capacity (overload colours + marker + pulse)",
+    "hover-dimmed (0.25)",
+    "pre-arrival (all widths 0%)"
+   ]
+  },
+  {
+   "name": "PlanHeader",
+   "description": "Title 'Today’s plan' or '<Weekday>’s plan' (20px/600) with a note on the right: 'BAU first, then focus blocks' / 'As planned today; it moves if the plan does'. Bottom border 1px --ink.",
+   "states": [
+    "today",
+    "preview"
+   ]
+  },
+  {
+   "name": "ReturnsBauCard (r-ret special case)",
+   "description": "Shown only when the day's load contains item id 'r-ret'. Contents:\n- Gutter reads '6h' (hard-coded).\n- Kicker: 'BAU · Private Credit' in --pc-accent, plus 'BD3, monthly' (hard-coded mono).\n- In preview only, a note: 'Fresh checklist for this run · ticking opens on the day'.\n- 'Routine ↗' button (opens the Routines screen at r-ret).\n- Title 'Fund & security-level returns', with a Roll counter of done funds + 'of 12 funds'.\n- 2px progress line (--pc-accent, width done/12, animated).\n- 3-column checklist of the 12 FUNDS.\n\nIn today mode, fund rows toggle m.toggleFund(i). In preview they are all unchecked and inert (cursor default, no-op). Hovering the card sets hover 'r-ret'; the card dims to 0.3 when another item is hovered.",
+   "states": [
+    "today (interactive)",
+    "preview (read-only, unchecked, note shown)",
+    "dimmed 0.3",
+    "fund checked / unchecked"
+   ]
+  },
+  {
+   "name": "Checkbox (18px variant, used by funds and focus-block tasks)",
+   "description": "18×18px, box-sizing border-box, radius 3px, border 1.5px.\n- Done: border and background --ink.\n- Open: border --ink-faint, background transparent.\n\nThe check glyph is Material Symbols 'check' at 15px, line-height 1, colour --paper, font-variation-settings 'wght' 500 (no effect, because the font is loaded at wght 300 only). Glyph opacity is 1 when done and 0 when open. Glyph scale is 1 when done; when open it is 0.4, or 1 under reduced motion.\n\nTransitions:\n- background and border-color: 140ms ease-out;\n- glyph opacity: 140ms ease-out;\n- glyph transform: 180ms cubic-bezier(0.34, 1.5, 0.64, 1), an overshoot pop.\n\nLabel: colour --ink-muted with line-through (text-decoration-color --done) when done, --ink otherwise. The colour transitions over 240ms ease-out.",
+   "states": [
+    "unchecked",
+    "checked",
+    "reduced-motion (no scale pop)"
+   ]
+  },
+  {
+   "name": "OtherBauRow",
+   "description": "One row per BAU item except r-ret.\n- Gutter: hrs(h).\n- Kicker: 'BAU · Private Credit|Fixed Income' in the domain accent, plus the rule.\n  - For a real routine the rule is `${r.ruleShort} · ${r.stageName.toLowerCase()}`, e.g. 'BD8 · automating'.\n  - For the post-move rotation item (id 'rot') it is '4h a day'.\n- Name: the routine's full name ('Managing Committee pack'), or for the rotation 'Germany · Build'.\n- 'Routine ↗' button calls m.openRoutine(id).\n\nHovering sets hover to the routine id; the row dims to 0.3 otherwise.",
+   "states": [
+    "normal",
+    "dimmed 0.3"
+   ]
+  },
+  {
+   "name": "NoBauRow",
+   "description": "Shown when the day has no BAU items. The gutter shows '0h' in --ink-faint. Text: 'No BAU on this day. The next run is <Ddd D Mon>.' If there is no next run, the date is replaced by 'after the move'.",
+   "states": [
+    "visible only when no BAU"
+   ]
+  },
+  {
+   "name": "FocusBlock (project)",
+   "description": "One per project item in the day's load, in the order of the projects array.\n- Gutter: hrs(h), e.g. '2h'.\n- Kicker: 'Project · <domainName>' in the project accent + 'Focus block'.\n- Title: project name + 'Workspace ↗' (m.openProject(id)).\n- Goal in serif italic 17px, muted.\n- Task rows: the slice of Now tasks that fits this day's hours (see algorithms). Each has an 18px checkbox, text at 15px, and hours in mono 12px ('0.75h'). Clicking toggles m.toggleTask(t.id); this works in preview mode too.\n- Empty-state copy when there are no tasks.\n- Milestone line: a diamond + 'Next milestone: <name> · <Ddd D Mon>', or 'Milestone due this day: …'.\n\nHover sets the project id; the block dims to 0.3 otherwise.",
+   "states": [
+    "with tasks",
+    "no tasks planned",
+    "tasks used up before this day",
+    "milestone due this day",
+    "dimmed 0.3"
+   ]
+  },
+  {
+   "name": "WeekStrip",
+   "description": "Header:\n- Title: 'This week' if the displayed week is the one containing TODAY, else 'Week of D Mon'.\n- Subtitle: '<wkLabel> · pick a day to preview it', e.g. '5–9 Oct · pick a day to preview it' (en dash; the month is repeated only when the week spans two months: '28 Sep–2 Oct').\n\nThe grid has five columns for the Mon–Fri containing the selected day S. Non-business days (holidays) are filtered out, which leaves an empty trailing column.",
+   "states": [
+    "current week",
+    "other week (after previewing via dayReq)"
+   ]
+  },
+  {
+   "name": "WeekDayCard",
+   "description": "A clickable div that calls pick(n). Contents, top to bottom:\n- Label row: 'Mon 5' plus a muted 'today' tag on TODAY, and 'BD3' on the right. The label is weight 700 if the card is selected.\n- A 6px mini capacity bar: the same segs() logic with a 1px gap; the width transition has a 160ms delay. It pulses when over (400ms delay).\n- Load label: '7h of 8h', or '9.5h · over' in --overload.\n- Chips:\n  - one per BAU item: label '<short> <h>h' (e.g. 'Returns 6h'), soft domain background, accent tick;\n  - one per milestone dated that day across all projects: label '◆ <name>', transparent background, project accent tick. The label also goes in the title attribute as a tooltip.\n- Up to 2 project items, sorted by hours descending. Each shows the short name and a 3px bar whose width is h/4 (4h = 100%) in the domain accent, with hrs(h).\n- '+N more' when there are more than 2 projects.\n\nChips and items set the global hover. When the card is selected it gets a top border in --ink and a --paper-raised background. Hover background is ink 3.5%.",
+   "states": [
+    "selected (S)",
+    "not selected",
+    "is today (label suffix)",
+    "over capacity (overload label + pulse + overload colours)",
+    "hover (bg tint)",
+    "chip/item dimmed 0.3, mini segments dimmed 0.25"
+   ]
+  },
+  {
+   "name": "MonthSnapshot",
+   "description": "Always shows the calendar month of TODAY; it does not follow the selected day.\n\nHeader: '<MonthLong> so far' (e.g. 'October so far'), then a Roll counter of doneN, then 'of {total} done', then an optional '· {N} overdue'.\n\nCumulative bar chart, one bar per business day of the month. For each day the bar shows:\n- the outline height as items due by that day;\n- the late fill height as done + overdue;\n- the done fill on top.\nPast and today's bars get the --ink-faint outline; future bars get ink-faint 55% mixed with paper. Future days have no fills. The today bar has a tick under it. Tooltip (title attribute): 'Mon 5 Oct · 3 due by then, 2 done, 1 overdue'. Below: axis labels '1 Oct' and '30 Oct', and a legend: Done / Overdue / Due by then.\n\nTwo groups, 'BAU' (limit 4) and 'Projects' (limit 5). Each has a progress mini-bar and a 'done/total' count. Rows are shown open first by due date; done rows only appear when the group is expanded. A 'Show N more and M done' / 'Show less' toggle controls expansion.",
+   "states": [
+    "collapsed",
+    "expanded (per group, state.openG)",
+    "empty group ('Nothing due this month.')",
+    "all done ('All done for the month.')",
+    "pre-arrival (bars 0%)"
+   ]
+  },
+  {
+   "name": "MonthRow",
+   "description": "Grid 26px | 1fr | auto.\n- 16×16 checkbox button (aria-label 'Toggle'): border 1.5px, radius 3px, check glyph 13px with the same transitions as the 18px variant.\n- Text: 13px; the item text with done styling + ' · <sub>' in muted. The sub is 'BD3' for BAU rows or the project short name for project rows.\n- Due label in mono 11px:\n  - done: 'done 5 Oct' (--ink-faint, 400);\n  - overdue: 'overdue N BD' (color-mix(risk 45%, ink), 600);\n  - due today: 'today' (--ink, 600);\n  - otherwise 'Thu 15 Oct' (--ink-muted, 400).\n\nMilestone rows prefix the text with '◆ '. Hover sets the global hover to the routine id or project id. Dims to 0.3.",
+   "states": [
+    "open",
+    "done",
+    "overdue",
+    "due today",
+    "dimmed"
+   ]
+  },
+  {
+   "name": "Roll (child: Roll.dc.html)",
+   "description": "Odometer-style rolling text; the prop is value (string). Used for fundsDone and mo.doneN.\n\nNumeric values matching /^([+−-]?)(\\d{1,3})(?:\\.(\\d))?(\\D*)$/ are split into columns:\n- a sign column (['', '+', '−']);\n- 3 digit columns, left-padded with '' (empty cells collapse to zero width);\n- a '.' column;\n- a one-decimal digit column;\n- a static suffix.\n\nDate values like 'Wed 2 Dec' roll the weekday, digits and month.\n\nEach column is a 1.25em-tall overflow:hidden window. Inside it is a vertical stack of all possible cells, translated by translateY(-index×1.25em) with transition: transform var(--dur-slow) var(--spring-soft), which is 440ms. A hidden copy of the full text sizes the element; the rolling layer is aria-hidden. Line-height 1.25, inline-block, baseline aligned.",
+   "states": [
+    "value change → digits roll"
+   ]
+  }
+ ],
+ "dataConsumed": [
+  "model.TODAY: number. Day number (days since the Unix epoch, UTC) for 'today'. Hard-coded to dn('2026-10-05').",
+  "model.CAPACITY: number = 8. Hours per working day.",
+  "model.MOVE: day number for 2027-01-04. Used in monthSnap to exclude BAU occurrences on or after the move.",
+  "model.F: formatter helpers keyed by day number. The ones Today uses:\n- s(n) → 'Mon 5 Oct';\n- dm(n) → '5 Oct';\n- l(n) → 'Monday 5 October';\n- mon(n) → 'Oct';\n- monL(n) → 'October';\n- d(n) → 5;\n- iso(n) → '2026-10-05';\n- dn(iso) → day number.",
+  "model.CAL: business-day calendar.\n- days[n] = {n, iso, w (0=Sun), m (0-based month), d, y, bd (bool), bdm (BD index within the month, starting at 1, or null), hol (name or null)};\n- bds: sorted array of business-day numbers;\n- idx: map from day number to its index in bds;\n- nextBD(n), addBD(n, k), bdDiff(a, b) = idx[nextBD(b)] − idx[nextBD(a)].",
+  "model.loads: {[bdNumber]: DayLoad}.\n- DayLoad = {n, items: Item[], bau: number, proj: number, total: number, free: max(0, 8 − total), over: total > 8}.\n- Item = {id (routine id, 'rot', or project id), pid, kind: 'bau'|'proj', domain: 'pc'|'fi', h: number, name (routine short name, 'Country · Pass', or project short name)}.",
+  "model.pmap: {[projectId]: Project (derived)}.",
+  "model.P: derived projects[]. Fields Today reads:\n- id, name, short, goal;\n- accent ('var(--pc-accent)' or 'var(--fi-accent)');\n- domainName ('Private Credit' / 'Fixed Income');\n- forecastN (number|null);\n- now: [{m: milestoneName, due: iso, tasks: [{id, t: text, h: hours, due?: iso}]}];\n- next: [{m, due}];\n- milestones: derived and sorted [{name, date: iso}];\n- forecastS, sinceLabel, checkin (these three feed only the unused prompt).",
+  "model.routines: derived routines[]. Fields:\n- id, name, short, domain, kind ('monthly'|'weekly'|'daily'), bd, wd, h;\n- stage (0 Manual, 1 Automating, 2 Shadowed, 3 Handed over), stageName;\n- ruleShort ('BD8' | 'Weekly · Tue' | 'Daily');\n- next: first 3 occurrences on or after TODAY, [{n, s, after, today}].",
+  "model.occursOn(r, n): boolean. True when n is a BD and it matches the routine's rule: daily; weekly with w === r.wd; or monthly with bdm === r.bd.",
+  "model.FUNDS: string[12]. Fund names.",
+  "model.funds: boolean[12]. Tick state of the fund checklist. It is global and not keyed by run date.",
+  "model.tasks: {[taskId | 'ms:'+pid+':'+milestoneName]: boolean}. Done flags.",
+  "model.doneOn: {[id]: iso}. The date each task was ticked.",
+  "model.bauDone: {[routineId + ':' + iso]: iso-date-ticked}. Done state for non-returns BAU occurrences.",
+  "model.hover: string|null. The globally hovered item id (routine or project), used for cross-highlighting.",
+  "model.reduced: boolean. True only when props.motion === 'Reduced'.",
+  "model.verdict: {word, short, dot, tone, sentence, buffer, toRun}. Today renders only verdict.word.",
+  "model.dayReq: {n, t} | undefined. A request from other screens to preview day n; t is a timestamp used as the nonce.",
+  "model.feed: [{id, pid, kind, title, body, delta, tone: 'risk'|'overload'|'quiet', when, day?}]. Mapped but NOT rendered.",
+  "model.attention: [{id, pid, day?, kind: 'At risk'|'Overload'|'Stale', title, body, chip, tone}]. Mapped but NOT rendered.",
+  "model.prompt: the stalest project (since ≥ 7 days) or null. model.nextDue is the stalest project with a check-in. Both are computed but NOT rendered.",
+  "Actions consumed:\n- setHover(id|null), toggleFund(i), setAllFunds(bool), toggleBau(key), toggleTask(id);\n- openRoutine(id), openProject(id), openCheckIn(pid), go(screen).\n- openCheckIn and go are used only by the unused attention/prompt objects."
+ ],
+ "interactions": [
+  "Click a week day card (any card, including the currently selected one, which is a no-op): pick(n). This starts the day-switch: the left column fades out and shifts 8px. After 120ms, state.sel is set to n (null if n === TODAY), and the left column and the week selection re-render for day n.",
+  "Click 'Back to today' (preview only): pick(TODAY).",
+  "External preview request: when another screen calls model.previewDay(n), the shell sets dayReq {n, t: Date.now()} and switches to the Today screen. componentDidUpdate spots the new t and calls pick(n).",
+  "Click a fund row (today only): m.toggleFund(i) flips that fund's boolean. In preview the row is inert (cursor default).",
+  "Click a focus-block task row: m.toggleTask(t.id). The shell flips tasks[id], and sets doneOn[id] = ISO(TODAY) when ticking or deletes it when unticking. This is allowed in preview too.",
+  "Click a month-snapshot checkbox (only the 16px square is the button, not the whole row):\n- the returns row for TODAY: m.setAllFunds(!allFundsDone), which ticks or unticks all 12 funds;\n- any other BAU row: m.toggleBau('<routineId>:<iso>'), which stores the ISO of TODAY as the done date;\n- a project task: m.toggleTask(id);\n- a milestone row: m.toggleTask('ms:<pid>:<name>').",
+  "Click 'Show N more and M done' / 'Show less' under a month group: toggles state.openG[bau|proj]. Expanded shows all open rows, then all done rows.",
+  "Click 'Routine ↗' on the Returns card: m.openRoutine('r-ret'). On other BAU rows: m.openRoutine(id). This sets routineReq {id, t} and switches to the Routines screen.",
+  "Click 'Workspace ↗' on a focus block: m.openProject(p.id). This switches to the workspace screen directly, without a view transition, because viaCard is not passed.",
+  "Hover (mouseenter) sets the global hover id, and mouseleave clears it with setHover(null). Hover sources:\n- plan rows: the Returns card ('r-ret'), other BAU rows, focus blocks;\n- capacity bar segments (except free);\n- week mini-bar segments;\n- week chips (a milestone chip uses its project id);\n- week project items;\n- month rows (routine id or project id).\nEvery element tied to a different id dims to opacity 0.3 (0.25 for bar segments), with a 140ms ease-out transition. Hover state lives in the shell, so it cross-highlights between the capacity bar, plan, week strip and month list.",
+  "Hover styles:\n- week card background becomes ink 3.5% (via !important, so it also overrides the selected background);\n- 'Routine' / 'Workspace' / 'Show more' buttons turn --ink (no transition);\n- the 'Back to today' border turns --ink-faint.",
+  "Native tooltips (title attribute) on week chips (their full label) and on month bars ('Ddd D Mon · N due by then, N done, N overdue').",
+  "No keyboard shortcuts in this file. The shell has ⌘K (palette) and Esc. The week cards are divs with onClick, so they cannot be reached with the keyboard."
+ ],
+ "motion": [
+  "Arrival on mount: componentDidMount waits a double requestAnimationFrame, then sets arrived=true.\n- Five wrappers go from opacity 0 → 1 and transform translateY(6px) → none, using transition: opacity 140ms var(--ease-out) D, transform 140ms var(--ease-out) D.\n- Delays D: 0ms (header), 40ms (capacity), 80ms (plan), 120ms (week), 160ms (month).\n- Under reduced motion the transform is 'none' from the start, so only the opacity fade runs.\n- Because all screens stay mounted (hidden with visibility), this plays ONCE per app load, not on every navigation to Today.",
+  "Capacity bar grow-in: before arrival every segment width is '0%'. After arrival they animate to calc(h/cap*100% − 2px) with transition: width var(--dur-slow)=440ms var(--spring-soft) 90ms delay.\n- Opacity (hover dimming) uses var(--dur-fast)=140ms var(--ease-out).\n- The same width transition animates segments between days when you preview.",
+  "Week mini bars: transition: width 440ms var(--spring-soft) 160ms delay; opacity 140ms ease-out.",
+  "Overload pulse:\n- Capacity bar: animation 'remi-pulse 600ms var(--ease-out) 1 300ms', i.e. 1 iteration after a 300ms delay.\n- Over-capacity week mini bar: 'remi-pulse 600ms var(--ease-out) 1 400ms'.\n- Only when over && arrived && !reduced; otherwise 'none'.\n- @keyframes remi-pulse { 0% { box-shadow: 0 0 0 0 color-mix(in oklch, var(--overload) 50%, transparent); } 100% { box-shadow: 0 0 0 7px color-mix(in oklch, var(--overload) 0%, transparent); } }\n- Quirk: CSS will not restart the animation when you switch between two overloaded days, because the animation string stays the same.",
+  "Day switch (pick), which applies only to the LEFT column:\n- Phase 1: set fade=true and dir=±1. The left column goes to opacity 0 over 120ms var(--ease-out), and to transform translateX(dir × −8px) over var(--dur-base)=240ms var(--spring-soft). So going forward it slides left; going back it slides right.\n- Phase 2: after setTimeout 120ms, the new sel is set and fade=false. Opacity returns to 1 over 120ms, and the transform returns to none over 240ms spring. The new content slides back from the side it left toward.\n- Under reduced motion the transform stays 'none' (opacity only).\n- The week strip's selection changes at the 120ms swap. The selected card's background transitions over 140ms ease-out and its border-top colour over 240ms ease-out.",
+  "Fund progress line: width transition var(--dur-slow)=440ms var(--spring-soft).",
+  "Checkbox tick:\n- background and border-color: 140ms ease-out;\n- glyph opacity 0→1: 140ms ease-out;\n- glyph scale 0.4→1: 180ms cubic-bezier(0.34, 1.5, 0.64, 1), an overshoot 'pop'. Under reduced motion the scale is always 1.\n- Label colour: 240ms ease-out.\n- Strike-through appears instantly.",
+  "Month bars grow-in: heights are '0%' before arrival (pct returns '0%' while !arrived).\n- Plan outline: transition height 440ms var(--spring-soft), no delay.\n- Late and done layers: height 440ms var(--spring-soft), delay i×8ms (stagger across the ~22 bars, so the last starts at ~168ms).\n- Heights also animate when you tick items.",
+  "Month group mini progress (56×2px): width 440ms var(--spring-soft).",
+  "Hover dimming: opacity var(--dur-fast)=140ms var(--ease-out) on every dim-able element.",
+  "Roll counters (fundsDone, month doneN): each digit column animates transform translateY over var(--dur-slow)=440ms var(--spring-soft) when the value changes.",
+  "Screen-level (shell): the Today section fades with opacity var(--dur-base)=240ms var(--ease-out) and a 60ms delay when entering, and opacity 140ms ease-out when leaving (visibility switches after 140ms).",
+  "Tokens:\n- --ease-out: cubic-bezier(0.23, 1, 0.32, 1)\n- --spring-soft: linear(0, 0.049 5%, 0.156 10%, 0.283 15%, 0.408 20%, 0.522 25%, 0.62 30%, 0.702 35%, 0.769 40%, 0.864 50%, 0.922 60%, 0.956 70%, 0.976 80%, 0.987 90%, 1)\n- --dur-fast: 140ms; --dur-base: 240ms; --dur-slow: 440ms",
+  "Reduced motion:\n- :root[data-motion=\"reduced\"] and @media (prefers-reduced-motion: reduce) both set --spring-soft: steps(1, jump-start), so every spring transition becomes an instant jump.\n- In JS, model.reduced removes the translate on arrival and on day switch, removes the pulses, and removes the checkbox scale pop.\n- Opacity fades are kept."
+ ],
+ "algorithms": [
+  "Business-day calendar (from the shell):\n- Days are integers: n = round(Date.UTC(y, m−1, d) / 86400000).\n- A day is a BD if its weekday is Mon–Fri and it is not in HOL. HOL = {2026-12-25 Christmas Day, 2026-12-28 Boxing Day (substitute), 2027-01-01 New Year's Day, 2027-03-26 Good Friday, 2027-03-29 Easter Monday}.\n- bdm is a per-calendar-month counter of BDs, starting at 1.\n- The range is 2026-08-31 to 2027-04-30.\n- bdDiff(a, b) = idx[nextBD(b)] − idx[nextBD(a)].",
+  "dayLoad(n) (shell), computed for every BD.\n\nBAU items:\n- If n < MOVE: every routine with stage < 3 that occurs on n is added as {kind: 'bau', domain: 'pc' (hard-coded), h: r.h, name: r.short || r.name}.\n- Otherwise: the rotation segment containing n gives {id: 'rot', kind: 'bau', domain: 'fi', h: 4, name: '<country> · <Build|Refresh>'}.\n\nProject items: for each project with startN ≤ n ≤ (forecastN ?? targetN), take the first rule that applies:\n1. h = p.ov[iso] if an override exists;\n2. else if n ≥ MOVE, h = rateAfter;\n3. else if bdm = 3, h = bd3;\n4. else if bdm = 8, h = bd8;\n5. else h = rate.\nThe item is added if h > 0.\n\nTotals: bau = Σ BAU h, proj = Σ project h, total = bau + proj, free = max(0, 8 − total), over = total > 8.",
+  "Selected day: S = state.sel if it is non-null and loads[sel] exists; otherwise TODAY. isT = S === TODAY.\n- ahead = CAL.bdDiff(TODAY, S).\n- wdL is the long weekday name of S.\n- monthBDs is the count of BDs in S's month and year.\n- Kicker:\n  - isT: 'Today';\n  - ahead === 1: 'Tomorrow · preview';\n  - otherwise `${wdL} · ${ahead} business days ahead`. Past days produce negative numbers.",
+  "hrs(h) = (Math.round(h × 100) / 100) + 'h'. For example 0.75 → '0.75h' and 2 → '2h'.",
+  "segs(L, cap, on, hover, setHover, gap) builds the segment list for a bar.\n- cap = max(L.total, CAPACITY).\n- Width = on ? `calc(${h/cap*100}% - ${gap}px)` : '0%'.\n- Order: all BAU items, then all project items (in L.items order), then the free segment if free > 0.\n- A BAU segment has ceil(h) cells, each coloured --overload if L.over, else the domain accent.\n- A project segment's background is color-mix(in oklch, var(--overload) 20%, var(--paper)) if over, else the domain soft colour. Its outline is --overload if over, else the accent.\n- Free: transparent with a hairline outline.\n- Opacity 0.25 if hover is set and differs from the item id, else 1.\n- gap = 2 for the big bar and 1 for week bars.\n- Capacity marker left = CAPACITY/cap × 100%, visible only when over.",
+  "Focus block task slice. For each project item on day S:\n1. all = p.now.flatMap(ms => ms.tasks). On a preview day (!isT), filter out tasks that are already done.\n2. off = 0 if isT. Otherwise off = Σ of this project's planned hours on BDs n with TODAY ≤ n < S (from loads).\n3. Walk tasks cumulatively. Each task covers [a0, a1) where a1 = a0 + (+t.h || 0).\n4. Include a task if a1 > off + 0.01 and a0 < off + i.h − 0.01, i.e. it overlaps the window (off, off + dayHours) with a 0.01h tolerance.\n\nEmpty copy:\n- no tasks in all: 'No tasks planned in Now yet. Add them in the workspace.';\n- tasks exist but none in the window: 'The tasks in Now are used up before this day. Plan the next ones in the workspace.'\n\nOn today, the list includes done tasks, so done tasks still use up today's hours (see quirks).",
+  "Next milestone for a focus block:\n- nm = the first of [...p.now, ...p.next] that has due ≥ S, sorted by ISO string ascending.\n- Label: (due === S ? 'Milestone due this day: ' : 'Next milestone: ') + nm.m + ' · ' + F.s(due).\n- Empty string if there is none.",
+  "Week strip:\n- mon = S − (CAL.days[S].w − 1), the Monday of S's week.\n- Days: mon..mon+4, keeping only BDs.\n- wkLabel = d(mon) + (sameMonth(mon, mon+4) ? '' : ' ' + mon(mon)) + '–' + d(mon+4) + ' ' + mon(mon+4).\n- Title: 'This week' when mon equals TODAY's Monday; otherwise 'Week of ' + d(mon) + ' ' + mon(mon).\n\nPer day:\n- projs = project items sorted by h descending; the first 2 are shown; more = '+N more' when there are more than 2.\n- Item bar width = h/4 × 100%. It is not clamped, so over 4h it exceeds 100%.\n- Milestone chips = every project's derived milestones whose date equals n.\n- BAU chips label = `${name} ${h}h`.\n- loadLabel = over ? `${total}h · over` : `${total}h of 8h`.",
+  "Returns fund checklist:\n- done = isT ? count(funds true) : 0.\n- fundsPct = done/12 × 100%.\n- show = the day's items include id 'r-ret'.",
+  "otherBau:\n- BAU items with id ≠ 'r-ret'. The routine is looked up by id.\n- rule = r ? `${r.ruleShort} · ${r.stageName.toLowerCase()}` : '4h a day'.\n- name = r ? r.name : i.name.",
+  "noBau:\n- Shown when the day has no BAU items.\n- Text: 'No BAU on this day. The next run is ' + (the earliest occurrence after S across all routines' next[] arrays (only 3 per routine, counted from TODAY), as F.s, or 'after the move') + '.'",
+  "Month snapshot (always TODAY's month):\n- bds = the BDs of that month; mStart = first, mEnd = last.\n\nBAU rows:\n- For each routine with stage < 3, for each BD n in the month where n < MOVE and occursOn(r, n):\n  - key = `${r.id}:${iso(n)}`.\n  - If r-ret on TODAY: done = every fund ticked, and doneOn = TODAY.\n  - Otherwise: done = !!bauDone[key], and doneOn = dn(bauDone[key]).\n  - text = name + (kind === 'monthly' ? '' : ' · ' + dm(n)).\n  - sub = 'BD' + bdm; due = n; hid = r.id.\n\nProject rows (projects with forecastN ≠ null):\n- Every now-task with due = dn(t.due || ms.due) ≤ mEnd, with no lower bound, so earlier-month tasks count too. sub = p.short. doneOn = doneOn[id] or mStart.\n- Every next milestone with due ≤ mEnd becomes a row: id 'ms:<pid>:<m>', text '◆ ' + m.\n\nCounts:\n- total = row count; doneN = done rows; lateN = rows not done with due < TODAY.\n- Header: 'N overdue' if lateN > 0.\n\nBars: for each month BD n (index i):\n- plan = count(due ≤ n).\n- past = n ≤ TODAY.\n- dn = past ? count(done && doneOn ≤ n) : 0.\n- late = past ? count(due < n && !(done && doneOn ≤ n)) : 0.\n- Heights: plan → pct(plan); late layer → pct(dn + late); done layer → pct(dn), where pct(k) = arrived && total ? k/total × 100% : 0%.\n- Transition delay = round(i × 8) ms.\n- Outline colour: past → --ink-faint; otherwise color-mix(in oklch, var(--ink-faint) 55%, var(--paper)).\n\nRow due label:\n- done → 'done ' + dm(doneOn);\n- late → 'overdue ' + bdDiff(due, TODAY) + ' BD';\n- due today → 'today';\n- otherwise F.s(due).\n\nGroups (BAU limit 4, Projects limit 5):\n- open rows sorted by due ascending; done rows sorted by doneOn descending.\n- Collapsed: the first `lim` open rows. Expanded: all open, then all done.\n- hidden = open.length − shown open.\n- count = `${done}/${items}`; pct = done/items.\n- empty = items.length === 0 ? 'Nothing due this month.' : (no open && !expanded) ? 'All done for the month.' : null.\n- more = expanded ? 'Show less' : (hidden || done) ? 'Show ' + ['<hidden> more', '<done> done'].filter(Boolean).join(' and ') : null.\n\nAxis: from = '1 ' + mon(TODAY), which is always '1' even if the first BD is later; to = dm(mEnd).",
+  "Verdict (shell; Today shows only .word):\n- pcP = the PC projects.\n1. If any PC forecastN ≥ MOVE: word 'Off track for the move'.\n2. Else if the returns project forecastN ≥ DEC_RUN (2026-12-03): 'Move at risk'.\n3. Else: 'Move on track, narrowly' if any project has status 'risk' (bdDiff(target, forecast) > 0), otherwise 'Move on track'.",
+  "Roll: parses the value into rolling columns. Numeric pattern /^([+−-]?)(\\d{1,3})(?:\\.(\\d))?(\\D*)$/. Date pattern /^(?:(Mon|…|Sun) )?(\\d{1,2}) (Jan|…|Dec)$/. Each column translates by −index × 1.25em.",
+  "Unused but computed (the earlier design's 'What changed' / 'Needs attention' / check-in prompt):\n- feed tone mapping:\n  - risk → markBg --risk, round; chip background risk 20% mixed with paper; chip text risk 45% mixed with ink.\n  - overload → markBg --overload, radius 1px; chip background overload 14% mixed with paper; chip text overload 75% mixed with ink.\n  - quiet → transparent mark with an --ink-faint outline; chip text muted; chip outline hairline.\n- attention: the Stale item for the prompted project is filtered out.\n  - kindFg: risk 45% mixed with ink / --overload / muted.\n  - actLabel: 'See day' (go('timeline')), 'Check in' (openCheckIn(pid)), or 'Open plan' (openProject).\n- attnCount = attention.length + (prompt ? 1 : 0)."
+ ],
+ "backendImplications": [
+  "A business-day calendar service (core/utils): holiday calendar (the region is still open: UK vs South Africa), BD index per month (bdm), addBD, bdDiff, and the list of BDs in a range. The frontend needs the BD metadata for any date shown.",
+  "Day-load computation: dayLoad per BD (BAU occurrences from routine rules, the post-move rotation, and project hours from override → rateAfter → bd3/bd8 → rate). It belongs in a services layer, exposed as GET /api/days?from=&to= (week strip, capacity) or GET /api/days/{date}/load. It returns items [{id, kind, domain, h, name, pid}], bau, proj, total, free, over. Capacity (8h) should be a user setting, not a constant.",
+  "A Today/day-plan endpoint, e.g. GET /api/today?date=YYYY-MM-DD, returning:\n- the header: date, bdm, monthBDs, kicker metadata, verdict;\n- the load;\n- the focus blocks: project, hours, the sliced tasks, the next milestone, and empty-state reason;\n- other BAU rows;\n- the next BAU run when the day has none.\nThe task-slicing algorithm (cumulative hours offset by earlier days' allocation from today) should run server-side or in a shared util, so Timeline/Calendar get the same answer.",
+  "Routine run checklists: the fund checklist must be keyed per routine occurrence (routine_id + run date), not a global boolean[12]. It needs a checklist-items entity per routine (the 12 FUNDS list, editable) and completion rows per occurrence. Endpoints: PATCH /api/routines/{id}/runs/{date}/items/{itemId}, and a bulk 'set all' for the month-snapshot toggle.",
+  "BAU occurrence completion: a table keyed by (routine_id, occurrence_date) with a completed_at timestamp. Toggle endpoint: POST/DELETE /api/routines/{id}/runs/{date}/complete. Record the real completion date, not a hard-coded TODAY.",
+  "Task and milestone completion: tasks.done with done_at (the doneOn map). Milestones currently toggle as pseudo-tasks 'ms:<pid>:<name>'. They need real milestone ids and a completed flag. Endpoint: PATCH /api/tasks/{id} {done}; PATCH /api/milestones/{id} {done}.",
+  "Month snapshot endpoint: GET /api/month-snapshot?month=YYYY-MM returns BAU occurrences and project tasks/milestones due ≤ month end, each with due, done and doneOn. It also returns per-BD cumulative plan/done/late counts, or the client computes them from the rows.",
+  "Routine next occurrences (for the noBau copy): the service should find the next occurrence after an arbitrary date, not only the 3 from today.",
+  "Verdict computation (move status) as a service used by both the header and Today.",
+  "Feed/attention/prompt are computed but not rendered on Today in this version. The spec still lists 'What changed' and 'Needs attention' for Today. The backend should still provide GET /api/feed and GET /api/attention (at risk, overload days up to MOVE+10 BD, stale ≥ 7 days) for when they are rendered.",
+  "Hover cross-highlighting is purely client state; no backend.",
+  "Current persistence is localStorage key 'remi.v1', a whole-state JSON blob. It must become a DB with the entities above. The per-field shapes are listed under persistence."
+ ],
+ "risksAndQuirks": [
+  "TODAY is hard-coded to 2026-10-05, MOVE to 2027-01-04 and DEC_RUN to 2026-12-03 in the shell. The shell header's 'Mon 5 Oct · BD3' and '61 business days' are literal text. All of these must come from the real date and settings.",
+  "Hard-coded copy and values in Today:\n- '8h working day', 'of 8h planned', '…h of 8h' (it should use CAPACITY);\n- the Returns card gutter '6h' (it should be the routine's h);\n- 'BD3, monthly' (it should be the routine's ruleShort);\n- 'of 12 funds' and fundsPct = done/12 (it should use FUNDS.length);\n- 'BAU · Private Credit' on the Returns card;\n- the '4h a day' fallback for the rotation.",
+  "Special-casing: the routine id 'r-ret' is treated as the Returns routine with a fund checklist. Production needs a generic 'routine with checklist' concept.",
+  "model.funds is one global boolean[12], not tied to a run date. Ticks from October would still be there on the November BD3. Preview days always show unchecked (done = 0).",
+  "Today's focus-block task list includes done tasks, including ones completed on earlier days (e.g. ret-1, done 1 Oct). Their hours still count toward today's slice. That can push today's real tasks out of the block and show old ticked tasks. Preview days exclude done tasks. This asymmetry is intentional-ish (ticked tasks stay in place during the day) but should be based on done-today vs done-earlier.",
+  "The kicker for past days reads '<Weekday> · -N business days ahead'. You can reach a past day through the week strip when today is mid-week, or through dayReq. The blocks offset loop is also meaningless for past days.",
+  "A holiday inside the week leaves the 5-column grid with an empty trailing column rather than a gap in place.",
+  "The month snapshot axis 'from' is always '1 <Mon>' even if the first BD is the 2nd/3rd. The snapshot is always TODAY's month; it does not follow the previewed day.",
+  "Month project rows include every Now task with due ≤ month end, including overdue tasks from previous months, but only 'next' milestones due ≤ month end. Now-milestones themselves are not rows. A done project item with no doneOn falls back to mStart. BAU done dates record TODAY, not the real tick time.",
+  "The month bar 'late' expression has a no-op '+ (n === TODAY ? 0 : 0)'. doneToday is an unused variable.",
+  "renderVals computes feed, attention, attnCount, prompt and noPrompt, but the template never renders them. The earlier design (screenshots 01-week.png, month.png) had 'What changed' and 'Needs attention' sections and a 'Check-in due' prompt card in the right column. SPEC.md and the design brief still require 'What changed since yesterday' and 'Needs attention'. Decide whether to restore them.",
+  "model.reduced only checks props.motion === 'Reduced', not prefers-reduced-motion. The CSS spring token does respect the media query, so JS-driven motion (translate, pulse, scale pop) ignores the OS setting. Production should use one reduced-motion source.",
+  "The arrival animation runs only on first mount, because the shell keeps every screen mounted and toggles opacity/visibility. state.sel (the previewed day) and openG also persist when you navigate away and back.",
+  "Hover is global shell state. The week card hover !important overrides the selected card background. The 'Routine'/'Workspace' hover colour has no transition.",
+  "Week item bars use width h/4 × 100%, which overflows beyond 100% for projects over 4h/day.",
+  "In segs(), each segment subtracts the full gap. With n segments and n−1 flex gaps, the bar leaves gap px unused at the right. BAU hour cells use ceil(h), so fractional routines show whole cells. The legend BAU/Project swatches are always PC-coloured, even after the move when BAU is FI.",
+  "The check glyph sets font-variation-settings 'wght' 500, but the Material Symbols font is loaded with wght 300 only, so it has no effect.",
+  "Week day cards are clickable <div>s (no button role or keyboard access). Only the 16px square in month rows is clickable, not the whole row. There are no focus styles anywhere in this file.",
+  "The CSS pulse animation will not replay when switching between two overloaded days (same animation string).",
+  "pick() uses a 120ms setTimeout. Rapid clicks cancel the timer (clearTimeout), but dir/fade can flicker. dayReq detection relies on a timestamp nonce in componentDidUpdate.",
+  "DayLoad BAU items are hard-coded to domain 'pc' before the move, whatever the routine's domain.",
+  "Floating-point totals such as '9.5h · over' and L.total − CAPACITY are printed unrounded in capLabel and loadLabel; only hrs() rounds to 2dp."
+ ],
+ "localState": [
+  "arrived: boolean (initially false). Set true after a double rAF in componentDidMount. It drives the arrival fade/slide, the bar grow-ins (widths and heights are 0% until then) and the pulse gating.",
+  "sel: number|null. The previewed BD. null means TODAY. Set 120ms after pick().",
+  "fade: boolean. True during the 120ms day-switch fade-out of the left column.",
+  "dir: 1 | -1. Direction of the day switch. It sets the translateX sign (−8px × dir).",
+  "openG: {bau?: boolean, proj?: boolean}. Per-group expanded state of the month snapshot lists.",
+  "Instance fields (not state):\n- this.ft: day-switch timeout handle, cleared on unmount;\n- this._req: the last dayReq.t handled."
+ ],
+ "copyText": [
+  "Kicker: 'Today' | 'Tomorrow · preview' | '<Weekday> · N business days ahead'",
+  "'Back to today'",
+  "H1 long date, e.g. 'Monday 5 October'",
+  "'BD3 of 22' · '8h working day' · verdict.word ('Move on track, narrowly' / 'Move on track' / 'Move at risk' / 'Off track for the move')",
+  "'Today’s capacity' | '<Weekday>’s capacity' (curly apostrophe ’)",
+  "'8h of 8h planned · 0h free' | '9.5h planned · 1.5h over'",
+  "Legend: 'BAU 6h', 'Project 2h', 'Free 0h'",
+  "'Today’s plan' | '<Weekday>’s plan'; note: 'BAU first, then focus blocks' | 'As planned today; it moves if the plan does'",
+  "Returns card: '6h', 'BAU · Private Credit', 'BD3, monthly', 'Fresh checklist for this run · ticking opens on the day' (preview only), 'Routine' + north_east icon, 'Fund & security-level returns', '<n> of 12 funds'",
+  "Fund names: 'Senior Direct Lending I', 'Senior Direct Lending II', 'Unitranche Partners', 'Mezzanine Opportunities', 'Asset-Backed Finance', 'Infrastructure Debt', 'Real Estate Debt', 'Trade Finance', 'Special Situations', 'Opportunistic Credit', 'Credit Co-invest', 'Evergreen Income'",
+  "Other BAU: 'BAU · Private Credit' / 'BAU · Fixed Income', rule e.g. 'BD8 · automating' or '4h a day'",
+  "'No BAU on this day. The next run is Mon 12 Oct.' / '… The next run is after the move.'",
+  "Focus block: 'Project · Private Credit', 'Focus block', 'Workspace' + north_east icon",
+  "'No tasks planned in Now yet. Add them in the workspace.'",
+  "'The tasks in Now are used up before this day. Plan the next ones in the workspace.'",
+  "'Next milestone: <name> · Fri 16 Oct' | 'Milestone due this day: <name> · <date>'",
+  "Week: 'This week' | 'Week of 12 Oct'; sub '5–9 Oct · pick a day to preview it'; day label 'Mon 5' + 'today'; 'BD3'; '7h of 8h' | '9.5h · over'; chips 'Returns 6h', '◆ <milestone>'; '+2 more'",
+  "Month: 'October so far', '<n> of 17 done', '· 1 overdue'; axis '1 Oct' / '30 Oct'; legend 'Done', 'Overdue', 'Due by then'; groups 'BAU', 'Projects'; count '0/2'",
+  "Month row due labels: 'done 5 Oct', 'overdue 1 BD', 'today', 'Thu 15 Oct'",
+  "Month row text: routine name (e.g. 'Fund & security-level returns · BD3'); tasks '<task> · <project short>'; milestones '◆ <name> · <project short>'",
+  "'Nothing due this month.' | 'All done for the month.' | 'Show 8 more and 2 done' | 'Show less'",
+  "Bar tooltip: 'Mon 5 Oct · 3 due by then, 2 done, 1 overdue'",
+  "Unrendered (computed): prompt text 'Its forecast of <Ddd D Mon> hasn’t been tested since <Ddd D Mon>. Two minutes now keeps the plan honest.'",
+  "Unrendered: 'Every plan has had a check-in this week. Next due: <short>, last checked <sinceLabel lowercased>.'",
+  "Unrendered: attention action labels 'See day' / 'Check in' / 'Open plan'",
+  "aria-label 'Toggle' on month checkboxes"
+ ],
+ "persistence": [
+  "Today.dc.html has no persistence of its own. sel and openG are in-memory component state.",
+  "The shell persists to localStorage key 'remi.v1' with a 250ms debounce whenever any of these change: projects, tasks, feed, funds, routines, doneOn, bauDone, notes.\n- Stored shape: {projects, tasks: {[id]: bool}, feed, funds: bool[12], routines, doneOn: {[id]: iso}, bauDone: {['<routineId>:<iso>']: iso}, notes: {[iso]: [{id, t: 'HH:MM', text}]}, m2: true}.\n- Migration 'm2' inserts task man-0 ('Send the NAV bridge spec to Finance', 0.5h, due 2026-10-02) at the start of the ManCo project's first Now milestone when it is missing.\n- Seeds for a fresh store: funds = the first 5 ticked; tasks = {'ret-1': true, 'fi-1': true}; doneOn = {'ret-1': '2026-10-01', 'fi-1': '2026-10-02'}; bauDone = {}.\n- 'Reset to sample data' in the palette clears the key."
+ ],
+ "sampleData": "The seed state as rendered on Mon 5 Oct 2026 (BD3 of 22) matches the screenshots.\n\nLeft column:\n- Day load: r-ret 6h BAU + ManCo automation 2h (bd3 rate), so 8h of 8h with 0h free (not over). Legend: BAU 6h, Project 2h, Free 0h.\n- Returns card: 5 of 12 funds ticked (the first 5).\n- One focus block, ManCo pack automation, 2h. Goal: 'The ManCo pack builds itself from source data; the analyst only writes commentary.' Its tasks, sliced from the cumulative hours:\n  - 'Send the NAV bridge spec to Finance', 0.5h;\n  - 'Map NAV bridge to source tables', 0.75h;\n  - 'Template the performance section', 0.75h.\n- Milestone line: 'Next milestone: Performance section builds itself · Fri 16 Oct'.\n\nWeek strip ('This week', '5–9 Oct · pick a day to preview it'):\n- Mon 5 (BD3, today): 8h of 8h, chip 'Returns 6h', item 'ManCo automation 2h'.\n- Tue 6 to Fri 9 (BD4–BD7): 7h of 8h each. Items: Returns pipeline 3.5h and ManCo automation 1.5h, plus '+2 more' (Handover playbook 1h, FI onboarding 1h).\n\nOther notable days:\n- Mon 12 Oct (BD8): ManCo pack 4h BAU + ret 2h + manco 1.5h + play 0.5h = 8h.\n- Wed 4 Nov (BD3): overloaded. r-ret 6h + ret override 3.5h = 9.5h, shown as '9.5h · over'.\n\nMonth snapshot 'October so far': 2 of 17 done, 1 overdue.\n- BAU group, 0/2:\n  - 'Fund & security-level returns · BD3' — today;\n  - 'Managing Committee pack · BD8' — Mon 12 Oct.\n- Projects group, 2/15, showing 5 open rows:\n  - 'Send the NAV bridge spec to Finance · ManCo automation' — overdue 1 BD;\n  - 'Parse and validate the extract · Returns pipeline' — Thu 15 Oct;\n  - 'Map source files for the last 4 funds' — Fri 16 Oct;\n  - 'Reconcile September to administrator NAVs' — Fri 16 Oct;\n  - 'Handle FX-hedged share classes' — Fri 16 Oct.\n  - Then 'Show 8 more and 2 done'. The done items are ret-1 (1 Oct) and fi-1 (2 Oct). The '◆ Curve & auction data feeds' milestone (30 Oct) is one of the projects rows.\n\nVerdict word: 'Move on track, narrowly'. Returns is forecast Wed 2 Dec against a Fri 27 Nov target (+3 BD), which is before DEC_RUN (3 Dec).\n\nProjects:\n- Returns pipeline automation (ret): rate 3.5, bd3 0, bd8 2, override 2026-11-04 = 3.5.\n- ManCo pack automation (manco): rate 1.5, bd3 2, bd8 1.5, override 2026-11-04 = 0.\n- PC handover playbook (play): rate 1, bd8 0.5.\n- FI onboarding & data access (fion): rate 1, rateAfter 1.\n- Alpha engine v0 (alpha): no forecast, starts 3 Dec.\n\nRoutines:\n- r-ret: 'Fund & security-level returns', short 'Returns', BD3, 6h, stage 1 (Automating).\n- r-man: 'Managing Committee pack', short 'ManCo pack', BD8, 4h, stage 1.\n- The post-move rotation (id 'rot', 4h/day, FI) runs from 4 Jan: Germany Build 6 BD, France 5, Italy 6, Spain 5, NL/BE/AT/PT/IE/FI 4 each, then a Germany Refresh of 3.",
+ "externalCalls": [
+  "No fetches or AI calls in Today.dc.html.",
+  "Fonts (loaded by the shell's helmet):\n- Google Fonts: Albert Sans (UI, wght 300–700, italic 400–600), JetBrains Mono (400, 500), Libre Caslon Text (400, 700, italic 400).\n- Material Symbols Outlined, subset: icon_names include chevron_left, north_east and check (the icons Today uses), opsz 20..24, wght 300, FILL 0..1, display=block.",
+  "Child component: Roll.dc.html via <dc-import name=\"Roll\" value=…>.",
+  "Runtime: support.js (dc runtime). The style-hover attribute compiles to a generated :hover class whose declarations are all !important. sc-if renders its children when the value is truthy, so '' and null hide them."
+ ],
+ "actionsInvoked": [
+  "m.toggleFund(i): flips funds[i] in the global boolean[12]. Called from fund rows, today only.",
+  "m.setAllFunds(bool): sets all 12 funds. Called from the month-snapshot row for the returns occurrence on TODAY.",
+  "m.toggleBau(key): key = '<routineId>:<iso>'. Adds bauDone[key] = ISO(TODAY), or deletes it. Called from month-snapshot BAU rows.",
+  "m.toggleTask(id): flips tasks[id]. Sets doneOn[id] = ISO(TODAY) when ticking, deletes it when unticking. Called from focus-block task rows and month project/milestone rows; milestone ids look like 'ms:<pid>:<name>'.",
+  "m.openRoutine(id): sets routineReq {id, t: Date.now()} and screen 'routines'. Called from the 'Routine ↗' buttons.",
+  "m.openProject(id): switches to the workspace with ws = id and no view transition. Called from 'Workspace ↗'.",
+  "m.setHover(id|null): global hover highlight. Called from mouseenter/mouseleave on most items.",
+  "Computed but unreachable (not rendered): m.go('timeline') via 'See day'; m.openCheckIn(pid) via 'Check in' and the prompt; m.openProject(pid) via 'Open plan'.",
+  "Consumed from other screens: model.previewDay(n) sets dayReq and screen 'today'. Today reacts with pick(n)."
+ ]
+}

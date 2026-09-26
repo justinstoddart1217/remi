@@ -1,0 +1,242 @@
+### 1. frontend/ tree
+- `frontend/index.html`: no external URLs. The CSP is sent as a FastAPI header (see §4).
+- Root config: `package.json`, `vite.config.ts`, `tsconfig.json`, `eslint.config.js`, `playwright.config.ts`.
+- `frontend/openapi.json`: dumped by `python -m utils.dump_openapi`.
+- `scripts/subset-icons.py`: fonttools instancer plus subsetter.
+- `src/main.tsx`
+- `src/app/`: `router.tsx`, `RootLayout.tsx`, `providers.tsx` (QueryClient, ErrorBoundary), `SetupGate.tsx` (sends first run to `/setup`), `useAppearance.ts`.
+- `src/api/`
+  - `schema.d.ts` (generated)
+  - `client.ts`: `createClient<paths>({ baseUrl: '/api' })`
+  - `keys.ts`
+  - `queries/`: `bootstrap.ts`, `projects.ts`, `checkins.ts`, `routines.ts`, `notes.ts`, `settings.ts`, `textbook.ts`
+- `src/stores/` (Zustand): `ui.ts`, `overlays.ts`, `hover.ts`, `planMoves.ts`.
+- `src/lib/`: `calendar.ts`, `format.ts`, `keyboard.ts`, `focus.ts`, `viewTransition.ts`, `arrival.ts`, `reducedMotion.ts`, `stage.ts`, `timers.ts`.
+- `src/styles/`
+  - `tokens.css`: verbatim
+  - `derived.css`, `base.css`, `fonts.css`, `keyframes.css`, `view-transitions.css`, `motion.css`
+- `src/assets/fonts/material-symbols-remi.woff2`
+- `src/shell/`: `AppShell`, `Stage`, `NavRail`, `HeaderBar`, `ScreenStack`, `CommandPalette/`, `DrawerHost`.
+- `src/components/`: one folder per shared component in the spec, each with `X.tsx` and `X.module.css`.
+  - Roll, Checkbox, CapacityBar, DeltaChip, StaleBadge, DomainTag, DomainDot, Eyebrow, SectionTitleRow, BauChip
+  - MilestoneDiamond (with its forecast-end, ghost and target variants), TimelineBar, BauTick, RotationSegment, RotationTile, ConfidencePips
+  - SegmentedControl, BDStepper, WeekdayPicker, HandoverStepper, InlineEditable, BusinessDayDatePicker
+  - SidePanel, Drawer, HoverTooltip, Button, TwoStepConfirmButton, ProgressRule, EmptyState, Toast, Icon, ErrorBoundary
+- `src/screens/`: `home/`, `setup/`, `today/`, `notes/`, `timeline/`, `calendar/`, `projects/`, `workspace/`, `routines/`, `transition/`, `checkin/`, `textbook/`, `foundations/` (dev only).
+- `src/test/`: `fixtures/` holds the design sample data as msw handlers, plus `setup.ts`.
+- `e2e/visual.spec.ts`: runs at 1920×1080 and 2560×1440 with the backend's `REMI_TODAY=2026-10-05` and the fixture database.
+
+### 2. Libraries (minimum versions; the lockfile pins exact ones)
+- **Core:** `react`/`react-dom` ^19.2, `typescript` ~5.9, `vite` ^7 (use 8 if it is stable when installing), `@vitejs/plugin-react` ^5.
+- **tsconfig:** `strict`, `noUncheckedIndexedAccess`, `noImplicitOverride`, `verbatimModuleSyntax`.
+- **Routing and data:** `react-router` ^7.9 in data mode (`createBrowserRouter`), `@tanstack/react-query` ^5.90, `zustand` ^5.0.
+- **API types:**
+  - `openapi-typescript` ^7.9 (dev) and `openapi-fetch` ^0.14.
+  - `npm run gen:api` runs `openapi-typescript openapi.json -o src/api/schema.d.ts`.
+  - CI fails if the generated file drifts from the committed one.
+- **Fonts (latin and latin-ext subsets only):**
+  - `@fontsource-variable/albert-sans` ^5: `wght.css` and `wght-italic.css`.
+  - `@fontsource/libre-caslon-text` ^5: `400.css`, `700.css`, `400-italic.css`.
+  - `@fontsource/jetbrains-mono` ^5: `400.css` and `500.css`.
+- **Icons:** Material Symbols Outlined variable TTF plus its `.codepoints` file, taken from google/material-design-icons (Apache-2.0) and committed.
+  - `subset-icons.py` runs `fonttools varLib.instancer wght=300 GRAD=0 opsz=20:24 FILL=0:1`, then `pyftsubset --unicodes=<the 28 codepoints> --flavor=woff2`.
+  - The 28 icons are the app's 16 plus Textbook's 12. The file should come out at about 30 KB.
+  - Pinning wght to 300 is faithful: the prototype only ever loaded 300, so its 'wght 400' requests rendered at 300.
+  - `<Icon name>` renders the codepoint character, so it does not depend on ligatures.
+- **KaTeX:** `katex` ^0.16.22, lazy-loaded inside the Textbook chunk. Vite bundles its CSS and fonts.
+- **Utility:** `clsx` ^2.
+- **Test:** `vitest` ^3, `@testing-library/react` ^16, `msw` ^2, `@playwright/test` ^1.55, `pixelmatch` (dev only, used to diff against the prototype).
+- **Dev server:** `server: { host: '127.0.0.1', strictPort: true, proxy: { '/api': 'http://127.0.0.1:8765' } }`.
+- **Production:** FastAPI serves `dist/` with a fallback to the SPA's `index.html`.
+
+### 3. Routing
+- **Route table:**
+  - `/` is Home.
+  - `/setup` is first-run setup; SetupGate redirects there while `settings.setupComplete` is false.
+  - `/app` is the AppShell layout. Its children are:
+    - `today/:day?` (replaces `previewDay`)
+    - `notes/:day?`
+    - `timeline`
+    - `calendar/:month?` with `?day=` (opens the day panel)
+    - `projects`
+    - `projects/:projectId` (Workspace)
+    - `routines` with `?focus=<routineId>` or `#rotation` (replaces the `routineReq` token; fixes the dead `'rot'` link)
+    - `transition`
+  - `/textbook/:pageId?`
+  - `/foundations`: registered only when `import.meta.env.DEV`, as a lazy import, so production drops it.
+- **All 8 screens stay mounted:**
+  - Child routes carry `handle: { screen }` and `element: null`. They only validate paths and provide params.
+  - `ScreenStack` does not use `<Outlet>`. It always renders eight `<section className={s.screen} data-state="active|idle">`, and `useMatches()` picks the active one.
+  - Do not use React 19.2 `<Activity>`: it hides with `display:none`, which breaks the fade-out.
+  - Each screen exposes `useIsActiveScreen()`. Hidden screens use it to pause expensive work (the Notes 20 s clock, Timeline tooltips, ResizeObservers).
+- **Cross-fade (exact):**
+  - Entering screen: `opacity var(--dur-base) var(--ease-out) 60ms, visibility 0s linear 0s`.
+  - Leaving screen: `opacity var(--dur-fast) var(--ease-out), visibility 0s linear var(--dur-fast)`.
+  - `[data-instant]` on `<main>` sets `transition: none`.
+  - Section overflow follows the spec: Notes and Timeline are `hidden`, the rest `auto`.
+- **Workspace id:**
+  - `ui.lastWorkspaceId` updates whenever the route has `:projectId`.
+  - Because the workspace stays mounted, it keeps its last project while hidden.
+  - An unknown id falls back to the first project. With no projects at all, it shows the empty state.
+- **Browser back:**
+  - Every `go()` is a `navigate()` push, so Back and Forward replay the same cross-fade.
+  - Scroll survives because sections never unmount. Do not add `<ScrollRestoration>`; the window itself never scrolls.
+  - Overlays (drawer, palette, panels) stay out of history. Navigating closes the palette but, as in the prototype, not the drawer.
+- **Home ↔ app:**
+  - Going Home: the rail Home button fades the stage out (180 ms ease-out), then `navigate('/')`. Under reduced motion it navigates immediately.
+  - Home cards: expand overlay (140 ms fade, then the 420 ms spring from +120 ms), then `navigate('/app/today')` at +520 ms.
+  - The AppShell unmounts when leaving /app, but the TanStack Query cache keeps re-entry instant.
+
+### 4. Styling
+- **Tokens:**
+  - `tokens.css` is Remi.dc.html lines 18–43 copied byte for byte: `:root`, `data-motion` and the `@media` reduced rule. The brand swap edits only this file.
+  - `base.css` holds lines 44–48 and the placeholder rule from `applyTweaks`. Drop the dead date-picker indicator rule.
+  - `keyframes.css` holds `remi-pulse` / `remi-settle` / `remi-tick`. `view-transitions.css` holds lines 52–55 verbatim.
+- **`derived.css`** centralises the colour-mix recipes as named variables:
+  - `--risk-chip-bg` (22%), `--risk-chip-fg` (40%), `--risk-text` (45%), `--stale-ring`, `--overload-chip-bg` (14%), `--overload-chip-fg` (75%), `--overload-fill` (20%).
+  - `--tint-hover-*`, `--weekend-cell`, `--flash-accent`.
+  - `--linked-dim: 0.28` and the shadow tokens.
+  - Each recipe gets one canonical value. The FeedItem 20%/45% variant collapses into it.
+- **CSS Modules for everything.** Translation rules from the dc templates:
+  - Static declarations move into module classes with the exact px values. Never convert them to rem or a spacing scale unless the value is already a token.
+  - Values that change per render (widths %, `left`, transforms, stagger delays) stay inline or become inline custom properties (`style={{'--w': pct}}`) that a class reads.
+  - `style-hover` / `style-focus` / `style-active` become `:hover` / `:focus` / `:active` in the module. No `!important` is needed once base styles live in classes.
+  - Parent-hover variables (`--sh`, `--hov`, `--row`) become `.row:hover { --sh: 1 }`.
+  - Keep `:focus` for the InlineEditable field style. Add a keyboard-only `:focus-visible` outline of 1.5px `var(--focus)` on buttons.
+  - Translate from the browser-parsed DOM, not the raw template text.
+  - Wrap each `{{ }}` interpolation that sits inside a flex or grid container with `gap` in a `<span>`, and add `{' '}` wherever the template had whitespace between inline siblings.
+  - `sc-if` pairs become ternaries. `sc-for` becomes `.map` with keys: id keys by default, and position keys where a transition depends on node identity (Roll, chart elements).
+- **Fidelity gate (dev only):**
+  - Playwright screenshots the prototype (served over http) and the app with identical fixtures and TODAY override.
+  - It diffs them per screen with pixelmatch at ≤0.5% pixel difference.
+- **Appearance (`useAppearance`, from `GET/PATCH /api/settings`):**
+  - `data-motion="full|reduced"` on `:root`.
+  - `data-serif="off"` sets `--font-display: var(--font-ui)`.
+  - `data-accent="standin-1..4"` selects one of four pairs set in `derived.css` (e.g. `#526e2a/#47619c`). Standin-1 is the default, so first render matches the prototype.
+  - The design renders no UI for these, so they are stored settings only. The one exception is setup, which can collect the motion setting.
+- **CSP:**
+  - Main page: `default-src 'self'; connect-src 'self'; font-src 'self'; img-src 'self' data: blob:; style-src 'self' 'unsafe-inline'`.
+  - Textbook charts load from `GET /api/textbook/charts/{id}/frame` with their own CSP header: `default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:`.
+  - Chart iframe: `<iframe sandbox="allow-scripts" key={chartId+':'+rev}>`, never `srcdoc`, because srcdoc would inherit the parent CSP.
+
+### 5. Motion
+- **Stable DOM identity.** Transitions come from inline style changes on persistent nodes. Keep Roll columns and chart bars keyed by position or id, and never remount on data refresh. Query `structuralSharing` keeps object references stable.
+- **Reduced motion:**
+  - `useReducedMotion()` is true when `settings.motion === 'reduced'`, or when it is `'system'` and `matchMedia('(prefers-reduced-motion: reduce)')` matches. This fixes the prototype, which only read the tweak.
+  - The result drives `data-motion`, so `--spring-soft` becomes `steps(1, jump-start)` and view-transition groups run at 0s.
+  - Hooks also drop the JS-driven work: translate offsets, hover lift, day and month slide, pulses, checkbox scale and chip scale.
+  - Opacity fades stay.
+- **Card → workspace (`lib/viewTransition.ts: openProjectViaCard(id)`):**
+  - Skip it when reduced, when `!document.startViewTransition`, or when already on the workspace. In those cases just navigate.
+  - Step 1: `flushSync(() => ui.set({ vtPhase: 'from', vtId: id }))`. The card goal gets `view-transition-name: remi-goal`.
+  - Step 2: create a deferred. Call `document.startViewTransition(() => { flushSync(() => ui.set({ vtPhase: 'to', instant: true })); navigate(`/app/projects/${id}`); return deferred.promise; })`.
+  - Step 3: `ScreenStack` resolves the deferred in `useLayoutEffect` once the active screen is the workspace and its id matches, with a 300 ms safety timeout.
+  - Step 4: `finished.finally` clears the vt state and sets `instant: false`.
+  - Do not use React Router's `viewTransition` flag: it cannot name the 'from' element or suppress the cross-fade.
+- **Arrival (`useArrival(screenId)`):**
+  - It plays once per shell mount, on the screen's first activation, not hidden at app load. This resolves the spec's open question.
+  - After a double rAF it sets `data-arrived`. Children use `--i` and module rules such as `transition-delay: calc(var(--i) * 40ms)` (Timeline rows use `calc(var(--i) * 30ms + 60ms)`).
+  - `data-settled` is set after 900 ms and zeroes all delays.
+  - Under reduced motion it is arrived immediately.
+  - The per-screen timing tables come straight from the motion spec.
+- **Plan moves (`stores/planMoves.ts`):**
+  - Stages 1 and 2 are sequenced by `checkins.apply`; stages 3 to 5 by `planMoves.start(movements)`.
+  - 1. On apply the drawer closes immediately. The client sends `POST /api/checkins/apply` right away and awaits `Promise.all([request, sleep(220)])`.
+  - 2. It calls `cancelQueries(['bootstrap'])`, then makes one `setQueryData` from the response.
+    - Ask the backend to return the full derived bundle (projects, derived loads, verdict, attention, feed), so everything updates in a single commit and only the affected bars glide.
+  - 3. `planMoves.start(res.movements)`: for each `{projectId, from, to, deltaBD, cause}`:
+    - `flash[pid] = true` for 1100 ms;
+    - `moved[pid] = { deltaBD, label }` for 5200 ms, where the label is `'+N BD'` or `'−N BD'` with U+2212;
+    - the timers are held per pid in a `Map`, and a repeat check-in clears and restarts them.
+  - 4. Consumers (Timeline, Workspace badge, Projects Roll):
+    - The ghost dashed bar has opacity 1 while `flash` is set, then 0.55 while a previous forecast exists.
+    - The ghost end diamond and the 'was D Mon' label show at `transition: opacity 0ms` while flashing, then `400ms var(--ease-out)` to 0.
+    - The chip fades 180 ms and scales 0.9→1 from the left origin.
+    - `useLatched(label)` keeps the label text during the fade.
+  - 5. Overload pulse: `key={iso}` on the ring element, so it replays when moving between two overloaded days.
+- **Drawer, palette and side panels:** use the exact transitions in the motion spec. Side-panel content stays mounted until `transitionend`, which fixes the Timeline panel unmounting immediately.
+
+### 6. Roll (`components/Roll`)
+- **Props:** `{ value: string; className?: string }`.
+- **`tokenize(value): { family: 'dateW' | 'date' | 'num' | 'static'; parts: { cells: readonly string[]; cur: string; i: number }[] }`**
+  - Pure and memoised. Uses the exact prototype regexes and the `DIG` / `WD` / `MON` tables, which are frozen constants.
+  - `-` normalises to U+2212. Numbers are padded to 3 digits and always produce 7 columns.
+  - If `cur` is not in `cells`, return `stat(cur)` instead of index 0, which would show the wrong glyph.
+  - Unit tests cover 'Wed 2 Dec', '5 Oct', '+3 BD', '3.5', '17', 'Not yet' and 'Late Mar 2027'.
+- **DOM, same as Roll.dc.html:**
+  - Outer `span`: relative, inline-block, `line-height: 1.25`, baseline.
+  - A hidden `white-space: pre` sizer holding the full text.
+  - An `aria-hidden` absolute flex strip of column windows. Each window is `height: 1.25em; overflow: hidden`, sized by a hidden `cur`.
+  - Each reel is an absolute flex column with `transform: translateY(${-i * 1.25}em); transition: transform var(--dur-slow) var(--spring-soft)`.
+  - Add `<span className="sr-only">{value}</span>` for accessibility.
+- **Keys:** `${family}:${k}`, so a family switch (for example 'Not yet' ↔ date) remounts cleanly with no drop-in.
+- **Behaviour:**
+  - No animation on first mount. Column widths snap. No wrap-around. No stagger.
+  - Under reduced motion it jumps via the token.
+  - Formatters must produce exactly 'Ddd D Mon' / 'D Mon' so the date regex matches.
+
+### 7. Calendar lookup and formatters (no business rules)
+- **`lib/calendar.ts`: `class CalendarIndex`**
+  - Built from `bootstrap.calendar.days: {iso, isBD, bdm, holiday, weekday}[]`.
+  - Dates are branded ISO strings (`type IsoDate = string & {__iso}`), parsed by splitting the string, never with `new Date(iso)`.
+  - Methods:
+    - `day(iso)`, `isBD(iso)`, `bdOfMonth(iso)`
+    - `nextBD(iso)`, `addBD(iso, k)`, `bdDiff(a, b)`
+    - `monthGrid(ym)`, `range(from, to)`
+  - Out of range: return `null` and call `ensureRange(from, to)`, which fetches `GET /api/calendar?from&to` and merges the result. Never clamp.
+  - `useCalendar()` returns the memoised index.
+- **Scope of client use:** only the date picker (BD labels, snapping), grid layout, axis x-positions and scrubber labels.
+- **Stays on the server:** today, the countdown (`derived.daysToMove`, strictly between: 61), the buffer, loads, forecasts, the verdict and occurrences.
+- **Workspace previews:** call `POST /api/projects/:id/preview`, debounced 150 ms with `placeholderData: keepPreviousData`, so preview == apply.
+- **`lib/format.ts`** uses fixed English arrays, not `Intl`, so output is deterministic:
+  - `s` 'Mon 5 Oct', `dm` '5 Oct', `l` 'Monday 5 October', `wd`, `mon`, `monL`, `d`
+  - `bd(n)` 'BD3', `delta(n)` '+3 BD' / '−2 BD' / 'On target'
+  - `since(days)`, `hours(h)`, `ord(n)`, `plural`
+- **Day rollover:** refetch bootstrap on `visibilitychange` and at the server-supplied `today.nextRolloverAt`.
+
+### 8. Hover store, keyboard and focus
+- **`stores/hover.ts`:**
+  - State is `{ id: string | null; set(id) }` with an equality guard. Ids look like `project:<id>`, `routine:<id>` or `rotation`.
+  - `useDimmed(ownIds)` subscribes through a selector, so only elements whose dim state flips re-render.
+  - Styling is one class: `.dimmable[data-dim="true"] { opacity: var(--linked-dim) }` with a 140 ms ease-out transition.
+  - The hover is cleared on route change and on window blur.
+- **`lib/keyboard.ts`:** one window `keydown` listener in RootLayout, plus a stack in `stores/overlays.ts` (the order things were opened).
+  - **⌘K / Ctrl+K:** app only. Calls `preventDefault` and toggles the palette, even while typing in an input.
+  - **Esc resolution order:**
+    1. An InlineEditable reverts and calls `stopPropagation`. React's synthetic stop also stops the native event before it reaches window.
+    2. The Workspace date picker (capture phase, `stopPropagation`).
+    3. Textbook: fullscreen chart, then slash menu.
+    4. Otherwise the top of the overlay stack closes: palette, drawer, Calendar day panel, Timeline panel. Only one closes per press, which fixes the Calendar double-close.
+  - **⌘/Ctrl+Enter:** on the drawer root's `onKeyDown`. In review it applies; in compose or error it sends.
+  - **Palette:** ArrowUp/ArrowDown clamp without wrap-around, Enter runs the selection, mouseenter selects, typing resets `i` to 0.
+  - **Home `1` / `2`:** ignored when a modifier is held, on `e.repeat`, when the target is editable, or while an expand is running.
+- **Focus management (`lib/focus.ts`):**
+  - Palette: focuses its input at +30 ms. On close, focus returns to the previously focused element.
+  - Drawer: textarea at 380 ms with the caret at the end via `setSelectionRange`. Opening it sets `inert` on the rail and `main`. On close, focus returns to the trigger.
+  - Leaving sections get `inert` immediately, before `visibility` flips, to cover the 140 ms fade.
+  - Palette and keyboard navigation focus the screen's `h1` (`tabIndex={-1}`).
+  - Workspace new project: route state `{ focusGoal: true }` focuses the goal.
+  - Notes composer: focused 40 ms after the day swap.
+  - New routine: its name field gets focus.
+
+### 9. Responsive 'Fit window'
+- **Production default is `fit`:**
+  - The `Stage` is `position: fixed; inset: 0` at scale 1. The grid is `88px minmax(0, 1fr)` columns and `72px minmax(0, 1fr)` rows.
+  - Layout is fluid: 48px margins, fixed row heights (40, 64), fluid goal and Timeline columns, and the drawer at `min(1160px, 100% − 160px)`.
+  - A 1920×1080 viewport therefore reproduces the design frame exactly. At 2560×1440 content widens and row heights hold.
+- **Dev and test frames:**
+  - `?frame=1920x1080` or `?frame=2560x1440` turns on the prototype scaler: `s = min(vw/W, vh/H)`, centred and rounded, with a `color-mix(in oklch, var(--ink) 6%, var(--paper))` letterbox.
+  - Below a 1440×810 viewport, fall back to the scaled 1920×1080 canvas so layouts never crush.
+- **`StageContext { scale }` and `toLocal(e, el)`:**
+  - `toLocal` uses the prototype's `k = el.offsetWidth / rect.width`. All pointer maths (Timeline tooltip, Workspace scrubber, date-picker placement) goes through it.
+  - Width measurement uses a ResizeObserver on `clientWidth`, which is unscaled.
+- **Home and Textbook:**
+  - Home stays a fixed 1920×1080 art-directed canvas, scaled uniformly (at 2560×1440 the scale is exactly 1.333, with no letterbox).
+  - Textbook uses fit, because its `288 | 1fr | 264` grid is already fluid.
+
+### Critical Files for Implementation
+- /Users/justinstoddart/Desktop/Ninety One/remi/Remi Dashboard Design Review/Remi.dc.html
+- /Users/justinstoddart/Desktop/Ninety One/remi/Remi Dashboard Design Review/Roll.dc.html
+- /Users/justinstoddart/Desktop/Ninety One/remi/Remi Dashboard Design Review/Remi Home.dc.html
+- /Users/justinstoddart/Desktop/Ninety One/remi/Remi Dashboard Design Review/Timeline.dc.html
+- /Users/justinstoddart/Desktop/Ninety One/remi/Remi Dashboard Design Review/Remi Foundations.dc.html

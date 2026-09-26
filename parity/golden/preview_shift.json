@@ -1,0 +1,730 @@
+{
+  "ret": [
+    {
+      "h": 0,
+      "result": {
+        "delta": 0,
+        "from": "2026-12-02",
+        "to": "2026-12-02",
+        "fromS": "Wed 2 Dec",
+        "toS": "Wed 2 Dec",
+        "fromDM": "2 Dec",
+        "toDM": "2 Dec",
+        "deltaLabel": "±0 BD",
+        "vsTarget": 3,
+        "newOver": [],
+        "missesDecRun": false,
+        "crossesMove": false
+      }
+    },
+    {
+      "h": 0.5,
+      "result": {
+        "delta": 1,
+        "from": "2026-12-02",
+        "to": "2026-12-03",
+        "fromS": "Wed 2 Dec",
+        "toS": "Thu 3 Dec",
+        "fromDM": "2 Dec",
+        "toDM": "3 Dec",
+        "deltaLabel": "+1 BD",
+        "vsTarget": 4,
+        "newOver": [],
+        "missesDecRun": true,
+        "crossesMove": false
+      }
+    },
+    {
+      "h": 1,
+      "result": {
+        "delta": 1,
+        "from": "2026-12-02",
+        "to": "2026-12-03",
+        "fromS": "Wed 2 Dec",
+        "toS": "Thu 3 Dec",
+        "fromDM": "2 Dec",
+        "toDM": "3 Dec",
+        "deltaLabel": "+1 BD",
+        "vsTarget": 4,
+        "newOver": [],
+        "missesDecRun": true,
+        "crossesMove": false
+      }
+    },
+    {
+      "h": 2,
+      "result": {
+        "delta": 1,
+        "from": "2026-12-02",
+        "to": "2026-12-03",
+        "fromS": "Wed 2 Dec",
+        "toS": "Thu 3 Dec",
+        "fromDM": "2 Dec",
+        "toDM": "3 Dec",
+        "deltaLabel": "+1 BD",
+        "vsTarget": 4,
+        "newOver": [],
+        "missesDecRun": true,
+        "crossesMove": false
+      }
+    },
+    {
+      "h": 4,
+      "result": {
+        "delta": 2,
+        "from": "2026-12-02",
+        "to": "2026-12-04",
+        "fromS": "Wed 2 Dec",
+        "toS": "Fri 4 Dec",
+        "fromDM": "2 Dec",
+        "toDM": "4 Dec",
+        "deltaLabel": "+2 BD",
+        "vsTarget": 5,
+        "newOver": [
+          {
+            "iso": "2026-12-04",
+            "s": "Fri 4 Dec",
+            "total": 9
+          }
+        ],
+        "missesDecRun": true,
+        "crossesMove": false
+      }
+    },
+    {
+      "h": 6,
+      "result": {
+        "delta": 2,
+        "from": "2026-12-02",
+        "to": "2026-12-04",
+        "fromS": "Wed 2 Dec",
+        "toS": "Fri 4 Dec",
+        "fromDM": "2 Dec",
+        "toDM": "4 Dec",
+        "deltaLabel": "+2 BD",
+        "vsTarget": 5,
+        "newOver": [
+          {
+            "iso": "2026-12-04",
+            "s": "Fri 4 Dec",
+            "total": 9
+          }
+        ],
+        "missesDecRun": true,
+        "crossesMove": false
+      }
+    },
+    {
+      "h": 8,
+      "result": {
+        "delta": 3,
+        "from": "2026-12-02",
+        "to": "2026-12-07",
+        "fromS": "Wed 2 Dec",
+        "toS": "Mon 7 Dec",
+        "fromDM": "2 Dec",
+        "toDM": "7 Dec",
+        "deltaLabel": "+3 BD",
+        "vsTarget": 6,
+        "newOver": [
+          {
+            "iso": "2026-12-04",
+            "s": "Fri 4 Dec",
+            "total": 9
+          },
+          {
+            "iso": "2026-12-07",
+            "s": "Mon 7 Dec",
+            "total": 9
+          }
+        ],
+        "missesDecRun": true,
+        "crossesMove": false
+      }
+    },
+    {
+      "h": 16,
+      "result": {
+        "delta": 5,
+        "from": "2026-12-02",
+        "to": "2026-12-09",
+        "fromS": "Wed 2 Dec",
+        "toS": "Wed 9 Dec",
+        "fromDM": "2 Dec",
+        "toDM": "9 Dec",
+        "deltaLabel": "+5 BD",
+        "vsTarget": 8,
+        "newOver": [
+          {
+            "iso": "2026-12-04",
+            "s": "Fri 4 Dec",
+            "total": 9
+          },
+          {
+            "iso": "2026-12-07",
+            "s": "Mon 7 Dec",
+            "total": 9
+          },
+          {
+            "iso": "2026-12-08",
+            "s": "Tue 8 Dec",
+            "total": 9
+          },
+          {
+            "iso": "2026-12-09",
+            "s": "Wed 9 Dec",
+            "total": 9
+          }
+        ],
+        "missesDecRun": true,
+        "crossesMove": false
+      }
+    },
+    {
+      "h": 40,
+      "result": {
+        "delta": 12,
+        "from": "2026-12-02",
+        "to": "2026-12-18",
+        "fromS": "Wed 2 Dec",
+        "toS": "Fri 18 Dec",
+        "fromDM": "2 Dec",
+        "toDM": "18 Dec",
+        "deltaLabel": "+12 BD",
+        "vsTarget": 15,
+        "newOver": [
+          {
+            "iso": "2026-12-04",
+            "s": "Fri 4 Dec",
+            "total": 9
+          },
+          {
+            "iso": "2026-12-07",
+            "s": "Mon 7 Dec",
+            "total": 9
+          },
+          {
+            "iso": "2026-12-08",
+            "s": "Tue 8 Dec",
+            "total": 9
+          },
+          {
+            "iso": "2026-12-09",
+            "s": "Wed 9 Dec",
+            "total": 9
+          },
+          {
+            "iso": "2026-12-11",
+            "s": "Fri 11 Dec",
+            "total": 9
+          }
+        ],
+        "missesDecRun": true,
+        "crossesMove": false
+      }
+    }
+  ],
+  "manco": [
+    {
+      "h": 0,
+      "result": {
+        "delta": 0,
+        "from": "2026-12-11",
+        "to": "2026-12-11",
+        "fromS": "Fri 11 Dec",
+        "toS": "Fri 11 Dec",
+        "fromDM": "11 Dec",
+        "toDM": "11 Dec",
+        "deltaLabel": "±0 BD",
+        "vsTarget": 0,
+        "newOver": [],
+        "missesDecRun": false,
+        "crossesMove": false
+      }
+    },
+    {
+      "h": 0.5,
+      "result": {
+        "delta": 1,
+        "from": "2026-12-11",
+        "to": "2026-12-14",
+        "fromS": "Fri 11 Dec",
+        "toS": "Mon 14 Dec",
+        "fromDM": "11 Dec",
+        "toDM": "14 Dec",
+        "deltaLabel": "+1 BD",
+        "vsTarget": 1,
+        "newOver": [],
+        "missesDecRun": false,
+        "crossesMove": false
+      }
+    },
+    {
+      "h": 1,
+      "result": {
+        "delta": 1,
+        "from": "2026-12-11",
+        "to": "2026-12-14",
+        "fromS": "Fri 11 Dec",
+        "toS": "Mon 14 Dec",
+        "fromDM": "11 Dec",
+        "toDM": "14 Dec",
+        "deltaLabel": "+1 BD",
+        "vsTarget": 1,
+        "newOver": [],
+        "missesDecRun": false,
+        "crossesMove": false
+      }
+    },
+    {
+      "h": 2,
+      "result": {
+        "delta": 2,
+        "from": "2026-12-11",
+        "to": "2026-12-15",
+        "fromS": "Fri 11 Dec",
+        "toS": "Tue 15 Dec",
+        "fromDM": "11 Dec",
+        "toDM": "15 Dec",
+        "deltaLabel": "+2 BD",
+        "vsTarget": 2,
+        "newOver": [],
+        "missesDecRun": false,
+        "crossesMove": false
+      }
+    },
+    {
+      "h": 4,
+      "result": {
+        "delta": 3,
+        "from": "2026-12-11",
+        "to": "2026-12-16",
+        "fromS": "Fri 11 Dec",
+        "toS": "Wed 16 Dec",
+        "fromDM": "11 Dec",
+        "toDM": "16 Dec",
+        "deltaLabel": "+3 BD",
+        "vsTarget": 3,
+        "newOver": [],
+        "missesDecRun": false,
+        "crossesMove": false
+      }
+    },
+    {
+      "h": 6,
+      "result": {
+        "delta": 4,
+        "from": "2026-12-11",
+        "to": "2026-12-17",
+        "fromS": "Fri 11 Dec",
+        "toS": "Thu 17 Dec",
+        "fromDM": "11 Dec",
+        "toDM": "17 Dec",
+        "deltaLabel": "+4 BD",
+        "vsTarget": 4,
+        "newOver": [],
+        "missesDecRun": false,
+        "crossesMove": false
+      }
+    },
+    {
+      "h": 8,
+      "result": {
+        "delta": 6,
+        "from": "2026-12-11",
+        "to": "2026-12-21",
+        "fromS": "Fri 11 Dec",
+        "toS": "Mon 21 Dec",
+        "fromDM": "11 Dec",
+        "toDM": "21 Dec",
+        "deltaLabel": "+6 BD",
+        "vsTarget": 6,
+        "newOver": [],
+        "missesDecRun": false,
+        "crossesMove": false
+      }
+    },
+    {
+      "h": 16,
+      "result": {
+        "delta": 11,
+        "from": "2026-12-11",
+        "to": "2026-12-30",
+        "fromS": "Fri 11 Dec",
+        "toS": "Wed 30 Dec",
+        "fromDM": "11 Dec",
+        "toDM": "30 Dec",
+        "deltaLabel": "+11 BD",
+        "vsTarget": 11,
+        "newOver": [],
+        "missesDecRun": false,
+        "crossesMove": false
+      }
+    },
+    {
+      "h": 40,
+      "result": {
+        "delta": 27,
+        "from": "2026-12-11",
+        "to": "2027-01-22",
+        "fromS": "Fri 11 Dec",
+        "toS": "Fri 22 Jan",
+        "fromDM": "11 Dec",
+        "toDM": "22 Jan",
+        "deltaLabel": "+27 BD",
+        "vsTarget": 27,
+        "newOver": [],
+        "missesDecRun": false,
+        "crossesMove": true
+      }
+    }
+  ],
+  "play": [
+    {
+      "h": 0,
+      "result": {
+        "delta": 0,
+        "from": "2026-12-18",
+        "to": "2026-12-18",
+        "fromS": "Fri 18 Dec",
+        "toS": "Fri 18 Dec",
+        "fromDM": "18 Dec",
+        "toDM": "18 Dec",
+        "deltaLabel": "±0 BD",
+        "vsTarget": 0,
+        "newOver": [],
+        "missesDecRun": false,
+        "crossesMove": false
+      }
+    },
+    {
+      "h": 0.5,
+      "result": {
+        "delta": 1,
+        "from": "2026-12-18",
+        "to": "2026-12-21",
+        "fromS": "Fri 18 Dec",
+        "toS": "Mon 21 Dec",
+        "fromDM": "18 Dec",
+        "toDM": "21 Dec",
+        "deltaLabel": "+1 BD",
+        "vsTarget": 1,
+        "newOver": [],
+        "missesDecRun": false,
+        "crossesMove": false
+      }
+    },
+    {
+      "h": 1,
+      "result": {
+        "delta": 1,
+        "from": "2026-12-18",
+        "to": "2026-12-21",
+        "fromS": "Fri 18 Dec",
+        "toS": "Mon 21 Dec",
+        "fromDM": "18 Dec",
+        "toDM": "21 Dec",
+        "deltaLabel": "+1 BD",
+        "vsTarget": 1,
+        "newOver": [],
+        "missesDecRun": false,
+        "crossesMove": false
+      }
+    },
+    {
+      "h": 2,
+      "result": {
+        "delta": 2,
+        "from": "2026-12-18",
+        "to": "2026-12-22",
+        "fromS": "Fri 18 Dec",
+        "toS": "Tue 22 Dec",
+        "fromDM": "18 Dec",
+        "toDM": "22 Dec",
+        "deltaLabel": "+2 BD",
+        "vsTarget": 2,
+        "newOver": [],
+        "missesDecRun": false,
+        "crossesMove": false
+      }
+    },
+    {
+      "h": 4,
+      "result": {
+        "delta": 4,
+        "from": "2026-12-18",
+        "to": "2026-12-24",
+        "fromS": "Fri 18 Dec",
+        "toS": "Thu 24 Dec",
+        "fromDM": "18 Dec",
+        "toDM": "24 Dec",
+        "deltaLabel": "+4 BD",
+        "vsTarget": 4,
+        "newOver": [],
+        "missesDecRun": false,
+        "crossesMove": false
+      }
+    },
+    {
+      "h": 6,
+      "result": {
+        "delta": 6,
+        "from": "2026-12-18",
+        "to": "2026-12-30",
+        "fromS": "Fri 18 Dec",
+        "toS": "Wed 30 Dec",
+        "fromDM": "18 Dec",
+        "toDM": "30 Dec",
+        "deltaLabel": "+6 BD",
+        "vsTarget": 6,
+        "newOver": [],
+        "missesDecRun": false,
+        "crossesMove": false
+      }
+    },
+    {
+      "h": 8,
+      "result": {
+        "delta": 8,
+        "from": "2026-12-18",
+        "to": "2027-01-04",
+        "fromS": "Fri 18 Dec",
+        "toS": "Mon 4 Jan",
+        "fromDM": "18 Dec",
+        "toDM": "4 Jan",
+        "deltaLabel": "+8 BD",
+        "vsTarget": 8,
+        "newOver": [],
+        "missesDecRun": false,
+        "crossesMove": true
+      }
+    },
+    {
+      "h": 16,
+      "result": {
+        "delta": 16,
+        "from": "2026-12-18",
+        "to": "2027-01-14",
+        "fromS": "Fri 18 Dec",
+        "toS": "Thu 14 Jan",
+        "fromDM": "18 Dec",
+        "toDM": "14 Jan",
+        "deltaLabel": "+16 BD",
+        "vsTarget": 16,
+        "newOver": [],
+        "missesDecRun": false,
+        "crossesMove": true
+      }
+    },
+    {
+      "h": 40,
+      "result": {
+        "delta": 40,
+        "from": "2026-12-18",
+        "to": "2027-02-17",
+        "fromS": "Fri 18 Dec",
+        "toS": "Wed 17 Feb",
+        "fromDM": "18 Dec",
+        "toDM": "17 Feb",
+        "deltaLabel": "+40 BD",
+        "vsTarget": 40,
+        "newOver": [],
+        "missesDecRun": false,
+        "crossesMove": true
+      }
+    }
+  ],
+  "fion": [
+    {
+      "h": 0,
+      "result": {
+        "delta": 0,
+        "from": "2027-01-04",
+        "to": "2027-01-04",
+        "fromS": "Mon 4 Jan",
+        "toS": "Mon 4 Jan",
+        "fromDM": "4 Jan",
+        "toDM": "4 Jan",
+        "deltaLabel": "±0 BD",
+        "vsTarget": 0,
+        "newOver": [],
+        "missesDecRun": false,
+        "crossesMove": false
+      }
+    },
+    {
+      "h": 0.5,
+      "result": {
+        "delta": 1,
+        "from": "2027-01-04",
+        "to": "2027-01-05",
+        "fromS": "Mon 4 Jan",
+        "toS": "Tue 5 Jan",
+        "fromDM": "4 Jan",
+        "toDM": "5 Jan",
+        "deltaLabel": "+1 BD",
+        "vsTarget": 1,
+        "newOver": [],
+        "missesDecRun": false,
+        "crossesMove": false
+      }
+    },
+    {
+      "h": 1,
+      "result": {
+        "delta": 1,
+        "from": "2027-01-04",
+        "to": "2027-01-05",
+        "fromS": "Mon 4 Jan",
+        "toS": "Tue 5 Jan",
+        "fromDM": "4 Jan",
+        "toDM": "5 Jan",
+        "deltaLabel": "+1 BD",
+        "vsTarget": 1,
+        "newOver": [],
+        "missesDecRun": false,
+        "crossesMove": false
+      }
+    },
+    {
+      "h": 2,
+      "result": {
+        "delta": 2,
+        "from": "2027-01-04",
+        "to": "2027-01-06",
+        "fromS": "Mon 4 Jan",
+        "toS": "Wed 6 Jan",
+        "fromDM": "4 Jan",
+        "toDM": "6 Jan",
+        "deltaLabel": "+2 BD",
+        "vsTarget": 2,
+        "newOver": [],
+        "missesDecRun": false,
+        "crossesMove": false
+      }
+    },
+    {
+      "h": 4,
+      "result": {
+        "delta": 4,
+        "from": "2027-01-04",
+        "to": "2027-01-08",
+        "fromS": "Mon 4 Jan",
+        "toS": "Fri 8 Jan",
+        "fromDM": "4 Jan",
+        "toDM": "8 Jan",
+        "deltaLabel": "+4 BD",
+        "vsTarget": 4,
+        "newOver": [],
+        "missesDecRun": false,
+        "crossesMove": false
+      }
+    },
+    {
+      "h": 6,
+      "result": {
+        "delta": 6,
+        "from": "2027-01-04",
+        "to": "2027-01-12",
+        "fromS": "Mon 4 Jan",
+        "toS": "Tue 12 Jan",
+        "fromDM": "4 Jan",
+        "toDM": "12 Jan",
+        "deltaLabel": "+6 BD",
+        "vsTarget": 6,
+        "newOver": [],
+        "missesDecRun": false,
+        "crossesMove": false
+      }
+    },
+    {
+      "h": 8,
+      "result": {
+        "delta": 8,
+        "from": "2027-01-04",
+        "to": "2027-01-14",
+        "fromS": "Mon 4 Jan",
+        "toS": "Thu 14 Jan",
+        "fromDM": "4 Jan",
+        "toDM": "14 Jan",
+        "deltaLabel": "+8 BD",
+        "vsTarget": 8,
+        "newOver": [],
+        "missesDecRun": false,
+        "crossesMove": false
+      }
+    },
+    {
+      "h": 16,
+      "result": {
+        "delta": 16,
+        "from": "2027-01-04",
+        "to": "2027-01-26",
+        "fromS": "Mon 4 Jan",
+        "toS": "Tue 26 Jan",
+        "fromDM": "4 Jan",
+        "toDM": "26 Jan",
+        "deltaLabel": "+16 BD",
+        "vsTarget": 16,
+        "newOver": [],
+        "missesDecRun": false,
+        "crossesMove": false
+      }
+    },
+    {
+      "h": 40,
+      "result": {
+        "delta": 40,
+        "from": "2027-01-04",
+        "to": "2027-03-01",
+        "fromS": "Mon 4 Jan",
+        "toS": "Mon 1 Mar",
+        "fromDM": "4 Jan",
+        "toDM": "1 Mar",
+        "deltaLabel": "+40 BD",
+        "vsTarget": 40,
+        "newOver": [],
+        "missesDecRun": false,
+        "crossesMove": false
+      }
+    }
+  ],
+  "alpha": [
+    {
+      "h": 0,
+      "result": null
+    },
+    {
+      "h": 0.5,
+      "result": null
+    },
+    {
+      "h": 1,
+      "result": null
+    },
+    {
+      "h": 2,
+      "result": null
+    },
+    {
+      "h": 4,
+      "result": null
+    },
+    {
+      "h": 6,
+      "result": null
+    },
+    {
+      "h": 8,
+      "result": null
+    },
+    {
+      "h": 16,
+      "result": null
+    },
+    {
+      "h": 40,
+      "result": null
+    }
+  ]
+}

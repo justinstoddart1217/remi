@@ -1,0 +1,341 @@
+{
+ "key": "routines",
+ "file": "/Users/justinstoddart/Desktop/Ninety One/remi/Remi Dashboard Design Review/Routines.dc.html",
+ "purpose": "This is the Routines (BAU) screen. It is where the analyst sees and edits every recurring Private Credit routine: name, business-day, weekly or daily rule, hours per run, the next three dates it runs, and handover status (Manual → Automating → Shadowed → Handed over), with a free-text note on where the routine goes after the move. The second half shows Fixed Income BAU as a read-only \"stadium\" track: the Eurozone sovereign country rotation (10 build passes, then a Germany refresh), laid out clockwise with dates, pass type (Build/Refresh), loop length and estimated completion. The component gets the shared `model` from Remi.dc.html. It holds only local UI state: field drafts, the remove confirmation, and the 'fresh' row flash.",
+ "layout": "MOUNTING: the screen is rendered inside the shell <section data-screen-label=\"Routines\" style=\"position:absolute; inset:0; overflow:auto\"> under <main>. The shell is a fixed canvas (1920×1080 or 2560×1440, scaled to fit via transform:scale). Grid is 88px nav + content, and content is a 72px header row plus main. So the main area is (W−88) × (H−72): 1832×1008 at 1920×1080, 2472×1368 at 2560×1440. The section scrolls vertically, because the content is taller than the viewport.\n\nROOT: div box-sizing:border-box; min-height:100%; padding:32px 48px 40px; display:flex; flex-direction:column; gap:32px. Three children in order: (1) page header, (2) Private Credit block, (3) Fixed Income block. Content width is 1736px at 1920 and 2376px at 2560.\n\n(1) PAGE HEADER: eyebrow 'Routines' at 11px, weight 600, letter-spacing 0.08em, uppercase, color var(--ink-muted). Title 'What repeats, and where each routine goes next' at 20px, weight 600, letter-spacing −0.01em, margin-top 8px, color ink.\n\n(2) PRIVATE CREDIT BLOCK (div with ref=rootRef, used for querySelector and scroll-into-view):\n a. Section header row: display:flex; align-items:baseline; gap:12px; border-bottom:1px solid var(--ink); padding-bottom:10px. Children:\n   - Dot: 7×7px, border-radius 50%, background var(--pc-accent), align-self:center.\n   - 'Private Credit' at 15px/600.\n   - pcNote at 13px, ink-muted.\n   - Spacer flex:1.\n   - 'Add BAU routine' button: display:flex; align-items:center; gap:4px; height:28px; padding:0 10px; border:1px solid var(--hairline); border-radius:var(--radius-s)=3px; background transparent; 13px; color ink-muted. Hover sets color ink and border-color ink-faint. Leading Material Symbols Outlined 'add' icon at 16px.\n b. Column header row: display:grid; grid-template-columns: minmax(0,1.35fr) 110px minmax(0,1.2fr) minmax(0,1.55fr); column-gap:40px; padding:12px 0 8px; 11px, weight 600, letter-spacing 0.08em, uppercase, ink-muted; border-bottom:1px solid var(--hairline). Labels: 'Routine · rule' | 'Effort' | 'Next three' | 'Handover'. Computed column widths: at 1920, ≈495.9 / 110 / 440.8 / 569.3px; at 2560, ≈706.6 / 110 / 628.1 / 811.3px.\n c. One row per PC routine, same grid template and column-gap 40px, align-items:start; padding:20px 0; border-bottom:1px solid var(--hairline); background r.bg; opacity r.op; transition: opacity var(--dur-fast) var(--ease-out), background var(--dur-slow) var(--ease-out). Attribute data-rid = routine id.\n   COL 1 (Routine · rule, min-width 0):\n     - Name input. It is inline-editable text styled like a heading: display:block; width:calc(100% + 12px); margin:0 −6px (bleed trick, so the text lines up with the column edge while the hover/focus background extends 6px either side); padding:2px 6px; box-sizing:border-box; font-family var(--font-ui); 20px; weight 500; line-height 1.3; color ink; border 0; outline 0; background transparent; radius 3px. Hover background: color-mix(in oklch, var(--ink) 4%, transparent). Focus: background var(--paper-raised) and box-shadow inset 0 0 0 1px var(--hairline). Placeholder 'Name this routine'. Placeholder colour is set globally by the shell: color-mix(in oklch, var(--ink-faint) 70%, var(--paper)); opacity 1.\n     - Rule controls row: display:flex; align-items:center; gap:10px; margin-top:10px; flex-wrap:wrap.\n       • Kind segmented control. Wrapper: display:flex; padding:2px; border:1px solid hairline; radius 3px; background paper-raised. Three buttons, Monthly | Weekly | Daily: height 24px; padding 0 9px; border 0; border-radius 2px; 12px, weight 500. Selected: background var(--ink), color var(--paper). Unselected: background transparent, color ink-muted. Transition: background and color at var(--dur-fast) var(--ease-out).\n       • If monthly, a BD stepper. Wrapper: display:flex; align-items:center; height 28px; border 1px hairline; radius 3px; background paper-raised. Then a '−' button (U+2212 minus sign), 26×26, no border, transparent, color ink-muted, 15px. Then a value span: min-width 40px, text-align center, font var(--font-numeric) (JetBrains Mono), 12px, weight 500, text 'BD{n}'. Then a '+' button with the same style as '−'.\n       • If weekly, a weekday picker: display:flex; gap:2px. Five buttons Mon Tue Wed Thu Fri, each 30×28px; border 1px solid (selected ink / unselected hairline); radius 3px; background (selected ink / unselected paper-raised); color (selected paper / unselected ink); 12px, weight 500.\n       • If daily, no extra control.\n     - Rule sentence: 14px, ink-muted, margin-top 8px.\n   COL 2 (Effort, fixed 110px):\n     - A span (display:flex; align-items:baseline) containing:\n       • Hours input: inputMode=decimal; width = calc(max(1, len)*0.62em + 8px), which auto-sizes to the text; margin-left −6px; padding 0 2px 0 6px; font-ui; 24px; weight 500; ink; text-align left; no border or outline; transparent; radius 3px. Same hover and focus styles as the name input.\n       • Literal 'h' at 24px, weight 500.\n     - 'per run' at 12px, ink-muted, margin-top 2px.\n     - Monthly estimate at 12px, ink-muted, margin-top 6px.\n   COL 3 (Next three): display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); column-gap:16px. Each occurrence cell: display:flex; gap:10px; min-width 0.\n     - Tick bar: flex:none; 4px wide × 34px tall; border-radius 1px; box-shadow inset 0 0 0 1px var(--pc-accent). Background is var(--pc-accent) if the occurrence is today, otherwise transparent, so future runs show a hollow outline and today's is filled.\n     - Text block: date at 14px (weight 600 if today, else 400), white-space:nowrap. Below it a note at 12px, ink-muted, margin-top 3px, nowrap.\n     - Optional message spanning grid-column 1 / −1: 13px, line-height 1.45, ink-muted.\n   COL 4 (Handover, min-width 0):\n     - Stage stepper: display:flex; align-items:center; flex-wrap:wrap. For each of the four stages:\n       • Connector span: width 0px for the first stage, 10px otherwise; height 1px; background ink if index ≤ current, else hairline.\n       • Button: title='Set to {stage}'; display:flex; align-items:center; gap:6px; padding:3px 6px; margin:0 1px; border 0; radius 3px; background transparent. Hover background: color-mix(in oklch, var(--ink) 5%, transparent).\n       • Inside the button, a dot: 9×9px, box-sizing border-box, border-radius 50%, border 1.5px solid ring colour, background fill colour; transition background and border-color at var(--dur-base) var(--ease-out). Then a label at 13px, nowrap.\n       • Dot and label rules: stages before current have an ink ring, ink fill, label weight 400, colour ink-muted. The current stage has an ink ring, paper fill (hollow), label weight 600, colour ink. Stages after current have an ink-faint ring, paper fill, label weight 400, colour ink-faint.\n     - Handover note textarea: placeholder 'Where does this routine go after the move?'; rows = max(1, ceil(len/44)); display:block; width:calc(100% + 12px); margin:10px −6px 0; padding:3px 6px; box-sizing border-box; resize none; overflow hidden; field-sizing:content (auto-grow); font-ui; 14px; line-height 1.5; colour ink-muted; no border or outline; transparent; radius 3px. Same hover and focus styles as the inputs.\n     - Footer row: display:flex; align-items:center; gap:16px; margin-top:8px.\n       • Optional project link button: no border, transparent, padding 0; display:flex; align-items:center; gap:4px; 13px, weight 600. Text 'Via {Project name sentence-cased} · {forecast d Mon}' followed by the Material icon 'north_east' at 16px.\n       • Spacer flex:1.\n       • Remove button: no border, transparent, padding 0, 12px, colour rmFg. Hover underlines it.\n d. Empty state, when there are no PC routines: padding 22px 0; 15px; ink-muted; border-bottom 1px hairline.\n\n(3) FIXED INCOME BLOCK (wrapper div with onMouseEnter/onMouseLeave):\n a. Section header: the same flex/baseline/gap 12px/ink bottom border/padding-bottom 10px as PC. Dot 7×7 var(--fi-accent); 'Fixed Income' at 15px/600; subtitle at 13px, ink-muted, hard-coded. No add button.\n b. Rotation track container: position:relative; margin-top:28px; padding:0 120px. Total height is 112 (top tile row) + 104 (middle band) + 112 (bottom tile row) = 328px.\n   - Stadium track: position:absolute; left:40px; right:40px; top:62px; bottom:62px, which gives 204px of height and so 102px semicircular ends. border:2px solid color-mix(in oklch, var(--fi-accent) 35%, var(--paper)); border-radius:999px. Tiles have a paper background, so they mask the line and it only shows in the 28px gaps between tiles and around the curved ends.\n   - Right chevron: absolute; right:31px; top:50%; margin-top:−10px; 20×20; display:grid; place-items:center; background var(--paper), which cuts the line; colour var(--fi-accent). Material 'chevron_right' at 20px rotated 90deg, so it points DOWN.\n   - Left chevron: same box at left:31px, icon rotated −90deg, so it points UP. Together they read as clockwise flow.\n   - 'Now' label: absolute; left:18px; top:14px (inside the 120px left gutter); flex column; align-items flex-start; gap 4px. First line 'Now' at 11px/600, letter-spacing 0.08em, uppercase, colour ink. Second line at 12px, ink-muted, max-width 90px, line-height 1.35.\n   - Top tile row: position:relative; display:grid; grid-template-columns:repeat(5, minmax(0,1fr)); column-gap:28px. Tiles 01–05, left to right.\n   - Middle band: position:relative; height:104px; flex, centred both ways. An inner flex row (align-items:center; gap:48px; text-align:left) holds three stat blocks separated by 1px×40px var(--hairline) dividers. Each stat has a label (11px/600, 0.08em, uppercase, ink-muted) and a value (17px/500, margin-top 6px).\n   - Bottom tile row: same grid. Tiles 06–10 are REVERSED, so the row reads 10 FI, 09 IE, 08 PT, 07 AT, 06 BE from left to right, completing the clockwise loop.\n   - Tile: position:relative; box-sizing border-box; height 112px; padding 12px 16px; background var(--paper); border {bw} solid {bd} (tile 01: 1.5px var(--ink); the rest: 1px var(--hairline)); border-radius var(--radius-m)=6px; flex column; gap 6px. Contents:\n     • Top line: flex, space-between, align centre. On the left, '{idx} · {code}' in font-numeric, 11px, ink-muted. On the right, a pass pill: inline-flex; height 20px; padding 0 7px; radius 3px; background (Build: var(--fi-accent-soft); Refresh: transparent); box-shadow inset 0 0 0 1px var(--fi-accent); 11px/600.\n     • Country name at 18px/500.\n     • Dates in font-numeric, 11px, ink-muted.\n     • Top row only: an optional 'extra' line (font-numeric, 11px, ink-muted) and an optional flag chip. The flag is absolute at left:14px; top:−11px (straddling the top border); height 20px; inline-flex; padding 0 7px; radius 3px; background var(--ink); colour var(--paper); 11px/600.\n     • The bottom-row template does not render extra or flag.\n   - Tile widths: at 1920, (1736 − 240 − 4×28)/5 ≈ 276.8px; at 2560, ≈ 404.8px.\n c. Legend: display:flex; gap:24px; margin-top:24px; 13px; ink-muted. Two items, each flex with align centre and gap 8px. Each has a chip (inline-flex; height 18px; padding 0 6px; radius 3px; 10px/600; colour ink):\n   - Build chip: background var(--fi-accent-soft), box-shadow inset 0 0 0 1px var(--fi-accent).\n   - Refresh chip: no background, same inset 1px var(--fi-accent).\n\nRESPONSIVE: the layout is fluid inside the fixed shell canvas. The only fixed widths are the 110px effort column, 120px track gutters, 28px and 40px gaps and 112px tile height. There are no breakpoints. At 2560×1440 the fr columns and tiles simply widen, and the shell switches canvas size rather than scaling this screen. Fonts (Google Fonts, loaded in the shell): Albert Sans (UI), JetBrains Mono (numeric), Material Symbols Outlined (subset includes add, chevron_right, north_east). The shell sets tabular-nums and antialiasing globally.",
+ "components": [
+  {
+   "name": "RoutinesScreen (root Component extends DCLogic)",
+   "description": "Screen container with padding 32px 48px 40px, a flex column and gap 32px. It renders the page header, the PrivateCreditRoutineTable and the FiRotationTrack. It holds local state {drafts, confirm, fresh} and a rootRef on the PC block. componentDidUpdate handles three things: focus requests for a newly added routine, scroll-to/flash requests from other screens (model.routineReq), and deferred focus of an input. componentWillUnmount clears the fT and cT timers.",
+   "states": [
+    "normal",
+    "fresh row flash (after add or after an openRoutine request)",
+    "remove-confirming (one row at a time)"
+   ]
+  },
+  {
+   "name": "PcSectionHeader",
+   "description": "Header row for the PC block: 7px pc-accent dot, 'Private Credit' at 15px/600, and a pcNote at 13px ink-muted reading '{active} routine(s) on your plan until the move · each one leaves by automation or handover'. The count is routines with stage < 3. The row is followed by a flex spacer and an 'Add BAU routine' outline button (28px tall, 1px hairline border, 3px radius, 13px ink-muted, 'add' icon at 16px; on hover the text turns ink and the border ink-faint). The row has a 1px solid ink bottom border and 10px bottom padding.",
+   "states": [
+    "default",
+    "button hover"
+   ]
+  },
+  {
+   "name": "RoutineColumnHeader",
+   "description": "4-column grid header: minmax(0,1.35fr) 110px minmax(0,1.2fr) minmax(0,1.55fr), column-gap 40px, padding 12px 0 8px, hairline bottom border. Labels are 11px/600, 0.08em letter-spacing, uppercase, ink-muted: 'Routine · rule', 'Effort', 'Next three', 'Handover'."
+  },
+  {
+   "name": "RoutineRow",
+   "description": "One row per PC routine, in the same 4-column grid with padding 20px 0 and a hairline bottom border. Background is transparent, or color-mix(in oklch, var(--pc-accent) 8%, transparent) while 'fresh'. Opacity is 1, or 0.35 when another routine or the rotation is hovered (global model.hover). Opacity transitions at 140ms and background at 440ms, both with ease-out cubic-bezier(0.23,1,0.32,1). onMouseEnter calls setHover(r.id); onMouseLeave calls setHover(null). Contains the InlineNameInput, KindSegmented, BdStepper or WeekdayPicker, rule sentence, EffortInput, NextThree, HandoverStepper, HandoverNote, ProjectLink and RemoveButton.",
+   "states": [
+    "default",
+    "hovered (siblings dim to 0.35)",
+    "dimmed",
+    "fresh (pc-accent 8% tint, fades after 1200ms or 1600ms)"
+   ]
+  },
+  {
+   "name": "InlineNameInput",
+   "description": "Borderless 20px/500 text input that bleeds 6px each side (width calc(100% + 12px), margin 0 −6px, padding 2px 6px). Hover background is ink at 4%. Focus background is paper-raised with an inset 1px hairline ring. Placeholder 'Name this routine'. Edits stay in a local draft and commit on blur or Enter. Escape reverts. On commit, both name and short are written.",
+   "states": [
+    "idle",
+    "hover",
+    "focus/editing",
+    "empty (placeholder)"
+   ]
+  },
+  {
+   "name": "KindSegmented",
+   "description": "Three-way segmented control: Monthly, Weekly, Daily. The wrapper has 2px padding, a 1px hairline border, 3px radius and paper-raised background. Each button is 24px tall with 0 9px padding, 2px radius and 12px/500 text. The selected button is ink background with paper text; the others are transparent with ink-muted text. Background and colour transition at 140ms ease-out. Clicking sets routine.kind.",
+   "states": [
+    "monthly selected",
+    "weekly selected",
+    "daily selected"
+   ]
+  },
+  {
+   "name": "BdStepper",
+   "description": "Shown only when kind is monthly. A 28px tall box with a hairline border, 3px radius and paper-raised background. It holds a '−' button (26×26, 15px, ink-muted), a centred 'BD{n}' label (JetBrains Mono 12px/500, min-width 40px) and a '+' button. bd is clamped between 1 and 20 and updates immediately with no draft.",
+   "states": [
+    "min 1",
+    "max 20"
+   ]
+  },
+  {
+   "name": "WeekdayPicker",
+   "description": "Shown only when kind is weekly. Five 30×28 buttons, 2px apart: Mon, Tue, Wed, Thu, Fri (wd values 1–5). The selected button has an ink border, ink background and paper text. The others have a hairline border, paper-raised background and ink text. 12px/500. Clicking sets routine.wd.",
+   "states": [
+    "one weekday selected"
+   ]
+  },
+  {
+   "name": "RuleSentence",
+   "description": "14px ink-muted line 8px below the controls. Text is ruleText(r), followed by ' · ' and detail.toLowerCase() when detail exists. Examples: '3rd business day, monthly · 12 funds', '8th business day, monthly · monthly pack', 'Every Tuesday', 'Every business day'."
+  },
+  {
+   "name": "EffortInput",
+   "description": "Auto-width decimal input at 24px/500. Width is calc(max(1, len)*0.62em + 8px), margin-left −6px, padding 0 2px 0 6px, with the same hover and focus styles as the name input. It is followed by a literal 'h' at 24px/500. Below it: 'per run' at 12px ink-muted with margin-top 2px, then the monthly estimate at 12px ink-muted with margin-top 6px, e.g. '6h a month', '≈4.3h a month', '≈21h a month'. On commit the value is parsed with a comma→dot swap and clamped to 0..8.",
+   "states": [
+    "idle",
+    "hover",
+    "focus"
+   ]
+  },
+  {
+   "name": "NextThree",
+   "description": "3-column grid with a 16px column gap showing up to three upcoming occurrences. Each has a 4×34px tick with a 1px pc-accent inset outline, filled pc-accent if the run is today. Next to it: the date (e.g. 'Mon 5 Oct') at 14px, weight 600 for today and 400 otherwise, and a note at 12px ink-muted: 'today', 'after the move', or '{n} BD away'. A full-width message sits below or instead: 'Handed over. It no longer takes your time.' when stage >= 3, or 'No upcoming runs.' when the list is empty.",
+   "states": [
+    "has runs (today highlighted)",
+    "no runs",
+    "handed over (message shown, and the dates still render)"
+   ]
+  },
+  {
+   "name": "HandoverStepper",
+   "description": "Horizontal 4-step progress control over STAGES = ['Manual','Automating','Shadowed','Handed over']. Steps are joined by 10px × 1px connectors, ink up to the current stage and hairline after it. Each step is a button titled 'Set to {name}' containing a 9px dot with a 1.5px border and a 13px label. Past stages: filled ink dot, label ink-muted/400. Current stage: hollow dot (ink ring, paper fill), label ink/600. Future stages: ink-faint ring, paper fill, label ink-faint/400. Dot colours transition at 240ms ease-out. Button hover background is ink at 5%. Clicking a different stage updates it and logs a feed entry.",
+   "states": [
+    "Manual",
+    "Automating",
+    "Shadowed",
+    "Handed over"
+   ]
+  },
+  {
+   "name": "HandoverNote",
+   "description": "Auto-growing borderless textarea (field-sizing:content, rows = ceil(len/44), overflow hidden, resize none) at 14px, line-height 1.5, ink-muted. It bleeds 6px each side with margin-top 10px. Placeholder: 'Where does this routine go after the move?'. Enter without Shift commits, and Escape reverts. The value is stored as routine.statusNote.",
+   "states": [
+    "idle",
+    "hover",
+    "focus",
+    "empty"
+   ]
+  },
+  {
+   "name": "ProjectLink",
+   "description": "Shown only if routine.pid maps to a project. Unstyled button at 13px/600: 'Via {p.name lowercased, first letter uppercased} · {p.forecastDM}' plus a 'north_east' icon at 16px. Clicking calls model.openProject(pid), which switches to the Workspace screen with no view transition. Examples: 'Via Returns pipeline automation · 2 Dec', 'Via Manco pack automation · 11 Dec'."
+  },
+  {
+   "name": "RemoveButton",
+   "description": "Right-aligned 12px text button with an underline on hover. It needs two clicks. The first click changes the label to 'Click again to remove' and the colour to var(--overload), and starts a 4000ms timeout that reverts it. The second click within that window calls model.removeRoutine(id). In the idle state the label is 'Remove' in var(--ink-faint).",
+   "states": [
+    "idle 'Remove' (ink-faint)",
+    "confirming 'Click again to remove' (overload red)"
+   ]
+  },
+  {
+   "name": "PcEmptyState",
+   "description": "Shown when there are no PC routines: 'No Private Credit routines. Everything recurring has been handed over or stopped.' 15px ink-muted, padding 22px 0, hairline bottom border."
+  },
+  {
+   "name": "FiSectionHeader",
+   "description": "7px fi-accent dot, 'Fixed Income' at 15px/600, and a hard-coded 13px ink-muted subtitle: 'Eurozone sovereign rotation · 4h a day from the move · one country at a time, then round again'. 1px ink bottom border and 10px bottom padding. Hovering anywhere in the FI block calls setHover('rot'), which dims every PC row to 0.35. The FI block itself never dims."
+  },
+  {
+   "name": "FiRotationTrack",
+   "description": "Read-only stadium or racetrack diagram, 328px tall with 120px side gutters. An absolute pill outline (2px, fi-accent mixed 35% with paper, radius 999px, inset 40px left/right and 62px top/bottom) runs behind two 5-column tile rows (column gap 28px). Two 20×20 paper-backed chevrons on the left and right midpoints (right pointing down, left pointing up) show clockwise flow. The top row holds tiles 01–05 left to right. The bottom row holds 06–10 reversed. A 'Now' status sits in the top-left gutter. The 104px middle band shows three stats: 'Loop 1' → '10 countries · {loopBD} business days'; 'Estimated completion' → '{ROT[9].eS} 2027'; 'Then' → 'Back to Germany to refresh, {ROT[10].sS} – {F.dm(ROT[10].e)}'.",
+   "states": [
+    "pre-move (the only state designed: tile 01 highlighted with 'First up' flag)"
+   ]
+  },
+  {
+   "name": "RotationTile",
+   "description": "112px tall card with padding 12px 16px, paper background and 6px radius, laid out as a flex column with a 6px gap. Tile 01 has a 1.5px ink border; the others have a 1px hairline border. Header line: '{01..10} · {code}' in mono 11px ink-muted, and a pass pill (20px tall, 11px/600, inset 1px fi-accent ring; filled fi-accent-soft for Build, transparent for Refresh). Then the country at 18px/500, and dates in mono 11px ink-muted, e.g. '4 Jan – 11 Jan · 6 BD'. Tile 01 only has an extra line 'Refresh 9 Mar – 11 Mar' and a flag chip 'First up · Mon 4 Jan': ink background, paper text, 11px/600, 20px tall, absolute at left 14px and top −11px.",
+   "states": [
+    "first/current (ink 1.5px border + flag + extra)",
+    "default"
+   ]
+  },
+  {
+   "name": "RotationLegend",
+   "description": "Row of two legend items, gap 24px, margin-top 24px, 13px ink-muted. The 'Build' chip (fi-accent-soft fill, inset fi-accent ring, 10px/600, 18px tall) is followed by 'First pass: models and views built from scratch'. The 'Refresh' chip (ring only) is followed by 'Return visit: update what was built'."
+  }
+ ],
+ "dataConsumed": [
+  "model.routines: Routine[]. Each item is the stored routine after normR, plus derived fields:\n- Stored: id (string, e.g. 'r-ret', 'r-man', or 'r'+Date.now().toString(36)); domain ('pc'; only pc is filtered here); name (string); short (string, mirrors name after an edit); detail (string, e.g. '12 funds'); kind ('monthly'|'weekly'|'daily', default 'monthly'); bd (1–20, business day of month, default 5); wd (1–5, Mon–Fri, default 2); h (hours per run, number, default 1); stage (0..3 index into STAGES, default 0; seeds are 1); statusNote (string); pid (project id or null); readiness and status (legacy, unused here).\n- Derived: rule (ruleText string); ruleShort; stageName/status (STAGES[stage]); next: [{n: dayNumber, s: 'Mon 5 Oct', after: n >= MOVE, today: n === TODAY}] with at most 3 entries.",
+  "model.pmap: {[projectId]: derivedProject}. Uses p.id, p.name and p.forecastDM (a 'd Mon' string, or '—').",
+  "model.STAGES: ['Manual','Automating','Shadowed','Handed over'].",
+  "model.ROT: an array of 11 segments {i, country, code, len (BD), pass ('Build'|'Refresh'), s (start day number), e (end day number), sS ('Mon 4 Jan'), eS ('Mon 11 Jan')}. It is computed from ROT_DEF starting at MOVE. ROT[0..9] are the 10 build passes; ROT[10] is the Germany refresh.",
+  "model.CAL: the business-day calendar {days, bds, idx, nextBD, addBD, bdDiff}. Only bdDiff(TODAY, n) is used here, for the 'n BD away' notes.",
+  "model.F formatters: F.d(n) is the day of the month; F.mon(n) is 'Jan'; F.dm(n) is '9 Mar'.",
+  "model.TODAY: day number, 2026-10-05.",
+  "model.hover (string|null) and model.setHover(id): global hover id shared with Timeline, Calendar and Today ('r-ret', 'r-man', 'rot', ...).",
+  "model.updateRoutine(id, fn), model.addRoutine(), model.removeRoutine(id), model.logChange(item), model.openProject(id).",
+  "model.focusRoutine (id|null) and model.clearFocusRoutine(): a one-shot request to flash and focus a newly added routine.",
+  "model.routineReq ({id, t}|undefined): a one-shot request from other screens (Today's BAU card calls m.openRoutine('r-ret')) to scroll to and flash a row. It is de-duplicated on t.",
+  "model.reduced (boolean, props.motion === 'Reduced'): switches scroll behaviour between smooth and auto.",
+  "Derived locally: active = count of PC routines with stage < 3; loopBD = sum of ROT[0..9].len (46); tiles built from ROT.slice(0,10)."
+ ],
+ "interactions": [
+  "Click 'Add BAU routine': calls model.addRoutine(). This appends normR({id:'r'+Date.now().toString(36), name:'', short:''}), which defaults to domain pc, monthly, BD5, Tue, 1h, Manual, pid null, and sets focusRoutine. On the next componentDidUpdate the screen clears focusRoutine, flashes the new row (fresh tint for 1200ms) and focuses its name input after a 30ms timeout. Browser focus scrolls the row into view natively.",
+  "Hover a routine row: setHover(r.id). All other PC rows fade to opacity 0.35 over 140ms ease-out. Mouse leave calls setHover(null).",
+  "Hover anywhere in the Fixed Income block: setHover('rot'), which dims all PC rows to 0.35. Leaving calls setHover(null). The same hover id also highlights the rotation lane on Timeline.",
+  "Name input: typing stores a draft under drafts['name.'+id], so the model is not updated per keystroke. On blur, if a draft exists, the draft is dropped and the trimmed value is compared to the stored name; if different, updateRoutine sets {name: val, short: val}. Enter without Shift calls preventDefault and blurs, which commits. Escape stops propagation (so the shell's global Escape does not close the drawer or palette), drops the draft and blurs on the next tick, which reverts the value.",
+  "Hours input: same draft, commit and revert behaviour. On blur the value is parsed as parseFloat(draft.replace(',', '.')); NaN becomes 0; the result is clamped to [0, 8]. updateRoutine runs only if the number differs from the current h.",
+  "Handover note textarea: same draft behaviour, committing the trimmed text to statusNote. Enter without Shift commits (no plain newlines). Shift+Enter inserts a newline. Escape reverts.",
+  "Kind segmented click: updateRoutine(id, x => ({...x, kind})). The control below swaps to the BD stepper for Monthly, the weekday picker for Weekly, or nothing for Daily. The rule sentence, next three and monthly estimate recompute immediately.",
+  "BD stepper '−'/'+': bd = max(1, bd−1) or min(20, bd+1), applied immediately.",
+  "Weekday button click: wd = 1..5, applied immediately.",
+  "Handover stage click (button title 'Set to {stage}'): does nothing if the stage is already current. Otherwise it calls updateRoutine with {stage: k}, then model.logChange({pid:null, kind:'edit', title: r.name || 'Routine', body: 'Handover status {old} → {new}.' + (k===3 ? ' It drops off your plan.' : ''), delta:'BAU'}). The feed item also gets id 'f'+Date.now(), when 'Just now' and tone 'quiet'. Setting 'Handed over' (3) removes the routine from capacity and load calculations everywhere and from the pcNote count.",
+  "Project link click: model.openProject(pid). The screen switches to Workspace for that project with no view transition (viaCard is undefined).",
+  "Remove, first click: sets confirm = id. The label becomes 'Click again to remove' in overload red, and a 4000ms timer (cT) auto-cancels. Only one row can be confirming at a time.",
+  "Remove, second click within 4s: confirm is cleared and model.removeRoutine(id) runs. The routine is deleted, and a feed item 'Routine removed from the plan.' (kind edit, delta BAU) is logged if the routine had a name.",
+  "External deep link: model.openRoutine(id) (from Today's BAU card) sets routineReq {id, t} and switches to this screen. componentDidUpdate sees a new t, sets fresh=id (tint for 1600ms), finds [data-rid=id], and walks up the DOM to the nearest ancestor whose computed overflowY is 'auto' (the shell section). It computes the row offset times k (k = offsetHeight / boundingRect height, which cancels the shell's scale transform) and scrolls to scrollTop + offset·k − 120px, using behavior 'smooth' or 'auto' when reduced.",
+  "No keyboard shortcuts are specific to this screen beyond Enter and Escape in fields. The global ⌘K and Escape come from the shell.",
+  "The FI rotation track is entirely non-interactive apart from hover. Tiles are not clickable."
+ ],
+ "motion": [
+  "Row opacity when hover dims it: transition opacity var(--dur-fast)=140ms var(--ease-out)=cubic-bezier(0.23, 1, 0.32, 1). The value moves between 1 and 0.35.",
+  "Row 'fresh' flash: background goes transparent → color-mix(in oklch, var(--pc-accent) 8%, transparent) and back, with transition background var(--dur-slow)=440ms, same ease-out. The tint holds for 1200ms after an add or 1600ms after an openRoutine deep link, then fades over 440ms.",
+  "Kind segmented buttons: background and color transition at 140ms ease-out.",
+  "Handover stage dot: background and border-color transition at var(--dur-base)=240ms ease-out.",
+  "Deep-link scroll: element.scrollTo({behavior: 'smooth'}), or 'auto' when model.reduced. Only model.reduced (the prop) is checked here, not prefers-reduced-motion.",
+  "Deferred focus of a new routine's name input after a 30ms setTimeout.",
+  "Hover and focus background changes on inputs, textarea and buttons have no transition (instant), except the kind buttons.",
+  "Screen enter and exit, from the shell's section wrapper: entering is opacity 0→1 at 240ms ease-out after a 60ms delay, with visibility switched instantly. Exiting is opacity at 140ms ease-out, with visibility hidden after 140ms. There is no transition when state.instant is set.",
+  "There are no keyframe animations in this file. remi-pulse, remi-settle and remi-tick exist in the shell but are unused here.",
+  "Reduced motion: only the smooth scroll is disabled. The 140/240/440ms transitions are NOT reduced; the shell's reduced mode only swaps --spring-soft and the view-transition durations. Production should decide whether to zero these under prefers-reduced-motion."
+ ],
+ "algorithms": [
+  "Occurrence rule, occurs(r, day), from the shell: true iff day.bd AND (kind==='daily' OR (kind==='weekly' AND day.w === r.wd, where JS getUTCDay gives 1=Mon..5=Fri) OR (kind==='monthly', the default, AND day.bdm === r.bd)). bdm is the 1-based count of business days within the calendar month, excluding weekends and holidays. A BD number greater than that month's BD count (e.g. BD20+ in a 20-BD month like Jan or Feb 2027) means no run that month.",
+  "Business-day calendar (CAL), from the shell: days run from 2026-08-31 to 2027-04-30 as UTC day numbers. A day is a business day if it is Mon–Fri and not in HOL = {2026-12-25 Christmas Day, 2026-12-28 Boxing Day (substitute), 2027-01-01 New Year's Day, 2027-03-26 Good Friday, 2027-03-29 Easter Monday} (UK). bds is the ordered list of business days and idx maps a day to its BD index. nextBD(n) rolls forward to a business day. addBD(n,k) = bds[clamp(idx[nextBD(n)] + k)]. bdDiff(a,b) = idx[nextBD(b)] − idx[nextBD(a)]. BD counts: Oct 22, Nov 21, Dec 21, Jan 20, Feb 20, Mar 21, Apr 22.",
+  "Next three: CAL.bds.filter(n => n >= TODAY && occurs(r, day)).slice(0, 3). Stage is not considered, so handed-over routines still list dates. Note per occurrence: today → 'today' (weight 600, filled tick); n >= MOVE → 'after the move'; otherwise `${CAL.bdDiff(TODAY, n)} BD away`. Seeds with TODAY = Mon 5 Oct 2026: BD3 → Mon 5 Oct (today), Wed 4 Nov (22 BD away), Thu 3 Dec (43 BD away). BD8 → Mon 12 Oct (5), Wed 11 Nov (27), Thu 10 Dec (48). Weekly Tue → Tue 6 Oct (1), Tue 13 Oct (6), Tue 20 Oct (11).",
+  "Rule text, ruleText(r): daily → 'Every business day'; weekly → 'Every ' + full weekday name (e.g. 'Every Tuesday'); monthly → ORD(bd) + ' business day, monthly'. ORD(n) = n + (n%10===1 && n!==11 ? 'st' : n%10===2 && n!==12 ? 'nd' : n%10===3 && n!==13 ? 'rd' : 'th'). The displayed line appends ' · ' + detail.toLowerCase() if detail is set. ruleShort, used elsewhere: 'Daily' | 'Weekly · Tue' | 'BD3'.",
+  "Monthly effort estimate: daily → '≈' + Math.round(h * 21) + 'h a month' (21 BD/month assumed). weekly → '≈' + Math.round(h * 4.3 * 10)/10 + 'h a month' (4.3 weeks/month, 1 decimal). monthly → h + 'h a month' (no ≈, raw number).",
+  "Hours commit: n = Math.max(0, Math.min(8, parseFloat(String(draft).replace(',', '.')) || 0)). Only the first comma is replaced. 8 equals CAPACITY hours per day. The update is skipped if n === +current.",
+  "Text commit: val = draft.trim(). The update is skipped if val === String(current || ''). The name field writes both name and short.",
+  "BD stepper clamp: 1..20. Weekday 1..5.",
+  "Auto-width of the hours input: width = calc(max(1, value.length) * 0.62em + 8px). Textarea rows = max(1, ceil((len || 1)/44)), in addition to CSS field-sizing:content.",
+  "Hover dimming: op(id) = hover && hover !== id ? 0.35 : 1. The hover value is global across screens: Today uses 0.25 or 0.3, Calendar 0.25, Timeline 0.28.",
+  "pcNote count: active = PC routines with stage < 3. Pluralised 'routine'/'routines'.",
+  "'No next' message: stage >= 3 → 'Handed over. It no longer takes your time.'; else if next is empty → 'No upcoming runs.'; else none.",
+  "Handover stepper visual state for index k vs current stage cur: connector (k>0) is ink if k <= cur, else hairline. Ring is ink if k <= cur, else ink-faint. Fill is ink if k < cur, else paper. Label weight is 600 if k === cur, else 400. Label colour is ink if k === cur, ink-muted if k < cur, ink-faint if k > cur.",
+  "Rotation schedule (ROT), from the shell: ROT_DEF = [Germany DE 6 Build, France FR 5 Build, Italy IT 6 Build, Spain ES 5 Build, Netherlands NL 4 Build, Belgium BE 4 Build, Austria AT 4 Build, Portugal PT 4 Build, Ireland IE 4 Build, Finland FI 4 Build, Germany DE 3 Refresh]. Starting at s = MOVE (Mon 4 Jan 2027), each segment gets e = addBD(s, len−1) and the next segment starts at s = addBD(e, 1), so segments are back to back on business days and skip holidays. Result: DE 4–11 Jan; FR 12–18 Jan; IT 19–26 Jan; ES 27 Jan–2 Feb; NL 3–8 Feb; BE 9–12 Feb; AT 15–18 Feb; PT 19–24 Feb; IE 25 Feb–2 Mar; FI 3–8 Mar; DE refresh Tue 9–Thu 11 Mar. FI BAU load in dayLoad is a fixed 4h on every business day inside a segment, from MOVE onwards.",
+  "Tile formatting: idx = String(k+1).padStart(2,'0'). dates(sg) = `${F.d(s)} ${F.mon(s)} – ${F.d(e)} ${F.mon(e)} · ${len} BD` with an en dash and spaces. passBg = Build ? var(--fi-accent-soft) : transparent. Tile 0: border 1.5px var(--ink); flag 'First up · Mon 4 Jan' (hard-coded); extra = 'Refresh ' + dates(ROT[10]).replace(' · 3 BD', '') → 'Refresh 9 Mar – 11 Mar'.",
+  "Loop stats: loopBD = sum(ROT[0..9].len) = 46. loopEnd = ROT[9].eS + ' 2027' → 'Mon 8 Mar 2027'. refresh = ROT[10].sS + ' – ' + F.dm(ROT[10].e) → 'Tue 9 Mar – 11 Mar'.",
+  "Clockwise layout: top = tiles[0..4] in order; bottom = tiles[5..9].reverse(), so the bottom row reads 10, 09, 08, 07, 06 left to right.",
+  "Deep-link scroll math: top = row.getBoundingClientRect().top − scroller.getBoundingClientRect().top; k = scroller.offsetHeight / scroller.getBoundingClientRect().height (inverse of the canvas scale); scrollTo(scroller.scrollTop + top*k − 120)."
+ ],
+ "backendImplications": [
+  "Routine entity (table routines): id (uuid), domain ('pc'|'fi'; the UI only creates pc), name, short_name (currently mirrors name on edit; decide whether to keep a separate curated short label), detail (not editable in this UI), kind enum monthly|weekly|daily, bd int 1–20 (monthly), weekday int 1–5 (weekly), hours_per_run numeric 0–8, stage int 0–3 or enum manual|automating|shadowed|handed_over, status_note text, project_id FK nullable (not settable in this UI), created_at, updated_at, sort order (the UI appends new routines at the end). The SPEC also anticipates 'every: month|quarter', a checklist and 'handover.to'. These are not in the design yet, so the schema should leave room for them.",
+  "Endpoints: GET /routines (with derived rule text and next occurrences, or compute client-side); POST /routines (defaults: pc, monthly, BD5, Tue, 1h, Manual, empty name); PATCH /routines/{id} (partial: name, kind, bd, wd, hours, stage, status_note); DELETE /routines/{id}. Each mutation must be optimistic, because the UI applies changes immediately.",
+  "Validation, done server-side in schemas: name trimmed (empty allowed while drafting, since new routines start blank); hours parsed as a decimal (accept a comma decimal on the client), clamped to 0..capacity (8); bd 1..20 (warn when bd exceeds the month's business-day count, since that month has no run); weekday 1..5; stage 0..3; kind enum.",
+  "Services: a business-day calendar service (holiday set, currently a UK list hard-coded for Dec 2026 to Apr 2027; needs a configurable calendar, UK vs SA, and a range beyond 2027-04-30); an occurrence expansion service (expandRoutines: occurs rule, next N occurrences from today, flags for 'today' and 'after the move'); BD distance (bdDiff); a monthly-effort estimate (21 BD/month and 4.3 weeks/month constants, or derived from the actual calendar).",
+  "Side effects on stage change: write an activity feed entry {kind:'edit', project_id:null, title: routine name or 'Routine', body:'Handover status X → Y.' (+ ' It drops off your plan.' when the new stage is Handed over), delta:'BAU', tone:'quiet', created_at}. On delete of a named routine, write 'Routine removed from the plan.' This belongs in the routine service (transactional with the update), not the client.",
+  "Capacity and load engine: routines with stage < 3 contribute hours on their occurrence days before MOVE only. Handed-over routines and all PC BAU on or after the move date are excluded. Any routine change must invalidate or recompute day loads, overload flags and the 'attention' list used by Today, Timeline and Calendar.",
+  "Rotation entity (rotations and rotation_segments): rotation {id, domain 'fi', title 'Eurozone sovereign rotation', start_date (= move date), hours_per_day 4 (or the SPEC pace: hoursPerWeek | asCapacityAllows)}; segments ordered {country, iso code, length_bd, pass 'build'|'refresh'}. The schedule (start and end per segment) is derived server-side by chaining business days. Endpoint GET /rotation returns segments with computed dates, loop total BD, estimated loop completion and next refresh. The current UI is read-only, but the SPEC suggests templates (build and refresh) and editable order and lengths later.",
+  "A 'current segment / status' computation is needed: 'Waiting to start. {n} BD to go.' before the move, and the active country after it. The prototype hard-codes this, and highlights tile 01 and the 'First up' flag statically.",
+  "Settings or core config: TODAY (the prototype pins 2026-10-05; production uses the real date in the user's timezone), MOVE date (placeholder 2027-01-04), capacity hours per day (8), and the holiday calendar. All of these feed this screen.",
+  "Persistence currently: the shell debounces (250ms) a save of the whole state, including routines and feed, to localStorage key 'remi.v1'. In production, replace this with API persistence per mutation. Drafts stay client-only."
+ ],
+ "risksAndQuirks": [
+  "The 'Now' label copy 'Waiting to start. 61 BD to go.' is hard-coded. CAL.bdDiff(TODAY, MOVE) actually returns 62. 61 equals the business days strictly between today and the move, which is also what the shell header says. Production must derive this, and pick one definition consistently.",
+  "Tile 01 (Germany) is statically styled as current: 1.5px ink border, flag 'First up · Mon 4 Jan' hard-coded, and the refresh extra line only on tile 0. There is no state for 'in progress', 'done' or 'current = segment containing today' after the move.",
+  "The FI copy is hard-coded: 'Eurozone sovereign rotation · 4h a day from the move · one country at a time, then round again', 'Loop 1', '10 countries', 'Back to Germany to refresh'. loopEnd appends a literal ' 2027'. The extra-line computation calls .replace(' · 3 BD', ''), which only works while the refresh length is 3.",
+  "Only ROT[0..10] is modelled (one loop plus one refresh segment). There is no second loop, and ROT[10] is never rendered as a tile.",
+  "ROT is computed from a module-level MOVE constant; FI BAU hours (4h/day) are hard-coded in dayLoad; the calendar only covers 2026-08-31..2027-04-30. addBD clamps at the end of the range, so later dates would collapse onto the last business day.",
+  "Handed-over routines (stage 3) still render their 'Next three' dates, and the 'Handed over. It no longer takes your time.' message appears beneath them, because model.routines.next ignores stage. Next-three dates after the move are also shown (labelled 'after the move') even though PC BAU no longer loads the plan after MOVE.",
+  "The project link label sentence-cases the project name with toLowerCase(), which breaks acronyms: 'ManCo pack automation' becomes 'Manco pack automation' (visible in the screenshot). Production should use the name as stored or a proper short label.",
+  "Editing the name overwrites 'short' (o.short), so curated short labels ('Returns', 'ManCo pack') used on Today and Timeline are lost after any rename.",
+  "The hours clamp maximum of 8 is hard-coded (equal to CAPACITY). parseFloat with a single comma replace means input like '1,5' becomes 1.5, while text like '1.5h' parses as 1.5 and 'abc' becomes 0.",
+  "The BD stepper allows 1..20 regardless of the month. BD20 has no run in months with fewer business days (none in the current window, but Jan and Feb 2027 have exactly 20). The weekly default is Tue (wd 2) even for seeded monthly routines when switched to weekly.",
+  "The monthly estimate uses fixed constants (21 BD/month daily, 4.3 weeks/month weekly), and for monthly routines prints the raw h without '≈'.",
+  "model.reduced only reflects the Motion prop, not prefers-reduced-motion, so the smooth scroll ignores the OS setting here (the shell's own reduced() does check the media query).",
+  "The hover state is global and shared across all screens. If the screen switches while the pointer is inside a row, mouseleave may not fire, leaving a stale hover that dims items on other screens.",
+  "A single timer (fT) is shared between the add-flash (1200ms) and the deep-link flash (1600ms). A new flash cancels the previous one.",
+  "componentDidUpdate runs routineReq and focus handling even while the screen is hidden. All screens stay mounted, and only opacity and visibility toggle.",
+  "Esc in a field calls e.stopPropagation() so that the shell's window keydown listener (which closes the palette or drawer) does not fire. This relies on React synthetic event propagation order.",
+  "In the textarea, Enter without Shift commits and blurs, so users need Shift+Enter for newlines.",
+  "Remove has no undo. Confirmation is only the two-click pattern with a 4s window. The seeded routines (r-ret, r-man) are removable too, even though other screens special-case the id 'r-ret' (Notes keyword matching, Today's funds checklist, check-in bau_done).",
+  "Seed routines have stored 'rule' and 'status' strings that the model's derived values overwrite. 'readiness' is unused here.",
+  "New routines are always domain 'pc'. There is no UI to add FI routines, link a routine to a project, or edit 'detail'.",
+  "Accent colours: the shell's applyTweaks overrides --pc-accent and --fi-accent with the prop defaults (#526e2a and #47619c), so the effective accents are these hex values, not the oklch values in :root. They are brand stand-ins pending the real Ninety One palette.",
+  "In the effort column the input width is computed from the character count, and the input's content-box padding adds space, so there is a visible gap before 'h' (see screenshot rt.png)."
+ ],
+ "copyText": [
+  "Routines",
+  "What repeats, and where each routine goes next",
+  "Private Credit",
+  "{n} routine(s) on your plan until the move · each one leaves by automation or handover",
+  "Add BAU routine",
+  "Routine · rule",
+  "Effort",
+  "Next three",
+  "Handover",
+  "Name this routine",
+  "Monthly",
+  "Weekly",
+  "Daily",
+  "BD{n}",
+  "Mon",
+  "Tue",
+  "Wed",
+  "Thu",
+  "Fri",
+  "Every business day",
+  "Every {Weekday}",
+  "{nth} business day, monthly",
+  "per run",
+  "{h}h a month",
+  "≈{x}h a month",
+  "today",
+  "after the move",
+  "{n} BD away",
+  "Handed over. It no longer takes your time.",
+  "No upcoming runs.",
+  "Manual",
+  "Automating",
+  "Shadowed",
+  "Handed over",
+  "Set to {stage} (button title tooltip)",
+  "Where does this routine go after the move?",
+  "Via {Project name} · {d Mon}",
+  "Remove",
+  "Click again to remove",
+  "No Private Credit routines. Everything recurring has been handed over or stopped.",
+  "Handover status {Old} → {New}. (feed body; + ' It drops off your plan.' when set to Handed over)",
+  "Routine removed from the plan. (feed body)",
+  "Fixed Income",
+  "Eurozone sovereign rotation · 4h a day from the move · one country at a time, then round again",
+  "Now",
+  "Waiting to start. 61 BD to go.",
+  "First up · Mon 4 Jan",
+  "Refresh 9 Mar – 11 Mar",
+  "Loop 1",
+  "10 countries · 46 business days",
+  "Estimated completion",
+  "Mon 8 Mar 2027",
+  "Then",
+  "Back to Germany to refresh, Tue 9 Mar – 11 Mar",
+  "Build",
+  "Refresh",
+  "First pass: models and views built from scratch",
+  "Return visit: update what was built"
+ ],
+ "localState": [
+  "drafts: {[fieldKey: string]: string}. Field keys are 'name.{id}', 'h.{id}' and 'note.{id}'. A draft holds uncommitted input text; the input shows the draft when present, otherwise the model value. It is cleared on blur (commit) or Escape (revert).",
+  "confirm: routineId | null. The row in the remove-confirm state (label 'Click again to remove', overload colour). Auto-reset after 4000ms via timer cT.",
+  "fresh: routineId | null. The row showing the pc-accent 8% flash background. Reset after 1200ms (add) or 1600ms (deep link) via timer fT.",
+  "rootRef: a React ref on the PC block, used to query [data-rid] and [data-fk] elements and to find the scroll container.",
+  "Instance fields (not state): this.pending (field key to focus after render, 'name.{id}'); this._rq (last handled routineReq.t, for de-duplication); this.fT and this.cT timers."
+ ],
+ "persistence": [
+  "There is no persistence in this component; drafts are ephemeral. All routine mutations go through model.updateRoutine, addRoutine and removeRoutine into the shell state. The shell (Remi.dc.html componentDidUpdate) debounces 250ms, then writes localStorage 'remi.v1' = JSON {projects, tasks, feed, funds, routines, doneOn, bauDone, notes, m2: true}. On load, routines come from SAVED.routines, or from the seed ROUTINES, and pass through normR, which fills defaults domain 'pc', kind 'monthly', bd 5, wd 2, h 1, stage 0, statusNote '', detail '', pid null, and short = short || name. Feed entries from stage changes and removals persist in the same store. 'Reset to sample data' in the command palette clears the key and restores the seeds."
+ ],
+ "sampleData": "Seed ROUTINES, from Remi.dc.html; normR runs afterwards and a forEach sets kind 'monthly' and stage 1 (Automating):\n1. {id:'r-ret', domain:'pc', name:'Fund & security-level returns', short:'Returns', detail:'12 funds', rule:'3rd business day, monthly', bd:3, h:6, pid:'ret', status:'Automating, then handover', statusNote:'Returns pipeline automation replaces the manual run; successor takes over from the December cycle.', readiness:0.55}\n2. {id:'r-man', domain:'pc', name:'Managing Committee pack', short:'ManCo pack', detail:'Monthly pack', rule:'8th business day, monthly', bd:8, h:4, pid:'manco', status:'Automating, then handover', statusNote:'ManCo pack automation builds the pack; commentary stays manual and moves to the successor.', readiness:0.35}\n\nThe screenshot rt.png also shows a user-added third routine: 'Weekly pipeline review', Weekly on Tue, 1h, '≈4.3h a month', Manual, no note, no project.\n\nLinked projects: 'ret' is 'Returns pipeline automation', forecast 2026-12-02, so the link reads 'Via Returns pipeline automation · 2 Dec'. 'manco' is 'ManCo pack automation', forecast 2026-12-11, so the link reads 'Via Manco pack automation · 11 Dec'.\n\nROT_DEF is listed in the algorithms. It yields tiles 01 DE Germany '4 Jan – 11 Jan · 6 BD', 02 FR France '12 Jan – 18 Jan · 5 BD', 03 IT Italy '19 Jan – 26 Jan · 6 BD', 04 ES Spain '27 Jan – 2 Feb · 5 BD', 05 NL Netherlands '3 Feb – 8 Feb · 4 BD', 06 BE Belgium '9 Feb – 12 Feb · 4 BD', 07 AT Austria '15 Feb – 18 Feb · 4 BD', 08 PT Portugal '19 Feb – 24 Feb · 4 BD', 09 IE Ireland '25 Feb – 2 Mar · 4 BD', 10 FI Finland '3 Mar – 8 Mar · 4 BD'. The refresh is DE Tue 9 Mar – 11 Mar, 3 BD.\n\nConstants: TODAY = 2026-10-05 (Mon, BD3); MOVE = 2027-01-04; CAPACITY = 8; STAGES as listed. UK holidays: 25 Dec 2026, 28 Dec 2026 (substitute), 1 Jan 2027, 26 Mar 2027, 29 Mar 2027.",
+ "externalCalls": [
+  "No fetches, AI calls or iframes in this file.",
+  "Fonts, loaded by the shell's helmet: Google Fonts Albert Sans (300–700, italic 400–600), JetBrains Mono (400, 500) and Libre Caslon Text (unused here). Material Symbols Outlined is loaded with an icon_names subset that includes add, chevron_right and north_east, which this screen uses.",
+  "support.js (the dc runtime) turns style-hover and style-focus attributes into generated pseudo-class rules with every declaration marked !important, so they override inline styles. In production these should become :hover and :focus-visible (or :focus) CSS rules."
+ ],
+ "actionsInvoked": [
+  "model.addRoutine(): appends a blank routine (id 'r'+Date.now().toString(36), normR defaults) and sets shell state focusRoutine = id.",
+  "model.clearFocusRoutine(): sets focusRoutine to null in the shell (called once the focus request is consumed).",
+  "model.updateRoutine(id, fn): replaces the routine with normR(fn(x)). Used for name+short, h, statusNote, kind, bd, wd and stage.",
+  "model.removeRoutine(id): filters out the routine and, if it had a name, logChange({pid:null, kind:'edit', title:name, body:'Routine removed from the plan.', delta:'BAU'}).",
+  "model.logChange(item): prepends {id:'f'+Date.now(), when:'Just now', tone:'quiet', ...item} to the feed. Called on handover stage change with body 'Handover status X → Y.' (+ ' It drops off your plan.' when Y is Handed over).",
+  "model.openProject(pid): sets screen 'workspace', ws = pid and closes the palette. No view transition, because viaCard is undefined.",
+  "model.setHover(id|null): sets the global hover id. Row ids are used on row enter; 'rot' is used when the FI block is entered; null on leave.",
+  "Consumed, not invoked: model.openRoutine(id), called by Today, sets routineReq {id, t: Date.now()} and screen 'routines', which this screen reacts to by scrolling and flashing the row."
+ ]
+}

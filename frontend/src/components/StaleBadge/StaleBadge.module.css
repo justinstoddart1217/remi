@@ -1,0 +1,21 @@
+/* Projects.dc.html:36; Remi Foundations.dc.html:262. */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 20px;
+  padding: 0 7px;
+  border-radius: var(--radius-s);
+  box-shadow: inset 0 0 0 1px var(--stale-ring, color-mix(in oklch, var(--risk) 45%, var(--paper)));
+  color: var(--risk-text, color-mix(in oklch, var(--risk) 45%, var(--ink)));
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1.5px currentColor;
+}

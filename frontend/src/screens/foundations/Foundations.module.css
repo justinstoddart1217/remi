@@ -1,0 +1,665 @@
+/*
+ * Remi Foundations.dc.html (the Ninety One redesign, 2026-09-25), lines 51-336, translated from
+ * the inline styles. The page's :root is tokens.css itself (#009D80 / #2F6B9A), so it needs no
+ * accent scope of its own. The ink rules and fills of v1 are --brand-deep here, and the table's
+ * caps label is the brand eyebrow (11/500 at 0.09em, --brand-dark).
+ */
+.page {
+  max-width: 1480px;
+  margin: 0 auto;
+  padding: 64px 64px 120px;
+  display: flex;
+  flex-direction: column;
+  gap: 88px;
+  box-sizing: content-box;
+}
+
+.header {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  column-gap: 72px;
+  align-items: end;
+  border-bottom: 1px solid var(--brand-deep);
+  padding-bottom: 28px;
+}
+.h1 {
+  margin: 14px 0 0;
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: 52px;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+}
+.lede {
+  margin: 0;
+  font-size: 15px;
+  line-height: 1.55;
+  color: var(--ink-muted);
+  text-wrap: pretty;
+}
+.code {
+  font-family: var(--font-numeric);
+  font-size: 13px;
+  color: var(--ink);
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+.sectionHead {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+}
+.sectionNum {
+  font-family: var(--font-numeric);
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+.sectionTitle {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+.sectionNote {
+  font-size: 14px;
+  color: var(--ink-muted);
+}
+
+/* 01 Colour */
+.colourRow {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr);
+  column-gap: 32px;
+  padding-top: 18px;
+  border-top: 1px solid var(--hairline);
+}
+.groupLabel {
+  font-size: 15px;
+  font-weight: 600;
+}
+.groupNote {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--ink-muted);
+  margin-top: 4px;
+  text-wrap: pretty;
+}
+.swatches {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 16px;
+}
+.swatchCell {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.swatch {
+  height: 64px;
+  border-radius: var(--radius-m);
+  box-shadow: inset 0 0 0 1px var(--hairline);
+}
+.tokenName {
+  font-family: var(--font-numeric);
+  font-size: 12px;
+  font-weight: 500;
+}
+.tokenValue {
+  font-family: var(--font-numeric);
+  font-size: 11px;
+  color: var(--ink-muted);
+}
+.tokenRole {
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--ink-muted);
+}
+
+/* 02 Type */
+.families {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  column-gap: 32px;
+  padding: 18px 0;
+  border-top: 1px solid var(--hairline);
+  border-bottom: 1px solid var(--hairline);
+}
+.familySample {
+  font-size: 28px;
+  margin-top: 8px;
+}
+.familyNote {
+  font-size: 13px;
+  color: var(--ink-muted);
+  margin-top: 4px;
+}
+.typeRow {
+  display: grid;
+  grid-template-columns: 200px minmax(0, 1fr) 260px;
+  column-gap: 32px;
+  align-items: baseline;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--hairline);
+}
+.muted12 {
+  font-family: var(--font-numeric);
+  font-size: 12px;
+  color: var(--ink-muted);
+}
+.mono12 {
+  font-family: var(--font-numeric);
+  font-size: 12px;
+}
+.use {
+  font-size: 13px;
+  color: var(--ink-muted);
+}
+
+/* 03 Space, radius and grid */
+.spaceGrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  column-gap: 72px;
+  border-top: 1px solid var(--hairline);
+  padding-top: 18px;
+}
+.spaceRow {
+  display: grid;
+  grid-template-columns: 110px 60px minmax(0, 1fr);
+  align-items: center;
+  height: 32px;
+  border-bottom: 1px solid var(--hairline);
+}
+.spaceBar {
+  height: 10px;
+  background: var(--brand-deep);
+  border-radius: 1px;
+}
+.radii {
+  display: flex;
+  gap: 32px;
+  margin-top: 24px;
+}
+.radius {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.radiusBox {
+  width: 48px;
+  height: 32px;
+  box-shadow: inset 0 0 0 1px var(--ink);
+}
+.frame {
+  position: relative;
+  height: 220px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-m);
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+}
+.frameRail {
+  border-right: 1px solid var(--hairline);
+  background: var(--paper-raised);
+}
+.frameMain {
+  display: grid;
+  grid-template-rows: 20px minmax(0, 1fr);
+}
+.frameHeader {
+  border-bottom: 1px solid var(--hairline);
+}
+.frameCols {
+  padding: 10px 14px;
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: 6px;
+}
+.frameCol {
+  background: color-mix(in oklch, var(--pc-accent) 10%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in oklch, var(--pc-accent) 25%, transparent);
+}
+.frameSpecs {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  column-gap: 20px;
+  row-gap: 8px;
+  margin-top: 16px;
+  font-size: 14px;
+}
+
+/* 04 Motion */
+.motionTokens {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 16px;
+  border-top: 1px solid var(--hairline);
+  padding-top: 18px;
+}
+.motionToken {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.motionValue {
+  font-size: 17px;
+  font-weight: 500;
+}
+.motionNote {
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--ink-muted);
+  text-wrap: pretty;
+}
+.table {
+  border-top: 1px solid var(--hairline);
+}
+.tableHead,
+.tableRow {
+  display: grid;
+  grid-template-columns: 220px 260px minmax(0, 1fr);
+  column-gap: 32px;
+}
+.tableHead {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--brand-deep);
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--brand-dark);
+}
+.tableRow {
+  padding: 14px 0;
+  border-bottom: 1px solid var(--hairline);
+  align-items: baseline;
+}
+.tableName {
+  font-size: 14px;
+  font-weight: 600;
+}
+.tableValues {
+  font-family: var(--font-numeric);
+  font-size: 12px;
+  line-height: 1.5;
+}
+.tableNote {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--ink-muted);
+  text-wrap: pretty;
+}
+
+/* 05 Components */
+.components {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  column-gap: 72px;
+  row-gap: 0;
+}
+.specimen {
+  padding: 22px 0;
+  border-top: 1px solid var(--hairline);
+}
+.specimenTitle {
+  font-family: var(--font-numeric);
+  font-size: 12px;
+  font-weight: 500;
+}
+.stack14 {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 14px;
+}
+.caption {
+  font-size: 12px;
+  color: var(--ink-muted);
+  margin-top: 6px;
+}
+
+.miniRow {
+  display: flex;
+  align-items: flex-end;
+  gap: 32px;
+  margin-top: 14px;
+}
+.miniLabel {
+  font-family: var(--font-numeric);
+  font-size: 11px;
+  color: var(--ink-muted);
+  margin-top: 6px;
+}
+.strip {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  height: 56px;
+}
+.stripNote {
+  font-size: 12px;
+  color: var(--ink-muted);
+  max-width: 180px;
+}
+
+.barRow {
+  display: grid;
+  grid-template-columns: 90px minmax(0, 1fr);
+  align-items: center;
+  column-gap: 16px;
+}
+.barLabel {
+  font-size: 13px;
+  color: var(--ink-muted);
+}
+.barTrack {
+  position: relative;
+  height: 16px;
+}
+
+.markers {
+  display: flex;
+  align-items: center;
+  gap: 36px;
+  margin-top: 18px;
+  flex-wrap: wrap;
+}
+.marker {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  color: var(--ink-muted);
+}
+
+.segments {
+  display: flex;
+  gap: 3px;
+  margin-top: 14px;
+}
+.tiles {
+  display: flex;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.chips {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+.confRow {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  margin-top: 16px;
+}
+
+.card {
+  padding: 18px 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  column-gap: 24px;
+  align-items: end;
+}
+.cardTitleRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.cardTitle {
+  font-size: 13px;
+  font-weight: 600;
+}
+.goal {
+  font-family: var(--font-display);
+  font-size: 26px;
+  line-height: 1.28;
+  margin-top: 8px;
+  text-wrap: pretty;
+}
+.cardSide {
+  text-align: right;
+}
+.cardDate {
+  font-size: 15px;
+  font-weight: 500;
+}
+.cardMeta {
+  font-size: 13px;
+  color: var(--ink-muted);
+  margin-top: 2px;
+}
+
+.feed {
+  display: grid;
+  grid-template-columns: 16px minmax(0, 1fr) auto;
+  column-gap: 12px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--hairline);
+  margin-top: 6px;
+}
+.feed .feedDot {
+  margin-top: 6px;
+  align-self: start;
+}
+.feedHead {
+  display: flex;
+  gap: 10px;
+  align-items: baseline;
+}
+.feedTitle {
+  font-size: 15px;
+  font-weight: 600;
+}
+.feedDate {
+  font-family: var(--font-numeric);
+  font-size: 11px;
+  color: var(--ink-muted);
+}
+.feedBody {
+  font-size: 14px;
+  line-height: 1.45;
+  color: var(--ink-muted);
+  margin-top: 3px;
+}
+.feed > :last-child {
+  align-self: start;
+}
+.feedRow {
+  display: flex;
+  gap: 24px;
+  margin-top: 18px;
+  align-items: flex-start;
+}
+.feedRow > :first-child {
+  flex: none;
+}
+.field {
+  flex: 1;
+  min-width: 0;
+}
+.fieldLabel {
+  font-size: 15px;
+  font-weight: 600;
+}
+.fieldBox {
+  margin-top: 8px;
+  height: 40px;
+  box-sizing: border-box;
+  border: 1px solid var(--focus);
+  border-radius: var(--radius-m);
+  background: var(--paper-raised);
+  padding: 0 12px;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+}
+.caret {
+  width: 1px;
+  height: 18px;
+  background: var(--brand-deep);
+  margin-left: 2px;
+}
+
+.navRow {
+  display: flex;
+  gap: 24px;
+  margin-top: 14px;
+  align-items: flex-start;
+}
+.rail {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px 6px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-m);
+}
+.railItem {
+  width: 64px;
+  height: 58px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  color: var(--ink-muted);
+  border-radius: var(--radius-m);
+}
+.railItem[data-active='true'] {
+  background: var(--paper-raised);
+  box-shadow: inset 0 0 0 1px var(--hairline);
+  color: var(--ink);
+}
+.railIcon {
+  font-size: 22px;
+}
+.railLabel {
+  font-size: 11px;
+  font-weight: 500;
+}
+.navRight {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.pageHeader {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  height: 48px;
+  padding: 0 16px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-m);
+}
+.phDate {
+  font-size: 15px;
+  font-weight: 600;
+}
+.phDot {
+  color: var(--ink-faint);
+}
+.phRule {
+  width: 1px;
+  height: 18px;
+  background: var(--hairline);
+}
+.phNote {
+  font-size: 14px;
+  color: var(--ink-muted);
+}
+.grow {
+  flex: 1;
+}
+.phButton {
+  height: 30px;
+  padding: 0 12px;
+  border-radius: var(--radius-m);
+  background: var(--brand-deep);
+  color: var(--paper);
+  font-size: 13px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+}
+.palette {
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-m);
+  background: var(--paper-raised);
+  overflow: hidden;
+}
+.paletteInput {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 44px;
+  padding: 0 14px;
+  border-bottom: 1px solid var(--hairline);
+  font-size: 15px;
+}
+.paletteIcon {
+  font-size: 18px;
+  color: var(--ink-muted);
+}
+.paletteCaret {
+  width: 1px;
+  height: 16px;
+  background: var(--brand-deep);
+}
+.paletteResults {
+  padding: 6px;
+}
+.paletteRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 34px;
+  padding: 0 10px;
+  border-radius: var(--radius-s);
+  background: color-mix(in oklch, var(--ink) 6%, var(--paper-raised));
+  font-size: 13px;
+}
+.paletteKind {
+  font-family: var(--font-numeric);
+  font-size: 11px;
+  color: var(--ink-muted);
+}
+
+.empties {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  margin-top: 14px;
+}
+.emptyRow {
+  display: grid;
+  grid-template-columns: 140px minmax(0, 1fr);
+  column-gap: 20px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+.emptyWhere {
+  font-size: 12px;
+  color: var(--ink-muted);
+  padding-top: 2px;
+}
+.emptyText {
+  color: var(--ink-muted);
+  text-wrap: pretty;
+}
+.emptyFoot {
+  font-size: 13px;
+  line-height: 1.5;
+  color: var(--ink-muted);
+  margin-top: 18px;
+}

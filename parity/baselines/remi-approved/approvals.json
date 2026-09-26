@@ -1,0 +1,68 @@
+{
+  "setup-wizard": {
+    "png": "c982f6560c2965f1d505dfcfe1f418609bc8fde722a9b31ecc38da22d7aad960",
+    "approvedBy": "Claude (Ninety One redesign review)",
+    "approvedAt": "2026-09-25T16:38:13.332Z",
+    "note": "Re-approved after the Ninety One redesign (top bar, Visuelt, brand palette); reviewed visually."
+  },
+  "empty-home": {
+    "png": "adef78704c34b04c24f53f8d80f79b23901c7778b80dcef0f54d0d601fd1cada",
+    "approvedBy": "Claude (Ninety One redesign review)",
+    "approvedAt": "2026-09-25T16:38:15.060Z",
+    "note": "Re-approved after the Ninety One redesign (top bar, Visuelt, brand palette); reviewed visually."
+  },
+  "empty-today": {
+    "png": "7b6db09ca7919f337b2c2d1a650ea4890a112c00f5a577ffa28568d257193ea9",
+    "approvedBy": "Claude (Ninety One redesign review)",
+    "approvedAt": "2026-09-25T16:38:16.619Z",
+    "note": "Re-approved after the Ninety One redesign (top bar, Visuelt, brand palette); reviewed visually."
+  },
+  "empty-notes": {
+    "png": "289c609b40fc4848abd574061cf0a7adbfc30b84cb8cf8eb3b905f3175458941",
+    "approvedBy": "Claude (Ninety One redesign review)",
+    "approvedAt": "2026-09-25T16:38:19.158Z",
+    "note": "Re-approved after the Ninety One redesign (top bar, Visuelt, brand palette); reviewed visually."
+  },
+  "empty-timeline": {
+    "png": "58c9f1f9a2af962958351a2a9b602130c38d64beecf22fc232733db6b9eb9027",
+    "approvedBy": "Claude (Ninety One redesign review)",
+    "approvedAt": "2026-09-25T16:38:21.635Z",
+    "note": "Re-approved after the Ninety One redesign (top bar, Visuelt, brand palette); reviewed visually."
+  },
+  "empty-calendar": {
+    "png": "969b6baf72cc28702dab7fd2c187cf011180940480d4406a30ce933aa0a7c55b",
+    "approvedBy": "Claude (Ninety One redesign review)",
+    "approvedAt": "2026-09-25T16:38:24.073Z",
+    "note": "Re-approved after the Ninety One redesign (top bar, Visuelt, brand palette); reviewed visually."
+  },
+  "empty-projects": {
+    "png": "ce4ad7170b3101c96047172d723f0fb12deb1691d80d36a6b7386f283b2a4c9b",
+    "approvedBy": "Claude (Ninety One redesign review)",
+    "approvedAt": "2026-09-25T16:38:26.520Z",
+    "note": "Re-approved after the Ninety One redesign (top bar, Visuelt, brand palette); reviewed visually."
+  },
+  "empty-routines": {
+    "png": "cac537d0910174fd38eae99b7dae192ef78b1496f0e360ce8b3867d164766966",
+    "approvedBy": "Claude (Ninety One redesign review)",
+    "approvedAt": "2026-09-25T16:38:28.973Z",
+    "note": "Re-approved after the Ninety One redesign (top bar, Visuelt, brand palette); reviewed visually."
+  },
+  "empty-transition": {
+    "png": "4bb3ac3a65afdfb14fa82b1df5771f779cb7d65bfcd18c28ed6745192c579d78",
+    "approvedBy": "Claude (Ninety One redesign review)",
+    "approvedAt": "2026-09-25T16:38:31.411Z",
+    "note": "Re-approved after the Ninety One redesign (top bar, Visuelt, brand palette); reviewed visually."
+  },
+  "empty-textbook": {
+    "png": "da4c65e74a09956da492a9b95fa99de014c1b7ccb5878e70694c5dcbfd67c1a8",
+    "approvedBy": "Claude (Ninety One redesign review)",
+    "approvedAt": "2026-09-25T16:38:32.765Z",
+    "note": "Re-approved after the Ninety One redesign (top bar, Visuelt, brand palette); reviewed visually."
+  },
+  "settings": {
+    "png": "dbe10be6db4ba6194eddad1fa9769887d09ef1c7c9f02bcf90c2f5cae6077cb6",
+    "approvedBy": "Claude (Ninety One redesign review)",
+    "approvedAt": "2026-09-25T16:38:34.236Z",
+    "note": "Re-approved after the Ninety One redesign (top bar, Visuelt, brand palette); reviewed visually."
+  }
+}

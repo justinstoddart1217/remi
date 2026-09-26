@@ -1,0 +1,35 @@
+/* Projects.dc.html:48-50; Workspace.dc.html:86-88. */
+.meter {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+.pips {
+  display: flex;
+  gap: 3px;
+}
+.pip {
+  height: 8px;
+  border-radius: 1.5px;
+  background: var(--hairline);
+  transition: background var(--dur-base) var(--ease-out);
+}
+.pip[data-on='true'] {
+  background: var(--ink);
+}
+.s .pip {
+  width: 10px;
+}
+.m .pip {
+  width: 12px;
+}
+.label {
+  font-family: var(--font-numeric);
+  font-size: 12px;
+}
+.muted {
+  color: var(--ink-muted);
+}
+.ink {
+  color: var(--ink);
+}

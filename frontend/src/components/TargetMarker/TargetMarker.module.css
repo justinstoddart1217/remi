@@ -1,0 +1,25 @@
+/* Remi Foundations.dc.html:163, :232; Timeline.dc.html:76-78, :358-361. Ninety One: --brand-deep (was ink). */
+.marker {
+  position: relative;
+  flex: none;
+  display: block;
+  width: 7px;
+}
+
+.upright {
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: var(--brand-deep);
+}
+
+.bar {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 7px;
+  height: 1px;
+  background: var(--brand-deep);
+}

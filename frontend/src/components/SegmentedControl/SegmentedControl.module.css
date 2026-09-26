@@ -1,0 +1,86 @@
+/* Timeline.dc.html:35-39; Routines.dc.html:31-35; Remi Textbook.dc.html:240-242. */
+.group {
+  display: flex;
+}
+.option {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+}
+.option:focus-visible {
+  outline: 1.5px solid var(--focus);
+  outline-offset: 1px;
+}
+
+/* pill · Timeline zoom (Timeline.dc.html:109: a --brand-deep indicator; it was ink) */
+.pill {
+  position: relative;
+  padding: 3px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-m);
+  background: var(--paper-raised);
+}
+.indicator {
+  position: absolute;
+  top: 3px;
+  bottom: 3px;
+  left: calc(3px + var(--i) * var(--w));
+  width: var(--w);
+  background: var(--brand-deep);
+  border-radius: 4px;
+  transition: left var(--dur-base) var(--spring-soft);
+}
+.pill .option {
+  position: relative;
+  width: var(--w);
+  height: 28px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-muted);
+  transition: color var(--dur-fast) var(--ease-out);
+}
+.pill .option[aria-checked='true'] {
+  color: var(--paper);
+}
+
+/* compact · Routines kind */
+.compact {
+  padding: 2px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-s);
+  background: var(--paper-raised);
+}
+.compact .option {
+  height: 24px;
+  padding: 0 9px;
+  border-radius: 2px;
+  color: var(--ink-muted);
+  font-size: 12px;
+  font-weight: 500;
+  transition:
+    background var(--dur-fast) var(--ease-out),
+    color var(--dur-fast) var(--ease-out);
+}
+
+/* mini · Textbook chart size */
+.mini {
+  gap: 2px;
+  padding: 2px;
+  border: 1px solid var(--hairline);
+  border-radius: var(--radius-s);
+}
+.mini .option {
+  height: 22px;
+  padding: 0 8px;
+  border-radius: 2px;
+  color: var(--ink-muted);
+  font-size: 11px;
+  font-weight: 600;
+}
+
+/* compact and mini keep the ink fill in the redesign (Routines.dc.html:207, Remi Textbook.dc.html:607). */
+.compact .option[aria-checked='true'],
+.mini .option[aria-checked='true'] {
+  background: var(--ink);
+  color: var(--paper);
+}

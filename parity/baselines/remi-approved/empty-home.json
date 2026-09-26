@@ -1,0 +1,190 @@
+{
+  "state": {
+    "id": "empty-home",
+    "surface": "home",
+    "about": "Home with nothing in the plan and no Textbook pages (Remi only)",
+    "claude": "none",
+    "fullPage": false,
+    "maxDiffRatio": 0.01
+  },
+  "app": "remi",
+  "capturedWith": {
+    "browser": "chromium 153.0.8010.12",
+    "clock": "2026-10-05T08:30:00.000Z",
+    "timezone": "Europe/London",
+    "locale": "en-GB",
+    "reducedMotion": "reduce",
+    "deviceScaleFactor": 1,
+    "baseURL": "http://127.0.0.1:5304",
+    "servedBy": "vite"
+  },
+  "screenshot": "empty-home.png",
+  "url": "/",
+  "title": "Remi",
+  "viewport": {
+    "width": 1920,
+    "height": 1080
+  },
+  "document": {
+    "width": 1920,
+    "height": 1080
+  },
+  "regions": [
+    {
+      "label": "Remi home",
+      "box": {
+        "x": 0,
+        "y": 0,
+        "width": 1920,
+        "height": 1080
+      },
+      "visible": true,
+      "inViewport": true,
+      "lines": [
+        "REMI",
+        "WORKFLOW · PRIVATE CREDIT → FIXED INCOME",
+        "MON 5 OCT · BD3",
+        "61",
+        "business days to Fixed Income",
+        "GOOD MORNING · MONDAY 5 OCTOBER",
+        "Where to this morning?",
+        "01",
+        "Control Panel",
+        "arrow_forward",
+        "Today, the timeline, projects, routines and the move, recalculated as you go.",
+        "No projects yet",
+        "Not yet",
+        "Not yet",
+        "Not yet",
+        "no plan",
+        "no plan",
+        "no plan",
+        "0 projects · 0 routines · 0 notes today",
+        "02",
+        "Textbook",
+        "arrow_forward",
+        "Numbered notes, clean formulas and live charts you drop in from Claude.",
+        "TEXTBOOK",
+        "/",
+        "First page",
+        "1",
+        "Untitled",
+        "No pages yet. Start one in the Textbook and its opening lines show here.",
+        "1.1",
+        "/",
+        "Heading",
+        "Formula",
+        "Callout",
+        "Link to project",
+        "Numbered sections · formulas · live charts",
+        "0 pages · 0 live charts",
+        "Press 1 or 2 to jump straight in",
+        "A personal instrument. Nothing here is shared."
+      ],
+      "text": "REMI WORKFLOW · PRIVATE CREDIT → FIXED INCOME MON 5 OCT · BD3 61 business days to Fixed Income GOOD MORNING · MONDAY 5 OCTOBER Where to this morning? 01 Control Panel arrow_forward Today, the timeline, projects, routines and the move, recalculated as you go. No projects yet Not yet Not yet Not yet no plan no plan no plan 0 projects · 0 routines · 0 notes today 02 Textbook arrow_forward Numbered notes, clean formulas and live charts you drop in from Claude. TEXTBOOK / First page 1 Untitled No pages yet. Start one in the Textbook and its opening lines show here. 1.1 / Heading Formula Callout Link to project Numbered sections · formulas · live charts 0 pages · 0 live charts Press 1 or 2 to jump straight in A personal instrument. Nothing here is shared.",
+      "textNoIcons": "REMI WORKFLOW · PRIVATE CREDIT → FIXED INCOME MON 5 OCT · BD3 61 business days to Fixed Income GOOD MORNING · MONDAY 5 OCTOBER Where to this morning? 01 Control Panel Today, the timeline, projects, routines and the move, recalculated as you go. No projects yet Not yet no plan 0 projects · 0 routines · 0 notes today 02 Textbook Numbered notes, clean formulas and live charts you drop in from Claude. TEXTBOOK / First page 1 Untitled No pages yet. Start one in the Textbook and its opening lines show here. 1.1 / Heading Formula Callout Link to project Numbered sections · formulas · live charts 0 pages · 0 live charts Press 1 or 2 to jump straight in A personal instrument. Nothing here is shared.",
+      "ownLines": [
+        "REMI",
+        "WORKFLOW · PRIVATE CREDIT → FIXED INCOME",
+        "MON 5 OCT · BD3",
+        "61",
+        "business days to Fixed Income",
+        "GOOD MORNING · MONDAY 5 OCTOBER",
+        "Where to this morning?",
+        "01",
+        "Control Panel",
+        "Today, the timeline, projects, routines and the move, recalculated as you go.",
+        "No projects yet",
+        "Not yet",
+        "no plan",
+        "0 projects · 0 routines · 0 notes today",
+        "02",
+        "Textbook",
+        "Numbered notes, clean formulas and live charts you drop in from Claude.",
+        "TEXTBOOK",
+        "/",
+        "First page",
+        "1",
+        "Untitled",
+        "No pages yet. Start one in the Textbook and its opening lines show here.",
+        "1.1",
+        "Numbered sections · formulas · live charts",
+        "0 pages · 0 live charts",
+        "Press 1 or 2 to jump straight in",
+        "A personal instrument. Nothing here is shared."
+      ],
+      "ownText": "REMI WORKFLOW · PRIVATE CREDIT → FIXED INCOME MON 5 OCT · BD3 61 business days to Fixed Income GOOD MORNING · MONDAY 5 OCTOBER Where to this morning? 01 Control Panel Today, the timeline, projects, routines and the move, recalculated as you go. No projects yet Not yet no plan 0 projects · 0 routines · 0 notes today 02 Textbook Numbered notes, clean formulas and live charts you drop in from Claude. TEXTBOOK / First page 1 Untitled No pages yet. Start one in the Textbook and its opening lines show here. 1.1 Numbered sections · formulas · live charts 0 pages · 0 live charts Press 1 or 2 to jump straight in A personal instrument. Nothing here is shared.",
+      "icons": [
+        "arrow_forward",
+        "arrow_forward"
+      ],
+      "fields": [],
+      "ownFields": []
+    }
+  ],
+  "pageLines": [
+    "REMI",
+    "WORKFLOW · PRIVATE CREDIT → FIXED INCOME",
+    "MON 5 OCT · BD3",
+    "61",
+    "business days to Fixed Income",
+    "GOOD MORNING · MONDAY 5 OCTOBER",
+    "Where to this morning?",
+    "01",
+    "Control Panel",
+    "Today, the timeline, projects, routines and the move, recalculated as you go.",
+    "No projects yet",
+    "Not yet",
+    "no plan",
+    "0 projects · 0 routines · 0 notes today",
+    "02",
+    "Textbook",
+    "Numbered notes, clean formulas and live charts you drop in from Claude.",
+    "TEXTBOOK",
+    "/",
+    "First page",
+    "1",
+    "Untitled",
+    "No pages yet. Start one in the Textbook and its opening lines show here.",
+    "1.1",
+    "Numbered sections · formulas · live charts",
+    "0 pages · 0 live charts",
+    "Press 1 or 2 to jump straight in",
+    "A personal instrument. Nothing here is shared."
+  ],
+  "pageText": "REMI WORKFLOW · PRIVATE CREDIT → FIXED INCOME MON 5 OCT · BD3 61 business days to Fixed Income GOOD MORNING · MONDAY 5 OCTOBER Where to this morning? 01 Control Panel Today, the timeline, projects, routines and the move, recalculated as you go. No projects yet Not yet no plan 0 projects · 0 routines · 0 notes today 02 Textbook Numbered notes, clean formulas and live charts you drop in from Claude. TEXTBOOK / First page 1 Untitled No pages yet. Start one in the Textbook and its opening lines show here. 1.1 Numbered sections · formulas · live charts 0 pages · 0 live charts Press 1 or 2 to jump straight in A personal instrument. Nothing here is shared.",
+  "anchors": [
+    {
+      "name": "home-card:plan",
+      "box": {
+        "x": 120,
+        "y": 388,
+        "width": 816,
+        "height": 560
+      }
+    },
+    {
+      "name": "home-card:textbook",
+      "box": {
+        "x": 984,
+        "y": 388,
+        "width": 816,
+        "height": 560
+      }
+    }
+  ],
+  "masks": [],
+  "frames": [],
+  "activeElement": null,
+  "fontsLoaded": [
+    "Material Symbols Outlined normal 300",
+    "N1Display normal 300 400",
+    "N1Visuelt normal 400",
+    "N1Visuelt normal 500 700"
+  ],
+  "driverError": null,
+  "blockedRequests": [],
+  "pageErrors": [],
+  "consoleErrors": [],
+  "harnessNoise": []
+}
