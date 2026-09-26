@@ -23,7 +23,7 @@ NPM ?= npm
         test test-backend test-frontend test-harness openapi openapi-check icons \
         design-verify design-manifest check clean \
         goldens goldens-check parity-baseline parity parity-confirm behaviour egress \
-        bundle release mounted
+        mounted
 
 help: ## List the targets
 	@grep -E '^[a-z][a-z-]*:.*## ' $(firstword $(MAKEFILE_LIST)) \
@@ -191,30 +191,6 @@ behaviour: ## Playwright behaviour flows against Remi, one worker (FLOW=<regex>)
 egress: ## Stay-local crawl of Remi (a fresh production build, else Vite): no request leaves 127.0.0.1
 	@test -d parity/node_modules || (cd parity && $(NPM) ci --no-audit --no-fund)
 	export PARITY_SERVE=build; $(PARITY_PW) --project=egress
-
-# ------------------------------------------------------------------ the APEX server (docs/deploy/APEX.md)
-# The server runs a self-contained Windows bundle (its own Python, dependencies, backend and
-# built dashboard) that its update-remi.bat downloads from this repository's GitHub Releases.
-# Releases are built, install-tested on Windows and published by .github/workflows/release.yml
-# when a version tag is pushed; make release makes that tag. make bundle builds the same zip
-# here, to look inside it.
-bundle: ## Build the Windows server bundle into build/release/ (to inspect; releases build it on GitHub)
-	cd $(BACKEND) && $(UV) run python -m scripts.build_bundle --out "$(CURDIR)/build/release"
-
-release: ## Release VERSION=x.y.z: bump, commit, tag and push; GitHub then builds and publishes the bundle
-	@echo "$(VERSION)" | grep -Eq '^[0-9]+\.[0-9]+\.[0-9]+$$' || { echo 'usage: make release VERSION=x.y.z (now: '"$$(grep -m1 '^version = ' $(BACKEND)/pyproject.toml | cut -d'"' -f2)"')'; exit 2; }
-	@test "$$(git rev-parse --abbrev-ref HEAD)" = main || { echo "make release: switch to main first"; exit 1; }
-	@git diff --quiet && git diff --cached --quiet || { echo "make release: commit or stash your changes first"; exit 1; }
-	@! git rev-parse -q --verify "refs/tags/v$(VERSION)" >/dev/null || { echo "make release: v$(VERSION) already exists"; exit 1; }
-	sed -i.bak -E 's/^version = ".*"/version = "$(VERSION)"/' $(BACKEND)/pyproject.toml && rm $(BACKEND)/pyproject.toml.bak
-	cd $(BACKEND) && $(UV) lock --quiet
-	@$(MAKE) --no-print-directory openapi
-	git add $(BACKEND)/pyproject.toml $(BACKEND)/uv.lock $(CONTRACT) $(TS_SCHEMA)
-	git diff --cached --quiet || git commit -m "Release $(VERSION)"
-	git tag -a "v$(VERSION)" -m "Remi $(VERSION)"
-	git push origin main "v$(VERSION)"
-	@echo "Pushed v$(VERSION). GitHub now builds, tests and publishes the bundle (Actions > Release);"
-	@echo "then run update-remi.bat on the APEX server."
 
 # ------------------------------------------------------------------ all together
 # Every gate, in order; stops at the first failure. Runs offline.

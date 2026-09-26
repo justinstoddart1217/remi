@@ -1,6 +1,6 @@
 # ADR-0013: Behind APEX's IIS at /remi/
 
-- Status: accepted, 2026-09-26 (release 0.3.0)
+- Status: accepted, 2026-09-26 (release 0.3.0); **superseded for deployment by [ADR-0014](0014-mounted-inside-apex.md)** (Remi mounted inside APEX)
 - Amends: ADR-0012, replacing its tile, server mode and firewall parts for the APEX server
 - Requested by: the APEX side ("Remi change request: serve under /remi/ behind APEX's HTTPS proxy")
 

@@ -1,6 +1,6 @@
 # ADR-0012: Hosting Remi on the APEX server
 
-- Status: accepted, 2026-09-26
+- Status: accepted, 2026-09-26; **superseded for deployment by [ADR-0014](0014-mounted-inside-apex.md)** (Remi mounted inside APEX)
 - Amends: ADR-0003 (local only), with an opt-in server mode
 - Amended by: [ADR-0013](0013-behind-apex-iis.md). On the APEX server Remi sits behind IIS at
   `/remi/` on loopback; server mode, the firewall rule and the Jinja tile below are the

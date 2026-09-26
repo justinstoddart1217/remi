@@ -1,9 +1,10 @@
 # Remi
 
-Remi is a personal workflow dashboard that runs only on your own computer (a Mac; Windows has a
-launcher too), or on the APEX server for your work laptop (see
-[Hosting on the APEX server](#hosting-on-the-apex-server)). It plans BAU and project work across Private Credit and Fixed Income, about three
-months ahead and one business day at a time, to keep the move from PC to FI on schedule:
+Remi is a personal workflow dashboard. It runs on its own on your computer (a Mac; Windows has a
+launcher too) and is about to move, once, into APEX, where it will run inside APEX's own server
+at `/remi/` (see [Moving into APEX](#moving-into-apex)). It plans BAU and project work across
+Private Credit and Fixed Income, about three months ahead and one business day at a time, to keep
+the move from PC to FI on schedule:
 routines pinned to business-day rules, a Fixed Income country rotation, goal-first projects
 forecast from work left and hours a day, check-ins, daily notes and a textbook. When something
 changes, Remi recalculates the plan.
@@ -16,17 +17,18 @@ calendar and clock.
 - Decisions (ADRs): [`docs/decisions/`](docs/decisions/README.md)
 - Design spec used for implementation: [`docs/design-spec/`](docs/design-spec/)
 
-> Status: **feature complete (Phase 4).** Every screen of the design, the first-run wizard,
-> Settings and the Textbook are built on the full API. `make check` runs every gate below; the
-> visual-parity figures are in [`docs/parity-report.md`](docs/parity-report.md).
+> Status: **0.4.0, ready to import into APEX.** Every screen of the design, the first-run wizard,
+> Settings and the Textbook are built on the full API; the repository is laid out as it will sit
+> in APEX and runs on APEX's Python 3.11. `make check` runs every gate below; the visual-parity
+> figures are in [`docs/parity-report.md`](docs/parity-report.md).
 
 ## Prerequisites
 
 | Tool | Version | Notes |
 | --- | --- | --- |
-| [uv](https://docs.astral.sh/uv/) | 0.12+ | `brew install uv`, then `uv python install 3.12` |
-| Python | 3.12 | managed by uv (`backend/.python-version`); the system Python is not used |
-| Node.js / npm | 24+ / 11+ | Node 25 is what the repo is developed on |
+| [uv](https://docs.astral.sh/uv/) | 0.12+ | `brew install uv`, then `uv python install 3.11` |
+| Python | 3.11 | APEX's version; managed by uv (`backend/.python-version`); the system Python is not used |
+| Node.js / npm | 20.19+, 22.13+ or 24+ / 10+ | the toolchain's floor (checked on 20.19, 22.13 and 25) |
 
 ## Launching Remi
 
@@ -45,7 +47,7 @@ What a launcher does:
 2. Otherwise it checks that uv and Node.js are installed (and says how to get them if not).
 3. The first time (and on macOS whenever the code has changed) it builds the app into
    `frontend/remi/dist`, installing the frontend's npm packages first if they are missing. That takes
-   about a minute. uv sets up Python 3.12 and the backend's packages on first use.
+   about a minute. uv sets up Python 3.11 and the backend's packages on first use.
 4. It starts Remi on http://127.0.0.1:8765 and opens it in your browser. A fresh install opens
    the first-run wizard.
 
@@ -60,9 +62,8 @@ runs, and nothing leaves your computer unless you choose an AI provider (see bel
 - The first time you open it, macOS may refuse a script it has not seen before: right-click
   `launch.command` › Open › Open (or run `chmod +x launch.command` if it opens as text). Windows
   SmartScreen may show "Windows protected your PC": More info › Run anyway.
-- To have Tell Remi use Anthropic, install the extras once (`cd backend && uv sync --extra
-  anthropic --extra keyring`) and paste the key in Settings, or set `REMI_ANTHROPIC_API_KEY`
-  before launching; see [AI provider](#ai-provider-check-in).
+- To have Tell Remi use Anthropic, set `REMI_ANTHROPIC_API_KEY` before launching (the SDK is
+  in the dev environment); see [AI provider](#ai-provider-check-in).
 
 The launchers run the same thing as `make serve` without the Makefile: `uv run python -m remi.main`
 from `backend/` (see the iCloud note below for why not the `remi` script).
@@ -111,8 +112,12 @@ remi --data-dir /tmp/remi     # another data folder (default ~/Library/Applicati
 remi db path                  # where remi.db lives
 remi db upgrade               # back up, then migrate to the latest schema (also done at startup)
 remi db backup                # copy remi.db into backups/
-remi --network --host 0.0.0.0 # server mode: other computers may open it (no sign-in; see below)
+remi --network --host 0.0.0.0 # server mode: other computers may open it (no sign-in)
 ```
+
+`python -m remi ...` is the same command. Its `db` subcommands need no web server, so they run
+with APEX's venv too (`python -m remi db backup`); serving Remi on its own needs uvicorn (the
+`serve` extra, in the dev environment here).
 
 It serves the built app from `frontend/remi/dist` (run `make build` first, or point `REMI_FRONTEND_DIST`
 at a build). To put `remi` on your PATH:
@@ -122,7 +127,7 @@ uv tool install --editable ./backend
 ```
 
 > **iCloud Desktop note.** When the repo sits in an iCloud-synced folder (this one is on the
-> Desktop), macOS flags dot-folders such as `backend/.venv` as hidden, and Python 3.12 skips
+> Desktop), macOS flags dot-folders such as `backend/.venv` as hidden, and Python skips
 > hidden `.pth` files. The editable install's `remi` script *inside* `backend/.venv` then cannot
 > import `remi`. Two ways round it:
 > - `uv tool install --editable ./backend` puts the tool's venv outside the synced folder, so
@@ -131,38 +136,34 @@ uv tool install --editable ./backend
 >   `cd backend && uv run python -m remi.main [--port N] [--no-browser] [db path|upgrade|backup]`.
 >
 > The Makefile always uses the module form (`python -m remi.main`, `python -m
-> scripts.export_openapi`), and pytest adds the source tree to `sys.path`.
+> remi.scripts.export_openapi`), and pytest adds the source tree to `sys.path`.
 
-## Hosting on the APEX server
+## Moving into APEX
 
-Remi also runs on the APEX server, a Windows computer on the Ninety One network, behind APEX's
-IIS at `https://apex.ny1.ninetyone.com/remi/`, opened from the "remi" tile on APEX's landing
-page. The guide, step by step: [`docs/deploy/APEX.md`](docs/deploy/APEX.md)
-([ADR-0012](docs/decisions/0012-apex-server-bundle.md), amended by
-[ADR-0013](docs/decisions/0013-behind-apex-iis.md)).
+Remi moves into the APEX repository **once** and is developed there afterwards. It runs inside
+APEX's own waitress process at `https://apex.ny1.ninetyone.com/remi/`, through an ASGI→WSGI
+adapter, and keeps its own FastAPI backend, TypeScript front end, SQLite database and tests
+([ADR-0014](docs/decisions/0014-mounted-inside-apex.md); the APEX team's requirements are in
+[`docs/apex/INTEGRATION_REQUIREMENTS.md`](docs/apex/INTEGRATION_REQUIREMENTS.md)).
 
-- **Develop here, release to GitHub.** `make release VERSION=x.y.z` bumps the version, tags it
-  and pushes. [`.github/workflows/release.yml`](.github/workflows/release.yml) then builds
-  `remi-<version>-windows.zip`, installs and tests it on a Windows runner, and publishes it as a
-  GitHub Release. `make bundle` builds the same zip locally, to look inside.
-- **The bundle is self-contained:** its own Python 3.12, the locked dependencies, the backend and
-  the built dashboard. The server needs nothing installed.
-- **The server only pulls.** `C:\Remi\update-remi.bat` downloads the latest release with a
-  read-only GitHub token, backs up the database, switches over and goes back by itself if the
-  new version does not start. Nothing on the work side ever pushes.
-- **Behind the proxy** (`REMI_PUBLIC_URL=https://apex.ny1.ninetyone.com/remi`, installed with
-  `install-remi.bat -PublicUrl ...`): Remi binds `127.0.0.1` only, with no firewall port.
-  - IIS removes the `/remi` prefix before forwarding, so Remi's routes don't change.
-  - The server writes the prefix into the page's `<base href>` at runtime, so the same build
-    serves `/` on the laptop and `/remi/` on the server.
-  - The public host and origin pass the Host and Origin checks.
-  - It runs at startup as a Windows task under the low-privilege LOCAL SERVICE account, with
-    its data in `C:\Remi\data`.
-- **Server mode** (`REMI_NETWORK=1`, installed without `-PublicUrl`) is the no-proxy
-  alternative. Remi binds `0.0.0.0` behind a firewall port and answers to the server's own
-  names and addresses, plus `REMI_ALLOWED_HOSTS`.
-- **No sign-in.** Anyone who can open Remi's address can change it. The Host and Origin checks
-  still stop other websites from using your browser to change it.
+Everything that can be done on this side is done:
+
+- **Layout.** The repository is laid out as it will sit in APEX: `backend/remi/` (the package,
+  with its migrations, sample seed, tests and scripts), `frontend/remi/` (its own npm project)
+  and `contracts/remi-openapi.json`. The import is a copy.
+- **Runtime.** It runs on APEX's Python 3.11, with dependencies pinned to what APEX installs,
+  plus `a2wsgi`.
+- **The mount.** [`backend/remi/mount.py`](backend/remi/mount.py) is the one call APEX makes:
+  `app.wsgi_app = mount(app.wsgi_app)`.
+  - `/remi/...` reaches Remi with the prefix removed; everything else goes to APEX untouched.
+  - If Remi cannot start, `/remi/` answers a 503 and APEX carries on.
+- **Rehearsal.** `make mounted` runs that exact shape on this machine: a stand-in APEX on
+  waitress, with Remi at http://localhost:8011/remi/.
+- **The runbook.** [`docs/apex/IMPORT.md`](docs/apex/IMPORT.md) lists what to copy, the
+  snippets to paste into APEX's files, and the checks to run afterwards.
+
+The sidecar (Remi as its own Windows service, 0.2.0 and 0.3.0) is retired; tag `v0.3.0` keeps
+it as a fallback.
 
 ## Make targets
 
@@ -180,15 +181,14 @@ page. The guide, step by step: [`docs/deploy/APEX.md`](docs/deploy/APEX.md)
 | `openapi` | FastAPI → `contracts/remi-openapi.json` → `frontend/remi/src/api/schema.d.ts` |
 | `openapi-check` | Fail if the committed contract or TS schema is stale |
 | `design-verify` | Fail if the design folder differs from `docs/design-spec/design-manifest.sha256` |
-| `goldens` / `goldens-check` | Extract the prototype's golden values into `parity/golden/` / fail if they are stale |
+| `goldens` / `goldens-check` | Extract the prototype's golden values into `backend/remi/tests/golden/` / fail if they are stale (both need the design folder; the check skips without it) |
 | `parity-baseline` | Capture the prototype's baselines (`parity/baselines/prototype/`) |
 | `parity` | Visual parity of Remi against the prototype, written to `docs/parity-report.md` (`STATE=<regex>`; `PARITY_APPROVE=1 PARITY_APPROVER="<who>"` approves Remi-only captures) |
 | `parity-confirm` | A person signs off approved Remi-only baselines after looking at them (`STATE=<regex> BY="<name>"`) |
 | `behaviour` | The Playwright behaviour flows against Remi (`FLOW=<regex>`) |
 | `egress` | The stay-local crawl of a fresh production build |
 | `icons` | Rebuild the Material Symbols subset (downloads at build time only) |
-| `bundle` | Build the Windows server bundle into `build/release/` (releases build it on GitHub) |
-| `release` | `VERSION=x.y.z`: bump the version, commit, tag and push; GitHub builds and publishes the bundle |
+| `mounted` | Rehearse the APEX integration: Remi mounted at `/remi/` in a stand-in APEX on waitress, http://localhost:8011/remi/ |
 | `check` | `lint typecheck test openapi-check design-verify build goldens-check parity behaviour egress` |
 
 `make help` lists them all. `make check` must be green, offline, before anything is merged. The
@@ -207,9 +207,9 @@ Process settings come from `REMI_*` environment variables (`backend/remi/core/co
 | --- | --- | --- |
 | `REMI_DATA_DIR` | `~/Library/Application Support/Remi` (Windows: `%LOCALAPPDATA%\Remi`) | `remi.db`, `charts/`, `backups/`. Not used by `make dev`, which has `REMI_DEV_DATA_DIR` |
 | `REMI_HOST` | `127.0.0.1` | Must be a loopback address unless `REMI_NETWORK=1` |
-| `REMI_NETWORK` | `false` | Server mode (the APEX server): any bind address, and Remi answers to this computer's own names and addresses. No sign-in |
+| `REMI_NETWORK` | `false` | Server mode: any bind address, and Remi answers to this computer's own names and addresses. No sign-in. Unset when mounted in APEX |
 | `REMI_ALLOWED_HOSTS` | empty | Server mode only: more names Remi answers to, comma-separated (a DNS alias, say); `*` for any |
-| `REMI_PUBLIC_URL` | empty | Behind a reverse proxy that strips a path prefix: the address people open, e.g. `https://apex.ny1.ninetyone.com/remi`. The pages get `<base href="/remi/">`, and that host and origin pass the checks. Independent of server mode (ADR-0013) |
+| `REMI_PUBLIC_URL` | empty | Under a path prefix (mounted in APEX, or behind a proxy that strips it): the address people open, e.g. `https://apex.ny1.ninetyone.com/remi`. The pages get `<base href="/remi/">`, and that host and origin pass the checks. Required by `remi.mount` (ADR-0013, ADR-0014) |
 | `REMI_PORT` | `8765` | |
 | `REMI_ENV` | `prod` | `prod`, `dev` or `test` (`test` enables `POST /api/dev/fixtures`) |
 | `REMI_TODAY` | unset | Start the business date on this day; the wall clock keeps running (tests and parity runs) |
@@ -219,7 +219,7 @@ Process settings come from `REMI_*` environment variables (`backend/remi/core/co
 | `REMI_FRONTEND_DIST` | `frontend/remi/dist` | Built SPA to serve |
 | `REMI_CHART_MAX_BYTES` | `4194304` | Textbook chart upload limit |
 | `REMI_OPEN_BROWSER` | `true` | Whether `remi` opens the browser |
-| `REMI_ANTHROPIC_API_KEY` | unset | The Anthropic key, if you use that provider and do not keep it in the Keychain |
+| `REMI_ANTHROPIC_API_KEY` | unset | The Anthropic key, if you use that provider. Mounted in APEX, it defaults to APEX's `PM_ASSISTANT_API_KEY` |
 
 Used only by the tooling, not by Remi itself:
 
@@ -229,8 +229,8 @@ Used only by the tooling, not by Remi itself:
 | `REMI_REBUILD` | `launch.bat` | `1` rebuilds the app before starting |
 | `REMI_API_PORT` / `REMI_WEB_PORT` | Vite (`make dev`) | Where Vite proxies `/api`, and its own port |
 | `REMI_PARITY_API_PORT` / `REMI_PARITY_WEB_PORT` | `make parity`, `behaviour`, `egress` | The harness's own ports (8804 / 5304) |
-| `REMI_UPDATE_REPO` | the APEX server's `update-remi.bat` (`C:\Remi\server.env`) | The GitHub repository releases come from |
-| `REMI_GITHUB_TOKEN` | the same | A read-only token for it, instead of the one saved on the server |
+| `APEX_REMI_ENABLED` | `remi.mount` (inside APEX) | `0` switches Remi off: `/remi/` answers 503 and APEX carries on |
+| `PM_ASSISTANT_API_KEY` | `remi.mount` (inside APEX) | APEX's Anthropic key, handed to Remi as `REMI_ANTHROPIC_API_KEY` when that is unset |
 
 Everything else (move date, working hours, holidays, rotation, appearance) is set in the app's
 first-run wizard and Settings page and stored in the database.
@@ -243,7 +243,7 @@ The check-in drawer can read a free-text update and propose changes. Providers a
 | Provider | Setup | Network |
 | --- | --- | --- |
 | `none` (**default**) | nothing | none: a deterministic "simple reading" parser |
-| `anthropic` | `cd backend && uv sync --extra anthropic --extra keyring`; then paste the key in Settings › Tell Remi (stored in the macOS Keychain), or set `REMI_ANTHROPIC_API_KEY` (or `ANTHROPIC_API_KEY`) before starting Remi | calls the Anthropic API only when you send a check-in |
+| `anthropic` | the SDK (`anthropic==1.8.0`) is in the dev environment and in the `anthropic` extra; set `REMI_ANTHROPIC_API_KEY` (or `ANTHROPIC_API_KEY`) before starting Remi. Inside APEX, APEX's `PM_ASSISTANT_API_KEY` is used | calls the Anthropic API only when you send a check-in |
 | `ollama` | run Ollama on this Mac and pull a model (default `llama3.1`); the base URL must be a loopback address (default `http://127.0.0.1:11434`) | loopback only |
 
 Choose the provider in the first-run wizard or in Settings › Tell Remi, where you can also set
@@ -262,13 +262,11 @@ Remi never talks to the network on its own
 - It binds to 127.0.0.1 only. The CLI and config refuse non-loopback hosts, the server accepts
   only loopback `Host` headers, and every mutation needs a loopback `Origin` plus the
   `X-Remi-Client: 1` header. Single user, no accounts, no CORS.
-- Two opt-in exceptions, for the APEX server:
-  - **Behind APEX's proxy** (`REMI_PUBLIC_URL`), Remi still binds loopback and accepts the
-    proxy's public host and origin.
-  - **Server mode** (`REMI_NETWORK=1`) lets other computers on the network open it directly,
-    under the same checks for the server's own names.
-
-  Neither makes an outbound call; only the server's update script talks to GitHub.
+- Under a path prefix (`REMI_PUBLIC_URL`: mounted in APEX, or behind a proxy), Remi also
+  accepts that public host and origin; everything else is refused as before. Mounted in APEX,
+  these guards (and Remi's CSP) wrap Remi's routes only, never APEX's.
+- Server mode (`REMI_NETWORK=1`, opt-in, unused in APEX) lets other computers open it
+  directly, under the same checks for the server's own names. Neither makes an outbound call.
 - The app's Content-Security-Policy is `'self'` only. Live charts run in `sandbox="allow-scripts"`
   iframes under `default-src 'none'; connect-src 'none'`, so a chart cannot fetch anything.
 - Fonts (Ninety One Visuelt) are self-hosted WOFF2 files; icons are a committed Material Symbols
@@ -300,12 +298,10 @@ Remi Dashboard Design Review/   the design reference, kept locally only (removed
                                 make design-verify and goldens-check skip without it
 docs/        PLAN.md, SPEC.md, api.md, design-spec/, decisions/ (ADRs), requests/, apex/ (the APEX import)
 backend/     uv project (this repo's dev env) around the package remi/: {api,core,schemas,services,
-             repositories,utils}, alembic/, fixtures/, scripts/, tests/ (laid out as it sits in APEX)
+             repositories,utils}, alembic/, fixtures/, scripts/, tests/, mount.py (as it sits in APEX)
 frontend/    remi/: the Vite + React + TS project, src/{app,api,shell,screens,components,...}, scripts/
 parity/      Playwright harness: prototype baselines, goldens, parity, behaviour and egress suites; tests/
 contracts/   remi-openapi.json (generated, committed)
-deploy/      the APEX server: windows/ (remi-server.ps1 and its .bat shortcuts)
-build/       make bundle output (ignored); .github/workflows/release.yml builds releases
 launch.command   double-click launcher (macOS)
 launch.bat       double-click launcher (Windows)
 Makefile

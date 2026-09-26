@@ -19,3 +19,4 @@ only through an ADR plus `make openapi`.
 | [0011](0011-ninety-one-redesign.md) | The Ninety One redesign: brand tokens, Visuelt fonts, top bar, re-approved new UI |
 | [0012](0012-apex-server-bundle.md) | Hosting on the APEX server: opt-in server mode, a self-contained Windows bundle, pull-only updates |
 | [0013](0013-behind-apex-iis.md) | Behind APEX's IIS at /remi/: `REMI_PUBLIC_URL`, a runtime `<base href>`, loopback only, no firewall port |
+| [0014](0014-mounted-inside-apex.md) | Remi mounted inside APEX: the APEX layout, Python 3.11, `remi.mount` in APEX's waitress process; the sidecar retired |
