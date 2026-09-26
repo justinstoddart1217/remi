@@ -59,8 +59,8 @@ const REMI_USE: PlaywrightTestConfig['use'] = { baseURL: WEB_URL, actionTimeout:
 const remiProjects: PlaywrightTestConfig['projects'] = [
   { name: 'remi', testMatch: ['parity.spec.ts'], use: REMI_USE },
   { name: 'behaviour', testMatch: ['behaviour.spec.ts'], fullyParallel: false, use: REMI_USE },
-  // proxy.spec.ts runs the egress run's production build behind a /remi path-stripping proxy (ADR-0013).
-  { name: 'egress', testMatch: ['egress.spec.ts', 'proxy.spec.ts'], use: REMI_USE },
+  // mounted.spec.ts runs the egress run's production build mounted at /remi/ in a stand-in APEX (ADR-0014).
+  { name: 'egress', testMatch: ['egress.spec.ts', 'mounted.spec.ts'], use: REMI_USE },
 ];
 
 export default defineConfig({

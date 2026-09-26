@@ -23,7 +23,7 @@ NPM ?= npm
         test test-backend test-frontend test-harness openapi openapi-check icons \
         design-verify design-manifest check clean \
         goldens goldens-check parity-baseline parity parity-confirm behaviour egress \
-        bundle release
+        bundle release mounted
 
 help: ## List the targets
 	@grep -E '^[a-z][a-z-]*:.*## ' $(firstword $(MAKEFILE_LIST)) \
@@ -64,6 +64,18 @@ dev: ## Backend on 127.0.0.1:8765 (reload, own data folder) + Vite on 127.0.0.1:
 	    --reload --reload-dir remi --host $(HOST) --port $(API_PORT)) & \
 	(cd $(FRONTEND) && REMI_API_PORT=$(API_PORT) REMI_WEB_PORT=$(WEB_PORT) $(NPM) run dev) & \
 	wait
+
+# A rehearsal of the APEX integration (docs/apex/IMPORT.md): Remi mounted at /remi/ in a
+# stand-in APEX (Flask) on waitress, the way APEX's server.py and wsgi.py will run it. Its own
+# data folder (<make dev's folder>/mounted) and REMI_ENV=dev, like APEX's dev server.
+MOUNT_PORT := 8011
+mounted: build ## Rehearse APEX: Remi mounted in a stand-in APEX on waitress at http://localhost:8011/remi/
+	@data="$$($(DEV_DATA_DIR_SH))/mounted"; \
+	echo "APEX (stand-in) http://localhost:$(MOUNT_PORT)/   Remi http://localhost:$(MOUNT_PORT)/remi/"; \
+	echo "Data $$data"; \
+	cd $(BACKEND) && REMI_ENV=dev REMI_DATA_DIR="$$data" \
+	  REMI_PUBLIC_URL=http://localhost:$(MOUNT_PORT)/remi REMI_FRONTEND_DIST="$(CURDIR)/$(FRONTEND)/dist" \
+	  $(UV) run python -m remi.tests.mount.serve --port $(MOUNT_PORT)
 
 # Backend entry points run as `python -m ...` from backend/ so they never depend on the editable
 # install's .pth file (macOS iCloud marks dot-folders like .venv hidden, and Python skips
