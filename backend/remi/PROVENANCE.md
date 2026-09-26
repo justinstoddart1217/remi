@@ -45,7 +45,7 @@ All of them are in Remi's history between `v0.3.0` and `v0.4.0`. The reasons are
 4. **`mount.py`, new (R-30 to R-36, R-44, R-50):** Remi is mounted in APEX's WSGI process through
    a2wsgi. The tests are in `tests/mount/`.
 5. **The front end:** "‹ APEX" appears when mounted (R-76), and `engines.node` is the
-   toolchain's real floor.
+   toolchain's real floor. `e2e/run.mjs` holds the browser checks without Playwright (R-63).
 6. **Dropped:** the sidecar pipeline (Windows scripts, release workflow, bundle builder).
    The parity harness stays in Remi's repository.
 

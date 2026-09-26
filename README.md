@@ -189,7 +189,8 @@ it as a fallback.
 | `egress` | The stay-local crawl of a fresh production build |
 | `icons` | Rebuild the Material Symbols subset (downloads at build time only) |
 | `mounted` | Rehearse the APEX integration: Remi mounted at `/remi/` in a stand-in APEX on waitress, http://localhost:8011/remi/ |
-| `check` | `lint typecheck test openapi-check design-verify build goldens-check parity behaviour egress` |
+| `e2e` | Browser checks without Playwright (`frontend/remi/e2e/run.mjs`: Chrome or Edge over the DevTools protocol): the first run, a check-in, deep-link reloads, against Remi mounted in the stand-in APEX |
+| `check` | `lint typecheck test openapi-check design-verify build goldens-check parity behaviour egress e2e` |
 
 `make help` lists them all. `make check` must be green, offline, before anything is merged. The
 parity, behaviour and egress runs start their own backend and frontend on 127.0.0.1:8804 and

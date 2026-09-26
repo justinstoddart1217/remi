@@ -71,6 +71,9 @@ plus paste-ready edits ([`docs/apex/IMPORT.md`](../apex/IMPORT.md)).
     APEX.
   - `make mounted` serves that stand-in on waitress. The browser flows
     (`parity/specs/mounted.spec.ts`) run the production build through it.
+  - `frontend/remi/e2e/run.mjs` (`make e2e`) is the Playwright-free replacement that goes to
+    APEX (R-63). It drives Edge or Chrome over the DevTools protocol through the first run, a
+    check-in and deep-link reloads.
 - **Retired (R-80).** `deploy/`, the release workflow, the bundle builder, `make bundle` and
   `make release` are deleted; tag `v0.3.0` keeps the sidecar as a fallback (§3.4). Server-mode
   code stays: it is unused when mounted, and harmless.
@@ -83,7 +86,7 @@ plus paste-ready edits ([`docs/apex/IMPORT.md`](../apex/IMPORT.md)).
 - **The copy in APEX becomes the source of truth.** This repository is frozen after the import,
   and `backend/remi/PROVENANCE.md` records the base.
 - **Only the parity harness stays behind.** It needs Playwright's Chromium and the design folder,
-  and it is the safety net for the preparation, not something APEX runs (R-63). APEX's
-  replacement is its own headless-Edge checks: the first run, a check-in, a deep-link reload.
+  and it is the safety net for the preparation, not something APEX runs (R-63). APEX gets
+  `frontend/remi/e2e/run.mjs` instead, on Edge.
 - **Remi's uptime is APEX's.** A Remi fault shows as a 503 on `/remi/` and never as an APEX
   outage.

@@ -210,14 +210,24 @@ Add:
 | Remi's front end (R-61) | in `frontend\remi`: `npm run typecheck`, `npm run lint`, `npm test`, `npm run build` |
 | The API contract (R-64) | `.venv\Scripts\python -m remi.scripts.export_openapi` rewrites `contracts\remi-openapi.json`; then `npm run gen:api` in `frontend\remi`; then `git diff --exit-code contracts frontend\remi\src\api\schema.d.ts` |
 
-- **R-63, browser checks.** Remi's Playwright suites stay in Remi's repository. On APEX, check
-  with its headless Edge:
-  1. the first-run wizard at `/remi/`;
+- **R-63, browser checks.** Remi's Playwright suites stay in Remi's repository. Their
+  replacement comes across with the front end: `frontend/remi/e2e/run.mjs`. It is plain Node 22+
+  driving Edge (or Chrome) over the DevTools protocol, the way APEX checks its own UI. It runs
+  three flows:
+  1. the first-run wizard;
   2. a check-in applied by simple reading;
-  3. a reload on `/remi/app/timeline` and `/remi/textbook/p1`.
+  3. reloads on `/remi/app/timeline` and `/remi/textbook/fi-rates`.
 
-  Before the import these ran as `parity/specs/mounted.spec.ts` through waitress, with the same
-  mount.
+  It fails on any request outside `/remi/` and on any failed response. Run it against the **dev**
+  server (`REMI_ENV=dev`, since it resets the data), never the host:
+
+  ```bat
+  cd frontend\remi
+  npm run e2e -- --base http://localhost:8011/remi
+  ```
+
+  It finds Edge in its usual place (or pass `--browser <path>` or set `REMI_E2E_BROWSER`). In
+  Remi's repository, `make e2e` runs it against the stand-in APEX.
 
 ## 4. Optional: bring the laptop's plan across (R-43)
 
@@ -279,6 +289,7 @@ first-run wizard.
 | R-70, R-71 | `frontend/remi` is its own project; `base: './'`, `<base href="/">`, stay-local check |
 | R-73 | Router basename from `document.baseURI`; nothing in APEX's router |
 | R-74, R-75 | Its own document; self-hosted fonts from its `dist` |
+| R-63 | The browser checks without Playwright: `frontend/remi/e2e/run.mjs` (`npm run e2e`), for Edge |
 | R-76 | "‹ APEX" in the top bar and on Home, when mounted |
 | R-80 | The sidecar pipeline deleted (v0.3.0 remains as the fallback) |
 | K8 | The Node floor relaxed to `^20.19 \|\| ^22.13 \|\| >=24` and verified |
@@ -295,7 +306,7 @@ first-run wizard.
 - R-53 (D3, access control: none, as the user chose before, unless IIS Windows sign-in is
   added on `/remi`);
 - R-61;
-- R-63 (the headless-Edge checks);
+- R-63 (running `npm run e2e` on APEX's dev server with Edge);
 - R-72;
 - R-82 (Remi logs on `remi.*` loggers, which APEX's logging picks up with no Remi change);
 - R-83.

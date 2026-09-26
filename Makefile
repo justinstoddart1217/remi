@@ -23,7 +23,7 @@ NPM ?= npm
         test test-backend test-frontend test-harness openapi openapi-check icons \
         design-verify design-manifest check clean \
         goldens goldens-check parity-baseline parity parity-confirm behaviour egress \
-        mounted
+        mounted e2e
 
 help: ## List the targets
 	@grep -E '^[a-z][a-z-]*:.*## ' $(firstword $(MAKEFILE_LIST)) \
@@ -76,6 +76,24 @@ mounted: build ## Rehearse APEX: Remi mounted in a stand-in APEX on waitress at 
 	cd $(BACKEND) && REMI_ENV=dev REMI_DATA_DIR="$$data" \
 	  REMI_PUBLIC_URL=http://localhost:$(MOUNT_PORT)/remi REMI_FRONTEND_DIST="$(CURDIR)/$(FRONTEND)/dist" \
 	  $(UV) run python -m remi.tests.mount.serve --port $(MOUNT_PORT)
+
+# Browser checks without Playwright (R-63): frontend/remi/e2e/run.mjs drives Chrome or Edge over
+# the DevTools protocol, the way APEX checks its UI, against Remi mounted in the stand-in APEX on
+# its own port and a throwaway data folder (REMI_ENV=test, so the flows can reset the data).
+E2E_PORT := 8012
+E2E_SERVER = remi.tests.mount.serve --port $(E2E_PORT)
+e2e: build ## Browser checks (first run, check-in, deep links) in Chrome/Edge over DevTools, no Playwright
+	@data="$$(mktemp -d)"; \
+	trap 'pkill -f "$(E2E_SERVER)" 2>/dev/null || true; rm -rf "$$data"' EXIT; \
+	(cd $(BACKEND) && REMI_ENV=test REMI_TODAY=2026-10-05 REMI_DEFAULT_TIMEZONE=Europe/London \
+	  REMI_DATA_DIR="$$data/remi" REMI_PUBLIC_URL=http://127.0.0.1:$(E2E_PORT)/remi \
+	  REMI_FRONTEND_DIST="$(CURDIR)/$(FRONTEND)/dist" \
+	  $(UV) run python -m $(E2E_SERVER)) > "$$data/server.log" 2>&1 & \
+	for i in $$(seq 1 120); do \
+	  curl -sf http://127.0.0.1:$(E2E_PORT)/remi/api/health >/dev/null && break; sleep 0.5; \
+	done; \
+	cd $(FRONTEND) && node e2e/run.mjs --base http://127.0.0.1:$(E2E_PORT)/remi \
+	  || { echo "--- server log"; tail -30 "$$data/server.log"; exit 1; }
 
 # Backend entry points run as `python -m ...` from backend/ so they never depend on the editable
 # install's .pth file (macOS iCloud marks dot-folders like .venv hidden, and Python skips
@@ -194,7 +212,7 @@ egress: ## Stay-local crawl of Remi (a fresh production build, else Vite): no re
 
 # ------------------------------------------------------------------ all together
 # Every gate, in order; stops at the first failure. Runs offline.
-check: lint typecheck test openapi-check design-verify build goldens-check parity behaviour egress ## Everything CI runs
+check: lint typecheck test openapi-check design-verify build goldens-check parity behaviour egress e2e ## Everything CI runs
 	@echo "make check: all green"
 
 clean: ## Remove build output and tool caches (keeps dependencies)
